@@ -5,30 +5,24 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class PilosaURI {
+public final class URI {
     private String scheme = "http";
     private String host = "localhost";
     private int port = 15000;
     private boolean isIPv6 = false;
     private Pattern uriPattern = Pattern.compile("(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?");
 
-    public PilosaURI() {
+    public URI() {
     }
 
-    public PilosaURI(String scheme, String host, int port) {
+    public URI(String scheme, String host, int port) {
         this.setScheme(scheme);
         this.setHost(host);
         this.setPort(port);
     }
 
-    public PilosaURI(String address) {
+    public URI(String address) {
         this._parse(address);
-    }
-
-    public static PilosaURI parse(String s) {
-        PilosaURI uri = new PilosaURI();
-        uri._parse(s);
-        return uri;
     }
 
     public String getScheme() {
@@ -50,13 +44,13 @@ public final class PilosaURI {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof PilosaURI)) {
+        if (!(obj instanceof URI)) {
             return false;
         }
         if (obj == this) {
             return true;
         }
-        PilosaURI rhs = (PilosaURI) obj;
+        URI rhs = (URI) obj;
         return (rhs.scheme.equals(this.scheme) && rhs.host.equals(this.host) && rhs.port == this.port);
     }
 

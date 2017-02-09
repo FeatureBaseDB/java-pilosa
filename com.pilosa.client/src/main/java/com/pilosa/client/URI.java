@@ -2,6 +2,7 @@ package com.pilosa.client;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +11,7 @@ public final class URI {
     private String host = "localhost";
     private int port = 15000;
     private boolean isIPv6 = false;
-    private Pattern uriPattern = Pattern.compile("(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?");
+    private Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
 
     public URI() {
     }
@@ -21,7 +22,7 @@ public final class URI {
         this.setPort(port);
     }
 
-    public URI(String address) {
+    public URI(String address) throws URISyntaxException {
         this._parse(address);
     }
 
@@ -75,7 +76,7 @@ public final class URI {
         this.port = port;
     }
 
-    private void _parse(String s) {
+    private void _parse(String s) throws URISyntaxException {
         Matcher m = uriPattern.matcher(s);
         if (m.find()) {
             String scheme = m.group(2);
@@ -90,6 +91,8 @@ public final class URI {
             if (sPort != null) {
                 this.port = Integer.valueOf(sPort);
             }
+        } else {
+            throw new URISyntaxException(s, "Not a Pilosa URI");
         }
     }
 }

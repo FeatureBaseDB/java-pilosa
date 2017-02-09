@@ -44,14 +44,14 @@ public class ClusterTest {
         Cluster c = new Cluster();
         c.addAddress(new URI("db1.pilosa.com"));
         c.addAddress(new URI("db2.pilosa.com"));
-        URI host = c.getAddress();
-        assertEquals(target1, host);
-        host = c.getAddress();
-        assertEquals(target2, host);
-        host = c.getAddress();
-        assertEquals(target1, host);
+        URI addr = c.getAddress();
+        assertEquals(target1, addr);
+        addr = c.getAddress();
+        assertEquals(target2, addr);
+        addr = c.getAddress();
+        assertEquals(target1, addr);
         c.removeAddress(new URI("db2.pilosa.com"));
-        assertEquals(target1, host);
+        assertEquals(target1, addr);
     }
 
     @Test(expected = PilosaException.class)

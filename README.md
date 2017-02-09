@@ -4,11 +4,14 @@
 
 Java client for Pilosa high performance database.
 
+## Changelog
+
+* 2017-03-15: Initial version
 
 ## Requirements
 
 * Java 1.7 and higher
-* Maven 2 and higher
+* Maven 4 and higher
 
 ## Install
 
@@ -33,3 +36,8 @@ mvn clean
 mvn install
 ```
 
+## Usage
+
+## Contribution
+
+## License

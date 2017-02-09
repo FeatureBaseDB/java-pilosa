@@ -17,13 +17,13 @@ public final class URI {
     }
 
     public URI(String scheme, String host, int port) {
-        this.setScheme(scheme);
-        this.setHost(host);
-        this.setPort(port);
+        setScheme(scheme);
+        setHost(host);
+        setPort(port);
     }
 
     public URI(String address) throws URISyntaxException {
-        this._parse(address);
+        _parse(address);
     }
 
     public String getScheme() {
@@ -57,11 +57,11 @@ public final class URI {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(31, 47).
-                append(this.scheme).
-                append(this.host).
-                append(this.port).
-                toHashCode();
+        return new HashCodeBuilder(31, 47)
+                .append(this.scheme)
+                .append(this.host)
+                .append(this.port)
+                .toHashCode();
     }
 
     private void setScheme(String scheme) {
@@ -81,15 +81,15 @@ public final class URI {
         if (m.find()) {
             String scheme = m.group(2);
             if (scheme != null) {
-                this.scheme = scheme;
+                setScheme(scheme);
             }
             String host = m.group(3);
             if (host != null) {
-                this.host = host;
+                setHost(host);
             }
             String sPort = m.group(5);
             if (sPort != null) {
-                this.port = Integer.valueOf(sPort);
+                setPort(Integer.valueOf(sPort));
             }
         } else {
             throw new URISyntaxException(s, "Not a Pilosa URI");

@@ -3,14 +3,14 @@ package com.pilosa.client;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Cluster {
+public final class Cluster implements ICluster {
     private List<URI> addresses = new ArrayList<>();
     private int nextIndex = 0;
 
     public Cluster() {
     }
 
-    public Cluster(URI address) {
+    Cluster(URI address) {
         this.addAddress(address);
     }
 
@@ -27,7 +27,7 @@ public final class Cluster {
         this.addresses.remove(address);
     }
 
-    public URI nextAddress() {
+    public URI getAddress() {
         if (this.nextIndex >= this.addresses.size()) {
             throw new PilosaException("There are no available addresses");
         }
@@ -36,7 +36,7 @@ public final class Cluster {
         return nextHost;
     }
 
-    public List<URI> getAddresses() {
+    List<URI> getAddresses() {
         return this.addresses;
     }
 }

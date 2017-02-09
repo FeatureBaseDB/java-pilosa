@@ -44,11 +44,11 @@ public class ClusterTest {
         Cluster c = new Cluster();
         c.addAddress(new URI("db1.pilosa.com"));
         c.addAddress(new URI("db2.pilosa.com"));
-        URI host = c.nextAddress();
+        URI host = c.getAddress();
         assertEquals(target1, host);
-        host = c.nextAddress();
+        host = c.getAddress();
         assertEquals(target2, host);
-        host = c.nextAddress();
+        host = c.getAddress();
         assertEquals(target1, host);
         c.removeAddress(new URI("db2.pilosa.com"));
         assertEquals(target1, host);

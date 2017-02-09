@@ -20,7 +20,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterAddHost() throws URISyntaxException {
+    public void testClusterAddAddress() throws URISyntaxException {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
         Cluster c = new Cluster();
@@ -29,7 +29,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterRemoveHost() throws URISyntaxException {
+    public void testClusterRemoveAddress() throws URISyntaxException {
         List<URI> target = new ArrayList<>();
         Cluster c = new Cluster(new URI("localhost:5000"));
         c.removeAddress(new URI("localhost:5000"));
@@ -37,7 +37,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterNextHost() throws URISyntaxException {
+    public void testClusterGetAddress() throws URISyntaxException {
         URI target1 = new URI("db1.pilosa.com");
         URI target2 = new URI("db2.pilosa.com");
 
@@ -52,5 +52,11 @@ public class ClusterTest {
         assertEquals(target1, host);
         c.removeAddress(new URI("db2.pilosa.com"));
         assertEquals(target1, host);
+    }
+
+    @Test(expected = PilosaException.class)
+    public void testClusterGetAddressWitEmptyList() {
+        Cluster c = new Cluster();
+        c.getAddress();
     }
 }

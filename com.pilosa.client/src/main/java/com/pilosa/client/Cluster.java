@@ -14,11 +14,6 @@ public final class Cluster implements ICluster {
         this.addAddress(address);
     }
 
-    public Cluster(Cluster other) {
-        this.addresses = new ArrayList<>(other.addresses);
-        this.nextIndex = other.nextIndex;
-    }
-
     public void addAddress(URI address) {
         this.addresses.add(address);
     }

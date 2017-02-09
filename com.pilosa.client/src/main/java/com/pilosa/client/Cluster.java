@@ -39,11 +39,4 @@ public final class Cluster {
     public List<URI> getAddresses() {
         return this.addresses;
     }
-
-
-    public Cluster copy() {
-        Cluster c = new Cluster();
-        c.addresses = new ArrayList<>(this.addresses);
-        return c;
-    }
 }

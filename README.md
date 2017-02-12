@@ -61,7 +61,7 @@ else {
 // You can send more than one query with a single query call
 response = client.query("exampleDB", "Bitmap(id=5, frame=\"sample\") TopN(frame=\"sample\", n=5)");
 // Check whether it succeeded
-if (response.isSucess()) {
+if (response.isSuccess()) {
     // Deai with results
     for (Object result : response.getResults()) {
         System.out.println(result);

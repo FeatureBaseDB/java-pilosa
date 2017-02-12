@@ -50,6 +50,10 @@ if (!response.isError()) {
     // Get the result
     List<Object> results = response.getResults();
 }
+else {
+    // Do something with the error message
+    System.out.println("ERROR: " + response.getErrorMessage());
+}
 
 // You can send more than one query with a single query call
 response = client.query("exampleDB", "Bitmap(id=5, frame=\"sample\") TopN(frame=\"sample\", n=5)");

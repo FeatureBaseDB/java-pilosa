@@ -49,6 +49,8 @@ PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample
 if (!response.isError()) {
     // Get the result
     List<Object> results = response.getResults();
+    Object result = results.get(0);
+    // Deai with the result
 }
 else {
     // Do something with the error message
@@ -57,8 +59,9 @@ else {
 
 // You can send more than one query with a single query call
 response = client.query("exampleDB", "Bitmap(id=5, frame=\"sample\") TopN(frame=\"sample\", n=5)");
-// deal with the response
+// Check whether it succeeded
 if (!response.isError()) {
+    // Deai with results
     for (Object result : response.getResults()) {
         System.out.println(result);
     }

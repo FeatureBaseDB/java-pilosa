@@ -32,15 +32,22 @@ public final class PilosaResponse {
     }
 
     public List<Object> getResults() {
-        return results;
+        return this.results;
+    }
+
+    public Object getResult() {
+        if (this.results == null || this.results.size() == 0) {
+            return null;
+        }
+        return this.results.get(0);
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return this.errorMessage;
     }
 
-    public boolean isError() {
-        return isError;
+    public boolean isSuccess() {
+        return !isError;
     }
 
     private void parse(InputStream src) throws IOException {

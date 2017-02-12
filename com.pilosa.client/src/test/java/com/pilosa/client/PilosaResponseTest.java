@@ -65,22 +65,30 @@ public class PilosaResponseTest {
     @Test
     public void testErrorResponse() {
         PilosaResponse response = createResponse("{\"error\":\"some error\"}");
-        assertTrue(response.isError());
+        assertFalse(response.isSuccess());
         assertEquals("some error", response.getErrorMessage());
     }
 
     @Test
     public void testErrorConstructor() {
         PilosaResponse response = PilosaResponse.error("some error");
-        assertTrue(response.isError());
+        assertFalse(response.isSuccess());
         assertEquals("some error", response.getErrorMessage());
     }
 
     @Test
     public void testDefaultConstructor() {
         PilosaResponse response = new PilosaResponse();
-        assertFalse(response.isError());
+        assertTrue(response.isSuccess());
         assertNull(response.getErrorMessage());
+    }
+
+    @Test
+    public void testGetResult() throws IOException {
+        PilosaResponse response = new PilosaResponse();
+        assertEquals(null, response.getResult());
+        response = createResponse("{\"results\":[1]}");
+        assertEquals(1, response.getResult());
     }
 
     @Test(expected = PilosaException.class)
@@ -121,6 +129,7 @@ public class PilosaResponseTest {
 
     private void compareResponse(String s, Object[] target) {
         PilosaResponse response = createResponse(s);
+        assertTrue(response.isSuccess());
         assertNull(response.getErrorMessage());
         List<Object> results = response.getResults();
         assertArrayEquals(target, results.toArray());

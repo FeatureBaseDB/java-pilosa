@@ -38,6 +38,8 @@ mvn install
 
 ## Usage
 
+### Quick overview
+
 Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localhost:15000` (the default):
 
 ```java
@@ -46,10 +48,9 @@ Client client = new Client("localhost:15000");
 // Send a query
 PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");
 // Check whether it succeeded
-if (!response.isError()) {
+if (response.isSuccess()) {
     // Get the result
-    List<Object> results = response.getResults();
-    Object result = results.get(0);
+    Object result = response.getResult();
     // Deai with the result
 }
 else {
@@ -60,7 +61,7 @@ else {
 // You can send more than one query with a single query call
 response = client.query("exampleDB", "Bitmap(id=5, frame=\"sample\") TopN(frame=\"sample\", n=5)");
 // Check whether it succeeded
-if (!response.isError()) {
+if (response.isSucess()) {
     // Deai with results
     for (Object result : response.getResults()) {
         System.out.println(result);

@@ -2,22 +2,35 @@ package com.pilosa.client;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+/**
+ * Represents a result from TopN call.
+ */
 public class CountResultItem {
     private int key;
     private int count;
 
-    public CountResultItem() {
+    CountResultItem() {
     }
 
-    public CountResultItem(int key, int count) {
+    CountResultItem(int key, int count) {
         this.key = key;
         this.count = count;
     }
 
+    /**
+     * Returns the bitmap ID.
+     *
+     * @return bitmap ID
+     */
     public int getKey() {
         return this.key;
     }
 
+    /**
+     * Returns the count of profile IDs where this bitmap item is 1.
+     *
+     * @return count of profile IDs where this bitmap item is 1
+     */
     public int getCount() {
         return this.count;
     }

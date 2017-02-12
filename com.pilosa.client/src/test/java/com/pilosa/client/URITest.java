@@ -22,6 +22,12 @@ public class URITest {
     }
 
     @Test
+    public void testHostPortAlternative() {
+        URI uri = new URI("db1.pilosa.com", 3333);
+        compare(uri, "http", "db1.pilosa.com", 3333);
+    }
+
+    @Test
     public void testFullAlternative() {
         URI uri = new URI("http+protobuf", "db1.pilosa.com", 3333);
         compare(uri, "http+protobuf", "db1.pilosa.com", 3333);
@@ -99,6 +105,7 @@ public class URITest {
 
     @Test
     public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = (new URI()).equals("http://localhost:15000");
         assertFalse(e);
     }

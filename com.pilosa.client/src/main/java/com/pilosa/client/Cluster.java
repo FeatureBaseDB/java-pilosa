@@ -3,17 +3,34 @@ package com.pilosa.client;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains addresses of nodes in a Pilosa cluster.
+ */
+
 public final class Cluster implements ICluster {
     private List<URI> addresses = new ArrayList<>();
     private int nextIndex = 0;
 
+    /**
+     * Creates the default cluster.
+     */
     public Cluster() {
     }
 
+    /**
+     * Creates the cluster from a Pilosa address.
+     *
+     * @param address Pilosa address
+     */
     Cluster(URI address) {
         this.addAddress(address);
     }
 
+    /**
+     * Adds an address to the cluster.
+     *
+     * @param address Pilosa address
+     */
     public void addAddress(URI address) {
         this.addresses.add(address);
     }

@@ -10,31 +10,96 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents the response from a Pilosa query.
+ * <p>
+ * It can be used as follows:
+ * <pre>
+ *     // get the response from a client query
+ *     PilosaResponse response = ...
+ *     // check whether the query was successful
+ *     if (response.isSuccess()) {
+ *         // deal with the first result
+ *         Object result = response.getResult();
+ *         // or deal with all results
+ *         List&lt;Object&gt; result = response.getResults();
+ *     }
+ * </pre>
+ */
 public final class PilosaResponse {
     private List<Object> results;
     private String errorMessage;
     private boolean isError = false;
 
-    public PilosaResponse(InputStream src) throws IOException {
+    /**
+     * Creates a default response.
+     * <p>
+     * This constructor is not available outside of this package.
+     */
+    PilosaResponse() {
+        this.results = new ArrayList<>(0);
+        this.isError = false;
+    }
+
+    /**
+     * Creates a response from the given source.
+     * <p>
+     * This constructor is not available outside of this package.
+     *
+     * @param src response from Pilosa server
+     * @throws IOException if there was a problem reading from the source
+     */
+    PilosaResponse(InputStream src) throws IOException {
         parse(src);
     }
 
-    public static PilosaResponse error(String errorMessage) {
+    /**
+     * Creates an error response with the given message.
+     * <p>
+     * This constructor is not available outside of this package.
+     *
+     * @param errorMessage ditto
+     * @return an error response
+     */
+    static PilosaResponse error(String errorMessage) {
         PilosaResponse response = new PilosaResponse();
         response.isError = true;
         response.errorMessage = errorMessage;
         return response;
     }
 
-    protected PilosaResponse() {
-        this.results = new ArrayList<>(0);
-        this.isError = false;
-    }
-
+    /**
+     * Returns the list of results.
+     * <p>
+     * Possible results are:
+     * <ul>
+     * <li><b>boolean</b>: Returned from SetBit and ClearBit calls. Indicates whether the query changed a bit or not.</li>
+     * <li><b>null</b>: Returned from SetBitmapAttrs call.</li>
+     * <li><b>integer</b>: Returned from Count call.</li>
+     * <li><b>{@link BitmapResult}</b>: Returned from Bitmap, Union, Intersect, Difference and Range calls.</li>
+     * <li><b>List of {@link CountResultItem}</b>: Returned from TopN call.</li>
+     * </ul>
+     *
+     * @return results list
+     */
     public List<Object> getResults() {
         return this.results;
     }
 
+    /**
+     * Returns the first result in the response.
+     * <p>
+     * Possible results are:
+     * <ul>
+     * <li><b>boolean</b>: Returned from SetBit and ClearBit calls. Indicates whether the query changed a bit or not.</li>
+     * <li><b>null</b>: Returned from SetBitmapAttrs call.</li>
+     * <li><b>integer</b>: Returned from Count call.</li>
+     * <li><b>BitmapResult</b>: Returned from Bitmap, Union, Intersect, Difference and Range calls.</li>
+     * <li><b>List of CountResultItem</b>: Returned from TopN call.</li>
+     * </ul>
+     *
+     * @return first result in the response
+     */
     public Object getResult() {
         if (this.results == null || this.results.size() == 0) {
             return null;
@@ -42,10 +107,18 @@ public final class PilosaResponse {
         return this.results.get(0);
     }
 
+    /**
+     * Returns the error message in the response, if any.
+     * @return the error message or null if there is no error message
+     */
     public String getErrorMessage() {
         return this.errorMessage;
     }
 
+    /**
+     * Returns true if the response was success.
+     * @return true if the response was success, false otherwise
+     */
     public boolean isSuccess() {
         return !isError;
     }

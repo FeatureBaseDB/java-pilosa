@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class BitmapResultTest {
@@ -29,6 +31,34 @@ public class BitmapResultTest {
         BitmapResult result = createSampleResult();
         String s = result.toString();
         assertEquals("BitmapResult(attrs={color=blue}, bits=[42, 45])", s);
+    }
+
+    @Test
+    public void testEquals() {
+        BitmapResult result1 = createSampleResult();
+        BitmapResult result2 = createSampleResult();
+        boolean e = result1.equals(result2);
+        assertTrue(e);
+    }
+
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = (new BitmapResult()).equals(0);
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        BitmapResult result = createSampleResult();
+        assertEquals(result, result);
+    }
+
+    @Test
+    public void testHashCode() {
+        BitmapResult result1 = createSampleResult();
+        BitmapResult result2 = createSampleResult();
+        assertEquals(result1.hashCode(), result2.hashCode());
     }
 
     private BitmapResult createSampleResult() {

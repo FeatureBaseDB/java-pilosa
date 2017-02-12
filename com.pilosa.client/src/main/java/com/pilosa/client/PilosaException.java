@@ -7,4 +7,8 @@ public class PilosaException extends RuntimeException {
     public PilosaException(String message) {
         super(message);
     }
+
+    public PilosaException(String message, Throwable t) {
+        super(message, t);
+    }
 }

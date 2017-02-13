@@ -1,5 +1,6 @@
 package com.pilosa.client;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -74,14 +75,15 @@ public class Client {
     /**
      * Queries the server with the given database name and query string.
      * @param databaseName the database to use
-     * @param queryString a single query or multiple queres separated by spaces
+     * @param queries a single query or multiple queries
      * @return Pilosa response
      */
-    public PilosaResponse query(String databaseName, String queryString) {
+    public PilosaResponse query(String databaseName, String... queries) {
         if (!this.isConnected) {
             connect();
         }
-        logger.info("({}) Querying: {}", databaseName, queryString);
+        String queryString = StringUtils.join(queries, " ");
+        logger.debug("({}) Querying: {}", databaseName, queryString);
         String uri = this.currentAddress.toString() + "/query?db=" + databaseName;
         logger.debug("Posting to {}", uri);
 

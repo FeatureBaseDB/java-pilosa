@@ -45,7 +45,11 @@ public class Client {
         try {
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
-            return new PilosaResponse(entity.getContent());
+            PilosaResponse pilosaResponse = new PilosaResponse(entity.getContent());
+            if (!pilosaResponse.isSuccess()) {
+                throw new PilosaException(pilosaResponse.getErrorMessage());
+            }
+            return pilosaResponse;
         }
         catch (IOException ex) {
             logger.error(ex);

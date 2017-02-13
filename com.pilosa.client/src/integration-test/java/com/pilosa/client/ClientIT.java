@@ -21,4 +21,10 @@ public class ClientIT {
         Client client = new Client("http://non-existent-sub.pilosa.com:22222");
         client.query("testDB", "SetBit(id=5, frame=\"test\", profileID=10)");
     }
+
+    @Test(expected = PilosaException.class)
+    public void parseErrorTest() throws URISyntaxException {
+        Client client = new Client("http://localhost:15000");
+        client.query("testDB", "SetBit(id=5, frame=\"test\", profileID:=10)");
+    }
 }

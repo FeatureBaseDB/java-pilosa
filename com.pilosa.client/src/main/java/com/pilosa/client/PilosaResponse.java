@@ -111,7 +111,7 @@ public final class PilosaResponse {
      * Returns the error message in the response, if any.
      * @return the error message or null if there is no error message
      */
-    public String getErrorMessage() {
+    String getErrorMessage() {
         return this.errorMessage;
     }
 
@@ -119,7 +119,7 @@ public final class PilosaResponse {
      * Returns true if the response was success.
      * @return true if the response was success, false otherwise
      */
-    public boolean isSuccess() {
+    boolean isSuccess() {
         return !isError;
     }
 

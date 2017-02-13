@@ -19,7 +19,7 @@ public class ClientIT {
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() throws URISyntaxException {
         Client client = new Client("http://non-existent-sub.pilosa.com:22222");
-        client.query("testDB", "SetBit(id=5, frame=\"test\", profileID=10)");
+        client.query("test2DB", "SetBit(id=15, frame=\"test\", profileID=10)");
     }
 
     @Test(expected = PilosaException.class)

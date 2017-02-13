@@ -10,8 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 public class Client {
     private static final Logger logger = LogManager.getLogger();
@@ -41,21 +41,17 @@ public class Client {
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost = new HttpPost(uri);
+        httpPost.setEntity(new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8)));
         try {
-            httpPost.setEntity(new ByteArrayEntity(queryString.getBytes("UTF-8")));
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
             return new PilosaResponse(entity.getContent());
-        }
-        catch (UnsupportedEncodingException ex) {
-            logger.error(ex);
-            return PilosaResponse.error(ex.toString());
         }
         catch (IOException ex) {
             logger.error(ex);
             this.cluster.removeAddress(this.currentAddress);
             this.isConnected = false;
-            return PilosaResponse.error(ex.toString());
+            throw new PilosaException("Error while posting query", ex);
         }
     }
 

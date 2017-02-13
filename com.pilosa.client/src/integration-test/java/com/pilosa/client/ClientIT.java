@@ -15,4 +15,10 @@ public class ClientIT {
         PilosaResponse response = client.query("testDB", "SetBit(id=5, frame=\"test\", profileID=10)");
         assertTrue(response.isSuccess());
     }
+
+    @Test(expected = PilosaException.class)
+    public void failedConnectionTest() throws URISyntaxException {
+        Client client = new Client("http://non-existent-sub.pilosa.com:22222");
+        client.query("testDB", "SetBit(id=5, frame=\"test\", profileID=10)");
+    }
 }

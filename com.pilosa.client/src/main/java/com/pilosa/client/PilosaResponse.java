@@ -12,19 +12,6 @@ import java.util.Map;
 
 /**
  * Represents the response from a Pilosa query.
- * <p>
- * It can be used as follows:
- * <pre>
- *     // get the response from a client query
- *     PilosaResponse response = ...
- *     // check whether the query was successful
- *     if (response.isSuccess()) {
- *         // deal with the first result
- *         Object result = response.getResult();
- *         // or deal with all results
- *         List&lt;Object&gt; result = response.getResults();
- *     }
- * </pre>
  */
 public final class PilosaResponse {
     private List<Object> results;

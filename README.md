@@ -61,6 +61,14 @@ for (Object result : response.getResults()) {
 }
 ```
 
+There is a simple ORM which can be used as:
+```java
+response = client.query("exampleDB",
+                        Pql.bitmap(5, "sample"),
+                        Pql.topN("sample", 5);
+
+```
+
 ## Contribution
 
 ## License

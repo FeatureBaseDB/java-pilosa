@@ -105,6 +105,14 @@ public class Client {
         }
     }
 
+    public PilosaResponse query(String databaseName, PqlQuery... queries) {
+        String[] stringQueries = new String[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            stringQueries[i] = queries[i].toString();
+        }
+        return query(databaseName, stringQueries);
+    }
+
     private void connect() {
         this.currentAddress = this.cluster.getAddress();
         logger.info("Connected to {}", this.currentAddress);

@@ -15,14 +15,14 @@ public class PqlTest {
     public void bitmapTest() {
         assertEquals(
                 "Bitmap(id=5, frame=\"foo\")",
-                Pql.bitmap(5, "foo"));
+                Pql.bitmap(5, "foo").toString());
     }
 
     @Test
     public void setBitTest() {
         assertEquals(
                 "SetBit(id=2, frame=\"foo\", profileID=37)",
-                Pql.setBit(2, "foo", 37)
+                Pql.setBit(2, "foo", 37).toString()
         );
     }
 
@@ -30,7 +30,7 @@ public class PqlTest {
     public void clearBitTest() {
         assertEquals(
                 "ClearBit(id=2, frame=\"foo\", profileID=37)",
-                Pql.clearBit(2, "foo", 37)
+                Pql.clearBit(2, "foo", 37).toString()
         );
     }
 
@@ -38,7 +38,7 @@ public class PqlTest {
     public void unionTest() {
         assertEquals(
                 "Union(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
-                Pql.union(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo"))
+                Pql.union(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo")).toString()
         );
     }
 
@@ -46,7 +46,7 @@ public class PqlTest {
     public void intersectTest() {
         assertEquals(
                 "Intersect(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
-                Pql.intersect(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo"))
+                Pql.intersect(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo")).toString()
         );
     }
 
@@ -54,7 +54,7 @@ public class PqlTest {
     public void differenceTest() {
         assertEquals(
                 "Difference(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
-                Pql.difference(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo"))
+                Pql.difference(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo")).toString()
         );
     }
 
@@ -62,7 +62,7 @@ public class PqlTest {
     public void countTest() {
         assertEquals(
                 "Count(Bitmap(id=2, frame=\"foo\"))",
-                Pql.count(Pql.bitmap(2, "foo"))
+                Pql.count(Pql.bitmap(2, "foo")).toString()
         );
     }
 
@@ -70,11 +70,11 @@ public class PqlTest {
     public void topNTest() {
         assertEquals(
                 "TopN(Bitmap(id=2, frame=\"foo\"), frame=\"foo\", n=5)",
-                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5)
+                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5).toString()
         );
         assertEquals(
                 "TopN(Bitmap(id=2, frame=\"foo\"), frame=\"foo\", n=5, field=\"category\", [80,81])",
-                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5, "category", 80, 81)
+                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5, "category", 80, 81).toString()
         );
     }
 
@@ -82,14 +82,8 @@ public class PqlTest {
     public void topNInvalidValueTest() {
         assertEquals(
                 "TopN(Bitmap(id=2, frame=\"foo\"), frame=\"foo\", n=5, field=\"category\", [80,81])",
-                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5, "category", 80, new Object())
+                Pql.topN(Pql.bitmap(2, "foo"), "foo", 5, "category", 80, new Object()).toString()
         );
-    }
-
-    @Test
-    public void createPqlTest() {
-        // this test is required only to get 100% coverage
-        new Pql();
     }
 
     @Test
@@ -100,7 +94,7 @@ public class PqlTest {
         end.set(2000, 1, 2, 3, 4);
         assertEquals(
                 "Range(id=10, frame=\"foo\", start=\"1970-01-01T00:00\", end=\"2000-02-02T03:04\")",
-                Pql.range(10, "foo", start.getTime(), end.getTime())
+                Pql.range(10, "foo", start.getTime(), end.getTime()).toString()
         );
     }
 
@@ -111,7 +105,7 @@ public class PqlTest {
         attrsMap.put("happy", true);
         assertEquals(
                 "SetBitmapAttrs(id=5, frame=\"foo\", color=\"blue\", happy=true)",
-                Pql.setBitmapAttrs(5, "foo", attrsMap)
+                Pql.setBitmapAttrs(5, "foo", attrsMap).toString()
         );
     }
 
@@ -122,7 +116,7 @@ public class PqlTest {
         attrsMap.put("happy", new Object());
         assertEquals(
                 "SetBitmapAttrs(id=5, frame=\"foo\", color=\"blue\", happy=true)",
-                Pql.setBitmapAttrs(5, "foo", attrsMap)
+                Pql.setBitmapAttrs(5, "foo", attrsMap).toString()
         );
     }
 
@@ -133,7 +127,7 @@ public class PqlTest {
         attrsMap.put("happy", true);
         assertEquals(
                 "SetProfileAttrs(id=5, color=\"blue\", happy=true)",
-                Pql.setProfileAttrs(5, attrsMap)
+                Pql.setProfileAttrs(5, attrsMap).toString()
         );
     }
 
@@ -144,7 +138,13 @@ public class PqlTest {
         attrsMap.put("happy", new Object());
         assertEquals(
                 "SetProfileAttrs(id=5, color=\"blue\", happy=true)",
-                Pql.setProfileAttrs(5, attrsMap)
+                Pql.setProfileAttrs(5, attrsMap).toString()
         );
+    }
+
+    @Test
+    public void createPqlTest() {
+        // this test is required only to get 100% coverage
+        new Pql();
     }
 }

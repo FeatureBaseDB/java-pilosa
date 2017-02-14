@@ -3,8 +3,6 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.net.URISyntaxException;
-
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -16,7 +14,7 @@ public class URITest {
     }
 
     @Test
-    public void testFull() throws URISyntaxException {
+    public void testFull() {
         URI uri = new URI("http+protobuf://db1.pilosa.com:3333");
         compare(uri, "http+protobuf", "db1.pilosa.com", 3333);
     }
@@ -34,59 +32,59 @@ public class URITest {
     }
 
     @Test
-    public void testFullWithIPv4Host() throws URISyntaxException {
+    public void testFullWithIPv4Host() {
         URI uri = new URI("http+protobuf://192.168.1.26:3333");
         compare(uri, "http+protobuf", "192.168.1.26", 3333);
     }
 
     @Test
-    public void testHostOnly() throws URISyntaxException {
+    public void testHostOnly() {
         URI uri = new URI("db1.pilosa.com");
         compare(uri, "http", "db1.pilosa.com", 15000);
     }
 
     @Test
-    public void testPortOnly() throws URISyntaxException {
+    public void testPortOnly() {
         URI uri = new URI(":5888");
         compare(uri, "http", "localhost", 5888);
     }
 
     @Test
-    public void testHostPort() throws URISyntaxException {
+    public void testHostPort() {
         URI uri = new URI("db1.big-data.com:5888");
         compare(uri, "http", "db1.big-data.com", 5888);
     }
 
     @Test
-    public void testSchemeHost() throws URISyntaxException {
+    public void testSchemeHost() {
         URI uri = new URI("https://db1.big-data.com");
         compare(uri, "https", "db1.big-data.com", 15000);
     }
 
     @Test
-    public void testSchemePort() throws URISyntaxException {
+    public void testSchemePort() {
         URI uri = new URI("https://:5553");
         compare(uri, "https", "localhost", 5553);
     }
 
-    @Test(expected = URISyntaxException.class)
-    public void testInvalidAddress1() throws URISyntaxException {
-        URI uri = new URI("foo:bar");
+    @Test(expected = PilosaURIException.class)
+    public void testInvalidAddress1() {
+        new URI("foo:bar");
     }
 
-    @Test(expected = URISyntaxException.class)
-    public void testInvalidAddress2() throws URISyntaxException {
-        URI uri = new URI("http://foo:");
+    @Test(expected = PilosaURIException.class)
+    public void testInvalidAddress2() {
+        new URI("http://foo:");
     }
 
-    @Test(expected = URISyntaxException.class)
-    public void testInvalidAddress3() throws URISyntaxException {
-        URI uri = new URI("foo:");
+    @Test(expected = PilosaURIException.class)
+    public void testInvalidAddress3() {
+        new URI("foo:");
     }
 
-    @Test(expected = URISyntaxException.class)
-    public void testInvalidAddress4() throws URISyntaxException {
-        URI uri = new URI(":bar");
+    @Test(expected = PilosaURIException.class)
+    public void testInvalidAddress4() {
+        new URI(":bar");
     }
 
     @Test
@@ -96,7 +94,7 @@ public class URITest {
     }
 
     @Test
-    public void testEquals() throws URISyntaxException {
+    public void testEquals() {
         URI uri1 = new URI("https", "pilosa.com", 1337);
         URI uri2 = new URI("https://pilosa.com:1337");
         boolean e = uri1.equals(uri2);
@@ -117,7 +115,7 @@ public class URITest {
     }
 
     @Test
-    public void testHashCode() throws URISyntaxException {
+    public void testHashCode() {
         URI uri1 = new URI("https", "pilosa.com", 1337);
         URI uri2 = new URI("https://pilosa.com:1337");
         assertEquals(uri1.hashCode(), uri2.hashCode());

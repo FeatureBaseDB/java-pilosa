@@ -3,7 +3,6 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 @Category(UnitTest.class)
 public class ClusterTest {
     @Test
-    public void testClusterCreateWithAddress() throws URISyntaxException {
+    public void testClusterCreateWithAddress() {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
         Cluster c = new Cluster(new URI("http://localhost:3000"));
@@ -20,7 +19,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterAddAddress() throws URISyntaxException {
+    public void testClusterAddAddress() {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
         Cluster c = new Cluster();
@@ -29,7 +28,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterRemoveAddress() throws URISyntaxException {
+    public void testClusterRemoveAddress() {
         List<URI> target = new ArrayList<>();
         Cluster c = new Cluster(new URI("localhost:5000"));
         c.removeAddress(new URI("localhost:5000"));
@@ -37,7 +36,7 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterGetAddress() throws URISyntaxException {
+    public void testClusterGetAddress() {
         URI target1 = new URI("db1.pilosa.com");
         URI target2 = new URI("db2.pilosa.com");
 

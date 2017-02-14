@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -49,18 +48,18 @@ public class Client {
     /**
      * Creates a client with the given server address.
      * @param address address of the server
-     * @throws URISyntaxException if the given address is malformed
+     * @throws PilosaURIException if the given address is malformed
      */
-    public Client(String address) throws URISyntaxException {
+    public Client(String address) {
         this(new URI(address));
     }
 
     /**
      * Creates a client with the given server address.
      * @param address address of the server
-     * @throws URISyntaxException if the given address is malformed
+     * @throws PilosaURIException if the given address is malformed
      */
-    public Client(URI address) throws URISyntaxException {
+    public Client(URI address) {
         this(new Cluster(address));
     }
 

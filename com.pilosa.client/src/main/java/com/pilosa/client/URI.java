@@ -2,7 +2,6 @@ package com.pilosa.client;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,8 +41,8 @@ public final class URI {
     /**
      * Create a URI by specifying host and port.
      *
-     * @param host hostname or IP address
-     * @param port
+     * @param host is Pilosa server's hostname or IP address
+     * @param port is Pilosa server's port
      */
     public URI(String host, int port) {
         this("http", host, port);
@@ -53,8 +52,8 @@ public final class URI {
      * Create a URI by specifying each part.
      *
      * @param scheme protocol of the URI
-     * @param host   hostname or IP address
-     * @param port
+     * @param host   is Pilosa Server's hostname or IP address
+     * @param port is Pilosa Server's port
      */
     public URI(String scheme, String host, int port) {
         setScheme(scheme);
@@ -64,10 +63,10 @@ public final class URI {
 
     /**
      * Creates a URI by parsing from a string.
-     * @param address
-     * @throws URISyntaxException if the address is malformed
+     * @param address is Pilosa server's address
+     * @throws PilosaURIException if the address is malformed
      */
-    public URI(String address) throws URISyntaxException {
+    public URI(String address) {
         _parse(address);
     }
 
@@ -133,7 +132,7 @@ public final class URI {
         this.port = port;
     }
 
-    private void _parse(String s) throws URISyntaxException {
+    private void _parse(String s) {
         Matcher m = uriPattern.matcher(s);
         if (m.find()) {
             String scheme = m.group(2);
@@ -149,7 +148,7 @@ public final class URI {
                 setPort(Integer.valueOf(sPort));
             }
         } else {
-            throw new URISyntaxException(s, "Not a Pilosa URI");
+            throw new PilosaURIException("Not a Pilosa URI");
         }
     }
 }

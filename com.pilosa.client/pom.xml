@@ -55,7 +55,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                   <!-- conditionally skip unit tests -->
+                    <!-- conditionally skip unit tests -->
                     <skipTests>${skip.unit.tests}</skipTests>
                     <!-- exclude integration tests -->
                     <excludes>
@@ -94,6 +94,21 @@
                             <skipTests>${skip.integration.tests}</skipTests>
                             <groups>com.pilosa.client.IntegrationTest</groups>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- create a fat JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -68,10 +68,11 @@ public final class Pql {
      *
      * @param bitmap1 first Bitmap
      * @param bitmap2 second Bitmap
+     * @param bitmaps other Bitmaps
      * @return a PQL query
      */
-    public static PqlBitmapQuery union(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2) {
-        return new PqlBitmapQuery(String.format("Union(%s, %s)", bitmap1, bitmap2));
+    public static PqlBitmapQuery union(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Union", bitmap1, bitmap2, bitmaps);
     }
 
     /**
@@ -98,10 +99,11 @@ public final class Pql {
      *
      * @param bitmap1 first Bitmap
      * @param bitmap2 second Bitmap
+     * @param bitmaps other Bitmaps
      * @return a PQL query
      */
-    public static PqlBitmapQuery intersect(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2) {
-        return new PqlBitmapQuery(String.format("Intersect(%s, %s)", bitmap1, bitmap2));
+    public static PqlBitmapQuery intersect(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Intersect", bitmap1, bitmap2, bitmaps);
     }
 
     /**
@@ -128,10 +130,11 @@ public final class Pql {
      *
      * @param bitmap1 first Bitmap
      * @param bitmap2 second Bitmap
+     * @param bitmaps other Bitmaps
      * @return a PQL query
      */
-    public static PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2) {
-        return new PqlBitmapQuery(String.format("Difference(%s, %s)", bitmap1, bitmap2));
+    public static PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Difference", bitmap1, bitmap2, bitmaps);
     }
 
     /**
@@ -261,5 +264,19 @@ public final class Pql {
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }
+    }
+
+    private static PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
+        String qry = String.format("%s, %s", bitmap1, bitmap2);
+        if (bitmaps.length > 0) {
+            StringBuilder builder = new StringBuilder(bitmaps.length);
+            builder.append(qry);
+            for (PqlBitmapQuery bitmap : bitmaps) {
+                builder.append(", ");
+                builder.append(bitmap);
+            }
+            qry = builder.toString();
+        }
+        return new PqlBitmapQuery(String.format("%s(%s)", name, qry));
     }
 }

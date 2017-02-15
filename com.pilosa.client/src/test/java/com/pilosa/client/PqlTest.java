@@ -43,6 +43,18 @@ public class PqlTest {
     }
 
     @Test
+    public void unionShortcutTest() {
+        assertEquals(
+                "Union(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
+                Pql.union("foo", 2, 5).toString()
+        );
+        assertEquals(
+                "Union(Union(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\")), Bitmap(id=100, frame=\"foo\"))",
+                Pql.union("foo", 2, 5, 100).toString()
+        );
+    }
+
+    @Test
     public void intersectTest() {
         assertEquals(
                 "Intersect(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
@@ -51,10 +63,34 @@ public class PqlTest {
     }
 
     @Test
+    public void intersectShortcutTest() {
+        assertEquals(
+                "Intersect(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
+                Pql.intersect("foo", 2, 5).toString()
+        );
+        assertEquals(
+                "Intersect(Intersect(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\")), Bitmap(id=100, frame=\"foo\"))",
+                Pql.intersect("foo", 2, 5, 100).toString()
+        );
+    }
+
+    @Test
     public void differenceTest() {
         assertEquals(
                 "Difference(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
                 Pql.difference(Pql.bitmap(2, "foo"), Pql.bitmap(5, "foo")).toString()
+        );
+    }
+
+    @Test
+    public void differenceShortcutTest() {
+        assertEquals(
+                "Difference(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\"))",
+                Pql.difference("foo", 2, 5).toString()
+        );
+        assertEquals(
+                "Difference(Difference(Bitmap(id=2, frame=\"foo\"), Bitmap(id=5, frame=\"foo\")), Bitmap(id=100, frame=\"foo\"))",
+                Pql.difference("foo", 2, 5, 100).toString()
         );
     }
 

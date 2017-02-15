@@ -11,7 +11,7 @@ Java client for Pilosa high performance database.
 ## Requirements
 
 * Java 1.7 and higher
-* Maven 4 and higher
+* Maven 3 and higher
 
 ## Install
 
@@ -35,6 +35,16 @@ Add the following dependency in your `pom.xml`:
 mvn clean
 mvn install
 ```
+
+You can create an uber JAR to drop in your projects by:
+
+```
+$ git clone https://github.com/pilosa/java-pilosa.git
+$ cd java-pilosa/com.pilosa.client
+$ mvn package
+```
+
+The package is located at `target/pilosa-client-X.X.jar`
 
 ## Usage
 

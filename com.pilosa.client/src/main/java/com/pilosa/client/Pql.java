@@ -109,6 +109,17 @@ public final class Pql {
     /**
      * Creates a TopN query.
      *
+     * @param frame frame name
+     * @param n     number of items to return
+     * @return
+     */
+    public static PqlBitmapQuery topN(String frame, int n) {
+        return new PqlBitmapQuery(String.format("TopN(frame=\"%s\", n=%d)", frame, n));
+    }
+
+    /**
+     * Creates a TopN query.
+     *
      * @param bitmap the bitmap query
      * @param frame  frame name
      * @param n      number of items to return

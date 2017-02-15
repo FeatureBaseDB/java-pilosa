@@ -69,6 +69,10 @@ public class PqlTest {
     @Test
     public void topNTest() {
         assertEquals(
+                "TopN(frame=\"foo\", n=5)",
+                Pql.topN("foo", 5).toString()
+        );
+        assertEquals(
                 "TopN(Bitmap(id=2, frame=\"foo\"), frame=\"foo\", n=5)",
                 Pql.topN(Pql.bitmap(2, "foo"), "foo", 5).toString()
         );

@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  *
  * <pre>
  * // Create a client
- * Client client = new Client("localhost:15000");
+ * PilosaClient client = new PilosaClient("localhost:15000");
  * // Send a query. PilosaException is thrown if execution of the query fails.
  * PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
@@ -38,7 +38,7 @@ import java.nio.charset.StandardCharsets;
  * }
  * </pre>
  */
-public class Client {
+public class PilosaClient {
     private static final Logger logger = LogManager.getLogger();
     private ICluster cluster;
     private boolean isConnected = false;
@@ -50,7 +50,7 @@ public class Client {
      * @param address address of the server
      * @throws PilosaURIException if the given address is malformed
      */
-    public Client(String address) {
+    public PilosaClient(String address) {
         this(new URI(address));
     }
 
@@ -59,7 +59,7 @@ public class Client {
      * @param address address of the server
      * @throws PilosaURIException if the given address is malformed
      */
-    public Client(URI address) {
+    public PilosaClient(URI address) {
         this(new Cluster(address));
     }
 
@@ -67,7 +67,7 @@ public class Client {
      * Creates a client with the given cluster.
      * @param cluster contains the addreses of the servers in the cluster
      */
-    public Client(ICluster cluster) {
+    public PilosaClient(ICluster cluster) {
         this.cluster = cluster;
     }
 

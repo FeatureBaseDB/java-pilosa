@@ -41,6 +41,7 @@ You can create an uber JAR to drop in your projects by:
 ```
 $ git clone https://github.com/pilosa/java-pilosa.git
 $ cd java-pilosa/com.pilosa.client
+$ mvn clean
 $ mvn package
 ```
 

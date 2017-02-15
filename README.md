@@ -44,7 +44,7 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 
 ```java
 // Create a client
-Client client = new Client("localhost:15000");
+Client client = new PilosaClient("localhost:15000");
 
 // Send a query. PilosaException is thrown if execution of the query fails.
 PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");

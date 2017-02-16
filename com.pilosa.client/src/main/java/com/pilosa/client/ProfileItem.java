@@ -65,7 +65,7 @@ public class ProfileItem {
                 .isEquals();
     }
 
-    static ProfileItem fromMap(Map<String, Object> map) {
+    static ProfileItem fromMap(Map map) {
         Integer id = (Integer) map.get("id");
         if (id == null) {
             throw new PilosaException("Invalid profile, has no id key");

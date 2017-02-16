@@ -201,8 +201,9 @@ public final class PilosaResponse {
             ArrayList<ProfileItem> profiles = new ArrayList<>(profileObjs.size());
             Map<String, Object> m;
             for (Object obj : profileObjs) {
-                m = (Map<String, Object>) obj;
-                profiles.add(ProfileItem.fromMap(m));
+                if (obj instanceof Map) {
+                    profiles.add(ProfileItem.fromMap((Map) obj));
+                }
             }
             this.profiles = profiles;
         } else {

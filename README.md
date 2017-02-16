@@ -30,10 +30,8 @@ Add the following dependency in your `pom.xml`:
 </dependencies>
 ```
 
-
 ```
-mvn clean
-mvn install
+mvn clean install
 ```
 
 You can create an uber JAR to drop in your projects by:
@@ -41,8 +39,7 @@ You can create an uber JAR to drop in your projects by:
 ```
 $ git clone https://github.com/pilosa/java-pilosa.git
 $ cd java-pilosa/com.pilosa.client
-$ mvn clean
-$ mvn package
+$ mvn clean package
 ```
 
 The package is located at `target/pilosa-client-X.X.jar`

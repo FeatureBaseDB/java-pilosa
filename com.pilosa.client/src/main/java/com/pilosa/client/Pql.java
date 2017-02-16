@@ -84,27 +84,6 @@ public final class Pql {
     }
 
     /**
-     * Creates a Union query for the same frame with different bitmap IDs.
-     * <p>
-     * Equivalent to <code>Union(Union(Bitmap(id1, frame), Bitmap(id2, frame)), Bitmap(id3, frame)) ...</code>
-     *
-     * @param frame frame name
-     * @param id1   first bitmap ID
-     * @param id2   second bitmap ID
-     * @param ids   optional other bitmap IDs
-     * @return a PQL query
-     * @throws ValidationException if an invalid frame name is passed
-     */
-    public static PqlBitmapQuery union(String frame, int id1, int id2, int... ids) {
-        Validator.ensureValidFrameName(frame);
-        PqlBitmapQuery r = Pql.union(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
-        for (int id : ids) {
-            r = Pql.union(r, Pql.bitmap(id, frame));
-        }
-        return r;
-    }
-
-    /**
      * Creates an Intersect query.
      *
      * @param bitmap1 first Bitmap
@@ -117,27 +96,6 @@ public final class Pql {
     }
 
     /**
-     * Creates an Intersect query for the same frame with different bitmap IDs.
-     * <p>
-     * Equivalent to <code>Intersect(Intersect(Bitmap(id1, frame), Bitmap(id2, frame)), Bitmap(id3, frame)) ...</code>
-     *
-     * @param frame frame name
-     * @param id1   first bitmap ID
-     * @param id2   second bitmap ID
-     * @param ids   optional other bitmap IDs
-     * @return a PQL query
-     * @throws ValidationException if an invalid frame name is passed
-     */
-    public static PqlBitmapQuery intersect(String frame, int id1, int id2, int... ids) {
-        Validator.ensureValidFrameName(frame);
-        PqlBitmapQuery r = Pql.intersect(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
-        for (int id : ids) {
-            r = Pql.intersect(r, Pql.bitmap(id, frame));
-        }
-        return r;
-    }
-
-    /**
      * Creates a Difference query.
      *
      * @param bitmap1 first Bitmap
@@ -147,27 +105,6 @@ public final class Pql {
      */
     public static PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Difference", bitmap1, bitmap2, bitmaps);
-    }
-
-    /**
-     * Creates an Difference query for the same frame with different bitmap IDs.
-     * <p>
-     * Equivalent to <code>Difference(Difference(Bitmap(id1, frame), Bitmap(id2, frame)), Bitmap(id3, frame)) ...</code>
-     *
-     * @param frame frame name
-     * @param id1   first bitmap ID
-     * @param id2   second bitmap ID
-     * @param ids   optional other bitmap IDs
-     * @return a PQL query
-     * @throws ValidationException if an invalid frame name is passed
-     */
-    public static PqlBitmapQuery difference(String frame, int id1, int id2, int... ids) {
-        Validator.ensureValidFrameName(frame);
-        PqlBitmapQuery r = Pql.difference(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
-        for (int id : ids) {
-            r = Pql.difference(r, Pql.bitmap(id, frame));
-        }
-        return r;
     }
 
     /**

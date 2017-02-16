@@ -3,6 +3,7 @@ package com.pilosa.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DateFormat;
@@ -35,8 +36,10 @@ public final class Pql {
      * @param id    bitmap ID
      * @param frame frame name
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery bitmap(int id, String frame) {
+        Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("Bitmap(id=%d, frame=\"%s\")", id, frame));
     }
 
@@ -46,9 +49,11 @@ public final class Pql {
      * @param id        bitmap ID
      * @param frame     frame name
      * @param profileID profile ID
+     * @throws ValidationException if an invalid frame name is passed
      * @return a PQL query
      */
     public static PqlQuery setBit(int id, String frame, int profileID) {
+        Validator.ensureValidFrameName(frame);
         return new PqlQuery(String.format("SetBit(id=%d, frame=\"%s\", profileID=%d)", id, frame, profileID));
     }
 
@@ -59,8 +64,10 @@ public final class Pql {
      * @param frame     frame name
      * @param profileID profile ID
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlQuery clearBit(int id, String frame, int profileID) {
+        Validator.ensureValidFrameName(frame);
         return new PqlQuery(String.format("ClearBit(id=%d, frame=\"%s\", profileID=%d)", id, frame, profileID));
     }
 
@@ -86,8 +93,10 @@ public final class Pql {
      * @param id2   second bitmap ID
      * @param ids   optional other bitmap IDs
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery union(String frame, int id1, int id2, int... ids) {
+        Validator.ensureValidFrameName(frame);
         PqlBitmapQuery r = Pql.union(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
         for (int id : ids) {
             r = Pql.union(r, Pql.bitmap(id, frame));
@@ -117,8 +126,10 @@ public final class Pql {
      * @param id2   second bitmap ID
      * @param ids   optional other bitmap IDs
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery intersect(String frame, int id1, int id2, int... ids) {
+        Validator.ensureValidFrameName(frame);
         PqlBitmapQuery r = Pql.intersect(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
         for (int id : ids) {
             r = Pql.intersect(r, Pql.bitmap(id, frame));
@@ -148,8 +159,10 @@ public final class Pql {
      * @param id2   second bitmap ID
      * @param ids   optional other bitmap IDs
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery difference(String frame, int id1, int id2, int... ids) {
+        Validator.ensureValidFrameName(frame);
         PqlBitmapQuery r = Pql.difference(Pql.bitmap(id1, frame), Pql.bitmap(id2, frame));
         for (int id : ids) {
             r = Pql.difference(r, Pql.bitmap(id, frame));
@@ -172,9 +185,11 @@ public final class Pql {
      *
      * @param frame frame name
      * @param n     number of items to return
-     * @return
+     * @return a PQL Bitmap query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery topN(String frame, int n) {
+        Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("TopN(frame=\"%s\", n=%d)", frame, n));
     }
 
@@ -185,8 +200,10 @@ public final class Pql {
      * @param frame  frame name
      * @param n      number of items to return
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, int n) {
+        Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("TopN(%s, frame=\"%s\", n=%d)", bitmap, frame, n));
     }
 
@@ -199,8 +216,11 @@ public final class Pql {
      * @param field  field name
      * @param values filter values to be matched against the field
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, int n, String field, Object... values) {
+        Validator.ensureValidFrameName(frame);
+        // TODO: validate field
         try {
             String valuesString = mapper.writeValueAsString(values);
             return new PqlBitmapQuery(String.format("TopN(%s, frame=\"%s\", n=%d, field=\"%s\", %s)",
@@ -218,8 +238,10 @@ public final class Pql {
      * @param start start timestamp
      * @param end   end timestamp
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlQuery range(int id, String frame, Date start, Date end) {
+        Validator.ensureValidFrameName(frame);
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");
         return new PqlQuery(String.format("Range(id=%d, frame=\"%s\", start=\"%sT%s\", end=\"%sT%s\")",
@@ -233,8 +255,10 @@ public final class Pql {
      * @param frame      frame name
      * @param attributes bitmap attributes
      * @return a PQL query
+     * @throws ValidationException if an invalid frame name is passed
      */
     public static PqlQuery setBitmapAttrs(int id, String frame, Map<String, Object> attributes) {
+        Validator.ensureValidFrameName(frame);
         String attributesString = createAttributesString(attributes);
         return new PqlQuery(String.format("SetBitmapAttrs(id=%d, frame=\"%s\", %s)",
                 id, frame, attributesString));
@@ -256,6 +280,7 @@ public final class Pql {
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static String createAttributesString(Map<String, Object> attributes) {
+        // TODO: validate attributes
         try {
             List<String> kvs = new ArrayList<>(attributes.size());
             for (Map.Entry<String, Object> item : attributes.entrySet()) {

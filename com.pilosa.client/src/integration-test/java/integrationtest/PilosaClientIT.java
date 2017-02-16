@@ -52,13 +52,13 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() {
         PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222");
-        client.query("test2DB", "SetBit(id=15, frame=\"test\", profileID=10)");
+        client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
     }
 
     @Test(expected = PilosaException.class)
     public void parseErrorTest() {
         PilosaClient client = getClient();
-        client.query("testDB", "SetBit(id=5, frame=\"test\", profileID:=10)");
+        client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
     }
 
     @Test

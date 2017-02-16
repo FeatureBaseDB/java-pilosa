@@ -113,9 +113,38 @@ public class PilosaClient {
         return query(databaseName, stringQueries);
     }
 
+    public void deleteDatabase(String name) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = this.currentAddress.toString() + "/db";
+        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
+        String body = String.format("{\"db\":\"%s\"}", name);
+        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        try {
+            this.client.execute(httpDelete);
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException("Error while deleting database", ex);
+        }
+    }
+
     private void connect() {
         this.currentAddress = this.cluster.getAddress();
         logger.info("Connected to {}", this.currentAddress);
         this.isConnected = true;
+    }
+}
+
+class HttpDeleteWithBody extends HttpPost {
+    public HttpDeleteWithBody(String url) {
+        super(url);
+    }
+
+    @Override
+    public String getMethod() {
+        return "DELETE";
     }
 }

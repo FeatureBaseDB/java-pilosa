@@ -6,9 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 // Note that this integration test creates many random databases.
 // It's recommended to run an ephemeral Pilosa server.
@@ -27,13 +31,14 @@ public class ClientIT {
 
     @After
     public void tearDown() {
-
+        PilosaClient client = getClient();
+        client.deleteDatabase(this.db);
     }
 
     @Test
     public void queryTest() {
         PilosaClient client = getClient();
-        PilosaResponse response = client.query(db, "SetBit(id=5, frame=\"test\", profileID=10)");
+        PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
         assertEquals(true, response.getResult());
     }
 
@@ -71,6 +76,7 @@ public class ClientIT {
         bits.add(10);
         response = client.query(db, Pql.bitmap(5, "test"));
         bitmapResult = (BitmapResult)response.getResult();
+        assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
 
@@ -81,8 +87,15 @@ public class ClientIT {
         bits = new ArrayList<>(0);
         response = client.query(db, Pql.bitmap(5, "test"));
         bitmapResult = (BitmapResult)response.getResult();
+        assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failedDeleteDatabaseTest() {
+        PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222");
+        client.deleteDatabase("non-existent");
     }
 
     private PilosaClient getClient() {

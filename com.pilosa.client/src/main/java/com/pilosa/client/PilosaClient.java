@@ -78,39 +78,23 @@ public class PilosaClient {
      * @return Pilosa response
      */
     public PilosaResponse query(String databaseName, String... queries) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String queryString = StringUtils.join(queries, " ");
-        logger.debug("({}) Querying: {}", databaseName, queryString);
-        String uri = this.currentAddress.toString() + "/query?db=" + databaseName;
-        logger.debug("Posting to {}", uri);
-
-        HttpPost httpPost = new HttpPost(uri);
-        httpPost.setEntity(new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8)));
-        try {
-            HttpResponse response = this.client.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            PilosaResponse pilosaResponse = new PilosaResponse(entity.getContent());
-            if (!pilosaResponse.isSuccess()) {
-                throw new PilosaException(pilosaResponse.getErrorMessage());
-            }
-            return pilosaResponse;
-        }
-        catch (IOException ex) {
-            logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
-            throw new PilosaException("Error while posting query", ex);
-        }
+        String path = String.format("/query?db=%s", databaseName);
+        return queryPath(path, databaseName, queries);
     }
 
     public PilosaResponse query(String databaseName, PqlQuery... queries) {
-        String[] stringQueries = new String[queries.length];
-        for (int i = 0; i < queries.length; i++) {
-            stringQueries[i] = queries[i].toString();
-        }
-        return query(databaseName, stringQueries);
+        String path = String.format("/query?db=%s", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    public PilosaResponse queryWithProfiles(String databaseName, String... queries) {
+        String path = String.format("/query?db=%s&profiles=true", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    public PilosaResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
+        String path = String.format("/query?db=%s&profiles=true", databaseName);
+        return queryPath(path, databaseName, queries);
     }
 
     public void deleteDatabase(String name) {
@@ -136,6 +120,43 @@ public class PilosaClient {
         logger.info("Connected to {}", this.currentAddress);
         this.isConnected = true;
     }
+
+    private PilosaResponse queryPath(String path, String databaseName, String... queries) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = this.currentAddress + path;
+        String queryString = StringUtils.join(queries, " ");
+        logger.debug("({}) Querying: {}", databaseName, queryString);
+        logger.debug("Posting to {}", uri);
+
+        HttpPost httpPost = new HttpPost(uri);
+        httpPost.setEntity(new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8)));
+        try {
+            HttpResponse response = this.client.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            PilosaResponse pilosaResponse = new PilosaResponse(entity.getContent());
+            if (!pilosaResponse.isSuccess()) {
+                throw new PilosaException(pilosaResponse.getErrorMessage());
+            }
+            return pilosaResponse;
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException("Error while posting query", ex);
+        }
+    }
+
+    private PilosaResponse queryPath(String path, String databaseName, PqlQuery... queries) {
+        String[] stringQueries = new String[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            stringQueries[i] = queries[i].toString();
+        }
+        return queryPath(path, databaseName, stringQueries);
+    }
+
+
 }
 
 class HttpDeleteWithBody extends HttpPost {

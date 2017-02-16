@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 // Note that this integration test creates many random databases.
 // It's recommended to run an ephemeral Pilosa server.
@@ -42,6 +41,13 @@ public class PilosaClientIT {
         assertEquals(true, response.getResult());
     }
 
+    @Test
+    public void queryWithProfilesTest() {
+        PilosaClient client = getClient();
+        PilosaResponse response = client.queryWithProfiles(db, "Bitmap(id=555, frame=\"query-test\")");
+        assertNotNull(response.getResult());
+    }
+
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() {
         PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222");
@@ -59,6 +65,7 @@ public class PilosaClientIT {
         PilosaClient client = getClient();
         PilosaResponse response;
         Map<String, Object> attrs;
+        Map<String, Object> profileAttrs;
         List<Integer> bits;
         BitmapResult bitmapResult;
 
@@ -79,6 +86,22 @@ public class PilosaClientIT {
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
+        assertNull(response.getProfile());
+
+        profileAttrs = new HashMap<>(1);
+        profileAttrs.put("name", "bombo");
+        response = client.query(db, Pql.setProfileAttrs(10, profileAttrs));
+        assertNull(response.getResult());
+
+        response = client.queryWithProfiles(db, Pql.bitmap(5, "test"));
+        bitmapResult = (BitmapResult) response.getResult();
+        assertNotNull(bitmapResult);
+        assertEquals(attrs, bitmapResult.getAttributes());
+        assertEquals(bits, bitmapResult.getBits());
+        ProfileItem profile = response.getProfile();
+        assertNotNull(profile);
+        assertEquals(10, profile.getID());
+        assertEquals(profileAttrs, profile.getAttributes());
 
         response = client.query(db, Pql.clearBit(5, "test", 10));
         assertEquals(true, response.getResult());

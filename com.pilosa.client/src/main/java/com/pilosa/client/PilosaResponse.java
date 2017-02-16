@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public final class PilosaResponse {
     private List<Object> results;
+    private List<ProfileItem> profiles;
     private String errorMessage;
     private boolean isError = false;
 
@@ -94,6 +95,17 @@ public final class PilosaResponse {
         return this.results.get(0);
     }
 
+    public List<ProfileItem> getProfiles() {
+        return this.profiles;
+    }
+
+    public ProfileItem getProfile() {
+        if (this.profiles == null || this.profiles.size() == 0) {
+            return null;
+        }
+        return this.profiles.get(0);
+    }
+
     /**
      * Returns the error message in the response, if any.
      * @return the error message or null if there is no error message
@@ -125,6 +137,7 @@ public final class PilosaResponse {
             this.errorMessage = errorMessage;
             this.isError = true;
             this.results = new ArrayList<>(0);
+            this.profiles = new ArrayList<>(0);
             return;
         }
         ArrayList results = (ArrayList) resp.get("results");
@@ -167,6 +180,19 @@ public final class PilosaResponse {
             } else {
                 throw new PilosaException("Unknown result item type");
             }
+        }
+
+        ArrayList profileObjs = (ArrayList) resp.get("profiles");
+        if (profileObjs != null) {
+            ArrayList<ProfileItem> profiles = new ArrayList<>(profileObjs.size());
+            Map<String, Object> m;
+            for (Object obj : profileObjs) {
+                m = (Map<String, Object>) obj;
+                profiles.add(ProfileItem.fromMap(m));
+            }
+            this.profiles = profiles;
+        } else {
+            this.profiles = new ArrayList<>(0);
         }
     }
 }

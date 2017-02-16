@@ -26,13 +26,13 @@ import java.nio.charset.StandardCharsets;
  * // Create a client
  * PilosaClient client = new PilosaClient("localhost:15000");
  * // Send a query. PilosaException is thrown if execution of the query fails.
- * PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");
+ * PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
  * Object result = response.getResult();
  * // Deai with the result
  *
  * // You can send more than one query with a single query call
- * response = client.query("exampleDB",
+ * response = client.query("example_db",
  *                         "Bitmap(id=5, frame=\"sample\")",
  *                         "TopN(frame=\"sample\", n=5)");
  * // Deal with results

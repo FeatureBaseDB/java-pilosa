@@ -19,7 +19,7 @@ import java.util.Map;
  * Sample usage:
  * <pre>
  * Client client = // ... create the client
- * PilosaResponse = client.query("exampleDB",
+ * PilosaResponse = client.query("example_db",
  *                               Pql.union(Pql.bitmap(10, "foo"),
  *                                         Pql.bitmap(20, "foo")));
  * // process the response

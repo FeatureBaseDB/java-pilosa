@@ -95,10 +95,24 @@ public final class PilosaResponse {
         return this.results.get(0);
     }
 
+    /**
+     * Returns the list of profiles.
+     * <p>
+     * The response contains the profiles if <code>PilosaClient.queryWithProfiles()</code> is used instead of <code>PilosaClient.query()</code>.
+     *
+     * @return list of profiles or <code>null</code> if the response did not have its profiles field set.
+     */
     public List<ProfileItem> getProfiles() {
         return this.profiles;
     }
 
+    /**
+     * Returns the first profile in the response.
+     * <p>
+     * The response contains the profiles if <code>PilosaClient.queryWithProfiles()</code> is used instead of <code>PilosaClient.query()</code>.
+     *
+     * @return the first profile or <code>null</code> if the response did not have its profiles field set.
+     */
     public ProfileItem getProfile() {
         if (this.profiles == null || this.profiles.size() == 0) {
             return null;

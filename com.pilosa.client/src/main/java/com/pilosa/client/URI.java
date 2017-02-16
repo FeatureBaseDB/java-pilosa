@@ -30,7 +30,7 @@ public final class URI {
     private String host = "localhost";
     private int port = 15000;
     private boolean isIPv6 = false;
-    private Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
+    private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
 
     /**
      * Create the default URI. <code>http://localhost:15000</code>

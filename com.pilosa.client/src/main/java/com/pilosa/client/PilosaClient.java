@@ -1,5 +1,7 @@
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.PilosaURIException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -1,6 +1,7 @@
 package integrationtest;
 
 import com.pilosa.client.*;
+import com.pilosa.client.exceptions.PilosaException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

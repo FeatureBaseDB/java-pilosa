@@ -1,5 +1,6 @@
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaURIException;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.regex.Matcher;

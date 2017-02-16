@@ -2,6 +2,7 @@ package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pilosa.client.exceptions.PilosaException;
 
 import java.io.IOException;
 import java.io.InputStream;

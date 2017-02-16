@@ -1,5 +1,6 @@
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -8,59 +9,76 @@ import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class ValidatorTest {
+    private final static String[] validDatabaseNames = new String[]{
+            "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    };
+    private final static String[] invalidDatabaseNames = new String[]{
+            "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+    };
+    private final static String[] validFrameNames = new String[]{
+            "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    };
+    private final static String[] invalidFrameNames = new String[]{
+            "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+    };
+
     @Test
     public void validDatabaseNameTest() {
-        assertValidDatabaseNames(new String[]{
-                "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        });
-    }
-
-    @Test
-    public void validFrameNameTest() {
-        assertValidFrameNames(new String[]{
-                "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        });
-    }
-
-    @Test
-    public void invalidDatabaseNameTest() {
-        assertInvalidDatabaseNames(new String[]{
-                "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
-        });
-    }
-
-    @Test
-    public void invalidFrameNameTest() {
-        assertInvalidFrameNames(new String[]{
-                "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
-        });
-    }
-
-    private void assertValidDatabaseNames(String []names) {
-        for (String name : names) {
+        for (String name : validDatabaseNames) {
             assertTrue(Validator.validateDatabaseName(name));
         }
     }
 
-    private void assertInvalidDatabaseNames(String []names) {
-        for (String name : names) {
+    @Test
+    public void invalidDatabaseNameTest() {
+        for (String name : invalidDatabaseNames) {
             assertFalse(Validator.validateDatabaseName(name));
         }
     }
 
-    private void assertValidFrameNames(String []names) {
-        for (String name : names) {
+    @Test
+    public void ensureValidDatabaseNameTest() {
+        for (String name : validDatabaseNames) {
+            Validator.ensureValidDatabaseName(name);
+        }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void ensureValidDatabaseNameFailsTest() {
+        for (String name : invalidDatabaseNames) {
+            Validator.ensureValidDatabaseName(name);
+        }
+    }
+
+    @Test
+    public void validFrameNameTest() {
+        for (String name : validFrameNames) {
             assertTrue(Validator.validateFrameName(name));
         }
     }
 
-    private void assertInvalidFrameNames(String []names) {
-        for (String name : names) {
+    @Test
+    public void invalidFrameNameTest() {
+        for (String name : invalidFrameNames) {
             assertFalse(Validator.validateFrameName(name));
+        }
+    }
+
+    @Test
+    public void ensureValidFrameNameTest() {
+        for (String name : validFrameNames) {
+            Validator.ensureValidFrameName(name);
+        }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void ensureValidFrameNameFailsTest() {
+        for (String name : invalidFrameNames) {
+            Validator.ensureValidFrameName(name);
         }
     }
 

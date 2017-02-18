@@ -36,6 +36,12 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void createClientTest() {
+        new PilosaClient(new URI(":15000"));
+        new PilosaClient(new Cluster());
+    }
+
+    @Test
     public void queryTest() {
         PilosaClient client = getClient();
         PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
@@ -46,6 +52,8 @@ public class PilosaClientIT {
     public void queryWithProfilesTest() {
         PilosaClient client = getClient();
         PilosaResponse response = client.queryWithProfiles(db, "Bitmap(id=555, frame=\"query-test\")");
+        assertNotNull(response.getResult());
+        response = client.queryWithProfiles(db, "Bitmap(id=1, frame=\"another-frame\")");
         assertNotNull(response.getResult());
     }
 
@@ -69,6 +77,7 @@ public class PilosaClientIT {
         Map<String, Object> profileAttrs;
         List<Integer> bits;
         BitmapResult bitmapResult;
+        List<PqlQuery> queryList;
 
         response = client.query(db, Pql.clearBit(5, "test", 10));
         assertEquals(false, response.getResult());
@@ -89,6 +98,16 @@ public class PilosaClientIT {
         assertEquals(bits, bitmapResult.getBits());
         assertNull(response.getProfile());
 
+        // the same with using List<PqlQuery> instead of []PqlQuery
+        queryList = new ArrayList<>(1);
+        queryList.add(Pql.bitmap(5, "test"));
+        response = client.query(db, queryList);
+        bitmapResult = (BitmapResult) response.getResult();
+        assertNotNull(bitmapResult);
+        assertEquals(attrs, bitmapResult.getAttributes());
+        assertEquals(bits, bitmapResult.getBits());
+        assertNull(response.getProfile());
+
         profileAttrs = new HashMap<>(1);
         profileAttrs.put("name", "bombo");
         response = client.query(db, Pql.setProfileAttrs(10, profileAttrs));
@@ -100,6 +119,19 @@ public class PilosaClientIT {
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
         ProfileItem profile = response.getProfile();
+        assertNotNull(profile);
+        assertEquals(10, profile.getID());
+        assertEquals(profileAttrs, profile.getAttributes());
+
+        // the same with using List<PqlQuery> instead of []PqlQuery
+        queryList = new ArrayList<>(1);
+        queryList.add(Pql.bitmap(5, "test"));
+        response = client.queryWithProfiles(db, queryList);
+        bitmapResult = (BitmapResult) response.getResult();
+        assertNotNull(bitmapResult);
+        assertEquals(attrs, bitmapResult.getAttributes());
+        assertEquals(bits, bitmapResult.getBits());
+        profile = response.getProfile();
         assertNotNull(profile);
         assertEquals(10, profile.getID());
         assertEquals(profileAttrs, profile.getAttributes());

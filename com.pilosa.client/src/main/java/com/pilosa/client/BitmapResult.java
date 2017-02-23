@@ -1,5 +1,6 @@
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ public class BitmapResult {
             return true;
         }
         BitmapResult rhs = (BitmapResult) obj;
-        return this.attributes.equals(rhs.attributes) && this.bits.equals(rhs.bits);
+        return new EqualsBuilder()
+                .append(this.attributes, rhs.attributes)
+                .append(this.bits, rhs.bits)
+                .isEquals();
     }
 }

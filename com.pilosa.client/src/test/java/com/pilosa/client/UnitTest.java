@@ -1,4 +1,4 @@
 package com.pilosa.client;
 
-interface UnitTest {
+public interface UnitTest {
 }

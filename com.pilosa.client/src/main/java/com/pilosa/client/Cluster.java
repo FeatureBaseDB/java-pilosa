@@ -1,5 +1,7 @@
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
+
 import java.util.ArrayList;
 import java.util.List;
 

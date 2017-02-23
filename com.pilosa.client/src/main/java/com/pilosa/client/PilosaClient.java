@@ -1,6 +1,8 @@
 package com.pilosa.client;
 
-import org.apache.commons.lang3.StringUtils;
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.PilosaURIException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -12,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Pilosa HTTP client.
@@ -23,13 +26,13 @@ import java.nio.charset.StandardCharsets;
  * // Create a client
  * PilosaClient client = new PilosaClient("localhost:15000");
  * // Send a query. PilosaException is thrown if execution of the query fails.
- * PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");
+ * PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
  * Object result = response.getResult();
  * // Deai with the result
  *
  * // You can send more than one query with a single query call
- * response = client.query("exampleDB",
+ * response = client.query("example_db",
  *                         "Bitmap(id=5, frame=\"sample\")",
  *                         "TopN(frame=\"sample\", n=5)");
  * // Deal with results
@@ -72,18 +75,118 @@ public class PilosaClient {
     }
 
     /**
-     * Queries the server with the given database name and query string.
+     * Queries the server with the given database name and a query.
      * @param databaseName the database to use
-     * @param queries a single query or multiple queries
+     * @param query a Pql query
      * @return Pilosa response
+     * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, String... queries) {
+    public PilosaResponse query(String databaseName, String query) {
+        String path = String.format("/query?db=%s", databaseName);
+        return queryPath(path, databaseName, query);
+    }
+
+    /**
+     * Queries the server with the given database name and queries.
+     *
+     * @param databaseName the database to use
+     * @param queries      a single or multiple PqlQuery queries
+     * @return Pilosa response
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public PilosaResponse query(String databaseName, PqlQuery... queries) {
+        String path = String.format("/query?db=%s", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    /**
+     * Queries the server with the given database name and queries.
+     *
+     * @param databaseName the database to use
+     * @param queries      a single or multiple PqlQuery queries
+     * @return Pilosa response
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public PilosaResponse query(String databaseName, List<PqlQuery> queries) {
+        String path = String.format("/query?db=%s", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    /**
+     * Queries the server with the given database name and query strings.
+     *
+     * @param databaseName the database to use
+     * @param query a Pql query
+     * @return Pilosa response with profiles
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public PilosaResponse queryWithProfiles(String databaseName, String query) {
+        String path = String.format("/query?db=%s&profiles=true", databaseName);
+        return queryPath(path, databaseName, query);
+    }
+
+    /**
+     * Queries the server with the given database name and queries.
+     * @param databaseName the database to use
+     * @param queries a single or multiple PqlQuery queries
+     * @return Pilosa response with profiles
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public PilosaResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
+        String path = String.format("/query?db=%s&profiles=true", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    /**
+     * Queries the server with the given database name and queries.
+     *
+     * @param databaseName the database to use
+     * @param queries      a single or multiple PqlQuery queries
+     * @return Pilosa response with profiles
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public PilosaResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
+        String path = String.format("/query?db=%s&profiles=true", databaseName);
+        return queryPath(path, databaseName, queries);
+    }
+
+    /**
+     * Deletes a databse
+     * @param name the database to delete
+     * @throws ValidationException if an invalid database name is passed
+     */
+    public void deleteDatabase(String name) {
+        Validator.ensureValidDatabaseName(name);
         if (!this.isConnected) {
             connect();
         }
-        String queryString = StringUtils.join(queries, " ");
+        String uri = this.currentAddress.toString() + "/db";
+        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
+        String body = String.format("{\"db\":\"%s\"}", name);
+        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        try {
+            this.client.execute(httpDelete);
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException("Error while deleting database", ex);
+        }
+    }
+
+    private void connect() {
+        this.currentAddress = this.cluster.getAddress();
+        logger.info("Connected to {}", this.currentAddress);
+        this.isConnected = true;
+    }
+
+    private PilosaResponse queryPath(String path, String databaseName, String queryString) {
+        Validator.ensureValidDatabaseName(databaseName);
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = this.currentAddress + path;
         logger.debug("({}) Querying: {}", databaseName, queryString);
-        String uri = this.currentAddress.toString() + "/query?db=" + databaseName;
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost = new HttpPost(uri);
@@ -96,8 +199,7 @@ public class PilosaClient {
                 throw new PilosaException(pilosaResponse.getErrorMessage());
             }
             return pilosaResponse;
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             logger.error(ex);
             this.cluster.removeAddress(this.currentAddress);
             this.isConnected = false;
@@ -105,9 +207,30 @@ public class PilosaClient {
         }
     }
 
-    private void connect() {
-        this.currentAddress = this.cluster.getAddress();
-        logger.info("Connected to {}", this.currentAddress);
-        this.isConnected = true;
+    private PilosaResponse queryPath(String path, String databaseName, PqlQuery... queries) {
+        StringBuilder builder = new StringBuilder(queries.length);
+        for (PqlQuery query : queries) {
+            builder.append(query);
+        }
+        return queryPath(path, databaseName, builder.toString());
+    }
+
+    private PilosaResponse queryPath(String path, String databaseName, List<PqlQuery> queries) {
+        StringBuilder builder = new StringBuilder(queries.size());
+        for (PqlQuery query : queries) {
+            builder.append(query);
+        }
+        return queryPath(path, databaseName, builder.toString());
+    }
+}
+
+class HttpDeleteWithBody extends HttpPost {
+    HttpDeleteWithBody(String url) {
+        super(url);
+    }
+
+    @Override
+    public String getMethod() {
+        return "DELETE";
     }
 }

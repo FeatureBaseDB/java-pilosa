@@ -1,4 +1,4 @@
-package com.pilosa.client;
+package com.pilosa.client.exceptions;
 
 public class PilosaException extends RuntimeException {
     public PilosaException() {

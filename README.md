@@ -1,6 +1,6 @@
 # Java Client for Pilosa
 
-<img src="https://github.com/yuce/java-pilosa/blob/readme/logo.png" style="float: right" align="right" height="240">
+<img src="https://github.com/yuce/java-pilosa/blob/master/logo.png" style="float: right" align="right" height="240">
 
 Java client for Pilosa high performance database.
 
@@ -30,10 +30,8 @@ Add the following dependency in your `pom.xml`:
 </dependencies>
 ```
 
-
 ```
-mvn clean
-mvn install
+mvn clean install
 ```
 
 You can create an uber JAR to drop in your projects by:
@@ -41,8 +39,7 @@ You can create an uber JAR to drop in your projects by:
 ```
 $ git clone https://github.com/pilosa/java-pilosa.git
 $ cd java-pilosa/com.pilosa.client
-$ mvn clean
-$ mvn package
+$ mvn clean package
 ```
 
 The package is located at `target/pilosa-client-X.X.jar`
@@ -58,18 +55,26 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 Client client = new PilosaClient("localhost:15000");
 
 // Send a query. PilosaException is thrown if execution of the query fails.
-PilosaResponse response = client.query("exampleDB", "SetBit(id=5, frame=\"sample\", profileID=42)");
+PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
 // Get the result
 Object result = response.getResult();
 // Deai with the result
 
 // You can send more than one query with a single query call
-response = client.query("exampleDB",
+response = client.query("example_db",
                         "Bitmap(id=5, frame=\"sample\")",
                         "TopN(frame=\"sample\", n=5)");
 for (Object result : response.getResults()) {
     // ...
 }
+```
+
+There is a simple ORM which can be used as:
+```java
+response = client.query("example_db",
+                        Pql.bitmap(5, "sample"),
+                        Pql.topN("sample", 5);
+
 ```
 
 ## Contribution

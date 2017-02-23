@@ -1,5 +1,6 @@
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,6 +54,31 @@ public class PilosaResponseTest {
     }
 
     @Test
+    public void testBitmapResponseWithProfiles() {
+        Map<String, Object> targetAttrs = new HashMap<>(3);
+        targetAttrs.put("foo", "bar");
+        targetAttrs.put("zoo", 2);
+        targetAttrs.put("zof", 2.37);
+        targetAttrs.put("q", true);
+        targetAttrs.put("nn", null);
+        Map<String, Object> obj = new HashMap<>(1);
+        obj.put("a", 2);
+        targetAttrs.put("obj", obj);
+        List<Integer> targetBits = new ArrayList<>(1);
+        targetBits.add(5);
+        BitmapResult target = new BitmapResult(targetAttrs, targetBits);
+        Map<String, Object> piAttrs = new HashMap<>(1);
+        piAttrs.put("age", 67);
+        ProfileItem pi = new ProfileItem(44, piAttrs);
+        String s = "{\"results\":[{\"attrs\":{\"foo\":\"bar\", \"zoo\":2, \"zof\":2.37, \"q\":true, \"nn\":null, \"obj\":{\"a\":2}}, \"bits\":[5]}],\"profiles\":[{\"id\":44,\"attrs\":{\"age\":67}}]}";
+        compareResponse(
+                s,
+                new Object[]{target},
+                new ProfileItem[]{pi}
+        );
+    }
+
+    @Test
     public void testCountResponse() {
         List<CountResultItem> target = new ArrayList<>(1);
         target.add(new CountResultItem(5, 10));
@@ -60,6 +86,11 @@ public class PilosaResponseTest {
                 "{\"results\":[[{\"key\":5, \"count\":10}]]}",
                 new Object[]{target}
         );
+    }
+
+    @Test
+    public void testProfilesResponse() {
+        PilosaResponse response = createResponse("{\"results\":[{\"attrs\":{\"height\":\"zoo\"},\"bits\":[10]}],\"profiles\":[{\"id\":10,\"attrs\":{\"label\":\"zoo\"}}]}");
     }
 
     @Test
@@ -128,10 +159,17 @@ public class PilosaResponseTest {
     }
 
     private void compareResponse(String s, Object[] target) {
+        compareResponse(s, target, null);
+    }
+
+    private void compareResponse(String s, Object[] target, ProfileItem[] profiles) {
         PilosaResponse response = createResponse(s);
         assertTrue(response.isSuccess());
         assertNull(response.getErrorMessage());
         List<Object> results = response.getResults();
         assertArrayEquals(target, results.toArray());
+        if (profiles != null) {
+            assertArrayEquals(profiles, response.getProfiles().toArray());
+        }
     }
 }

@@ -1,5 +1,6 @@
-package com.pilosa.client;
+package com.pilosa.client.exceptions;
 
+import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

@@ -1,3 +1,5 @@
 *.class
 com.pilosa.client.iml
 .idea
+dependency-reduced-pom.xml
+target/

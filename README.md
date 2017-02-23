@@ -79,4 +79,14 @@ response = client.query("example_db",
 
 ## Contribution
 
+### Generating protobuf classes
+
+Protobuf compiler is required to generate protobuf classes:
+
+```
+$ cd com.pilosa.client/src/internal
+$ protoc --java_out=../main/java/ internal.proto
+
+```
+
 ## License

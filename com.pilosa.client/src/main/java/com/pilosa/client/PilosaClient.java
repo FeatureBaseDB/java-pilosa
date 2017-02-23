@@ -3,6 +3,7 @@ package com.pilosa.client;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
+import com.pilosa.client.internal.ClientProtos;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,6 +43,8 @@ import java.util.List;
  * </pre>
  */
 public class PilosaClient {
+    private static final String HTTP = "http";
+    private static final String HTTP_PROTOBUF = "http+pb";
     private static final Logger logger = LogManager.getLogger();
     private ICluster cluster;
     private boolean isConnected = false;
@@ -176,6 +179,10 @@ public class PilosaClient {
 
     private void connect() {
         this.currentAddress = this.cluster.getAddress();
+        String scheme = this.currentAddress.getScheme();
+        if (!scheme.equals(HTTP) || !scheme.equals(HTTP_PROTOBUF)) {
+            throw new PilosaException("Unknown scheme: " + scheme);
+        }
         logger.info("Connected to {}", this.currentAddress);
         this.isConnected = true;
     }
@@ -186,11 +193,21 @@ public class PilosaClient {
             connect();
         }
         String uri = this.currentAddress + path;
-        logger.debug("({}) Querying: {}", databaseName, queryString);
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost = new HttpPost(uri);
-        httpPost.setEntity(new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8)));
+        ByteArrayEntity body;
+        if (this.currentAddress.getScheme().equals(HTTP_PROTOBUF)) {
+            httpPost.setHeader("Content-Type", "application/x-protobuf");
+            ClientProtos.QueryRequest qr = ClientProtos.QueryRequest.newBuilder()
+                    .setDB(databaseName)
+                    .setQuery(queryString)
+                    .build();
+            body = new ByteArrayEntity(qr.toByteArray());
+        } else {
+            body = new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8));
+        }
+        httpPost.setEntity(body);
         try {
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();

@@ -64,6 +64,12 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
+    public void unknownSchemeTest() {
+        PilosaClient client = new PilosaClient("notknown://:15555");
+        client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
+    }
+
+    @Test(expected = PilosaException.class)
     public void parseErrorTest() {
         PilosaClient client = getClient();
         client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");

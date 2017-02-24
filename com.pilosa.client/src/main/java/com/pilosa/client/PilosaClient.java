@@ -6,15 +6,19 @@ import com.pilosa.client.exceptions.ValidationException;
 import com.pilosa.client.internal.ClientProtos;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,8 +89,9 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse query(String databaseName, String query) {
-        String path = String.format("/query?db=%s", databaseName);
-        return queryPath(path, databaseName, query);
+        QueryRequest request = QueryRequest.withDatabase(databaseName);
+        request.setQuery(query);
+        return queryPath(request);
     }
 
     /**
@@ -98,8 +103,7 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse query(String databaseName, PqlQuery... queries) {
-        String path = String.format("/query?db=%s", databaseName);
-        return queryPath(path, databaseName, queries);
+        return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
     /**
@@ -111,8 +115,7 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse query(String databaseName, List<PqlQuery> queries) {
-        String path = String.format("/query?db=%s", databaseName);
-        return queryPath(path, databaseName, queries);
+        return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
     /**
@@ -124,8 +127,10 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse queryWithProfiles(String databaseName, String query) {
-        String path = String.format("/query?db=%s&profiles=true", databaseName);
-        return queryPath(path, databaseName, query);
+        QueryRequest request = QueryRequest.withDatabase(databaseName);
+        request.setRetrieveProfiles(true);
+        request.setQuery(query);
+        return queryPath(request);
     }
 
     /**
@@ -136,8 +141,9 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
-        String path = String.format("/query?db=%s&profiles=true", databaseName);
-        return queryPath(path, databaseName, queries);
+        QueryRequest request = QueryRequest.withDatabase(databaseName);
+        request.setRetrieveProfiles(true);
+        return queryPath(request, queries);
     }
 
     /**
@@ -149,8 +155,9 @@ public class PilosaClient {
      * @throws ValidationException if an invalid database name is passed
      */
     public PilosaResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
-        String path = String.format("/query?db=%s&profiles=true", databaseName);
-        return queryPath(path, databaseName, queries);
+        QueryRequest request = QueryRequest.withDatabase(databaseName);
+        request.setRetrieveProfiles(true);
+        return queryPath(request, queries);
     }
 
     /**
@@ -180,32 +187,32 @@ public class PilosaClient {
     private void connect() {
         this.currentAddress = this.cluster.getAddress();
         String scheme = this.currentAddress.getScheme();
-        if (!scheme.equals(HTTP) || !scheme.equals(HTTP_PROTOBUF)) {
+        if (!scheme.equals(HTTP) && !scheme.equals(HTTP_PROTOBUF)) {
             throw new PilosaException("Unknown scheme: " + scheme);
         }
         logger.info("Connected to {}", this.currentAddress);
         this.isConnected = true;
     }
 
-    private PilosaResponse queryPath(String path, String databaseName, String queryString) {
-        Validator.ensureValidDatabaseName(databaseName);
+    private PilosaResponse queryPath(QueryRequest request) {
         if (!this.isConnected) {
             connect();
         }
-        String uri = this.currentAddress + path;
+        boolean isProtobuf = this.currentAddress.getScheme().equals(HTTP_PROTOBUF);
+        String uri = String.format("%s/query", this.currentAddress);
         logger.debug("Posting to {}", uri);
 
-        HttpPost httpPost = new HttpPost(uri);
+        HttpPost httpPost;
         ByteArrayEntity body;
-        if (this.currentAddress.getScheme().equals(HTTP_PROTOBUF)) {
+        if (isProtobuf) {
+            httpPost = new HttpPost(uri);
             httpPost.setHeader("Content-Type", "application/x-protobuf");
-            ClientProtos.QueryRequest qr = ClientProtos.QueryRequest.newBuilder()
-                    .setDB(databaseName)
-                    .setQuery(queryString)
-                    .build();
+            ClientProtos.QueryRequest qr = request.toProtobuf();
             body = new ByteArrayEntity(qr.toByteArray());
         } else {
-            body = new ByteArrayEntity(queryString.getBytes(StandardCharsets.UTF_8));
+            uri = String.format("%s?%s", uri, request.toURLQueryString());
+            httpPost = new HttpPost(uri);
+            body = new ByteArrayEntity(request.getQuery().getBytes(StandardCharsets.UTF_8));
         }
         httpPost.setEntity(body);
         try {
@@ -224,20 +231,22 @@ public class PilosaClient {
         }
     }
 
-    private PilosaResponse queryPath(String path, String databaseName, PqlQuery... queries) {
+    private PilosaResponse queryPath(QueryRequest request, PqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
         for (PqlQuery query : queries) {
             builder.append(query);
         }
-        return queryPath(path, databaseName, builder.toString());
+        request.setQuery(builder.toString());
+        return queryPath(request);
     }
 
-    private PilosaResponse queryPath(String path, String databaseName, List<PqlQuery> queries) {
+    private PilosaResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
         StringBuilder builder = new StringBuilder(queries.size());
         for (PqlQuery query : queries) {
             builder.append(query);
         }
-        return queryPath(path, databaseName, builder.toString());
+        request.setQuery(builder.toString());
+        return queryPath(request);
     }
 }
 
@@ -250,4 +259,72 @@ class HttpDeleteWithBody extends HttpPost {
     public String getMethod() {
         return "DELETE";
     }
+}
+
+class QueryRequest {
+    private String databaseName = "";
+    private String query = "";
+    private String timeQuantum = null;
+    private boolean retrieveProfiles = false;
+
+    private QueryRequest(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    static QueryRequest withDatabase(String databaseName) {
+        Validator.ensureValidDatabaseName(databaseName);
+        return new QueryRequest(databaseName);
+    }
+
+    String getQuery() {
+        return this.query;
+    }
+
+    void setQuery(String query) {
+        this.query = query;
+    }
+
+    void setTimeQuantum(String quantum) {
+        switch (quantum) {
+            case "YMDH":
+            case "YMD":
+            case "YM":
+            case "Y":
+                this.timeQuantum = quantum;
+                break;
+            default:
+                throw new PilosaException("Invalid time quantum: " + quantum);
+        }
+    }
+
+    void setRetrieveProfiles(boolean ok) {
+        this.retrieveProfiles = ok;
+    }
+
+    ClientProtos.QueryRequest toProtobuf() {
+        ClientProtos.QueryRequest.Builder builder = ClientProtos.QueryRequest.newBuilder();
+        builder.setDB(this.databaseName);
+        builder.setQuery(this.query);
+        if (this.timeQuantum != null) {
+            builder.setQuantum(this.timeQuantum);
+        }
+        if (this.retrieveProfiles) {
+            builder.setProfiles(true);
+        }
+        return builder.build();
+    }
+
+    String toURLQueryString() {
+        List<NameValuePair> args = new ArrayList<>(3);
+        args.add(new BasicNameValuePair("db", this.databaseName));
+        if (this.timeQuantum != null) {
+            args.add(new BasicNameValuePair("time_granularity", this.timeQuantum));
+        }
+        if (this.retrieveProfiles) {
+            args.add(new BasicNameValuePair("profiles", "true"));
+        }
+        return URLEncodedUtils.format(args, '&', StandardCharsets.UTF_8);
+    }
+
+
 }

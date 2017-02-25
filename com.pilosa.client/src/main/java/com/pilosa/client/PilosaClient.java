@@ -199,7 +199,7 @@ public class PilosaClient {
             connect();
         }
         boolean isProtobuf = this.currentAddress.getScheme().equals(HTTP_PROTOBUF);
-        String uri = String.format("%s/query", this.currentAddress);
+        String uri = String.format("%s/query", this.currentAddress.getNormalizedAddress());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;

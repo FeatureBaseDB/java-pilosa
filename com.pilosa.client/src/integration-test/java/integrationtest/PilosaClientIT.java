@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 public class PilosaClientIT {
     private String db;
     private final static String SERVER_ADDRESS = ":15555";
+    private final static String SERVER_PROTOBUF_ADDRESS = "http+pb://:15555";
 
     @Before
     public void setUp() {
@@ -44,6 +45,13 @@ public class PilosaClientIT {
     @Test
     public void queryTest() {
         PilosaClient client = getClient();
+        PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
+        assertEquals(true, response.getResult());
+    }
+
+    @Test
+    public void queryOverProtobufTest() {
+        PilosaClient client = new PilosaClient(SERVER_PROTOBUF_ADDRESS);
         PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
         assertEquals(true, response.getResult());
     }

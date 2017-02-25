@@ -207,6 +207,7 @@ public class PilosaClient {
         if (isProtobuf) {
             httpPost = new HttpPost(uri);
             httpPost.setHeader("Content-Type", "application/x-protobuf");
+            httpPost.setHeader("Accept", "application/x-protobuf");
             ClientProtos.QueryRequest qr = request.toProtobuf();
             body = new ByteArrayEntity(qr.toByteArray());
         } else {
@@ -218,7 +219,9 @@ public class PilosaClient {
         try {
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
-            PilosaResponse pilosaResponse = new PilosaResponse(entity.getContent());
+            PilosaResponse pilosaResponse = (isProtobuf) ?
+                    PilosaResponse.fromProtobuf(entity.getContent())
+                    : PilosaResponse.fromJson(entity.getContent());
             if (!pilosaResponse.isSuccess()) {
                 throw new PilosaException(pilosaResponse.getErrorMessage());
             }

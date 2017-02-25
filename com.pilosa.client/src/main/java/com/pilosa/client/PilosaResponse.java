@@ -1,8 +1,10 @@
 package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.internal.ClientProtos;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,19 +29,26 @@ public final class PilosaResponse {
      */
     PilosaResponse() {
         this.results = new ArrayList<>(0);
+        this.profiles = new ArrayList<>(0);
         this.isError = false;
     }
 
     /**
-     * Creates a response from the given source.
-     * <p>
-     * This constructor is not available outside of this package.
+     * Creates a response from the given JSON source.
      *
      * @param src response from Pilosa server
      * @throws IOException if there was a problem reading from the source
      */
-    PilosaResponse(InputStream src) throws IOException {
-        parse(src);
+    static PilosaResponse fromJson(InputStream src) throws IOException {
+        PilosaResponse response = new PilosaResponse();
+        response.parseJson(src);
+        return response;
+    }
+
+    static PilosaResponse fromProtobuf(InputStream src) throws IOException {
+        PilosaResponse response = new PilosaResponse();
+        response.parseProtobuf(src);
+        return response;
     }
 
     /**
@@ -137,8 +146,9 @@ public final class PilosaResponse {
         return !isError;
     }
 
-    private void parse(InputStream src) throws IOException {
+    private void parseJson(InputStream src) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(DeserializationFeature.USE_LONG_FOR_INTS);
         Map<String, Object> resp;
         try {
             resp = mapper.readValue(src, new TypeReference<HashMap<String, Object>>() {
@@ -151,8 +161,6 @@ public final class PilosaResponse {
         if (errorMessage != null) {
             this.errorMessage = errorMessage;
             this.isError = true;
-            this.results = new ArrayList<>(0);
-            this.profiles = new ArrayList<>(0);
             return;
         }
         ArrayList results = (ArrayList) resp.get("results");
@@ -164,11 +172,11 @@ public final class PilosaResponse {
             if (obj instanceof List) {
                 // this is probably a TopN result
                 @SuppressWarnings("unchecked")
-                List<Map<String, Integer>> listObj = (List<Map<String, Integer>>) obj;
+                List<Map<String, Long>> listObj = (List<Map<String, Long>>) obj;
                 List<CountResultItem> countResultItems = new ArrayList<>(listObj.size());
-                for (Map<String, Integer> item : listObj) {
-                    Integer key = item.get("key");
-                    Integer count = item.get("count");
+                for (Map<String, Long> item : listObj) {
+                    Long key = item.get("key");
+                    Long count = item.get("count");
                     if (key != null && count != null) {
                         countResultItems.add(new CountResultItem(key, count));
                     } else {
@@ -184,14 +192,16 @@ public final class PilosaResponse {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> attrs = (Map<String, Object>) hashObj.get("attrs");
                 @SuppressWarnings("unchecked")
-                List<Integer> bits = (List<Integer>) hashObj.get("bits");
+                List<Long> bits = (List<Long>) hashObj.get("bits");
                 if (attrs != null && bits != null) {
                     this.results.add(new BitmapResult(attrs, bits));
                 } else {
                     throw new PilosaException("Unknown result object item type");
                 }
-            } else if (obj == null || obj instanceof Boolean || obj instanceof Integer) {
+            } else if (obj == null || obj instanceof Long) {
                 this.results.add(obj);
+            } else if (obj instanceof Boolean) {
+                this.results.add(null);
             } else {
                 throw new PilosaException("Unknown result item type");
             }
@@ -200,15 +210,50 @@ public final class PilosaResponse {
         ArrayList profileObjs = (ArrayList) resp.get("profiles");
         if (profileObjs != null) {
             ArrayList<ProfileItem> profiles = new ArrayList<>(profileObjs.size());
-            Map<String, Object> m;
             for (Object obj : profileObjs) {
                 if (obj instanceof Map) {
                     profiles.add(ProfileItem.fromMap((Map) obj));
                 }
             }
             this.profiles = profiles;
-        } else {
-            this.profiles = new ArrayList<>(0);
         }
     }
+
+    private void parseProtobuf(InputStream src) throws IOException {
+        ClientProtos.QueryResponse response = ClientProtos.QueryResponse.parseFrom(src);
+        String errorMessage = response.getErr();
+        if (!errorMessage.equals("")) {
+            this.errorMessage = errorMessage;
+            this.isError = true;
+            return;
+        }
+
+        List<Object> results = new ArrayList<>(response.getResultsCount());
+
+        for (ClientProtos.QueryResult result : response.getResultsList()) {
+            if (result.getPairsCount() > 0) {
+                List<CountResultItem> countResultItems = new ArrayList<>(result.getPairsCount());
+                for (ClientProtos.Pair pair : result.getPairsList()) {
+                    countResultItems.add(new CountResultItem(pair.getKey(), pair.getCount()));
+                }
+                results.add(countResultItems);
+            } else if (result.hasBitmap()) {
+                ClientProtos.Bitmap bitmap = result.getBitmap();
+                Map<String, Object> attrs = Util.protobufAttrsToMap(bitmap.getAttrsList());
+                results.add(new BitmapResult(attrs, bitmap.getBitsList()));
+            } else {
+                results.add(null);
+            }
+        }
+
+        this.results = results;
+
+        ArrayList<ProfileItem> profiles = new ArrayList<>(response.getProfilesCount());
+        for (ClientProtos.Profile profile : response.getProfilesList()) {
+            profiles.add(ProfileItem.fromProtobuf(profile));
+        }
+
+        this.profiles = profiles;
+    }
+
 }

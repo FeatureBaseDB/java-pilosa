@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 public class PilosaResponseTest {
     @Test
     public void testBooleanResponse() throws IOException {
-        compareResponse("{\"results\":[true]}", new Object[]{true});
-        compareResponse("{\"results\":[false]}", new Object[]{false});
+        compareResponse("{\"results\":[true]}", new Object[]{null});
+        compareResponse("{\"results\":[false]}", new Object[]{null});
     }
 
     @Test
@@ -29,26 +29,21 @@ public class PilosaResponseTest {
     }
 
     @Test
-    public void testIntegerResponse() {
-        compareResponse("{\"results\":[1]}", new Object[]{1});
+    public void testLongResponse() {
+        compareResponse("{\"results\":[1]}", new Object[]{1L});
     }
 
     @Test
     public void testBitmapResponse() {
         Map<String, Object> targetAttrs = new HashMap<>(3);
         targetAttrs.put("foo", "bar");
-        targetAttrs.put("zoo", 2);
-        targetAttrs.put("zof", 2.37);
+        targetAttrs.put("zoo", 2L);
         targetAttrs.put("q", true);
-        targetAttrs.put("nn", null);
-        Map<String, Object> obj = new HashMap<>(1);
-        obj.put("a", 2);
-        targetAttrs.put("obj", obj);
-        List<Integer> targetBits = new ArrayList<>(1);
-        targetBits.add(5);
+        List<Long> targetBits = new ArrayList<>(1);
+        targetBits.add(5L);
         BitmapResult target = new BitmapResult(targetAttrs, targetBits);
         compareResponse(
-                "{\"results\":[{\"attrs\":{\"foo\":\"bar\", \"zoo\":2, \"zof\":2.37, \"q\":true, \"nn\":null, \"obj\":{\"a\":2}}, \"bits\":[5]}]}",
+                "{\"results\":[{\"attrs\":{\"foo\":\"bar\", \"zoo\":2, \"q\":true}, \"bits\":[5]}]}",
                 new Object[]{target}
         );
     }
@@ -57,20 +52,15 @@ public class PilosaResponseTest {
     public void testBitmapResponseWithProfiles() {
         Map<String, Object> targetAttrs = new HashMap<>(3);
         targetAttrs.put("foo", "bar");
-        targetAttrs.put("zoo", 2);
-        targetAttrs.put("zof", 2.37);
+        targetAttrs.put("zoo", 2L);
         targetAttrs.put("q", true);
-        targetAttrs.put("nn", null);
-        Map<String, Object> obj = new HashMap<>(1);
-        obj.put("a", 2);
-        targetAttrs.put("obj", obj);
-        List<Integer> targetBits = new ArrayList<>(1);
-        targetBits.add(5);
+        List<Long> targetBits = new ArrayList<>(1);
+        targetBits.add(5L);
         BitmapResult target = new BitmapResult(targetAttrs, targetBits);
         Map<String, Object> piAttrs = new HashMap<>(1);
-        piAttrs.put("age", 67);
+        piAttrs.put("age", 67L);
         ProfileItem pi = new ProfileItem(44, piAttrs);
-        String s = "{\"results\":[{\"attrs\":{\"foo\":\"bar\", \"zoo\":2, \"zof\":2.37, \"q\":true, \"nn\":null, \"obj\":{\"a\":2}}, \"bits\":[5]}],\"profiles\":[{\"id\":44,\"attrs\":{\"age\":67}}]}";
+        String s = "{\"results\":[{\"attrs\":{\"foo\":\"bar\", \"zoo\":2, \"q\":true}, \"bits\":[5]}],\"profiles\":[{\"id\":44,\"attrs\":{\"age\":67}}]}";
         compareResponse(
                 s,
                 new Object[]{target},
@@ -81,7 +71,7 @@ public class PilosaResponseTest {
     @Test
     public void testCountResponse() {
         List<CountResultItem> target = new ArrayList<>(1);
-        target.add(new CountResultItem(5, 10));
+        target.add(new CountResultItem(5L, 10L));
         compareResponse(
                 "{\"results\":[[{\"key\":5, \"count\":10}]]}",
                 new Object[]{target}
@@ -119,7 +109,7 @@ public class PilosaResponseTest {
         PilosaResponse response = new PilosaResponse();
         assertEquals(null, response.getResult());
         response = createResponse("{\"results\":[1]}");
-        assertEquals(1, response.getResult());
+        assertEquals(1L, response.getResult());
     }
 
     @Test(expected = PilosaException.class)
@@ -151,7 +141,7 @@ public class PilosaResponseTest {
         InputStream src = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         PilosaResponse response = null;
         try {
-            response = new PilosaResponse(src);
+            response = PilosaResponse.fromJson(src);
         } catch (IOException ex) {
             fail(ex.getMessage());
         }

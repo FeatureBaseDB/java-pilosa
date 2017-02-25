@@ -20,7 +20,7 @@ public class BitmapResultTest {
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
-        List<Integer> bits = result.getBits();
+        List<Long> bits = result.getBits();
         assertEquals(2, bits.size());
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
@@ -64,9 +64,9 @@ public class BitmapResultTest {
     private BitmapResult createSampleResult() {
         Map<String, Object> attrs = new HashMap<>(1);
         attrs.put("color", "blue");
-        List<Integer> bits = new ArrayList<>(2);
-        bits.add(42);
-        bits.add(45);
+        List<Long> bits = new ArrayList<>(2);
+        bits.add(42L);
+        bits.add(45L);
         return new BitmapResult(attrs, bits);
     }
 }

@@ -18,20 +18,20 @@ public class UtilTest {
     public void protobufAttrsToMapTest() {
         List<ClientProtos.Attr> attrs = new ArrayList<>(3);
         attrs.add(ClientProtos.Attr.newBuilder()
-            .setType(ClientProtos.Attr.STRINGVALUE_FIELD_NUMBER)
-            .setKey("stringval")
-            .setStringValue("somestr")
-            .build());
+                .setType(ClientProtos.Attr.STRINGVALUE_FIELD_NUMBER)
+                .setKey("stringval")
+                .setStringValue("somestr")
+                .build());
         attrs.add(ClientProtos.Attr.newBuilder()
-            .setType(ClientProtos.Attr.UINTVALUE_FIELD_NUMBER)
-            .setKey("intval")
-            .setUintValue(5)
-            .build());
+                .setType(ClientProtos.Attr.UINTVALUE_FIELD_NUMBER)
+                .setKey("intval")
+                .setUintValue(5)
+                .build());
         attrs.add(ClientProtos.Attr.newBuilder()
-            .setType(ClientProtos.Attr.BOOLVALUE_FIELD_NUMBER)
-            .setKey("boolval")
-            .setBoolValue(true)
-            .build());
+                .setType(ClientProtos.Attr.BOOLVALUE_FIELD_NUMBER)
+                .setKey("boolval")
+                .setBoolValue(true)
+                .build());
         Map<String, Object> m = protobufAttrsToMap(attrs);
         assertEquals(3, m.size());
         assertEquals("somestr", m.get("stringval"));

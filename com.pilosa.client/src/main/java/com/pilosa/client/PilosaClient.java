@@ -170,7 +170,7 @@ public class PilosaClient {
         if (!this.isConnected) {
             connect();
         }
-        String uri = this.currentAddress.toString() + "/db";
+        String uri = this.currentAddress.getNormalizedAddress() + "/db";
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         String body = String.format("{\"db\":\"%s\"}", name);
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));

@@ -65,6 +65,14 @@ public class PilosaClientIT {
         assertNotNull(response.getResult());
     }
 
+    @Test
+    public void protobufCreateDatabaseDeleteDatabaseTest() {
+        final String dbname = "to-be-deleted";
+        PilosaClient client = getProtobufClient();
+        client.query(dbname, Pql.setBit(1, "delframe", 2));
+        client.deleteDatabase(dbname);
+    }
+
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() {
         PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222");

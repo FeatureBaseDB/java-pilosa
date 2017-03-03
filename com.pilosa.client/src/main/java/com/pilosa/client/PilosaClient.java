@@ -1,5 +1,7 @@
 package com.pilosa.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
@@ -7,7 +9,9 @@ import com.pilosa.client.internal.ClientProtos;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
@@ -18,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Pilosa HTTP client.
@@ -54,6 +57,7 @@ public class PilosaClient {
     private boolean isConnected = false;
     private URI currentAddress;
     private HttpClient client = HttpClients.createDefault();
+    private Comparator<ClientProtos.Bit> bitComparator = new BitComparator();
 
     /**
      * Creates a client with the given server address.
@@ -184,6 +188,33 @@ public class PilosaClient {
         }
     }
 
+    /**
+     * Imports bits to the given database and frame
+     *
+     * @param databaseName specify the database name
+     * @param frameName    specify the frame name
+     * @param iterator     specify the bit iterator
+     */
+    public void importFrame(String databaseName, String frameName, IBitIterator iterator) {
+        // XXX: this method stores all Bits in memory, it should batch it instead.
+        final long sliceWidth = 1048576L;
+        // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
+        Map<Long, List<ClientProtos.Bit>> bitGroup = new HashMap<>();
+        while (iterator.hasNext()) {
+            ClientProtos.Bit bit = iterator.next();
+            long slice = bit.getProfileID() / sliceWidth;
+            List<ClientProtos.Bit> sliceList = bitGroup.get(slice);
+            if (sliceList == null) {
+                sliceList = new ArrayList<>(1);
+                bitGroup.put(slice, sliceList);
+            }
+            sliceList.add(bit);
+        }
+        for (Map.Entry<Long, List<ClientProtos.Bit>> entry : bitGroup.entrySet()) {
+            importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+        }
+    }
+
     private void connect() {
         this.currentAddress = this.cluster.getAddress();
         String scheme = this.currentAddress.getScheme();
@@ -251,6 +282,82 @@ public class PilosaClient {
         request.setQuery(builder.toString());
         return queryPath(request);
     }
+
+    private void importBits(String databaseName, String frameName, long slice, List<ClientProtos.Bit> bits) {
+        Collections.sort(bits, bitComparator);
+        List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
+        for (FragmentNode node : nodes) {
+            PilosaClient client = new PilosaClient(node.toURI());
+            ClientProtos.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, 0, bits);
+            client.importNode(importRequest);
+        }
+    }
+
+    List<FragmentNode> fetchFrameNodes(String databaseName, long slice) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String addr = this.currentAddress.getNormalizedAddress();
+        String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
+        HttpGet httpGet = new HttpGet(uri);
+        try {
+            HttpResponse response = this.client.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(entity.getContent(), new TypeReference<List<FragmentNode>>() {
+            });
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException("Error while fetching fragment nodes", ex);
+        }
+    }
+
+    void importNode(ClientProtos.ImportRequest importRequest) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = String.format("%s/import", this.currentAddress.getNormalizedAddress());
+        HttpPost httpPost = new HttpPost(uri);
+        ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
+        httpPost.setHeader("Content-Type", "application/x-protobuf");
+        httpPost.setHeader("Accept", "application/x-protobuf");
+        httpPost.setEntity(body);
+        try {
+            HttpResponse response = this.client.execute(httpPost);
+            StatusLine statusLine = response.getStatusLine();
+            if (statusLine.getStatusCode() != 200) {
+                throw new PilosaException(String.format("Error while importing: %s", statusLine));
+            }
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException("Error while importing", ex);
+        }
+    }
+
+    private ClientProtos.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
+                                                           List<ClientProtos.Bit> bits) {
+        List<Long> bitmapIDs = new ArrayList<>(bits.size());
+        List<Long> profileIDs = new ArrayList<>(bits.size());
+        List<Long> timestamps = new ArrayList<>(bits.size());
+        for (ClientProtos.Bit bit : bits) {
+            bitmapIDs.add(bit.getBitmapID());
+            profileIDs.add(bit.getProfileID());
+            timestamps.add(bit.getTimestamp());
+        }
+        return ClientProtos.ImportRequest.newBuilder()
+                .setDB(databaseName)
+                .setFrame(frameName)
+                .setSlice(slice)
+                .addAllBitmapIDs(bitmapIDs)
+                .addAllProfileIDs(profileIDs)
+                .addAllTimestamps(timestamps)
+                .build();
+    }
+
 }
 
 class HttpDeleteWithBody extends HttpPost {
@@ -329,5 +436,25 @@ class QueryRequest {
         return URLEncodedUtils.format(args, '&', StandardCharsets.UTF_8);
     }
 
+}
 
+class FragmentNode {
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    URI toURI() {
+        return new URI(this.host);
+    }
+
+    private String host;
+}
+
+class BitComparator implements Comparator<ClientProtos.Bit> {
+    @Override
+    public int compare(ClientProtos.Bit bit, ClientProtos.Bit other) {
+        int bitCmp = Long.signum(bit.getBitmapID() - other.getBitmapID());
+        int prfCmp = Long.signum(bit.getProfileID() - other.getProfileID());
+        return (bitCmp == 0) ? prfCmp : bitCmp;
+    }
 }

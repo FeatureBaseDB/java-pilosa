@@ -2,15 +2,19 @@ package integrationtest;
 
 import com.pilosa.client.*;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.internal.ClientProtos;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -22,8 +26,8 @@ import static org.junit.Assert.*;
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
     private String db;
-    private final static String SERVER_ADDRESS = ":15555";
-    private final static String SERVER_PROTOBUF_ADDRESS = "http+pb://:15555";
+    private final static String SERVER_ADDRESS = ":15000";
+    private final static String SERVER_PROTOBUF_ADDRESS = "http+pb://:15000";
 
     @Before
     public void setUp() {
@@ -277,6 +281,32 @@ public class PilosaClientIT {
         client.deleteDatabase("non-existent");
     }
 
+    @Test
+    public void importTest() {
+        PilosaClient client = this.getClient();
+        StaticBitIterator iterator = new StaticBitIterator();
+        client.importFrame("importdb", "importframe", iterator);
+        PilosaResponse response = client.query("importdb",
+                Pql.bitmap(2, "importframe"),
+                Pql.bitmap(7, "importframe"),
+                Pql.bitmap(10, "importframe"));
+
+        List<Long> target = Arrays.asList(3L, 1L, 5L);
+        List<Object> results = response.getResults();
+        for (int i = 0; i < results.size(); i++) {
+            BitmapResult br = (BitmapResult) results.get(i);
+            assertEquals(target.get(i), br.getBits().get(0));
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void importFailNot200() {
+        runImportFailsHttpServer(15999);
+        PilosaClient client = new PilosaClient(":15999");
+        StaticBitIterator iterator = new StaticBitIterator();
+        client.importFrame("importdb", "importframe", iterator);
+    }
+
     private PilosaClient getClient() {
         return new PilosaClient(SERVER_ADDRESS);
     }
@@ -286,7 +316,64 @@ public class PilosaClientIT {
     }
 
     private static int counter = 0;
+
     private static String getRandomDatabaseName() {
         return String.format("testdb-%d", ++counter);
+    }
+
+    private void runImportFailsHttpServer(int port) {
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/fragment/nodes", new FragmentNodesHandler());
+            server.setExecutor(null);
+            server.start();
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+    }
+
+    static class FragmentNodesHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            String response = "[{\"host\":\"localhost:15999\"}]";
+            r.sendResponseHeaders(200, response.length());
+            OutputStream os = r.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+}
+
+class StaticBitIterator implements IBitIterator {
+    private List<ClientProtos.Bit> bits;
+    private int index = 0;
+
+    StaticBitIterator() {
+        this.bits = new ArrayList<>(3);
+        this.bits.add(makeBit(10, 5));
+        this.bits.add(makeBit(2, 3));
+        this.bits.add(makeBit(7, 1));
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.index < this.bits.size();
+    }
+
+    @Override
+    public ClientProtos.Bit next() {
+        return this.bits.get(index++);
+    }
+
+    @Override
+    public void remove() {
+        // We have this just to avoid compilation problems on JDK 7
+    }
+
+    private ClientProtos.Bit makeBit(long bitmapID, long profileID) {
+        return ClientProtos.Bit.newBuilder()
+                .setBitmapID(bitmapID)
+                .setProfileID(profileID)
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.internal.ClientProtos;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -65,7 +66,7 @@ public class ProfileItemTest {
     @Test(expected = PilosaException.class)
     public void testFromMapNoAttrs() {
         Map<String, Object> m = new HashMap<>(0);
-        m.put("id", 44);
+        m.put("id", 44L);
         ProfileItem.fromMap(m);
     }
 
@@ -74,9 +75,27 @@ public class ProfileItemTest {
         Map<String, Object> attrs = new HashMap<>(1);
         attrs.put("city", "Austin");
         Map<String, Object> m = new HashMap<>(0);
-        m.put("id", 33);
+        m.put("id", 33L);
         m.put("attrs", attrs);
         assertEquals(createSampleProfileItem(), ProfileItem.fromMap(m));
+    }
+
+    @Test
+    public void testFromProtobuf() {
+        ClientProtos.Attr attr = ClientProtos.Attr.newBuilder()
+                .setType(ClientProtos.Attr.STRINGVALUE_FIELD_NUMBER)
+                .setKey("foo")
+                .setStringValue("bar")
+                .build();
+        ClientProtos.Profile profile = ClientProtos.Profile.newBuilder()
+                .addAttrs(attr)
+                .setID(500L)
+                .build();
+        ProfileItem item = ProfileItem.fromProtobuf(profile);
+        Map<String, Object> attrs = item.getAttributes();
+        assertEquals(500L, item.getID());
+        assertEquals(1, attrs.size());
+        assertEquals("bar", attrs.get("foo"));
     }
 
     private ProfileItem createSampleProfileItem() {

@@ -1,6 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.internal.ClientProtos;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -8,16 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileItem {
-    private int id;
+    private long id;
     private Map<String, Object> attributes;
 
     ProfileItem() {
         this.attributes = new HashMap<>(0);
     }
 
-    ProfileItem(int id, Map<String, Object> attributes) {
+    ProfileItem(long id, Map<String, Object> attributes) {
         this.id = id;
         this.attributes = attributes;
+    }
+
+    static ProfileItem fromProtobuf(ClientProtos.Profile profile) {
+        return new ProfileItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
     }
 
     /**
@@ -25,7 +30,7 @@ public class ProfileItem {
      *
      * @return profile ID
      */
-    public int getID() {
+    public long getID() {
         return this.id;
     }
 
@@ -67,7 +72,7 @@ public class ProfileItem {
     }
 
     static ProfileItem fromMap(Map map) {
-        Integer id = (Integer) map.get("id");
+        Long id = (Long) map.get("id");
         if (id == null) {
             throw new PilosaException("Invalid profile, has no id key");
         }

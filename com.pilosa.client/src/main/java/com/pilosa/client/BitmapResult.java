@@ -13,14 +13,14 @@ import java.util.Map;
  */
 public class BitmapResult {
     private Map<String, Object> attributes;
-    private List<Integer> bits;
+    private List<Long> bits;
 
     BitmapResult() {
         this.attributes = new HashMap<>(0);
         this.bits = new ArrayList<>(0);
     }
 
-    BitmapResult(Map<String, Object> attributes, List<Integer> bits) {
+    BitmapResult(Map<String, Object> attributes, List<Long> bits) {
         this.attributes = attributes;
         this.bits = bits;
     }
@@ -39,7 +39,7 @@ public class BitmapResult {
      *
      * @return list of profile IDs where the corresponding bit is 1
      */
-    public List<Integer> getBits() {
+    public List<Long> getBits() {
         return this.bits;
     }
 

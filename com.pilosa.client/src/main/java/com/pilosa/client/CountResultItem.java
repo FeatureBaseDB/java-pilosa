@@ -6,13 +6,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Represents a result from TopN call.
  */
 public class CountResultItem {
-    private int key;
-    private int count;
+    private long key;
+    private long count;
 
     CountResultItem() {
     }
 
-    CountResultItem(int key, int count) {
+    CountResultItem(long key, long count) {
         this.key = key;
         this.count = count;
     }
@@ -22,7 +22,7 @@ public class CountResultItem {
      *
      * @return bitmap ID
      */
-    public int getKey() {
+    public long getKey() {
         return this.key;
     }
 
@@ -31,7 +31,7 @@ public class CountResultItem {
      *
      * @return count of profile IDs where this bitmap item is 1
      */
-    public int getCount() {
+    public long getCount() {
         return this.count;
     }
 

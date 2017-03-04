@@ -189,29 +189,50 @@ public class PilosaClient {
     }
 
     /**
-     * Imports bits to the given database and frame
+     * Imports bits to the given database and frame, using 1000000 as the batch size.
      *
      * @param databaseName specify the database name
      * @param frameName    specify the frame name
      * @param iterator     specify the bit iterator
      */
     public void importFrame(String databaseName, String frameName, IBitIterator iterator) {
-        // XXX: this method stores all Bits in memory, it should batch it instead.
+        importFrame(databaseName, frameName, iterator, 100000);
+    }
+
+
+    /**
+     * Imports bits to the given database and frame.
+     *
+     * @param databaseName specify the database name
+     * @param frameName    specify the frame name
+     * @param iterator     specify the bit iterator
+     * @param batchSize    specify the number of bits to send in each import query
+     */
+    public void importFrame(String databaseName, String frameName, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
-        // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
-        Map<Long, List<ClientProtos.Bit>> bitGroup = new HashMap<>();
-        while (iterator.hasNext()) {
-            ClientProtos.Bit bit = iterator.next();
-            long slice = bit.getProfileID() / sliceWidth;
-            List<ClientProtos.Bit> sliceList = bitGroup.get(slice);
-            if (sliceList == null) {
-                sliceList = new ArrayList<>(1);
-                bitGroup.put(slice, sliceList);
+        boolean canContinue = true;
+        while (canContinue) {
+            // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
+            Map<Long, List<ClientProtos.Bit>> bitGroup = new HashMap<>();
+            for (int i = 0; i < batchSize; i++) {
+                if (iterator.hasNext()) {
+                    ClientProtos.Bit bit = iterator.next();
+                    long slice = bit.getProfileID() / sliceWidth;
+                    List<ClientProtos.Bit> sliceList = bitGroup.get(slice);
+                    if (sliceList == null) {
+                        sliceList = new ArrayList<>(1);
+                        bitGroup.put(slice, sliceList);
+                    }
+                    sliceList.add(bit);
+
+                } else {
+                    canContinue = false;
+                    break;
+                }
             }
-            sliceList.add(bit);
-        }
-        for (Map.Entry<Long, List<ClientProtos.Bit>> entry : bitGroup.entrySet()) {
-            importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+            for (Map.Entry<Long, List<ClientProtos.Bit>> entry : bitGroup.entrySet()) {
+                importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+            }
         }
     }
 

@@ -18,7 +18,7 @@ public class ValidatorTest {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
     private final static String[] validFrameNames = new String[]{
-            "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
+            "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e", "d.e",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidFrameNames = new String[]{

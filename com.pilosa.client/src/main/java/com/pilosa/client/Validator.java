@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 final class Validator {
     // See: https://github.com/pilosa/pilosa/issues/280
     private final static Pattern DATABASE_NAME = Pattern.compile("^[a-z0-9_-]+$");
-    private final static Pattern FRAME_NAME = Pattern.compile("^[a-z0-9_-]+$");
+    private final static Pattern FRAME_NAME = Pattern.compile("^[.a-z0-9_-]+$");
     private final static int MAX_DATABASE_NAME = 64;
     private final static int MAX_FRAME_NAME = 64;
 

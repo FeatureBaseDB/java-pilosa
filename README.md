@@ -85,6 +85,20 @@ PilosaClient client = new PilosaClient("http+pb://localhost:15000");
 
 ## Contribution
 
+### Running tests
+
+Make sure you are in the `com.pilosa.client` directory.
+
+You can run unit tests with:
+```
+$ mvn test
+```
+
+And integration tests with:
+```
+$ mvn failsafe:integration-test
+```
+
 ### Generating protobuf classes
 
 Protobuf compiler is required to generate protobuf classes:

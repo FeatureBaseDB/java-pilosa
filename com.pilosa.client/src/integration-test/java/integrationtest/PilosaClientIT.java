@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 // Note that this integration test creates many random databases.
 // It's recommended to run an ephemeral Pilosa server.
 // E.g., with docker:
-// $ docker run -it --rm --name pilosa -p 15555:15000 pilosa:latest
+// $ docker run -it --rm --name pilosa -p 15000:15000 pilosa:latest
 
 @Category(IntegrationTest.class)
 public class PilosaClientIT {

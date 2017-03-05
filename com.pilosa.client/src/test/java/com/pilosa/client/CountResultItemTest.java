@@ -17,6 +17,11 @@ public class CountResultItemTest {
     }
 
     @Test
+    public void testCreateCountResultDefaultConstructor() {
+        new CountResultItem();
+    }
+
+    @Test
     public void testCountResultToString() {
         CountResultItem result = createSampleResult();
         assertEquals("CountResultItem(key=45, count=12)", result.toString());
@@ -33,7 +38,7 @@ public class CountResultItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new CountResultItem()).equals(0);
+        boolean e = (new CountResultItem(1, 2)).equals(0);
         assertFalse(e);
     }
 

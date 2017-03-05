@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Represents a result from TopN call.
  */
-public class CountResultItem {
+public final class CountResultItem {
     private long key;
     private long count;
 
@@ -15,6 +15,10 @@ public class CountResultItem {
     CountResultItem(long key, long count) {
         this.key = key;
         this.count = count;
+    }
+
+    static CountResultItem fromInternal(Internal.Pair pair) {
+        return new CountResultItem(pair.getKey(), pair.getCount());
     }
 
     /**
@@ -50,11 +54,11 @@ public class CountResultItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CountResultItem)) {
-            return false;
-        }
         if (obj == this) {
             return true;
+        }
+        if (!(obj instanceof CountResultItem)) {
+            return false;
         }
         CountResultItem rhs = (CountResultItem) obj;
         return this.key == rhs.key && this.count == rhs.count;

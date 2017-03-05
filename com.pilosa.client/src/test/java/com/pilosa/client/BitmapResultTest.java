@@ -27,6 +27,11 @@ public class BitmapResultTest {
     }
 
     @Test
+    public void testCreateBitmapResultDefaultConstructor() {
+        new BitmapResult();
+    }
+
+    @Test
     public void testBitmapResultToString() {
         BitmapResult result = createSampleResult();
         String s = result.toString();
@@ -44,7 +49,7 @@ public class BitmapResultTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new BitmapResult()).equals(0);
+        boolean e = (new BitmapResult(null, null)).equals(0);
         assertFalse(e);
     }
 

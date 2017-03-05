@@ -3,26 +3,26 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Represents a result from Bitmap, Union, Intersect, Difference and Range PQL calls.
  */
-public class BitmapResult {
+public final class BitmapResult {
     private Map<String, Object> attributes;
     private List<Long> bits;
 
     BitmapResult() {
-        this.attributes = new HashMap<>(0);
-        this.bits = new ArrayList<>(0);
     }
 
     BitmapResult(Map<String, Object> attributes, List<Long> bits) {
         this.attributes = attributes;
         this.bits = bits;
+    }
+
+    static BitmapResult fromInternal(Internal.Bitmap b) {
+        return new BitmapResult(Util.protobufAttrsToMap(b.getAttrsList()), b.getBitsList());
     }
 
     /**
@@ -58,11 +58,11 @@ public class BitmapResult {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof BitmapResult)) {
-            return false;
-        }
         if (obj == this) {
             return true;
+        }
+        if (!(obj instanceof BitmapResult)) {
+            return false;
         }
         BitmapResult rhs = (BitmapResult) obj;
         return new EqualsBuilder()

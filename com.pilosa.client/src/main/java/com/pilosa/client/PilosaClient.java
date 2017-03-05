@@ -7,15 +7,12 @@ import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,9 +30,9 @@ import java.util.*;
  * // Create a client
  * PilosaClient client = new PilosaClient("localhost:15000");
  * // Send a query. PilosaException is thrown if execution of the query fails.
- * PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
+ * QueryResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
- * Object result = response.getResult();
+ * QueryResult result = response.getResult();
  * // Deai with the result
  *
  * // You can send more than one query with a single query call
@@ -91,7 +88,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, String query) {
+    public QueryResponse query(String databaseName, String query) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setQuery(query);
         return queryPath(request);
@@ -105,7 +102,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, PqlQuery... queries) {
+    public QueryResponse query(String databaseName, PqlQuery... queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -117,7 +114,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse query(String databaseName, List<PqlQuery> queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -129,7 +126,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, String query) {
+    public QueryResponse queryWithProfiles(String databaseName, String query) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         request.setQuery(query);
@@ -143,7 +140,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
+    public QueryResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -157,7 +154,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -245,38 +242,29 @@ public class PilosaClient {
         this.isConnected = true;
     }
 
-    private PilosaResponse queryPath(QueryRequest request) {
+    private QueryResponse queryPath(QueryRequest request) {
         if (!this.isConnected) {
             connect();
         }
-        boolean isProtobuf = this.currentAddress.getScheme().equals(HTTP_PROTOBUF);
         String uri = String.format("%s/query", this.currentAddress.getNormalizedAddress());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;
         ByteArrayEntity body;
-        if (isProtobuf) {
-            httpPost = new HttpPost(uri);
-            httpPost.setHeader("Content-Type", "application/x-protobuf");
-            httpPost.setHeader("Accept", "application/x-protobuf");
-            Internal.QueryRequest qr = request.toProtobuf();
-            body = new ByteArrayEntity(qr.toByteArray());
-        } else {
-            uri = String.format("%s?%s", uri, request.toURLQueryString());
-            httpPost = new HttpPost(uri);
-            body = new ByteArrayEntity(request.getQuery().getBytes(StandardCharsets.UTF_8));
-        }
+        httpPost = new HttpPost(uri);
+        httpPost.setHeader("Content-Type", "application/x-protobuf");
+        httpPost.setHeader("Accept", "application/x-protobuf");
+        Internal.QueryRequest qr = request.toProtobuf();
+        body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
         try {
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
-            PilosaResponse pilosaResponse = (isProtobuf) ?
-                    PilosaResponse.fromProtobuf(entity.getContent())
-                    : PilosaResponse.fromJson(entity.getContent());
-            if (!pilosaResponse.isSuccess()) {
-                throw new PilosaException(pilosaResponse.getErrorMessage());
+            QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
+            if (!queryResponse.isSuccess()) {
+                throw new PilosaException(queryResponse.getErrorMessage());
             }
-            return pilosaResponse;
+            return queryResponse;
         } catch (IOException ex) {
             logger.error(ex);
             this.cluster.removeAddress(this.currentAddress);
@@ -285,7 +273,7 @@ public class PilosaClient {
         }
     }
 
-    private PilosaResponse queryPath(QueryRequest request, PqlQuery... queries) {
+    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
         for (PqlQuery query : queries) {
             builder.append(query);
@@ -294,7 +282,7 @@ public class PilosaClient {
         return queryPath(request);
     }
 
-    private PilosaResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
+    private QueryResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
         StringBuilder builder = new StringBuilder(queries.size());
         for (PqlQuery query : queries) {
             builder.append(query);
@@ -442,18 +430,6 @@ class QueryRequest {
             builder.setProfiles(true);
         }
         return builder.build();
-    }
-
-    String toURLQueryString() {
-        List<NameValuePair> args = new ArrayList<>(3);
-        args.add(new BasicNameValuePair("db", this.databaseName));
-        if (this.timeQuantum != null) {
-            args.add(new BasicNameValuePair("time_granularity", this.timeQuantum));
-        }
-        if (this.retrieveProfiles) {
-            args.add(new BasicNameValuePair("profiles", "true"));
-        }
-        return URLEncodedUtils.format(args, '&', StandardCharsets.UTF_8);
     }
 
 }

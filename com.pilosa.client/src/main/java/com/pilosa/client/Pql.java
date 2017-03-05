@@ -19,7 +19,7 @@ import java.util.Map;
  * Sample usage:
  * <pre>
  * Client client = // ... create the client
- * PilosaResponse = client.query("example_db",
+ * QueryResponse = client.query("example_db",
  *                               Pql.union(Pql.bitmap(10, "foo"),
  *                                         Pql.bitmap(20, "foo")));
  * // process the response
@@ -38,7 +38,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlBitmapQuery bitmap(int id, String frame) {
+    public static PqlBitmapQuery bitmap(long id, String frame) {
         Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("Bitmap(id=%d, frame=\"%s\")", id, frame));
     }
@@ -52,7 +52,7 @@ public final class Pql {
      * @throws ValidationException if an invalid frame name is passed
      * @return a PQL query
      */
-    public static PqlQuery setBit(int id, String frame, int profileID) {
+    public static PqlQuery setBit(long id, String frame, long profileID) {
         Validator.ensureValidFrameName(frame);
         return new PqlQuery(String.format("SetBit(id=%d, frame=\"%s\", profileID=%d)", id, frame, profileID));
     }
@@ -66,7 +66,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlQuery clearBit(int id, String frame, int profileID) {
+    public static PqlQuery clearBit(long id, String frame, long profileID) {
         Validator.ensureValidFrameName(frame);
         return new PqlQuery(String.format("ClearBit(id=%d, frame=\"%s\", profileID=%d)", id, frame, profileID));
     }
@@ -125,7 +125,7 @@ public final class Pql {
      * @return a PQL Bitmap query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlBitmapQuery topN(String frame, int n) {
+    public static PqlBitmapQuery topN(String frame, long n) {
         Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("TopN(frame=\"%s\", n=%d)", frame, n));
     }
@@ -139,7 +139,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, int n) {
+    public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, long n) {
         Validator.ensureValidFrameName(frame);
         return new PqlBitmapQuery(String.format("TopN(%s, frame=\"%s\", n=%d)", bitmap, frame, n));
     }
@@ -155,7 +155,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, int n, String field, Object... values) {
+    public static PqlBitmapQuery topN(PqlBitmapQuery bitmap, String frame, long n, String field, Object... values) {
         Validator.ensureValidFrameName(frame);
         // TODO: validate field
         try {
@@ -177,7 +177,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlQuery range(int id, String frame, Date start, Date end) {
+    public static PqlQuery range(long id, String frame, Date start, Date end) {
         Validator.ensureValidFrameName(frame);
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");
@@ -194,7 +194,7 @@ public final class Pql {
      * @return a PQL query
      * @throws ValidationException if an invalid frame name is passed
      */
-    public static PqlQuery setBitmapAttrs(int id, String frame, Map<String, Object> attributes) {
+    public static PqlQuery setBitmapAttrs(long id, String frame, Map<String, Object> attributes) {
         Validator.ensureValidFrameName(frame);
         String attributesString = createAttributesString(attributes);
         return new PqlQuery(String.format("SetBitmapAttrs(id=%d, frame=\"%s\", %s)",
@@ -208,7 +208,7 @@ public final class Pql {
      * @param attributes profile attributes
      * @return a PQL query
      */
-    public static PqlQuery setProfileAttrs(int id, Map<String, Object> attributes) {
+    public static PqlQuery setProfileAttrs(long id, Map<String, Object> attributes) {
         String attributesString = createAttributesString(attributes);
         return new PqlQuery(String.format("SetProfileAttrs(id=%d, %s)",
                 id, attributesString));

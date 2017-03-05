@@ -1,6 +1,5 @@
 package com.pilosa.client;
 
-import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -14,10 +13,15 @@ import static org.junit.Assert.assertTrue;
 @Category(UnitTest.class)
 public class ProfileItemTest {
     @Test
-    public void createProfileItem() {
+    public void testCreateProfileItem() {
         ProfileItem pi = createSampleProfileItem();
         assertEquals(33, pi.getID());
         assertEquals("Austin", pi.getAttributes().get("city"));
+    }
+
+    @Test
+    public void testCreateProfileItemDefaultConstructor() {
+        new ProfileItem();
     }
 
     @Test
@@ -38,7 +42,7 @@ public class ProfileItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new ProfileItem()).equals(0);
+        boolean e = (new ProfileItem(1, null)).equals(0);
         assertFalse(e);
     }
 
@@ -55,28 +59,22 @@ public class ProfileItemTest {
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    @Test(expected = PilosaException.class)
-    public void testFromMapNoId() {
-        Map<String, Object> m = new HashMap<>(1);
-        m.put("attrs", new HashMap<>(0));
-        ProfileItem.fromMap(m);
-    }
-
-    @Test(expected = PilosaException.class)
-    public void testFromMapNoAttrs() {
-        Map<String, Object> m = new HashMap<>(0);
-        m.put("id", 44);
-        ProfileItem.fromMap(m);
-    }
-
     @Test
-    public void testFromMap() {
-        Map<String, Object> attrs = new HashMap<>(1);
-        attrs.put("city", "Austin");
-        Map<String, Object> m = new HashMap<>(0);
-        m.put("id", 33);
-        m.put("attrs", attrs);
-        assertEquals(createSampleProfileItem(), ProfileItem.fromMap(m));
+    public void testFromProtobuf() {
+        Internal.Attr attr = Internal.Attr.newBuilder()
+                .setType(Internal.Attr.STRINGVALUE_FIELD_NUMBER)
+                .setKey("foo")
+                .setStringValue("bar")
+                .build();
+        Internal.Profile profile = Internal.Profile.newBuilder()
+                .addAttrs(attr)
+                .setID(500L)
+                .build();
+        ProfileItem item = ProfileItem.fromInternal(profile);
+        Map<String, Object> attrs = item.getAttributes();
+        assertEquals(500L, item.getID());
+        assertEquals(1, attrs.size());
+        assertEquals("bar", attrs.get("foo"));
     }
 
     private ProfileItem createSampleProfileItem() {

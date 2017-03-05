@@ -77,6 +77,36 @@ response = client.query("example_db",
 
 ```
 
+By default the client uses a text protocol to send requests and JSON to retrieve responses. You can enable protobuf support by explicitly setting the address scheme to: `http+pb`:
+
+```java
+PilosaClient client = new PilosaClient("http+pb://localhost:15000");
+```
+
 ## Contribution
+
+### Running tests
+
+Make sure you are in the `com.pilosa.client` directory.
+
+You can run unit tests with:
+```
+$ mvn test
+```
+
+And integration tests with:
+```
+$ mvn failsafe:integration-test
+```
+
+### Generating protobuf classes
+
+Protobuf compiler is required to generate protobuf classes:
+
+```
+$ cd com.pilosa.client/src
+$ protoc --java_out=../main/java/ internal.proto
+
+```
 
 ## License

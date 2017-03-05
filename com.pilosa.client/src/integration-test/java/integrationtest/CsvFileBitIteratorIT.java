@@ -2,7 +2,7 @@ package integrationtest;
 
 import com.pilosa.client.CsvFileBitIterator;
 import com.pilosa.client.IntegrationTest;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -24,7 +24,7 @@ public class CsvFileBitIteratorIT {
             fail("sample1.csv not found");
         }
         CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath());
-        List<ClientProtos.Bit> bits = new ArrayList<>(3);
+        List<Internal.Bit> bits = new ArrayList<>(3);
         while (iterator.hasNext()) {
             bits.add(iterator.next());
         }
@@ -32,9 +32,9 @@ public class CsvFileBitIteratorIT {
                 Arrays.asList(1L, 10L, 683793200L),
                 Arrays.asList(5L, 20L, 683793300L),
                 Arrays.asList(3L, 41L, 683793385L));
-        List<ClientProtos.Bit> target = new ArrayList<>(3);
+        List<Internal.Bit> target = new ArrayList<>(3);
         for (List<Long> item : targetValues)
-            target.add(ClientProtos.Bit.newBuilder()
+            target.add(Internal.Bit.newBuilder()
                     .setBitmapID(item.get(0))
                     .setProfileID(item.get(1))
                     .setTimestamp(item.get(2))

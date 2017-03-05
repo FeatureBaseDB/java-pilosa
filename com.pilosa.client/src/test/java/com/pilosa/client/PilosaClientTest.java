@@ -1,7 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -16,7 +16,7 @@ public class PilosaClientTest {
     @Test(expected = PilosaException.class)
     public void importNodeTest() {
         PilosaClient client = new PilosaClient("non-existent-domain-555.com:19000");
-        ClientProtos.ImportRequest request = ClientProtos.ImportRequest.newBuilder().build();
+        Internal.ImportRequest request = Internal.ImportRequest.newBuilder().build();
         client.importNode(request);
     }
 }

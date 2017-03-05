@@ -1,7 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -16,19 +16,19 @@ import static org.junit.Assert.assertEquals;
 public class UtilTest {
     @Test
     public void protobufAttrsToMapTest() {
-        List<ClientProtos.Attr> attrs = new ArrayList<>(3);
-        attrs.add(ClientProtos.Attr.newBuilder()
-                .setType(ClientProtos.Attr.STRINGVALUE_FIELD_NUMBER)
+        List<Internal.Attr> attrs = new ArrayList<>(3);
+        attrs.add(Internal.Attr.newBuilder()
+                .setType(Internal.Attr.STRINGVALUE_FIELD_NUMBER)
                 .setKey("stringval")
                 .setStringValue("somestr")
                 .build());
-        attrs.add(ClientProtos.Attr.newBuilder()
-                .setType(ClientProtos.Attr.UINTVALUE_FIELD_NUMBER)
+        attrs.add(Internal.Attr.newBuilder()
+                .setType(Internal.Attr.UINTVALUE_FIELD_NUMBER)
                 .setKey("intval")
                 .setUintValue(5)
                 .build());
-        attrs.add(ClientProtos.Attr.newBuilder()
-                .setType(ClientProtos.Attr.BOOLVALUE_FIELD_NUMBER)
+        attrs.add(Internal.Attr.newBuilder()
+                .setType(Internal.Attr.BOOLVALUE_FIELD_NUMBER)
                 .setKey("boolval")
                 .setBoolValue(true)
                 .build());
@@ -41,8 +41,8 @@ public class UtilTest {
 
     @Test(expected = PilosaException.class)
     public void protobufAttrsToMapFailsTest() {
-        List<ClientProtos.Attr> attrs = new ArrayList<>(3);
-        attrs.add(ClientProtos.Attr.newBuilder()
+        List<Internal.Attr> attrs = new ArrayList<>(3);
+        attrs.add(Internal.Attr.newBuilder()
                 .setType(9)
                 .setKey("stringval")
                 .setStringValue("somestr")

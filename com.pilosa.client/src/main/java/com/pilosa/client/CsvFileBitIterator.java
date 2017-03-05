@@ -1,6 +1,6 @@
 package com.pilosa.client;
 
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class CsvFileBitIterator implements IBitIterator {
     private Scanner scanner = null;
-    private ClientProtos.Bit nextBit = null;
+    private Internal.Bit nextBit = null;
 
     private CsvFileBitIterator() {
     }
@@ -26,7 +26,7 @@ public class CsvFileBitIterator implements IBitIterator {
      * Creates a bit iterator from the CSV file at the given path.
      * @param path of the CSV file
      * @return bit iterator
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException if the path does not exist
      */
     public static CsvFileBitIterator fromPath(String path) throws FileNotFoundException {
         return fromStream(new FileInputStream(path));
@@ -37,9 +37,8 @@ public class CsvFileBitIterator implements IBitIterator {
      *
      * @param stream CSV stream
      * @return bit iterator
-     * @throws FileNotFoundException
      */
-    public static CsvFileBitIterator fromStream(InputStream stream) throws FileNotFoundException {
+    public static CsvFileBitIterator fromStream(InputStream stream) {
         CsvFileBitIterator iterator = new CsvFileBitIterator();
         iterator.scanner = new Scanner(stream);
         return iterator;
@@ -60,7 +59,7 @@ public class CsvFileBitIterator implements IBitIterator {
                 if (fields.length > 2) {
                     timestamp = Long.parseLong(fields[2]);
                 }
-                this.nextBit = ClientProtos.Bit.newBuilder()
+                this.nextBit = Internal.Bit.newBuilder()
                         .setBitmapID(bitmapID)
                         .setProfileID(profileID)
                         .setTimestamp(timestamp)
@@ -74,7 +73,7 @@ public class CsvFileBitIterator implements IBitIterator {
     }
 
     @Override
-    public ClientProtos.Bit next() {
+    public Internal.Bit next() {
         return this.nextBit;
     }
 

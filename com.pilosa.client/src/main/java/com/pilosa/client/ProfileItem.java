@@ -1,7 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -21,7 +21,7 @@ public class ProfileItem {
         this.attributes = attributes;
     }
 
-    static ProfileItem fromProtobuf(ClientProtos.Profile profile) {
+    static ProfileItem fromProtobuf(Internal.Profile profile) {
         return new ProfileItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
     }
 

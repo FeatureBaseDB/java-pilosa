@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -220,7 +220,7 @@ public final class PilosaResponse {
     }
 
     private void parseProtobuf(InputStream src) throws IOException {
-        ClientProtos.QueryResponse response = ClientProtos.QueryResponse.parseFrom(src);
+        Internal.QueryResponse response = Internal.QueryResponse.parseFrom(src);
         String errorMessage = response.getErr();
         if (!errorMessage.equals("")) {
             this.errorMessage = errorMessage;
@@ -230,15 +230,15 @@ public final class PilosaResponse {
 
         List<Object> results = new ArrayList<>(response.getResultsCount());
 
-        for (ClientProtos.QueryResult result : response.getResultsList()) {
+        for (Internal.QueryResult result : response.getResultsList()) {
             if (result.getPairsCount() > 0) {
                 List<CountResultItem> countResultItems = new ArrayList<>(result.getPairsCount());
-                for (ClientProtos.Pair pair : result.getPairsList()) {
+                for (Internal.Pair pair : result.getPairsList()) {
                     countResultItems.add(new CountResultItem(pair.getKey(), pair.getCount()));
                 }
                 results.add(countResultItems);
             } else if (result.hasBitmap()) {
-                ClientProtos.Bitmap bitmap = result.getBitmap();
+                Internal.Bitmap bitmap = result.getBitmap();
                 Map<String, Object> attrs = Util.protobufAttrsToMap(bitmap.getAttrsList());
                 results.add(new BitmapResult(attrs, bitmap.getBitsList()));
             } else {
@@ -249,7 +249,7 @@ public final class PilosaResponse {
         this.results = results;
 
         ArrayList<ProfileItem> profiles = new ArrayList<>(response.getProfilesCount());
-        for (ClientProtos.Profile profile : response.getProfilesList()) {
+        for (Internal.Profile profile : response.getProfilesList()) {
             profiles.add(ProfileItem.fromProtobuf(profile));
         }
 

@@ -1,7 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
+import com.pilosa.client.internal.Internal;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -82,12 +82,12 @@ public class ProfileItemTest {
 
     @Test
     public void testFromProtobuf() {
-        ClientProtos.Attr attr = ClientProtos.Attr.newBuilder()
-                .setType(ClientProtos.Attr.STRINGVALUE_FIELD_NUMBER)
+        Internal.Attr attr = Internal.Attr.newBuilder()
+                .setType(Internal.Attr.STRINGVALUE_FIELD_NUMBER)
                 .setKey("foo")
                 .setStringValue("bar")
                 .build();
-        ClientProtos.Profile profile = ClientProtos.Profile.newBuilder()
+        Internal.Profile profile = Internal.Profile.newBuilder()
                 .addAttrs(attr)
                 .setID(500L)
                 .build();

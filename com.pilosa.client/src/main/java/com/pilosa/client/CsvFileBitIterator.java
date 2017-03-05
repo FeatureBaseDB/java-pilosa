@@ -1,7 +1,5 @@
 package com.pilosa.client;
 
-import com.pilosa.client.internal.Internal;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -17,7 +15,7 @@ import java.util.Scanner;
  */
 public class CsvFileBitIterator implements IBitIterator {
     private Scanner scanner = null;
-    private Internal.Bit nextBit = null;
+    private Bit nextBit = null;
 
     private CsvFileBitIterator() {
     }
@@ -59,11 +57,7 @@ public class CsvFileBitIterator implements IBitIterator {
                 if (fields.length > 2) {
                     timestamp = Long.parseLong(fields[2]);
                 }
-                this.nextBit = Internal.Bit.newBuilder()
-                        .setBitmapID(bitmapID)
-                        .setProfileID(profileID)
-                        .setTimestamp(timestamp)
-                        .build();
+                this.nextBit = Bit.create(bitmapID, profileID, timestamp);
                 return true;
             }
         }
@@ -73,7 +67,7 @@ public class CsvFileBitIterator implements IBitIterator {
     }
 
     @Override
-    public Internal.Bit next() {
+    public Bit next() {
         return this.nextBit;
     }
 

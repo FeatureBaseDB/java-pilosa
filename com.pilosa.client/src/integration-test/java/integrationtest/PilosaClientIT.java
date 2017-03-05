@@ -2,7 +2,6 @@ package integrationtest;
 
 import com.pilosa.client.*;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.Internal;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -345,14 +344,14 @@ public class PilosaClientIT {
 }
 
 class StaticBitIterator implements IBitIterator {
-    private List<Internal.Bit> bits;
+    private List<Bit> bits;
     private int index = 0;
 
     StaticBitIterator() {
         this.bits = new ArrayList<>(3);
-        this.bits.add(makeBit(10, 5));
-        this.bits.add(makeBit(2, 3));
-        this.bits.add(makeBit(7, 1));
+        this.bits.add(Bit.create(10, 5));
+        this.bits.add(Bit.create(2, 3));
+        this.bits.add(Bit.create(7, 1));
     }
 
     @Override
@@ -361,19 +360,12 @@ class StaticBitIterator implements IBitIterator {
     }
 
     @Override
-    public Internal.Bit next() {
+    public Bit next() {
         return this.bits.get(index++);
     }
 
     @Override
     public void remove() {
         // We have this just to avoid compilation problems on JDK 7
-    }
-
-    private Internal.Bit makeBit(long bitmapID, long profileID) {
-        return Internal.Bit.newBuilder()
-                .setBitmapID(bitmapID)
-                .setProfileID(profileID)
-                .build();
     }
 }

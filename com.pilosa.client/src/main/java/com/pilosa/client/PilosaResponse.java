@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.Internal;
 
 import java.io.IOException;
 import java.io.InputStream;

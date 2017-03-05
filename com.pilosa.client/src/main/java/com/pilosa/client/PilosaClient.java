@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
-import com.pilosa.client.internal.Internal;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -57,7 +56,7 @@ public class PilosaClient {
     private boolean isConnected = false;
     private URI currentAddress;
     private HttpClient client = HttpClients.createDefault();
-    private Comparator<Internal.Bit> bitComparator = new BitComparator();
+    private Comparator<Bit> bitComparator = new BitComparator();
 
     /**
      * Creates a client with the given server address.
@@ -213,12 +212,12 @@ public class PilosaClient {
         boolean canContinue = true;
         while (canContinue) {
             // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
-            Map<Long, List<Internal.Bit>> bitGroup = new HashMap<>();
+            Map<Long, List<Bit>> bitGroup = new HashMap<>();
             for (int i = 0; i < batchSize; i++) {
                 if (iterator.hasNext()) {
-                    Internal.Bit bit = iterator.next();
+                    Bit bit = iterator.next();
                     long slice = bit.getProfileID() / sliceWidth;
-                    List<Internal.Bit> sliceList = bitGroup.get(slice);
+                    List<Bit> sliceList = bitGroup.get(slice);
                     if (sliceList == null) {
                         sliceList = new ArrayList<>(1);
                         bitGroup.put(slice, sliceList);
@@ -230,7 +229,7 @@ public class PilosaClient {
                     break;
                 }
             }
-            for (Map.Entry<Long, List<Internal.Bit>> entry : bitGroup.entrySet()) {
+            for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
                 importBits(databaseName, frameName, entry.getKey(), entry.getValue());
             }
         }
@@ -304,7 +303,7 @@ public class PilosaClient {
         return queryPath(request);
     }
 
-    private void importBits(String databaseName, String frameName, long slice, List<Internal.Bit> bits) {
+    private void importBits(String databaseName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
         for (FragmentNode node : nodes) {
@@ -360,11 +359,11 @@ public class PilosaClient {
     }
 
     private Internal.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
-                                                       List<Internal.Bit> bits) {
+                                                       List<Bit> bits) {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
         List<Long> profileIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
-        for (Internal.Bit bit : bits) {
+        for (Bit bit : bits) {
             bitmapIDs.add(bit.getBitmapID());
             profileIDs.add(bit.getProfileID());
             timestamps.add(bit.getTimestamp());
@@ -471,9 +470,9 @@ class FragmentNode {
     private String host;
 }
 
-class BitComparator implements Comparator<Internal.Bit> {
+class BitComparator implements Comparator<Bit> {
     @Override
-    public int compare(Internal.Bit bit, Internal.Bit other) {
+    public int compare(Bit bit, Bit other) {
         int bitCmp = Long.signum(bit.getBitmapID() - other.getBitmapID());
         int prfCmp = Long.signum(bit.getProfileID() - other.getProfileID());
         return (bitCmp == 0) ? prfCmp : bitCmp;

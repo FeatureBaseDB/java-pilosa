@@ -42,21 +42,20 @@ public class Bit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Bit)) {
+            return false;
+        }
 
         Bit bit = (Bit) o;
-
-        return new EqualsBuilder()
-                .append(iBit, bit.iBit)
-                .isEquals();
+        return this.iBit.equals(bit.iBit);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(iBit)
-                .toHashCode();
+        return this.iBit.hashCode();
     }
 }

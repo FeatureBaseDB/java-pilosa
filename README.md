@@ -104,7 +104,7 @@ $ mvn failsafe:integration-test
 Protobuf compiler is required to generate protobuf classes:
 
 ```
-$ cd com.pilosa.client/src/internal
+$ cd com.pilosa.client/src
 $ protoc --java_out=../main/java/ internal.proto
 
 ```

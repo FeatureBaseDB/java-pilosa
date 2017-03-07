@@ -10,7 +10,7 @@ Java client for Pilosa high performance database.
 
 ## Requirements
 
-* Java 1.7 and higher
+* JDK 7 and higher
 * Maven 3 and higher
 
 ## Install
@@ -78,5 +78,29 @@ response = client.query("example_db",
 ```
 
 ## Contribution
+
+### Running tests
+
+Make sure you are in the `com.pilosa.client` directory.
+
+You can run unit tests with:
+```
+$ mvn test
+```
+
+And integration tests with:
+```
+$ mvn failsafe:integration-test
+```
+
+### Generating protobuf classes
+
+Protobuf compiler is required to generate protobuf classes:
+
+```
+$ cd com.pilosa.client/src/internal
+$ protoc --java_out=../main/java/ internal.proto
+
+```
 
 ## License

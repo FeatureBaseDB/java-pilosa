@@ -1,23 +1,24 @@
 package com.pilosa.client;
 
-import com.pilosa.client.exceptions.PilosaException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileItem {
-    private int id;
+public final class ProfileItem {
+    private long id;
     private Map<String, Object> attributes;
 
     ProfileItem() {
-        this.attributes = new HashMap<>(0);
     }
 
-    ProfileItem(int id, Map<String, Object> attributes) {
+    ProfileItem(long id, Map<String, Object> attributes) {
         this.id = id;
         this.attributes = attributes;
+    }
+
+    static ProfileItem fromInternal(Internal.Profile profile) {
+        return new ProfileItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
     }
 
     /**
@@ -25,7 +26,7 @@ public class ProfileItem {
      *
      * @return profile ID
      */
-    public int getID() {
+    public long getID() {
         return this.id;
     }
 
@@ -64,18 +65,5 @@ public class ProfileItem {
                 .append(this.id, rhs.id)
                 .append(this.attributes, rhs.attributes)
                 .isEquals();
-    }
-
-    static ProfileItem fromMap(Map map) {
-        Integer id = (Integer) map.get("id");
-        if (id == null) {
-            throw new PilosaException("Invalid profile, has no id key");
-        }
-        @SuppressWarnings("unchecked")
-        Map<String, Object> attrs = (Map<String, Object>) map.get("attrs");
-        if (attrs == null) {
-            throw new PilosaException("Invalid profile, has no attributes key");
-        }
-        return new ProfileItem(id, attrs);
     }
 }

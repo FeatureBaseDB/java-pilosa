@@ -95,6 +95,20 @@ public final class URI {
         return port;
     }
 
+    /**
+     * Returns normalized address, ready to be used with an HttpClent.
+     *
+     * @return normalized address by keeping the scheme part upto + (plus) character
+     */
+    String getNormalizedAddress() {
+        String scheme = this.scheme;
+        int plusIndex = scheme.indexOf('+');
+        if (plusIndex > 0) {
+            scheme = scheme.substring(0, plusIndex);
+        }
+        return String.format("%s://%s:%s", scheme, this.host, this.port);
+    }
+
     @Override
     public String toString() {
         return String.format("%s://%s:%s", this.scheme, this.host, this.port);

@@ -68,6 +68,15 @@ public class URITest {
         compare(uri, "https", "localhost", 5553);
     }
 
+    @Test
+    public void testNormalizedAddress() {
+        URI uri1 = new URI("http+protobuf", "big-data.pilosa.com", 6888);
+        assertEquals("http://big-data.pilosa.com:6888", uri1.getNormalizedAddress());
+
+        URI uri2 = new URI("https", "big-data.pilosa.com", 6888);
+        assertEquals("https://big-data.pilosa.com:6888", uri2.getNormalizedAddress());
+    }
+
     @Test(expected = PilosaURIException.class)
     public void testInvalidAddress1() {
         new URI("foo:bar");

@@ -30,6 +30,13 @@ public class PilosaClientIT {
     @Before
     public void setUp() {
         this.db = getRandomDatabaseName();
+        PilosaClient client = getClient();
+        client.createDatabase(this.db);
+//        client.createFrame(this.db, "query-test");
+//        client.createFrame(this.db, "another-frame");
+//        client.createFrame(this.db, "test");
+//        client.createFrame(this.db, "count-test");
+//        client.createFrame(this.db, "importframe");
     }
 
     @After
@@ -62,8 +69,10 @@ public class PilosaClientIT {
 
     @Test
     public void protobufCreateDatabaseDeleteDatabaseTest() {
-        final String dbname = "to-be-deleted";
+        final String dbname = "to-be-deleted-" + this.db ;
         PilosaClient client = getClient();
+        client.createDatabase(dbname);
+        client.createFrame(dbname, "delframe");
         client.query(dbname, Pql.setBit(1, "delframe", 2));
         client.deleteDatabase(dbname);
     }
@@ -175,7 +184,7 @@ public class PilosaClientIT {
     @Test
     public void ormCountTest() {
         PilosaClient client = getClient();
-        client.query("count-test",
+        client.query(this.db,
                 Pql.setBit(10, "count-test", 20),
                 Pql.setBit(10, "count-test", 21),
                 Pql.setBit(15, "count-test", 25));
@@ -193,8 +202,8 @@ public class PilosaClientIT {
     public void importTest() {
         PilosaClient client = this.getClient();
         StaticBitIterator iterator = new StaticBitIterator();
-        client.importFrame("importdb", "importframe", iterator);
-        QueryResponse response = client.query("importdb",
+        client.importFrame(this.db, "importframe", iterator);
+        QueryResponse response = client.query(this.db,
                 Pql.bitmap(2, "importframe"),
                 Pql.bitmap(7, "importframe"),
                 Pql.bitmap(10, "importframe"));
@@ -212,7 +221,7 @@ public class PilosaClientIT {
         runImportFailsHttpServer(15999);
         PilosaClient client = new PilosaClient(":15999");
         StaticBitIterator iterator = new StaticBitIterator();
-        client.importFrame("importdb", "importframe", iterator);
+        client.importFrame(this.db, "importframe", iterator);
     }
 
     private PilosaClient getClient() {

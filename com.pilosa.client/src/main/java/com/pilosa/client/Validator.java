@@ -8,8 +8,10 @@ final class Validator {
     // See: https://github.com/pilosa/pilosa/issues/280
     private final static Pattern DATABASE_NAME = Pattern.compile("^[a-z0-9_-]+$");
     private final static Pattern FRAME_NAME = Pattern.compile("^[.a-z0-9_-]+$");
+    private final static Pattern LABEL = Pattern.compile("^[a-z][a-z0-9_]*$");
     private final static int MAX_DATABASE_NAME = 64;
     private final static int MAX_FRAME_NAME = 64;
+    private final static int MAX_LABEL = 64;
 
     Validator() {}
 
@@ -38,6 +40,20 @@ final class Validator {
     static void ensureValidFrameName(String frameName) {
         if (!validateFrameName(frameName)) {
             throw new ValidationException(String.format("Invalid frame name: %s", frameName));
+        }
+    }
+
+    static boolean validateLabel(String label) {
+        //noinspection SimplifiableIfStatement
+        if (label.length() > MAX_LABEL) {
+            return false;
+        }
+        return LABEL.matcher(label).matches();
+    }
+
+    static void ensureValidLabel(String label) {
+        if (!validateLabel(label)) {
+            throw new ValidationException(String.format("Invalid label: %s", label));
         }
     }
 }

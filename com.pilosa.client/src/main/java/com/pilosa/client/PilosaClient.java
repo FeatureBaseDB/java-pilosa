@@ -6,17 +6,23 @@ import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.IOUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -160,6 +166,37 @@ public class PilosaClient {
         return queryPath(request, queries);
     }
 
+    public void createDatabase(String name) {
+        createDatabase(name, DatabaseOptions.withDefaults());
+    }
+
+    public void createDatabase(String name, DatabaseOptions options) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = this.currentAddress.getNormalizedAddress() + "/db";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}", name, options.getColumnLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating database");
+    }
+
+    public void createFrame(String databaseName, String name) {
+        createFrame(databaseName, name, FrameOptions.withDefaults());
+    }
+
+    public void createFrame(String databaseName, String name, FrameOptions options) {
+        if (!this.isConnected) {
+            connect();
+        }
+        String uri = this.currentAddress.getNormalizedAddress() + "/frame";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
+                databaseName, name, options.getRowLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating frame");
+    }
+
     /**
      * Deletes a databse
      * @param name the database to delete
@@ -174,14 +211,7 @@ public class PilosaClient {
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         String body = String.format("{\"db\":\"%s\"}", name);
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        try {
-            this.client.execute(httpDelete);
-        } catch (IOException ex) {
-            logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
-            throw new PilosaException("Error while deleting database", ex);
-        }
+        clientExecute(httpDelete, "Error while deleting database");
     }
 
     /**
@@ -242,6 +272,24 @@ public class PilosaClient {
         this.isConnected = true;
     }
 
+    private HttpResponse clientExecute(HttpRequestBase request, String errorMessage) {
+        try {
+            HttpResponse response = this.client.execute(request);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                String responseError = readStream(response.getEntity().getContent());
+                throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+            }
+            return response;
+        } catch (IOException ex) {
+            logger.error(ex);
+            this.cluster.removeAddress(this.currentAddress);
+            this.isConnected = false;
+            throw new PilosaException(errorMessage, ex);
+        }
+
+    }
+
     private QueryResponse queryPath(QueryRequest request) {
         if (!this.isConnected) {
             connect();
@@ -257,8 +305,8 @@ public class PilosaClient {
         Internal.QueryRequest qr = request.toProtobuf();
         body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
+        HttpResponse response = clientExecute(httpPost, "Error while posting query");
         try {
-            HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
             QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
             if (!queryResponse.isSuccess()) {
@@ -266,10 +314,7 @@ public class PilosaClient {
             }
             return queryResponse;
         } catch (IOException ex) {
-            logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
-            throw new PilosaException("Error while posting query", ex);
+            throw new PilosaException("Error while reading response", ex);
         }
     }
 
@@ -308,17 +353,13 @@ public class PilosaClient {
         String addr = this.currentAddress.getNormalizedAddress();
         String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
         HttpGet httpGet = new HttpGet(uri);
+        HttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes");
+        HttpEntity entity = response.getEntity();
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            HttpResponse response = this.client.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(entity.getContent(), new TypeReference<List<FragmentNode>>() {
-            });
+            return mapper.readValue(entity.getContent(), new TypeReference<List<FragmentNode>>() {});
         } catch (IOException ex) {
-            logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
-            throw new PilosaException("Error while fetching fragment nodes", ex);
+            throw new PilosaException("Error while reading response", ex);
         }
     }
 
@@ -332,17 +373,10 @@ public class PilosaClient {
         httpPost.setHeader("Content-Type", "application/x-protobuf");
         httpPost.setHeader("Accept", "application/x-protobuf");
         httpPost.setEntity(body);
-        try {
-            HttpResponse response = this.client.execute(httpPost);
-            StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() != 200) {
-                throw new PilosaException(String.format("Error while importing: %s", statusLine));
-            }
-        } catch (IOException ex) {
-            logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
-            throw new PilosaException("Error while importing", ex);
+        HttpResponse response = clientExecute(httpPost, "Error while importing");
+        StatusLine statusLine = response.getStatusLine();
+        if (statusLine.getStatusCode() != 200) {
+            throw new PilosaException(String.format("Error while importing: %s", statusLine));
         }
     }
 
@@ -364,6 +398,21 @@ public class PilosaClient {
                 .addAllProfileIDs(profileIDs)
                 .addAllTimestamps(timestamps)
                 .build();
+    }
+
+    private String readStream(InputStream stream) {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        try {
+            while ((length = stream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+        }
+        catch (IOException ex) {
+            return "";
+        }
+        return result.toString();
     }
 
 }

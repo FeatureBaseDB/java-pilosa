@@ -2,7 +2,6 @@ package integrationtest;
 
 import com.pilosa.client.*;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.internal.ClientProtos;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -27,7 +26,6 @@ import static org.junit.Assert.*;
 public class PilosaClientIT {
     private String db;
     private final static String SERVER_ADDRESS = ":15000";
-    private final static String SERVER_PROTOBUF_ADDRESS = "http+pb://:15000";
 
     @Before
     public void setUp() {
@@ -49,21 +47,14 @@ public class PilosaClientIT {
     @Test
     public void queryTest() {
         PilosaClient client = getClient();
-        PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
-        assertEquals(null, response.getResult());
-    }
-
-    @Test
-    public void queryOverProtobufTest() {
-        PilosaClient client = getProtobufClient();
-        PilosaResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
-        assertEquals(null, response.getResult());
+        QueryResponse response = client.query(db, "SetBit(id=555, frame=\"query-test\", profileID=10)");
+        assertNotNull(response.getResult());
     }
 
     @Test
     public void queryWithProfilesTest() {
         PilosaClient client = getClient();
-        PilosaResponse response = client.queryWithProfiles(db, "Bitmap(id=555, frame=\"query-test\")");
+        QueryResponse response = client.queryWithProfiles(db, "Bitmap(id=555, frame=\"query-test\")");
         assertNotNull(response.getResult());
         response = client.queryWithProfiles(db, "Bitmap(id=1, frame=\"another-frame\")");
         assertNotNull(response.getResult());
@@ -72,7 +63,7 @@ public class PilosaClientIT {
     @Test
     public void protobufCreateDatabaseDeleteDatabaseTest() {
         final String dbname = "to-be-deleted";
-        PilosaClient client = getProtobufClient();
+        PilosaClient client = getClient();
         client.query(dbname, Pql.setBit(1, "delframe", 2));
         client.deleteDatabase(dbname);
     }
@@ -97,34 +88,29 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void protobufParseErrorTest() {
-        PilosaClient client = getProtobufClient();
+        PilosaClient client = getClient();
         client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
     }
 
     @Test
     public void ormTest() {
         PilosaClient client = getClient();
-        PilosaResponse response;
+        QueryResponse response;
         Map<String, Object> attrs;
         Map<String, Object> profileAttrs;
         List<Long> bits;
         BitmapResult bitmapResult;
         List<PqlQuery> queryList;
 
-        response = client.query(db, Pql.clearBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        response = client.query(db, Pql.setBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        response = client.query(db, Pql.setBit(5, "test", 10));
-        assertEquals(null, response.getResult());
+        client.query(db, Pql.clearBit(5, "test", 10));
+        client.query(db, Pql.setBit(5, "test", 10));
+        client.query(db, Pql.setBit(5, "test", 10));
 
         attrs = new HashMap<>(0);
         bits = new ArrayList<>(1);
         bits.add(10L);
         response = client.query(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult)response.getResult();
+        bitmapResult = response.getResult().getBitmap();
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
@@ -134,7 +120,7 @@ public class PilosaClientIT {
         queryList = new ArrayList<>(1);
         queryList.add(Pql.bitmap(5, "test"));
         response = client.query(db, queryList);
-        bitmapResult = (BitmapResult) response.getResult();
+        bitmapResult = response.getResult().getBitmap();
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
@@ -142,11 +128,10 @@ public class PilosaClientIT {
 
         profileAttrs = new HashMap<>(1);
         profileAttrs.put("name", "bombo");
-        response = client.query(db, Pql.setProfileAttrs(10, profileAttrs));
-        assertNull(response.getResult());
+        client.query(db, Pql.setProfileAttrs(10, profileAttrs));
 
         response = client.queryWithProfiles(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult) response.getResult();
+        bitmapResult = response.getResult().getBitmap();
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
@@ -159,7 +144,7 @@ public class PilosaClientIT {
         queryList = new ArrayList<>(1);
         queryList.add(Pql.bitmap(5, "test"));
         response = client.queryWithProfiles(db, queryList);
-        bitmapResult = (BitmapResult) response.getResult();
+        bitmapResult = response.getResult().getBitmap();
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
@@ -168,20 +153,19 @@ public class PilosaClientIT {
         assertEquals(10, profile.getID());
         assertEquals(profileAttrs, profile.getAttributes());
 
-        response = client.query(db, Pql.clearBit(5, "test", 10));
-        assertEquals(null, response.getResult());
+        client.query(db, Pql.clearBit(5, "test", 10));
 
         attrs = new HashMap<>(0);
         bits = new ArrayList<>(0);
         response = client.query(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult)response.getResult();
+        bitmapResult = response.getResult().getBitmap();
         assertNotNull(bitmapResult);
         assertEquals(attrs, bitmapResult.getAttributes());
         assertEquals(bits, bitmapResult.getBits());
 
         client.query(db, Pql.setBit(155, "topn_test", 551));
         response = client.query(db, Pql.topN("topn_test", 1));
-        List<CountResultItem> items = (List<CountResultItem>) response.getResult();
+        List<CountResultItem> items = (List<CountResultItem>) response.getResult().getCountItems();
         assertEquals(1, items.size());
         CountResultItem item = items.get(0);
         assertEquals(155, item.getKey());
@@ -189,90 +173,14 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void ormProtobufTest() {
-        PilosaClient client = getProtobufClient();
-        PilosaResponse response;
-        Map<String, Object> attrs;
-        Map<String, Object> profileAttrs;
-        List<Long> bits;
-        BitmapResult bitmapResult;
-        List<PqlQuery> queryList;
-
-        response = client.query(db, Pql.clearBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        response = client.query(db, Pql.setBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        response = client.query(db, Pql.setBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        attrs = new HashMap<>(0);
-        bits = new ArrayList<>(1);
-        bits.add(10L);
-        response = client.query(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult) response.getResult();
-        assertNotNull(bitmapResult);
-        assertEquals(attrs, bitmapResult.getAttributes());
-        assertEquals(bits, bitmapResult.getBits());
-        assertNull(response.getProfile());
-
-        // the same with using List<PqlQuery> instead of []PqlQuery
-        queryList = new ArrayList<>(1);
-        queryList.add(Pql.bitmap(5, "test"));
-        response = client.query(db, queryList);
-        bitmapResult = (BitmapResult) response.getResult();
-        assertNotNull(bitmapResult);
-        assertEquals(attrs, bitmapResult.getAttributes());
-        assertEquals(bits, bitmapResult.getBits());
-        assertNull(response.getProfile());
-
-        profileAttrs = new HashMap<>(1);
-        profileAttrs.put("name", "bombo");
-        response = client.query(db, Pql.setProfileAttrs(10, profileAttrs));
-        assertNull(response.getResult());
-
-        response = client.queryWithProfiles(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult) response.getResult();
-        assertNotNull(bitmapResult);
-        assertEquals(attrs, bitmapResult.getAttributes());
-        assertEquals(bits, bitmapResult.getBits());
-        ProfileItem profile = response.getProfile();
-        assertNotNull(profile);
-        assertEquals(10, profile.getID());
-        assertEquals(profileAttrs, profile.getAttributes());
-
-        // the same with using List<PqlQuery> instead of []PqlQuery
-        queryList = new ArrayList<>(1);
-        queryList.add(Pql.bitmap(5, "test"));
-        response = client.queryWithProfiles(db, queryList);
-        bitmapResult = (BitmapResult) response.getResult();
-        assertNotNull(bitmapResult);
-        assertEquals(attrs, bitmapResult.getAttributes());
-        assertEquals(bits, bitmapResult.getBits());
-        profile = response.getProfile();
-        assertNotNull(profile);
-        assertEquals(10, profile.getID());
-        assertEquals(profileAttrs, profile.getAttributes());
-
-        response = client.query(db, Pql.clearBit(5, "test", 10));
-        assertEquals(null, response.getResult());
-
-        attrs = new HashMap<>(0);
-        bits = new ArrayList<>(0);
-        response = client.query(db, Pql.bitmap(5, "test"));
-        bitmapResult = (BitmapResult) response.getResult();
-        assertNotNull(bitmapResult);
-        assertEquals(attrs, bitmapResult.getAttributes());
-        assertEquals(bits, bitmapResult.getBits());
-
-        client.query(db, Pql.setBit(155, "topn_test", 551));
-        response = client.query(db, Pql.topN("topn_test", 1));
-        List<CountResultItem> items = (List<CountResultItem>) response.getResult();
-        assertEquals(1, items.size());
-        CountResultItem item = items.get(0);
-        assertEquals(155, item.getKey());
-        assertEquals(1, item.getCount());
+    public void ormCountTest() {
+        PilosaClient client = getClient();
+        client.query("count-test",
+                Pql.setBit(10, "count-test", 20),
+                Pql.setBit(10, "count-test", 21),
+                Pql.setBit(15, "count-test", 25));
+        QueryResponse response = client.query("count-test", Pql.count(Pql.bitmap(10, "count-test")));
+        assertEquals(2, response.getResult().getCount());
     }
 
     @Test(expected = PilosaException.class)
@@ -286,15 +194,15 @@ public class PilosaClientIT {
         PilosaClient client = this.getClient();
         StaticBitIterator iterator = new StaticBitIterator();
         client.importFrame("importdb", "importframe", iterator);
-        PilosaResponse response = client.query("importdb",
+        QueryResponse response = client.query("importdb",
                 Pql.bitmap(2, "importframe"),
                 Pql.bitmap(7, "importframe"),
                 Pql.bitmap(10, "importframe"));
 
         List<Long> target = Arrays.asList(3L, 1L, 5L);
-        List<Object> results = response.getResults();
+        List<QueryResult> results = response.getResults();
         for (int i = 0; i < results.size(); i++) {
-            BitmapResult br = (BitmapResult) results.get(i);
+            BitmapResult br = results.get(i).getBitmap();
             assertEquals(target.get(i), br.getBits().get(0));
         }
     }
@@ -309,10 +217,6 @@ public class PilosaClientIT {
 
     private PilosaClient getClient() {
         return new PilosaClient(SERVER_ADDRESS);
-    }
-
-    private PilosaClient getProtobufClient() {
-        return new PilosaClient(SERVER_PROTOBUF_ADDRESS);
     }
 
     private static int counter = 0;
@@ -345,14 +249,14 @@ public class PilosaClientIT {
 }
 
 class StaticBitIterator implements IBitIterator {
-    private List<ClientProtos.Bit> bits;
+    private List<Bit> bits;
     private int index = 0;
 
     StaticBitIterator() {
         this.bits = new ArrayList<>(3);
-        this.bits.add(makeBit(10, 5));
-        this.bits.add(makeBit(2, 3));
-        this.bits.add(makeBit(7, 1));
+        this.bits.add(Bit.create(10, 5));
+        this.bits.add(Bit.create(2, 3));
+        this.bits.add(Bit.create(7, 1));
     }
 
     @Override
@@ -361,19 +265,12 @@ class StaticBitIterator implements IBitIterator {
     }
 
     @Override
-    public ClientProtos.Bit next() {
+    public Bit next() {
         return this.bits.get(index++);
     }
 
     @Override
     public void remove() {
         // We have this just to avoid compilation problems on JDK 7
-    }
-
-    private ClientProtos.Bit makeBit(long bitmapID, long profileID) {
-        return ClientProtos.Bit.newBuilder()
-                .setBitmapID(bitmapID)
-                .setProfileID(profileID)
-                .build();
     }
 }

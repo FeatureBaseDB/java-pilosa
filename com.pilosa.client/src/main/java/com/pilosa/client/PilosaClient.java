@@ -5,18 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
-import com.pilosa.client.internal.ClientProtos;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,9 +30,9 @@ import java.util.*;
  * // Create a client
  * PilosaClient client = new PilosaClient("localhost:15000");
  * // Send a query. PilosaException is thrown if execution of the query fails.
- * PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
+ * QueryResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
- * Object result = response.getResult();
+ * QueryResult result = response.getResult();
  * // Deai with the result
  *
  * // You can send more than one query with a single query call
@@ -57,7 +53,7 @@ public class PilosaClient {
     private boolean isConnected = false;
     private URI currentAddress;
     private HttpClient client = HttpClients.createDefault();
-    private Comparator<ClientProtos.Bit> bitComparator = new BitComparator();
+    private Comparator<Bit> bitComparator = new BitComparator();
 
     /**
      * Creates a client with the given server address.
@@ -92,7 +88,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, String query) {
+    public QueryResponse query(String databaseName, String query) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setQuery(query);
         return queryPath(request);
@@ -106,7 +102,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, PqlQuery... queries) {
+    public QueryResponse query(String databaseName, PqlQuery... queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -118,7 +114,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse query(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse query(String databaseName, List<PqlQuery> queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -130,7 +126,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, String query) {
+    public QueryResponse queryWithProfiles(String databaseName, String query) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         request.setQuery(query);
@@ -144,7 +140,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
+    public QueryResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -158,7 +154,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public PilosaResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -189,29 +185,50 @@ public class PilosaClient {
     }
 
     /**
-     * Imports bits to the given database and frame
+     * Imports bits to the given database and frame, using 1000000 as the batch size.
      *
      * @param databaseName specify the database name
      * @param frameName    specify the frame name
      * @param iterator     specify the bit iterator
      */
     public void importFrame(String databaseName, String frameName, IBitIterator iterator) {
-        // XXX: this method stores all Bits in memory, it should batch it instead.
+        importFrame(databaseName, frameName, iterator, 100000);
+    }
+
+
+    /**
+     * Imports bits to the given database and frame.
+     *
+     * @param databaseName specify the database name
+     * @param frameName    specify the frame name
+     * @param iterator     specify the bit iterator
+     * @param batchSize    specify the number of bits to send in each import query
+     */
+    public void importFrame(String databaseName, String frameName, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
-        // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
-        Map<Long, List<ClientProtos.Bit>> bitGroup = new HashMap<>();
-        while (iterator.hasNext()) {
-            ClientProtos.Bit bit = iterator.next();
-            long slice = bit.getProfileID() / sliceWidth;
-            List<ClientProtos.Bit> sliceList = bitGroup.get(slice);
-            if (sliceList == null) {
-                sliceList = new ArrayList<>(1);
-                bitGroup.put(slice, sliceList);
+        boolean canContinue = true;
+        while (canContinue) {
+            // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
+            Map<Long, List<Bit>> bitGroup = new HashMap<>();
+            for (int i = 0; i < batchSize; i++) {
+                if (iterator.hasNext()) {
+                    Bit bit = iterator.next();
+                    long slice = bit.getProfileID() / sliceWidth;
+                    List<Bit> sliceList = bitGroup.get(slice);
+                    if (sliceList == null) {
+                        sliceList = new ArrayList<>(1);
+                        bitGroup.put(slice, sliceList);
+                    }
+                    sliceList.add(bit);
+
+                } else {
+                    canContinue = false;
+                    break;
+                }
             }
-            sliceList.add(bit);
-        }
-        for (Map.Entry<Long, List<ClientProtos.Bit>> entry : bitGroup.entrySet()) {
-            importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+            for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
+                importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+            }
         }
     }
 
@@ -225,38 +242,29 @@ public class PilosaClient {
         this.isConnected = true;
     }
 
-    private PilosaResponse queryPath(QueryRequest request) {
+    private QueryResponse queryPath(QueryRequest request) {
         if (!this.isConnected) {
             connect();
         }
-        boolean isProtobuf = this.currentAddress.getScheme().equals(HTTP_PROTOBUF);
         String uri = String.format("%s/query", this.currentAddress.getNormalizedAddress());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;
         ByteArrayEntity body;
-        if (isProtobuf) {
-            httpPost = new HttpPost(uri);
-            httpPost.setHeader("Content-Type", "application/x-protobuf");
-            httpPost.setHeader("Accept", "application/x-protobuf");
-            ClientProtos.QueryRequest qr = request.toProtobuf();
-            body = new ByteArrayEntity(qr.toByteArray());
-        } else {
-            uri = String.format("%s?%s", uri, request.toURLQueryString());
-            httpPost = new HttpPost(uri);
-            body = new ByteArrayEntity(request.getQuery().getBytes(StandardCharsets.UTF_8));
-        }
+        httpPost = new HttpPost(uri);
+        httpPost.setHeader("Content-Type", "application/x-protobuf");
+        httpPost.setHeader("Accept", "application/x-protobuf");
+        Internal.QueryRequest qr = request.toProtobuf();
+        body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
         try {
             HttpResponse response = this.client.execute(httpPost);
             HttpEntity entity = response.getEntity();
-            PilosaResponse pilosaResponse = (isProtobuf) ?
-                    PilosaResponse.fromProtobuf(entity.getContent())
-                    : PilosaResponse.fromJson(entity.getContent());
-            if (!pilosaResponse.isSuccess()) {
-                throw new PilosaException(pilosaResponse.getErrorMessage());
+            QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
+            if (!queryResponse.isSuccess()) {
+                throw new PilosaException(queryResponse.getErrorMessage());
             }
-            return pilosaResponse;
+            return queryResponse;
         } catch (IOException ex) {
             logger.error(ex);
             this.cluster.removeAddress(this.currentAddress);
@@ -265,7 +273,7 @@ public class PilosaClient {
         }
     }
 
-    private PilosaResponse queryPath(QueryRequest request, PqlQuery... queries) {
+    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
         for (PqlQuery query : queries) {
             builder.append(query);
@@ -274,7 +282,7 @@ public class PilosaClient {
         return queryPath(request);
     }
 
-    private PilosaResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
+    private QueryResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
         StringBuilder builder = new StringBuilder(queries.size());
         for (PqlQuery query : queries) {
             builder.append(query);
@@ -283,12 +291,12 @@ public class PilosaClient {
         return queryPath(request);
     }
 
-    private void importBits(String databaseName, String frameName, long slice, List<ClientProtos.Bit> bits) {
+    private void importBits(String databaseName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
         for (FragmentNode node : nodes) {
             PilosaClient client = new PilosaClient(node.toURI());
-            ClientProtos.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, 0, bits);
+            Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, 0, bits);
             client.importNode(importRequest);
         }
     }
@@ -314,7 +322,7 @@ public class PilosaClient {
         }
     }
 
-    void importNode(ClientProtos.ImportRequest importRequest) {
+    void importNode(Internal.ImportRequest importRequest) {
         if (!this.isConnected) {
             connect();
         }
@@ -338,17 +346,17 @@ public class PilosaClient {
         }
     }
 
-    private ClientProtos.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
-                                                           List<ClientProtos.Bit> bits) {
+    private Internal.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
+                                                       List<Bit> bits) {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
         List<Long> profileIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
-        for (ClientProtos.Bit bit : bits) {
+        for (Bit bit : bits) {
             bitmapIDs.add(bit.getBitmapID());
             profileIDs.add(bit.getProfileID());
             timestamps.add(bit.getTimestamp());
         }
-        return ClientProtos.ImportRequest.newBuilder()
+        return Internal.ImportRequest.newBuilder()
                 .setDB(databaseName)
                 .setFrame(frameName)
                 .setSlice(slice)
@@ -411,8 +419,8 @@ class QueryRequest {
         this.retrieveProfiles = ok;
     }
 
-    ClientProtos.QueryRequest toProtobuf() {
-        ClientProtos.QueryRequest.Builder builder = ClientProtos.QueryRequest.newBuilder();
+    Internal.QueryRequest toProtobuf() {
+        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder();
         builder.setDB(this.databaseName);
         builder.setQuery(this.query);
         if (this.timeQuantum != null) {
@@ -422,18 +430,6 @@ class QueryRequest {
             builder.setProfiles(true);
         }
         return builder.build();
-    }
-
-    String toURLQueryString() {
-        List<NameValuePair> args = new ArrayList<>(3);
-        args.add(new BasicNameValuePair("db", this.databaseName));
-        if (this.timeQuantum != null) {
-            args.add(new BasicNameValuePair("time_granularity", this.timeQuantum));
-        }
-        if (this.retrieveProfiles) {
-            args.add(new BasicNameValuePair("profiles", "true"));
-        }
-        return URLEncodedUtils.format(args, '&', StandardCharsets.UTF_8);
     }
 
 }
@@ -450,9 +446,9 @@ class FragmentNode {
     private String host;
 }
 
-class BitComparator implements Comparator<ClientProtos.Bit> {
+class BitComparator implements Comparator<Bit> {
     @Override
-    public int compare(ClientProtos.Bit bit, ClientProtos.Bit other) {
+    public int compare(Bit bit, Bit other) {
         int bitCmp = Long.signum(bit.getBitmapID() - other.getBitmapID());
         int prfCmp = Long.signum(bit.getProfileID() - other.getProfileID());
         return (bitCmp == 0) ? prfCmp : bitCmp;

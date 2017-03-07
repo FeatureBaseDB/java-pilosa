@@ -10,7 +10,7 @@ Java client for Pilosa high performance database.
 
 ## Requirements
 
-* Java 1.7 and higher
+* JDK 7 and higher
 * Maven 3 and higher
 
 ## Install
@@ -75,12 +75,6 @@ response = client.query("example_db",
                         Pql.bitmap(5, "sample"),
                         Pql.topN("sample", 5);
 
-```
-
-By default the client uses a text protocol to send requests and JSON to retrieve responses. You can enable protobuf support by explicitly setting the address scheme to: `http+pb`:
-
-```java
-PilosaClient client = new PilosaClient("http+pb://localhost:15000");
 ```
 
 ## Contribution

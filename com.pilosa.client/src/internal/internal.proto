@@ -3,7 +3,7 @@ syntax = "proto3";
 package internal;
 
 option java_package = "com.pilosa.client.internal";
-option java_outer_classname = "ClientProtos";
+option java_outer_classname = "Internal";
 
 message DB {
     string TimeQuantum = 1;

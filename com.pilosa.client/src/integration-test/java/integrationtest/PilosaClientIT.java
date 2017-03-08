@@ -2,6 +2,10 @@ package integrationtest;
 
 import com.pilosa.client.*;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.orm.Database;
+import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.Pql;
+import com.pilosa.client.orm.PqlQuery;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -25,6 +29,8 @@ import static org.junit.Assert.*;
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
     private String db;
+    private Database database;
+    private Frame frame;
     private final static String SERVER_ADDRESS = ":15000";
 
     @Before
@@ -38,12 +44,18 @@ public class PilosaClientIT {
         client.createFrame(this.db, "count-test");
         client.createFrame(this.db, "importframe");
         client.createFrame(this.db, "topn_test");
+
+        this.database = Database.named(this.db + "-opts", DatabaseOptions.withColumnLabel("user"));
+        client.createDatabase(this.database);
+        this.frame = this.database.frame("collab", FrameOptions.withRowLabel("project"));
+        client.createFrame(this.frame);
     }
 
     @After
     public void tearDown() {
         PilosaClient client = getClient();
         client.deleteDatabase(this.db);
+        client.deleteDatabase(this.database);
     }
 
     @Test
@@ -83,7 +95,7 @@ public class PilosaClientIT {
         final String dbname = "db-col-label-" + this.db;
         PilosaClient client = getClient();
         client.createDatabase(dbname, DatabaseOptions.withColumnLabel("colz"));
-        client.createFrame(dbname, "my-frame", FrameOptions.withColumnLabel("rowz"));
+        client.createFrame(dbname, "my-frame", FrameOptions.withRowLabel("rowz"));
         client.deleteDatabase(dbname);
     }
 
@@ -200,6 +212,36 @@ public class PilosaClientIT {
                 Pql.setBit(15, "count-test", 25));
         QueryResponse response = client.query(this.db, Pql.count(Pql.bitmap(10, "count-test")));
         assertEquals(2, response.getResult().getCount());
+    }
+
+    @Test
+    public void newOrmTest() {
+        PilosaClient client = getClient();
+        client.query(this.frame.setBit(10, 20));
+        QueryResponse response1 = client.query(this.frame.bitmap(10));
+        assertEquals(0, response1.getProfiles().size());
+        BitmapResult result1 = response1.getResult().getBitmap();
+        assertEquals(0, result1.getAttributes().size());
+        assertEquals(1, result1.getBits().size());
+        assertEquals(20, (long) result1.getBits().get(0));
+
+        Map<String, Object> profileAttrs = new HashMap<>(1);
+        profileAttrs.put("name", "bombo");
+        client.query(this.database.setProfileAttrs(20, profileAttrs));
+        QueryResponse response2 = client.queryWithProfiles(this.frame.bitmap(10));
+        ProfileItem profile = response2.getProfile();
+        assertNotNull(profile);
+        assertEquals(20, profile.getID());
+
+        Map<String, Object> bitmapAttrs = new HashMap<>(1);
+        bitmapAttrs.put("active", true);
+        bitmapAttrs.put("signed", -5);
+        client.query(this.frame.setBitmapAttrs(10, bitmapAttrs));
+        QueryResponse response3 = client.query(this.frame.bitmap(10));
+        BitmapResult bitmap = response3.getResult().getBitmap();
+        assertEquals(1, bitmap.getBits().size());
+        assertEquals(1, bitmap.getAttributes().size());
+        assertEquals(true, bitmap.getAttributes().get("active"));
     }
 
     @Test(expected = PilosaException.class)

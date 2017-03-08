@@ -9,10 +9,10 @@ public class FrameOptions {
         return new FrameOptions();
     }
 
-    public static FrameOptions withColumnLabel(String columnLabel) {
-        Validator.ensureValidLabel(columnLabel);
+    public static FrameOptions withRowLabel(String rowLabel) {
+        Validator.ensureValidLabel(rowLabel);
         FrameOptions options = new FrameOptions();
-        options.rowLabel = columnLabel;
+        options.rowLabel = rowLabel;
         return options;
     }
 

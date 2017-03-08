@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
+import com.pilosa.client.orm.Database;
+import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.PqlQuery;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -121,7 +124,18 @@ public class PilosaClient {
     }
 
     /**
-     * Queries the server with the given database name and query strings.
+     * Runs the given query against the server.
+     *
+     * @param query a PqlQuery with its database is not null
+     * @return Pilosa response
+     * @throws ValidationException if the given query's database is null
+     */
+    public QueryResponse query(PqlQuery query) {
+        return queryPath(QueryRequest.withQuery(query));
+    }
+
+    /**
+     * Queries the server with the given database name and enables profiles in the response.
      *
      * @param databaseName the database to use
      * @param query a Pql query
@@ -136,7 +150,7 @@ public class PilosaClient {
     }
 
     /**
-     * Queries the server with the given database name and queries.
+     * Queries the server with the given database name and enables profiles in the response.
      * @param databaseName the database to use
      * @param queries a single or multiple PqlQuery queries
      * @return Pilosa response with profiles
@@ -149,7 +163,7 @@ public class PilosaClient {
     }
 
     /**
-     * Queries the server with the given database name and queries.
+     * Queries the server with the given database name and enables profiles in the response.
      *
      * @param databaseName the database to use
      * @param queries      a single or multiple PqlQuery queries
@@ -160,6 +174,19 @@ public class PilosaClient {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
+    }
+
+    /**
+     * Runs the given query against the server and enables profiles in the response.
+     *
+     * @param query a PqlQuery with its database is not null
+     * @return Pilosa response
+     * @throws ValidationException if the given query's database is null
+     */
+    public QueryResponse queryWithProfiles(PqlQuery query) {
+        QueryRequest request = QueryRequest.withQuery(query);
+        request.setRetrieveProfiles(true);
+        return queryPath(request, query);
     }
 
     public void createDatabase(String name) {
@@ -175,6 +202,10 @@ public class PilosaClient {
         clientExecute(httpPost, "Error while creating database");
     }
 
+    public void createDatabase(Database database) {
+        createDatabase(database.getName(), database.getOptions());
+    }
+
     public void createFrame(String databaseName, String name) {
         createFrame(databaseName, name, FrameOptions.withDefaults());
     }
@@ -186,6 +217,10 @@ public class PilosaClient {
                 databaseName, name, options.getRowLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
+    }
+
+    public void createFrame(Frame frame) {
+        createFrame(frame.getDatabase().getName(), frame.getName(), frame.getOptions());
     }
 
     /**
@@ -200,6 +235,10 @@ public class PilosaClient {
         String body = String.format("{\"db\":\"%s\"}", name);
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpDelete, "Error while deleting database");
+    }
+
+    public void deleteDatabase(Database database) {
+        deleteDatabase(database.getName());
     }
 
     /**
@@ -439,6 +478,14 @@ class QueryRequest {
     static QueryRequest withDatabase(String databaseName) {
         Validator.ensureValidDatabaseName(databaseName);
         return new QueryRequest(databaseName);
+    }
+
+    static QueryRequest withQuery(PqlQuery query) {
+        // We call QueryRequest.withDatabase in order to protect against database name == null
+        // TODO: check that database name is not null and create the QueryRequest object directly.
+        QueryRequest request = QueryRequest.withDatabase(query.getDatabase().getName());
+        request.setQuery(query.toString());
+        return request;
     }
 
     String getQuery() {

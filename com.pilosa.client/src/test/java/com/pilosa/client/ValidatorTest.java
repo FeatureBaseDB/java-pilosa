@@ -27,11 +27,11 @@ public class ValidatorTest {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
     private final static String[] validLabels = new String[]{
-            "a", "ab", "ab1", "d_e",
+            "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidLabels = new String[]{
-            "", "1", "_", "-", "b-c", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "", "1", "_", "-", "b-c", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
 

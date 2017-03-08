@@ -17,17 +17,17 @@ public class UtilTest {
     public void protobufAttrsToMapTest() {
         List<Internal.Attr> attrs = new ArrayList<>(3);
         attrs.add(Internal.Attr.newBuilder()
-                .setType(Internal.Attr.STRINGVALUE_FIELD_NUMBER)
+                .setType(Util.PROTOBUF_STRING_TYPE)
                 .setKey("stringval")
                 .setStringValue("somestr")
                 .build());
         attrs.add(Internal.Attr.newBuilder()
-                .setType(Internal.Attr.UINTVALUE_FIELD_NUMBER)
+                .setType(Util.PROTOBUF_UINT_TYPE)
                 .setKey("intval")
                 .setUintValue(5)
                 .build());
         attrs.add(Internal.Attr.newBuilder()
-                .setType(Internal.Attr.BOOLVALUE_FIELD_NUMBER)
+                .setType(Util.PROTOBUF_BOOL_TYPE)
                 .setKey("boolval")
                 .setBoolValue(true)
                 .build());

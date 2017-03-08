@@ -6,23 +6,20 @@ import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -53,12 +50,11 @@ import java.util.*;
  */
 public class PilosaClient {
     private static final String HTTP = "http";
-    private static final String HTTP_PROTOBUF = "http+pb";
     private static final Logger logger = LogManager.getLogger();
     private ICluster cluster;
     private boolean isConnected = false;
     private URI currentAddress;
-    private HttpClient client = HttpClients.createDefault();
+    private HttpClient client = null;
     private Comparator<Bit> bitComparator = new BitComparator();
 
     /**
@@ -171,12 +167,10 @@ public class PilosaClient {
     }
 
     public void createDatabase(String name, DatabaseOptions options) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String uri = this.currentAddress.getNormalizedAddress() + "/db";
+        String uri = this.getAddress() + "/db";
         HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}", name, options.getColumnLabel());
+        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
+                name, options.getColumnLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating database");
     }
@@ -186,10 +180,7 @@ public class PilosaClient {
     }
 
     public void createFrame(String databaseName, String name, FrameOptions options) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String uri = this.currentAddress.getNormalizedAddress() + "/frame";
+        String uri = this.getAddress() + "/frame";
         HttpPost httpPost = new HttpPost(uri);
         String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
                 databaseName, name, options.getRowLabel());
@@ -204,10 +195,7 @@ public class PilosaClient {
      */
     public void deleteDatabase(String name) {
         Validator.ensureValidDatabaseName(name);
-        if (!this.isConnected) {
-            connect();
-        }
-        String uri = this.currentAddress.getNormalizedAddress() + "/db";
+        String uri = this.getAddress() + "/db";
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         String body = String.format("{\"db\":\"%s\"}", name);
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
@@ -262,23 +250,43 @@ public class PilosaClient {
         }
     }
 
-    private void connect() {
+    private String getAddress() {
         this.currentAddress = this.cluster.getAddress();
         String scheme = this.currentAddress.getScheme();
-        if (!scheme.equals(HTTP) && !scheme.equals(HTTP_PROTOBUF)) {
+        if (!scheme.equals(HTTP)) {
             throw new PilosaException("Unknown scheme: " + scheme);
         }
+        return this.currentAddress.getNormalizedAddress();
+    }
+
+    private void connect() {
+        this.client = HttpClients.createDefault();
         logger.info("Connected to {}", this.currentAddress);
         this.isConnected = true;
     }
 
     private HttpResponse clientExecute(HttpRequestBase request, String errorMessage) {
+        return clientExecute(request, errorMessage, ReturnClientResponse.NO_RESPONSE);
+    }
+
+    private HttpResponse clientExecute(HttpRequestBase request, String errorMessage,
+                                       ReturnClientResponse returnResponse) {
+        if (!this.isConnected) {
+            connect();
+        }
         try {
-            HttpResponse response = this.client.execute(request);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode < 200 || statusCode >= 300) {
-                String responseError = readStream(response.getEntity().getContent());
-                throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+            HttpResponse response = client.execute(request);
+            if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode < 200 || statusCode >= 300) {
+                    String responseError = readStream(response.getEntity().getContent());
+                    throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+                } else {
+                    // the entity should be consumed, if not returned
+                    if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
+                        EntityUtils.consume(response.getEntity());
+                    }
+                }
             }
             return response;
         } catch (IOException ex) {
@@ -291,10 +299,7 @@ public class PilosaClient {
     }
 
     private QueryResponse queryPath(QueryRequest request) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String uri = String.format("%s/query", this.currentAddress.getNormalizedAddress());
+        String uri = String.format("%s/query", this.getAddress());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;
@@ -305,7 +310,8 @@ public class PilosaClient {
         Internal.QueryRequest qr = request.toProtobuf();
         body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
-        HttpResponse response = clientExecute(httpPost, "Error while posting query");
+        HttpResponse response = clientExecute(httpPost, "Error while posting query",
+                ReturnClientResponse.RAW_RESPONSE);
         try {
             HttpEntity entity = response.getEntity();
             QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
@@ -341,19 +347,17 @@ public class PilosaClient {
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
         for (FragmentNode node : nodes) {
             PilosaClient client = new PilosaClient(node.toURI());
-            Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, 0, bits);
+            Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, slice, bits);
             client.importNode(importRequest);
         }
     }
 
     List<FragmentNode> fetchFrameNodes(String databaseName, long slice) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String addr = this.currentAddress.getNormalizedAddress();
+        String addr = this.getAddress();
         String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
         HttpGet httpGet = new HttpGet(uri);
-        HttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes");
+        HttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
+                ReturnClientResponse.ERROR_CHECKED_RESPONSE);
         HttpEntity entity = response.getEntity();
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -364,20 +368,13 @@ public class PilosaClient {
     }
 
     void importNode(Internal.ImportRequest importRequest) {
-        if (!this.isConnected) {
-            connect();
-        }
-        String uri = String.format("%s/import", this.currentAddress.getNormalizedAddress());
+        String uri = String.format("%s/import", this.getAddress());
         HttpPost httpPost = new HttpPost(uri);
         ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
         httpPost.setHeader("Content-Type", "application/x-protobuf");
         httpPost.setHeader("Accept", "application/x-protobuf");
         httpPost.setEntity(body);
-        HttpResponse response = clientExecute(httpPost, "Error while importing");
-        StatusLine statusLine = response.getStatusLine();
-        if (statusLine.getStatusCode() != 200) {
-            throw new PilosaException(String.format("Error while importing: %s", statusLine));
-        }
+        clientExecute(httpPost, "Error while importing");
     }
 
     private Internal.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
@@ -400,19 +397,20 @@ public class PilosaClient {
                 .build();
     }
 
-    private String readStream(InputStream stream) {
+    private String readStream(InputStream stream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int length;
-        try {
-            while ((length = stream.read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-        }
-        catch (IOException ex) {
-            return "";
+        while ((length = stream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
         }
         return result.toString();
+    }
+
+    private enum ReturnClientResponse {
+        RAW_RESPONSE,
+        ERROR_CHECKED_RESPONSE,
+        NO_RESPONSE,
     }
 
 }
@@ -431,7 +429,7 @@ class HttpDeleteWithBody extends HttpPost {
 class QueryRequest {
     private String databaseName = "";
     private String query = "";
-    private String timeQuantum = null;
+    private String timeQuantum = "";
     private boolean retrieveProfiles = false;
 
     private QueryRequest(String databaseName) {
@@ -469,18 +467,13 @@ class QueryRequest {
     }
 
     Internal.QueryRequest toProtobuf() {
-        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder();
-        builder.setDB(this.databaseName);
-        builder.setQuery(this.query);
-        if (this.timeQuantum != null) {
-            builder.setQuantum(this.timeQuantum);
-        }
-        if (this.retrieveProfiles) {
-            builder.setProfiles(true);
-        }
+        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
+                .setDB(this.databaseName)
+                .setQuery(this.query)
+                .setProfiles(this.retrieveProfiles)
+                .setQuantum(this.timeQuantum);
         return builder.build();
     }
-
 }
 
 class FragmentNode {

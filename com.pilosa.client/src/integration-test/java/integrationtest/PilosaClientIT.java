@@ -32,11 +32,12 @@ public class PilosaClientIT {
         this.db = getRandomDatabaseName();
         PilosaClient client = getClient();
         client.createDatabase(this.db);
-//        client.createFrame(this.db, "query-test");
-//        client.createFrame(this.db, "another-frame");
-//        client.createFrame(this.db, "test");
-//        client.createFrame(this.db, "count-test");
-//        client.createFrame(this.db, "importframe");
+        client.createFrame(this.db, "query-test");
+        client.createFrame(this.db, "another-frame");
+        client.createFrame(this.db, "test");
+        client.createFrame(this.db, "count-test");
+        client.createFrame(this.db, "importframe");
+        client.createFrame(this.db, "topn_test");
     }
 
     @After
@@ -74,6 +75,15 @@ public class PilosaClientIT {
         client.createDatabase(dbname);
         client.createFrame(dbname, "delframe");
         client.query(dbname, Pql.setBit(1, "delframe", 2));
+        client.deleteDatabase(dbname);
+    }
+
+    @Test
+    public void createDatabaseWithColumnLabelFrameWithRowLabel() {
+        final String dbname = "db-col-label-" + this.db;
+        PilosaClient client = getClient();
+        client.createDatabase(dbname, DatabaseOptions.withColumnLabel("colz"));
+        client.createFrame(dbname, "my-frame", FrameOptions.withColumnLabel("rowz"));
         client.deleteDatabase(dbname);
     }
 
@@ -188,7 +198,7 @@ public class PilosaClientIT {
                 Pql.setBit(10, "count-test", 20),
                 Pql.setBit(10, "count-test", 21),
                 Pql.setBit(15, "count-test", 25));
-        QueryResponse response = client.query("count-test", Pql.count(Pql.bitmap(10, "count-test")));
+        QueryResponse response = client.query(this.db, Pql.count(Pql.bitmap(10, "count-test")));
         assertEquals(2, response.getResult().getCount());
     }
 
@@ -218,10 +228,43 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void importFailNot200() {
-        runImportFailsHttpServer(15999);
+        HttpServer server = runImportFailsHttpServer();
         PilosaClient client = new PilosaClient(":15999");
         StaticBitIterator iterator = new StaticBitIterator();
-        client.importFrame(this.db, "importframe", iterator);
+        try {
+            client.importFrame(this.db, "importframe", iterator);
+        } finally {
+            if (server != null) {
+                server.stop(0);
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void importFail200() {
+        HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
+        PilosaClient client = new PilosaClient(":15999");
+        StaticBitIterator iterator = new StaticBitIterator();
+        try {
+            client.importFrame(this.db, "importframe", iterator);
+        } finally {
+            if (server != null) {
+                server.stop(0);
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void queryFail200() {
+        HttpServer server = runContentSizeLyingHttpServer("/query");
+        PilosaClient client = new PilosaClient(":15999");
+        try {
+            client.query("somedb", "valid query not required here");
+        } finally {
+            if (server != null) {
+                server.stop(0);
+            }
+        }
     }
 
     private PilosaClient getClient() {
@@ -234,16 +277,35 @@ public class PilosaClientIT {
         return String.format("testdb-%d", ++counter);
     }
 
-    private void runImportFailsHttpServer(int port) {
+    private HttpServer runImportFailsHttpServer() {
+        final int port = 15999;
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext("/fragment/nodes", new FragmentNodesHandler());
             server.setExecutor(null);
             server.start();
+            return server;
         } catch (IOException ex) {
             fail(ex.getMessage());
         }
+        return null;
     }
+
+    private HttpServer runContentSizeLyingHttpServer(String path) {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext(path, new ContentSizeLyingHandler());
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
+//    private HttpServer runFrameNode
 
     static class FragmentNodesHandler implements HttpHandler {
         @Override
@@ -252,6 +314,15 @@ public class PilosaClientIT {
             r.sendResponseHeaders(200, response.length());
             OutputStream os = r.getResponseBody();
             os.write(response.getBytes());
+            os.close();
+        }
+    }
+
+    static class ContentSizeLyingHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            r.sendResponseHeaders(200, 42);
+            OutputStream os = r.getResponseBody();
             os.close();
         }
     }

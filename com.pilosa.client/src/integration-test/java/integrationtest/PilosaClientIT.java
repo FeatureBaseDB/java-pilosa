@@ -235,12 +235,12 @@ public class PilosaClientIT {
 
         Map<String, Object> bitmapAttrs = new HashMap<>(1);
         bitmapAttrs.put("active", true);
-        bitmapAttrs.put("signed", -5);
+        bitmapAttrs.put("unsigned", 5);
         client.query(this.frame.setBitmapAttrs(10, bitmapAttrs));
         QueryResponse response3 = client.query(this.frame.bitmap(10));
         BitmapResult bitmap = response3.getResult().getBitmap();
         assertEquals(1, bitmap.getBits().size());
-        assertEquals(1, bitmap.getAttributes().size());
+        assertEquals(2, bitmap.getAttributes().size());
         assertEquals(true, bitmap.getAttributes().get("active"));
     }
 

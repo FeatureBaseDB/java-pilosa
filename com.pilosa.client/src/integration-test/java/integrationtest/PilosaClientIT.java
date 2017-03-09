@@ -1,6 +1,8 @@
 package integrationtest;
 
 import com.pilosa.client.*;
+import com.pilosa.client.exceptions.DatabaseExistsException;
+import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
@@ -244,10 +246,45 @@ public class PilosaClientIT {
         assertEquals(true, bitmap.getAttributes().get("active"));
     }
 
+    @Test(expected = DatabaseExistsException.class)
+    public void createExistingDatabaseFails() {
+        PilosaClient client = getClient();
+        client.createDatabase(this.database);
+    }
+
+    @Test(expected = FrameExistsException.class)
+    public void createExistingFrameFails() {
+        PilosaClient client = getClient();
+        client.createFrame(this.frame);
+    }
+
     @Test(expected = PilosaException.class)
     public void failedDeleteDatabaseTest() {
         PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222");
         client.deleteDatabase("non-existent");
+    }
+
+    @Test
+    public void ensureDatabaseExistsTest() {
+        PilosaClient client = getClient();
+        final Database db = Database.named(this.db + "-ensure");
+        client.ensureDatabaseExists(db);
+        client.createFrame(db.frame("frm"));
+        client.ensureDatabaseExists(db);  // shouldn't throw an exception
+        client.deleteDatabase(db);
+    }
+
+    @Test
+    public void ensureFrameExistsTest() {
+        PilosaClient client = getClient();
+        final Database db = Database.named(this.db + "-ensure-frame");
+        client.createDatabase(db);
+        final Frame frame = db.frame("frame");
+        client.ensureFrameExists(frame);
+        client.ensureFrameExists(frame); // shouldn't throw an exception
+        client.query(frame.setBit(1, 10));
+        client.deleteDatabase(db);
+
     }
 
     @Test

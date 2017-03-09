@@ -2,9 +2,7 @@ package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.exceptions.PilosaURIException;
-import com.pilosa.client.exceptions.ValidationException;
+import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.PqlQuery;
@@ -189,11 +187,26 @@ public class PilosaClient {
         return queryPath(request, query);
     }
 
+    /**
+     * Creates a database.
+     *
+     * @param name database name
+     * @throws ValidationException     if the passed database name is not valid
+     * @throws DatabaseExistsException if there already is a database with the given name
+     */
     public void createDatabase(String name) {
         createDatabase(name, DatabaseOptions.withDefaults());
     }
 
+    /**
+     * Creates a database with options.
+     * @param name database name
+     * @param options database options
+     * @throws ValidationException if the passed database name is not valid
+     * @throws DatabaseExistsException if there already is a database with the given name
+     */
     public void createDatabase(String name, DatabaseOptions options) {
+        Validator.ensureValidDatabaseName(name);
         String uri = this.getAddress() + "/db";
         HttpPost httpPost = new HttpPost(uri);
         String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
@@ -202,15 +215,51 @@ public class PilosaClient {
         clientExecute(httpPost, "Error while creating database");
     }
 
+    /**
+     * Creates a database.
+     * @param database database object
+     * @throws ValidationException if the passed database name is not valid
+     * @throws DatabaseExistsException if there already is a database with the given name
+     */
     public void createDatabase(Database database) {
         createDatabase(database.getName(), database.getOptions());
     }
 
+    /**
+     * Creates a database if it does not exist
+     *
+     * @param database database object
+     */
+    public void ensureDatabaseExists(Database database) {
+        try {
+            createDatabase(database);
+        } catch (DatabaseExistsException ex) {
+            // pass
+        }
+    }
+
+    /**
+     * Creates a frame with the given name for the specified database
+     * @param databaseName the database this frame belongs to
+     * @param name frame name
+     * @throws ValidationException if the passed database name or frame name is not valid
+     * @throws FrameExistsException if there already a frame with the given name
+     */
     public void createFrame(String databaseName, String name) {
         createFrame(databaseName, name, FrameOptions.withDefaults());
     }
 
+    /**
+     * Creates a frame with the given name and options for the specified database
+     * @param databaseName the database this frame belongs to
+     * @param name frame name
+     * @param options frame options
+     * @throws ValidationException if the passed database name or frame name is not valid
+     * @throws FrameExistsException if there already a frame with the given name
+     */
     public void createFrame(String databaseName, String name, FrameOptions options) {
+        Validator.ensureValidDatabaseName(databaseName);
+        Validator.ensureValidFrameName(name);
         String uri = this.getAddress() + "/frame";
         HttpPost httpPost = new HttpPost(uri);
         String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
@@ -219,12 +268,31 @@ public class PilosaClient {
         clientExecute(httpPost, "Error while creating frame");
     }
 
+    /**
+     * Creates a frame.
+     * @param frame frame object
+     * @throws ValidationException if the passed database name or frame name is not valid
+     * @throws FrameExistsException if there already a frame with the given name
+     */
     public void createFrame(Frame frame) {
         createFrame(frame.getDatabase().getName(), frame.getName(), frame.getOptions());
     }
 
     /**
-     * Deletes a databse
+     * Creates a frame if it does not exist
+     *
+     * @param frame frame object
+     */
+    public void ensureFrameExists(Frame frame) {
+        try {
+            createFrame(frame);
+        } catch (FrameExistsException ex) {
+            // pass
+        }
+    }
+
+    /**
+     * Deletes a database.
      * @param name the database to delete
      * @throws ValidationException if an invalid database name is passed
      */
@@ -237,6 +305,11 @@ public class PilosaClient {
         clientExecute(httpDelete, "Error while deleting database");
     }
 
+    /**
+     * Deletes a database.
+     * @param database database object
+     * @throws ValidationException if an invalid database name is passed
+     */
     public void deleteDatabase(Database database) {
         deleteDatabase(database.getName());
     }
@@ -319,6 +392,14 @@ public class PilosaClient {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode < 200 || statusCode >= 300) {
                     String responseError = readStream(response.getEntity().getContent());
+                    // try to throw the appropriate exception
+                    switch (responseError) {
+                        case "database already exists\n":
+                            throw new DatabaseExistsException();
+                        case "frame already exists\n":
+                            throw new FrameExistsException();
+                    }
+                    // couldn't find the exact exception, just throw a generic one
                     throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
                 } else {
                     // the entity should be consumed, if not returned

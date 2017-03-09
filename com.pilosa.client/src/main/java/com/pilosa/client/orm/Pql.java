@@ -1,7 +1,8 @@
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;

@@ -55,15 +55,15 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 Client client = new PilosaClient("localhost:15000");
 
 // Send a query. PilosaException is thrown if execution of the query fails.
-PilosaResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
+PilosaResponse response = client.query("example_db", "SetBit(id=5, frame='sample', profileID=42)");
 // Get the result
 Object result = response.getResult();
 // Deai with the result
 
 // You can send more than one query with a single query call
 response = client.query("example_db",
-                        "Bitmap(id=5, frame=\"sample\")",
-                        "TopN(frame=\"sample\", n=5)");
+                        "Bitmap(id=5, frame='sample')",
+                        "TopN(frame='sample', n=5)");
 for (Object result : response.getResults()) {
     // ...
 }

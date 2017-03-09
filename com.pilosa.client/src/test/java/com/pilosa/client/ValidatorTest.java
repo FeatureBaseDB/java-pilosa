@@ -6,6 +6,7 @@ import org.junit.experimental.categories.Category;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @Category(UnitTest.class)
 public class ValidatorTest {
@@ -14,7 +15,7 @@ public class ValidatorTest {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidDatabaseNames = new String[]{
-            "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
     private final static String[] validFrameNames = new String[]{
@@ -22,7 +23,15 @@ public class ValidatorTest {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidFrameNames = new String[]{
-            "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+    };
+    private final static String[] validLabels = new String[]{
+            "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    };
+    private final static String[] invalidLabels = new String[]{
+            "", "1", "_", "-", "b-c", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
 
@@ -47,17 +56,15 @@ public class ValidatorTest {
         }
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void ensureValidDatabaseNameFailsTest() {
         for (String name : invalidDatabaseNames) {
-            Validator.ensureValidDatabaseName(name);
-        }
-    }
-
-    @Test
-    public void validFrameNameTest() {
-        for (String name : validFrameNames) {
-            assertTrue(Validator.validateFrameName(name));
+            try {
+                Validator.ensureValidDatabaseName(name);
+            } catch (ValidationException ex) {
+                continue;
+            }
+            fail("Validation should have failed for: " + name);
         }
     }
 
@@ -75,10 +82,49 @@ public class ValidatorTest {
         }
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void ensureValidFrameNameFailsTest() {
         for (String name : invalidFrameNames) {
-            Validator.ensureValidFrameName(name);
+            try {
+                Validator.ensureValidFrameName(name);
+            } catch (ValidationException ex) {
+                continue;
+            }
+            fail("Validation should have failed for: " + name);
+        }
+    }
+
+    @Test
+    public void validLabelTest() {
+        for (String label : validLabels) {
+            assertTrue(Validator.validateLabel(label));
+        }
+    }
+
+    @Test
+    public void invalidLabelTest() {
+        for (String label : invalidLabels) {
+            assertFalse(Validator.validateLabel(label));
+        }
+    }
+
+    @Test
+    public void ensureValidLabelTest() {
+        for (String label : validLabels) {
+            Validator.ensureValidLabel(label);
+        }
+    }
+
+    @Test
+    public void ensureValidLabelFailsTest() {
+        for (String label : invalidLabels) {
+            try {
+                Validator.ensureValidLabel(label);
+            }
+            catch (ValidationException ex) {
+                continue;
+            }
+            fail("Validation should have failed for: " + label);
         }
     }
 

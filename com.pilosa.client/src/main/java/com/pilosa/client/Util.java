@@ -7,20 +7,23 @@ import java.util.List;
 import java.util.Map;
 
 final class Util {
+    static final int PROTOBUF_STRING_TYPE = 1;
+    static final int PROTOBUF_UINT_TYPE = 2;
+    static final int PROTOBUF_BOOL_TYPE = 3;
+
     static Map<String, Object> protobufAttrsToMap(List<Internal.Attr> attrList) {
         Map<String, Object> attrs = new HashMap<>(attrList.size());
         for (Internal.Attr attr : attrList) {
             Object value;
             switch ((int) attr.getType()) {
-                case Internal.Attr.BOOLVALUE_FIELD_NUMBER:
-                    value = attr.getBoolValue();
+                case PROTOBUF_STRING_TYPE:
+                    value = attr.getStringValue();
                     break;
-                case Internal.Attr.UINTVALUE_FIELD_NUMBER:
+                case PROTOBUF_UINT_TYPE:
                     value = attr.getUintValue();
                     break;
-                case Internal.Attr.STRINGVALUE_FIELD_NUMBER:
-                case Internal.Attr.KEY_FIELD_NUMBER:  // XXX:
-                    value = attr.getStringValue();
+                case PROTOBUF_BOOL_TYPE:
+                    value = attr.getBoolValue();
                     break;
                 default:
                     throw new PilosaException("Unknown attribute field type: " + attr.getType());

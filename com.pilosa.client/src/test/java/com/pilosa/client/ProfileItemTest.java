@@ -62,7 +62,7 @@ public class ProfileItemTest {
     @Test
     public void testFromProtobuf() {
         Internal.Attr attr = Internal.Attr.newBuilder()
-                .setType(Internal.Attr.STRINGVALUE_FIELD_NUMBER)
+                .setType(Util.PROTOBUF_STRING_TYPE)
                 .setKey("foo")
                 .setStringValue("bar")
                 .build();

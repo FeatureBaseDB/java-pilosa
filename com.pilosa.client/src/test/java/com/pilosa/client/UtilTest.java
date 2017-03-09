@@ -31,11 +31,17 @@ public class UtilTest {
                 .setKey("boolval")
                 .setBoolValue(true)
                 .build());
+        attrs.add(Internal.Attr.newBuilder()
+                .setKey("doubleval")
+                .setType(Util.PROTOBUF_DOUBLE_TYPE)
+                .setFloatValue(123.5678)
+                .build());
         Map<String, Object> m = protobufAttrsToMap(attrs);
-        assertEquals(3, m.size());
+        assertEquals(4, m.size());
         assertEquals("somestr", m.get("stringval"));
         assertEquals(5L, m.get("intval"));
         assertEquals(true, m.get("boolval"));
+        assertEquals(123.5678, m.get("doubleval"));
     }
 
     @Test(expected = PilosaException.class)

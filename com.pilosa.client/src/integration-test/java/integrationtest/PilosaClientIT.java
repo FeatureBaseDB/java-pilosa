@@ -238,12 +238,17 @@ public class PilosaClientIT {
         Map<String, Object> bitmapAttrs = new HashMap<>(1);
         bitmapAttrs.put("active", true);
         bitmapAttrs.put("unsigned", 5);
+        bitmapAttrs.put("height", 1.81);
+        bitmapAttrs.put("name", "Mr. Pi");
         client.query(this.frame.setBitmapAttrs(10, bitmapAttrs));
         QueryResponse response3 = client.query(this.frame.bitmap(10));
         BitmapResult bitmap = response3.getResult().getBitmap();
         assertEquals(1, bitmap.getBits().size());
-        assertEquals(2, bitmap.getAttributes().size());
+        assertEquals(4, bitmap.getAttributes().size());
         assertEquals(true, bitmap.getAttributes().get("active"));
+        assertEquals(5L, bitmap.getAttributes().get("unsigned"));
+        assertEquals(1.81, bitmap.getAttributes().get("height"));
+        assertEquals("Mr. Pi", bitmap.getAttributes().get("name"));
     }
 
     @Test(expected = DatabaseExistsException.class)

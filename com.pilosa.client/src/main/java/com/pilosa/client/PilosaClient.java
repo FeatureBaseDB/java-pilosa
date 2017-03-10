@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
-import com.pilosa.client.orm.PqlQuery;
+import com.pilosa.client.orm.IPqlQuery;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -105,7 +105,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public QueryResponse query(String databaseName, PqlQuery... queries) {
+    public QueryResponse query(String databaseName, IPqlQuery... queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -117,7 +117,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if an invalid database name is passed
      */
-    public QueryResponse query(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse query(String databaseName, List<IPqlQuery> queries) {
         return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
@@ -128,7 +128,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse query(PqlQuery query) {
+    public QueryResponse query(IPqlQuery query) {
         return queryPath(QueryRequest.withQuery(query));
     }
 
@@ -154,7 +154,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public QueryResponse queryWithProfiles(String databaseName, PqlQuery... queries) {
+    public QueryResponse queryWithProfiles(String databaseName, IPqlQuery... queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -168,7 +168,7 @@ public class PilosaClient {
      * @return Pilosa response with profiles
      * @throws ValidationException if an invalid database name is passed
      */
-    public QueryResponse queryWithProfiles(String databaseName, List<PqlQuery> queries) {
+    public QueryResponse queryWithProfiles(String databaseName, List<IPqlQuery> queries) {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setRetrieveProfiles(true);
         return queryPath(request, queries);
@@ -181,7 +181,7 @@ public class PilosaClient {
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse queryWithProfiles(PqlQuery query) {
+    public QueryResponse queryWithProfiles(IPqlQuery query) {
         QueryRequest request = QueryRequest.withQuery(query);
         request.setRetrieveProfiles(true);
         return queryPath(request, query);
@@ -444,18 +444,18 @@ public class PilosaClient {
         }
     }
 
-    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
+    private QueryResponse queryPath(QueryRequest request, IPqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
-        for (PqlQuery query : queries) {
+        for (IPqlQuery query : queries) {
             builder.append(query);
         }
         request.setQuery(builder.toString());
         return queryPath(request);
     }
 
-    private QueryResponse queryPath(QueryRequest request, List<PqlQuery> queries) {
+    private QueryResponse queryPath(QueryRequest request, List<IPqlQuery> queries) {
         StringBuilder builder = new StringBuilder(queries.size());
-        for (PqlQuery query : queries) {
+        for (IPqlQuery query : queries) {
             builder.append(query);
         }
         request.setQuery(builder.toString());
@@ -561,7 +561,7 @@ class QueryRequest {
         return new QueryRequest(databaseName);
     }
 
-    static QueryRequest withQuery(PqlQuery query) {
+    static QueryRequest withQuery(IPqlQuery query) {
         // We call QueryRequest.withDatabase in order to protect against database name == null
         // TODO: check that database name is not null and create the QueryRequest object directly.
         QueryRequest request = QueryRequest.withDatabase(query.getDatabase().getName());

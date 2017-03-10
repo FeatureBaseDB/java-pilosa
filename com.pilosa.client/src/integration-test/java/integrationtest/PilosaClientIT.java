@@ -6,8 +6,8 @@ import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.IPqlQuery;
 import com.pilosa.client.orm.Pql;
-import com.pilosa.client.orm.PqlQuery;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -133,7 +133,7 @@ public class PilosaClientIT {
         Map<String, Object> profileAttrs;
         List<Long> bits;
         BitmapResult bitmapResult;
-        List<PqlQuery> queryList;
+        List<IPqlQuery> queryList;
 
         client.query(db, Pql.clearBit(5, "test", 10));
         client.query(db, Pql.setBit(5, "test", 10));

@@ -1,6 +1,6 @@
 package com.pilosa.client.orm;
 
-public class PqlQuery {
+public class PqlQuery implements IPqlQuery {
     private String pql;
     private Database database = null;
 

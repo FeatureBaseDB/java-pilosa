@@ -3,7 +3,7 @@
 
 package com.pilosa.client;
 
-public final class Internal {
+final class Internal {
     private Internal() {
     }
 

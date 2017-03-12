@@ -119,12 +119,6 @@ public class PilosaClientIT {
         client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
     }
 
-    @Test(expected = PilosaException.class)
-    public void protobufParseErrorTest() {
-        PilosaClient client = getClient();
-        client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
-    }
-
     @Test
     public void ormTest() {
         PilosaClient client = getClient();

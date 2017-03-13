@@ -195,7 +195,7 @@ public class PilosaClientIT {
         List<CountResultItem> items = (List<CountResultItem>) response.getResult().getCountItems();
         assertEquals(1, items.size());
         CountResultItem item = items.get(0);
-        assertEquals(155, item.getKey());
+        assertEquals(155, item.getID());
         assertEquals(1, item.getCount());
     }
 

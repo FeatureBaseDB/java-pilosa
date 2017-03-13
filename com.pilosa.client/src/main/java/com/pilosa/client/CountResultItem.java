@@ -6,14 +6,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Represents a result from TopN call.
  */
 public final class CountResultItem {
-    private long key;
+    private long id;
     private long count;
 
     CountResultItem() {
     }
 
-    CountResultItem(long key, long count) {
-        this.key = key;
+    CountResultItem(long id, long count) {
+        this.id = id;
         this.count = count;
     }
 
@@ -26,8 +26,8 @@ public final class CountResultItem {
      *
      * @return bitmap ID
      */
-    public long getKey() {
-        return this.key;
+    public long getID() {
+        return this.id;
     }
 
     /**
@@ -41,13 +41,13 @@ public final class CountResultItem {
 
     @Override
     public String toString() {
-        return String.format("CountResultItem(key=%d, count=%d)", this.key, this.count);
+        return String.format("CountResultItem(key=%d, count=%d)", this.id, this.count);
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.key)
+                .append(this.id)
                 .append(this.count)
                 .toHashCode();
     }
@@ -61,7 +61,7 @@ public final class CountResultItem {
             return false;
         }
         CountResultItem rhs = (CountResultItem) obj;
-        return this.key == rhs.key && this.count == rhs.count;
+        return this.id == rhs.id && this.count == rhs.count;
     }
 
 }

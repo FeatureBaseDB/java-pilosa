@@ -1,8 +1,5 @@
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 public class Bit {
     private Internal.Bit iBit = null;
 

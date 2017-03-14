@@ -48,10 +48,10 @@ public class ClusterTest {
         assertEquals(target1, addr);
         addr = c.getAddress();
         assertEquals(target2, addr);
+        c.getAddress();
+        c.removeAddress(new URI("db1.pilosa.com"));
         addr = c.getAddress();
-        assertEquals(target1, addr);
-        c.removeAddress(new URI("db2.pilosa.com"));
-        assertEquals(target1, addr);
+        assertEquals(target2, addr);
     }
 
     @Test(expected = PilosaException.class)

@@ -31,6 +31,17 @@ final class Internal {
          */
         com.google.protobuf.ByteString
         getTimeQuantumBytes();
+
+        /**
+         * <code>optional string ColumnLabel = 2;</code>
+         */
+        java.lang.String getColumnLabel();
+
+        /**
+         * <code>optional string ColumnLabel = 2;</code>
+         */
+        com.google.protobuf.ByteString
+        getColumnLabelBytes();
     }
 
     /**
@@ -47,6 +58,7 @@ final class Internal {
 
         private DB() {
             timeQuantum_ = "";
+            columnLabel_ = "";
         }
 
         @java.lang.Override
@@ -81,6 +93,12 @@ final class Internal {
                             timeQuantum_ = s;
                             break;
                         }
+                        case 18: {
+                            java.lang.String s = input.readStringRequireUtf8();
+
+                            columnLabel_ = s;
+                            break;
+                        }
                     }
                 }
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -95,14 +113,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_DB_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_DB_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_DB_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_DB_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.DB.class, Internal.DB.Builder.class);
+                            com.pilosa.client.Internal.DB.class, com.pilosa.client.Internal.DB.Builder.class);
         }
 
         public static final int TIMEQUANTUM_FIELD_NUMBER = 1;
@@ -141,6 +159,42 @@ final class Internal {
             }
         }
 
+        public static final int COLUMNLABEL_FIELD_NUMBER = 2;
+        private volatile java.lang.Object columnLabel_;
+
+        /**
+         * <code>optional string ColumnLabel = 2;</code>
+         */
+        public java.lang.String getColumnLabel() {
+            java.lang.Object ref = columnLabel_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                columnLabel_ = s;
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string ColumnLabel = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+        getColumnLabelBytes() {
+            java.lang.Object ref = columnLabel_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                columnLabel_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
         private byte memoizedIsInitialized = -1;
 
         public final boolean isInitialized() {
@@ -157,6 +211,9 @@ final class Internal {
             if (!getTimeQuantumBytes().isEmpty()) {
                 com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timeQuantum_);
             }
+            if (!getColumnLabelBytes().isEmpty()) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 2, columnLabel_);
+            }
         }
 
         public int getSerializedSize() {
@@ -166,6 +223,9 @@ final class Internal {
             size = 0;
             if (!getTimeQuantumBytes().isEmpty()) {
                 size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, timeQuantum_);
+            }
+            if (!getColumnLabelBytes().isEmpty()) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, columnLabel_);
             }
             memoizedSize = size;
             return size;
@@ -178,14 +238,16 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.DB)) {
+            if (!(obj instanceof com.pilosa.client.Internal.DB)) {
                 return super.equals(obj);
             }
-            Internal.DB other = (Internal.DB) obj;
+            com.pilosa.client.Internal.DB other = (com.pilosa.client.Internal.DB) obj;
 
             boolean result = true;
             result = result && getTimeQuantum()
                     .equals(other.getTimeQuantum());
+            result = result && getColumnLabel()
+                    .equals(other.getColumnLabel());
             return result;
         }
 
@@ -198,43 +260,45 @@ final class Internal {
             hash = (19 * hash) + getDescriptorForType().hashCode();
             hash = (37 * hash) + TIMEQUANTUM_FIELD_NUMBER;
             hash = (53 * hash) + getTimeQuantum().hashCode();
+            hash = (37 * hash) + COLUMNLABEL_FIELD_NUMBER;
+            hash = (53 * hash) + getColumnLabel().hashCode();
             hash = (29 * hash) + unknownFields.hashCode();
             memoizedHashCode = hash;
             return hash;
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.DB parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.DB parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.DB parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.DB parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -242,13 +306,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.DB parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.DB parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.DB parseDelimitedFrom(
+        public static com.pilosa.client.Internal.DB parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -256,14 +320,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.DB parseFrom(
+        public static com.pilosa.client.Internal.DB parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -279,7 +343,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.DB prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.DB prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -301,17 +365,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.DB)
-                Internal.DBOrBuilder {
+                com.pilosa.client.Internal.DBOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_DB_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_DB_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_DB_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_DB_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.DB.class, Internal.DB.Builder.class);
+                                com.pilosa.client.Internal.DB.class, com.pilosa.client.Internal.DB.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.DB.newBuilder()
@@ -335,29 +399,32 @@ final class Internal {
                 super.clear();
                 timeQuantum_ = "";
 
+                columnLabel_ = "";
+
                 return this;
             }
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_DB_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_DB_descriptor;
             }
 
-            public Internal.DB getDefaultInstanceForType() {
-                return Internal.DB.getDefaultInstance();
+            public com.pilosa.client.Internal.DB getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.DB.getDefaultInstance();
             }
 
-            public Internal.DB build() {
-                Internal.DB result = buildPartial();
+            public com.pilosa.client.Internal.DB build() {
+                com.pilosa.client.Internal.DB result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.DB buildPartial() {
-                Internal.DB result = new Internal.DB(this);
+            public com.pilosa.client.Internal.DB buildPartial() {
+                com.pilosa.client.Internal.DB result = new com.pilosa.client.Internal.DB(this);
                 result.timeQuantum_ = timeQuantum_;
+                result.columnLabel_ = columnLabel_;
                 onBuilt();
                 return result;
             }
@@ -395,18 +462,22 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.DB) {
-                    return mergeFrom((Internal.DB) other);
+                if (other instanceof com.pilosa.client.Internal.DB) {
+                    return mergeFrom((com.pilosa.client.Internal.DB) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.DB other) {
-                if (other == Internal.DB.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.DB other) {
+                if (other == com.pilosa.client.Internal.DB.getDefaultInstance()) return this;
                 if (!other.getTimeQuantum().isEmpty()) {
                     timeQuantum_ = other.timeQuantum_;
+                    onChanged();
+                }
+                if (!other.getColumnLabel().isEmpty()) {
+                    columnLabel_ = other.columnLabel_;
                     onChanged();
                 }
                 onChanged();
@@ -421,11 +492,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.DB parsedMessage = null;
+                com.pilosa.client.Internal.DB parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.DB) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.DB) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -509,6 +580,80 @@ final class Internal {
                 return this;
             }
 
+            private java.lang.Object columnLabel_ = "";
+
+            /**
+             * <code>optional string ColumnLabel = 2;</code>
+             */
+            public java.lang.String getColumnLabel() {
+                java.lang.Object ref = columnLabel_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    columnLabel_ = s;
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string ColumnLabel = 2;</code>
+             */
+            public com.google.protobuf.ByteString
+            getColumnLabelBytes() {
+                java.lang.Object ref = columnLabel_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
+                                    (java.lang.String) ref);
+                    columnLabel_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string ColumnLabel = 2;</code>
+             */
+            public Builder setColumnLabel(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+
+                columnLabel_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string ColumnLabel = 2;</code>
+             */
+            public Builder clearColumnLabel() {
+
+                columnLabel_ = getDefaultInstance().getColumnLabel();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string ColumnLabel = 2;</code>
+             */
+            public Builder setColumnLabelBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+
+                columnLabel_ = value;
+                onChanged();
+                return this;
+            }
+
             public final Builder setUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return this;
@@ -524,13 +669,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.DB)
-        private static final Internal.DB DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.DB DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.DB();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.DB();
         }
 
-        public static Internal.DB getDefaultInstance() {
+        public static com.pilosa.client.Internal.DB getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -553,7 +698,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.DB getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.DB getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -573,6 +718,17 @@ final class Internal {
          */
         com.google.protobuf.ByteString
         getTimeQuantumBytes();
+
+        /**
+         * <code>optional string RowLabel = 2;</code>
+         */
+        java.lang.String getRowLabel();
+
+        /**
+         * <code>optional string RowLabel = 2;</code>
+         */
+        com.google.protobuf.ByteString
+        getRowLabelBytes();
     }
 
     /**
@@ -589,6 +745,7 @@ final class Internal {
 
         private Frame() {
             timeQuantum_ = "";
+            rowLabel_ = "";
         }
 
         @java.lang.Override
@@ -623,6 +780,12 @@ final class Internal {
                             timeQuantum_ = s;
                             break;
                         }
+                        case 18: {
+                            java.lang.String s = input.readStringRequireUtf8();
+
+                            rowLabel_ = s;
+                            break;
+                        }
                     }
                 }
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -637,14 +800,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Frame_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Frame_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Frame_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Frame_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Frame.class, Internal.Frame.Builder.class);
+                            com.pilosa.client.Internal.Frame.class, com.pilosa.client.Internal.Frame.Builder.class);
         }
 
         public static final int TIMEQUANTUM_FIELD_NUMBER = 1;
@@ -660,7 +823,7 @@ final class Internal {
             } else {
                 com.google.protobuf.ByteString bs =
                         (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
+        java.lang.String s = bs.toStringUtf8();
                 timeQuantum_ = s;
                 return s;
             }
@@ -683,6 +846,42 @@ final class Internal {
             }
         }
 
+        public static final int ROWLABEL_FIELD_NUMBER = 2;
+        private volatile java.lang.Object rowLabel_;
+
+        /**
+         * <code>optional string RowLabel = 2;</code>
+         */
+        public java.lang.String getRowLabel() {
+            java.lang.Object ref = rowLabel_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                rowLabel_ = s;
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string RowLabel = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+        getRowLabelBytes() {
+            java.lang.Object ref = rowLabel_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                rowLabel_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
         private byte memoizedIsInitialized = -1;
 
         public final boolean isInitialized() {
@@ -699,6 +898,9 @@ final class Internal {
             if (!getTimeQuantumBytes().isEmpty()) {
                 com.google.protobuf.GeneratedMessageV3.writeString(output, 1, timeQuantum_);
             }
+            if (!getRowLabelBytes().isEmpty()) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 2, rowLabel_);
+            }
         }
 
         public int getSerializedSize() {
@@ -708,6 +910,9 @@ final class Internal {
             size = 0;
             if (!getTimeQuantumBytes().isEmpty()) {
                 size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, timeQuantum_);
+            }
+            if (!getRowLabelBytes().isEmpty()) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, rowLabel_);
             }
             memoizedSize = size;
             return size;
@@ -720,14 +925,16 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Frame)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Frame)) {
                 return super.equals(obj);
             }
-            Internal.Frame other = (Internal.Frame) obj;
+            com.pilosa.client.Internal.Frame other = (com.pilosa.client.Internal.Frame) obj;
 
             boolean result = true;
             result = result && getTimeQuantum()
                     .equals(other.getTimeQuantum());
+            result = result && getRowLabel()
+                    .equals(other.getRowLabel());
             return result;
         }
 
@@ -740,43 +947,45 @@ final class Internal {
             hash = (19 * hash) + getDescriptorForType().hashCode();
             hash = (37 * hash) + TIMEQUANTUM_FIELD_NUMBER;
             hash = (53 * hash) + getTimeQuantum().hashCode();
+            hash = (37 * hash) + ROWLABEL_FIELD_NUMBER;
+            hash = (53 * hash) + getRowLabel().hashCode();
             hash = (29 * hash) + unknownFields.hashCode();
             memoizedHashCode = hash;
             return hash;
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Frame parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Frame parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Frame parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Frame parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -784,13 +993,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Frame parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Frame parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Frame parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Frame parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -798,14 +1007,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Frame parseFrom(
+        public static com.pilosa.client.Internal.Frame parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -821,7 +1030,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Frame prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Frame prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -843,17 +1052,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Frame)
-                Internal.FrameOrBuilder {
+                com.pilosa.client.Internal.FrameOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Frame_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Frame_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Frame_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Frame_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Frame.class, Internal.Frame.Builder.class);
+                                com.pilosa.client.Internal.Frame.class, com.pilosa.client.Internal.Frame.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Frame.newBuilder()
@@ -877,29 +1086,32 @@ final class Internal {
                 super.clear();
                 timeQuantum_ = "";
 
+                rowLabel_ = "";
+
                 return this;
             }
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Frame_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Frame_descriptor;
             }
 
-            public Internal.Frame getDefaultInstanceForType() {
-                return Internal.Frame.getDefaultInstance();
+            public com.pilosa.client.Internal.Frame getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Frame.getDefaultInstance();
             }
 
-            public Internal.Frame build() {
-                Internal.Frame result = buildPartial();
+            public com.pilosa.client.Internal.Frame build() {
+                com.pilosa.client.Internal.Frame result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Frame buildPartial() {
-                Internal.Frame result = new Internal.Frame(this);
+            public com.pilosa.client.Internal.Frame buildPartial() {
+                com.pilosa.client.Internal.Frame result = new com.pilosa.client.Internal.Frame(this);
                 result.timeQuantum_ = timeQuantum_;
+                result.rowLabel_ = rowLabel_;
                 onBuilt();
                 return result;
             }
@@ -937,18 +1149,22 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Frame) {
-                    return mergeFrom((Internal.Frame) other);
+                if (other instanceof com.pilosa.client.Internal.Frame) {
+                    return mergeFrom((com.pilosa.client.Internal.Frame) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Frame other) {
-                if (other == Internal.Frame.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Frame other) {
+                if (other == com.pilosa.client.Internal.Frame.getDefaultInstance()) return this;
                 if (!other.getTimeQuantum().isEmpty()) {
                     timeQuantum_ = other.timeQuantum_;
+                    onChanged();
+                }
+                if (!other.getRowLabel().isEmpty()) {
+                    rowLabel_ = other.rowLabel_;
                     onChanged();
                 }
                 onChanged();
@@ -963,11 +1179,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Frame parsedMessage = null;
+                com.pilosa.client.Internal.Frame parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Frame) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Frame) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -1051,6 +1267,80 @@ final class Internal {
                 return this;
             }
 
+            private java.lang.Object rowLabel_ = "";
+
+            /**
+             * <code>optional string RowLabel = 2;</code>
+             */
+            public java.lang.String getRowLabel() {
+                java.lang.Object ref = rowLabel_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    rowLabel_ = s;
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string RowLabel = 2;</code>
+             */
+            public com.google.protobuf.ByteString
+            getRowLabelBytes() {
+                java.lang.Object ref = rowLabel_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
+                                    (java.lang.String) ref);
+                    rowLabel_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string RowLabel = 2;</code>
+             */
+            public Builder setRowLabel(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+
+                rowLabel_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string RowLabel = 2;</code>
+             */
+            public Builder clearRowLabel() {
+
+                rowLabel_ = getDefaultInstance().getRowLabel();
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string RowLabel = 2;</code>
+             */
+            public Builder setRowLabelBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+
+                rowLabel_ = value;
+                onChanged();
+                return this;
+            }
+
             public final Builder setUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return this;
@@ -1066,13 +1356,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Frame)
-        private static final Internal.Frame DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Frame DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Frame();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Frame();
         }
 
-        public static Internal.Frame getDefaultInstance() {
+        public static com.pilosa.client.Internal.Frame getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -1095,7 +1385,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Frame getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Frame getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -1123,13 +1413,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        java.util.List<Internal.Attr>
+        java.util.List<com.pilosa.client.Internal.Attr>
         getAttrsList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        Internal.Attr getAttrs(int index);
+        com.pilosa.client.Internal.Attr getAttrs(int index);
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
@@ -1139,13 +1429,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        java.util.List<? extends Internal.AttrOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        Internal.AttrOrBuilder getAttrsOrBuilder(
+        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index);
     }
 
@@ -1215,11 +1505,11 @@ final class Internal {
                         }
                         case 18: {
                             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                                attrs_ = new java.util.ArrayList<Internal.Attr>();
+                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
                                 mutable_bitField0_ |= 0x00000002;
                             }
                             attrs_.add(
-                                    input.readMessage(Internal.Attr.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
                             break;
                         }
                     }
@@ -1242,14 +1532,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Bitmap_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Bitmap_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Bitmap.class, Internal.Bitmap.Builder.class);
+                            com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
         }
 
         public static final int BITS_FIELD_NUMBER = 1;
@@ -1279,20 +1569,20 @@ final class Internal {
 
         private int bitsMemoizedSerializedSize = -1;
 
-        public static final int ATTRS_FIELD_NUMBER = 2;
-        private java.util.List<Internal.Attr> attrs_;
+    public static final int ATTRS_FIELD_NUMBER = 2;
+        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public java.util.List<Internal.Attr> getAttrsList() {
+        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
             return attrs_;
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public java.util.List<? extends Internal.AttrOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList() {
             return attrs_;
         }
@@ -1307,14 +1597,14 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public Internal.Attr getAttrs(int index) {
+        public com.pilosa.client.Internal.Attr getAttrs(int index) {
             return attrs_.get(index);
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public Internal.AttrOrBuilder getAttrsOrBuilder(
+        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index) {
             return attrs_.get(index);
         }
@@ -1379,10 +1669,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Bitmap)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Bitmap)) {
                 return super.equals(obj);
             }
-            Internal.Bitmap other = (Internal.Bitmap) obj;
+            com.pilosa.client.Internal.Bitmap other = (com.pilosa.client.Internal.Bitmap) obj;
 
             boolean result = true;
             result = result && getBitsList()
@@ -1412,38 +1702,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Bitmap parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Bitmap parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Bitmap parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Bitmap parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -1451,13 +1741,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Bitmap parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Bitmap parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -1465,14 +1755,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Bitmap parseFrom(
+        public static com.pilosa.client.Internal.Bitmap parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -1488,7 +1778,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Bitmap prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Bitmap prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -1510,17 +1800,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Bitmap)
-                Internal.BitmapOrBuilder {
+                com.pilosa.client.Internal.BitmapOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Bitmap_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Bitmap_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Bitmap.class, Internal.Bitmap.Builder.class);
+                                com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Bitmap.newBuilder()
@@ -1556,23 +1846,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Bitmap_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
             }
 
-            public Internal.Bitmap getDefaultInstanceForType() {
-                return Internal.Bitmap.getDefaultInstance();
+            public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Bitmap.getDefaultInstance();
             }
 
-            public Internal.Bitmap build() {
-                Internal.Bitmap result = buildPartial();
+            public com.pilosa.client.Internal.Bitmap build() {
+                com.pilosa.client.Internal.Bitmap result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Bitmap buildPartial() {
-                Internal.Bitmap result = new Internal.Bitmap(this);
+            public com.pilosa.client.Internal.Bitmap buildPartial() {
+                com.pilosa.client.Internal.Bitmap result = new com.pilosa.client.Internal.Bitmap(this);
                 int from_bitField0_ = bitField0_;
                 if (((bitField0_ & 0x00000001) == 0x00000001)) {
                     bits_ = java.util.Collections.unmodifiableList(bits_);
@@ -1625,16 +1915,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Bitmap) {
-                    return mergeFrom((Internal.Bitmap) other);
+                if (other instanceof com.pilosa.client.Internal.Bitmap) {
+                    return mergeFrom((com.pilosa.client.Internal.Bitmap) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Bitmap other) {
-                if (other == Internal.Bitmap.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Bitmap other) {
+                if (other == com.pilosa.client.Internal.Bitmap.getDefaultInstance()) return this;
                 if (!other.bits_.isEmpty()) {
                     if (bits_.isEmpty()) {
                         bits_ = other.bits_;
@@ -1683,11 +1973,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Bitmap parsedMessage = null;
+                com.pilosa.client.Internal.Bitmap parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Bitmap) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Bitmap) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -1773,23 +2063,23 @@ final class Internal {
                 return this;
             }
 
-            private java.util.List<Internal.Attr> attrs_ =
+            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
                     java.util.Collections.emptyList();
 
             private void ensureAttrsIsMutable() {
                 if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = new java.util.ArrayList<Internal.Attr>(attrs_);
+                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
                     bitField0_ |= 0x00000002;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder> attrsBuilder_;
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<Internal.Attr> getAttrsList() {
+            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
                 if (attrsBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(attrs_);
                 } else {
@@ -1811,7 +2101,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr getAttrs(int index) {
+            public com.pilosa.client.Internal.Attr getAttrs(int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
                 } else {
@@ -1823,7 +2113,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -1841,7 +2131,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.set(index, builderForValue.build());
@@ -1855,7 +2145,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Builder addAttrs(Internal.Attr value) {
+            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -1873,7 +2163,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -1891,7 +2181,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    Internal.Attr.Builder builderForValue) {
+                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(builderForValue.build());
@@ -1906,7 +2196,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(index, builderForValue.build());
@@ -1921,7 +2211,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAllAttrs(
-                    java.lang.Iterable<? extends Internal.Attr> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -1964,7 +2254,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder getAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().getBuilder(index);
             }
@@ -1972,7 +2262,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.AttrOrBuilder getAttrsOrBuilder(
+            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                     int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
@@ -1984,7 +2274,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<? extends Internal.AttrOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsOrBuilderList() {
                 if (attrsBuilder_ != null) {
                     return attrsBuilder_.getMessageOrBuilderList();
@@ -1996,34 +2286,34 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder() {
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
                 return getAttrsFieldBuilder().addBuilder(
-                        Internal.Attr.getDefaultInstance());
+                        com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().addBuilder(
-                        index, Internal.Attr.getDefaultInstance());
+                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<Internal.Attr.Builder>
+            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
             getAttrsBuilderList() {
                 return getAttrsFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsFieldBuilder() {
                 if (attrsBuilder_ == null) {
                     attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>(
+                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
                             attrs_,
                             ((bitField0_ & 0x00000002) == 0x00000002),
                             getParentForChildren(),
@@ -2048,13 +2338,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Bitmap)
-        private static final Internal.Bitmap DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Bitmap DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Bitmap();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bitmap();
         }
 
-        public static Internal.Bitmap getDefaultInstance() {
+        public static com.pilosa.client.Internal.Bitmap getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -2077,7 +2367,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Bitmap getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -2134,7 +2424,7 @@ final class Internal {
                     switch (tag) {
                         case 0:
                             done = true;
-                            break;
+              break;
                         default: {
                             if (!input.skipField(tag)) {
                                 done = true;
@@ -2143,7 +2433,7 @@ final class Internal {
                         }
                         case 8: {
 
-                            key_ = input.readUInt64();
+              key_ = input.readUInt64();
                             break;
                         }
                         case 16: {
@@ -2165,14 +2455,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Pair_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Pair_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Pair.class, Internal.Pair.Builder.class);
+                            com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
         }
 
         public static final int KEY_FIELD_NUMBER = 1;
@@ -2240,10 +2530,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Pair)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Pair)) {
                 return super.equals(obj);
             }
-            Internal.Pair other = (Internal.Pair) obj;
+            com.pilosa.client.Internal.Pair other = (com.pilosa.client.Internal.Pair) obj;
 
             boolean result = true;
             result = result && (getKey()
@@ -2271,38 +2561,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Pair parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Pair parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Pair parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Pair parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2310,13 +2600,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Pair parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Pair parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Pair parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Pair parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2324,14 +2614,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Pair parseFrom(
+        public static com.pilosa.client.Internal.Pair parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2347,7 +2637,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Pair prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Pair prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -2369,17 +2659,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Pair)
-                Internal.PairOrBuilder {
+                com.pilosa.client.Internal.PairOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Pair_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Pair_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Pair.class, Internal.Pair.Builder.class);
+                                com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Pair.newBuilder()
@@ -2410,23 +2700,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Pair_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
             }
 
-            public Internal.Pair getDefaultInstanceForType() {
-                return Internal.Pair.getDefaultInstance();
+            public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Pair.getDefaultInstance();
             }
 
-            public Internal.Pair build() {
-                Internal.Pair result = buildPartial();
+            public com.pilosa.client.Internal.Pair build() {
+                com.pilosa.client.Internal.Pair result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Pair buildPartial() {
-                Internal.Pair result = new Internal.Pair(this);
+            public com.pilosa.client.Internal.Pair buildPartial() {
+                com.pilosa.client.Internal.Pair result = new com.pilosa.client.Internal.Pair(this);
                 result.key_ = key_;
                 result.count_ = count_;
                 onBuilt();
@@ -2466,16 +2756,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Pair) {
-                    return mergeFrom((Internal.Pair) other);
+                if (other instanceof com.pilosa.client.Internal.Pair) {
+                    return mergeFrom((com.pilosa.client.Internal.Pair) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Pair other) {
-                if (other == Internal.Pair.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Pair other) {
+                if (other == com.pilosa.client.Internal.Pair.getDefaultInstance()) return this;
                 if (other.getKey() != 0L) {
                     setKey(other.getKey());
                 }
@@ -2494,11 +2784,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Pair parsedMessage = null;
+                com.pilosa.client.Internal.Pair parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Pair) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Pair) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -2581,13 +2871,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Pair)
-        private static final Internal.Pair DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Pair DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Pair();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Pair();
         }
 
-        public static Internal.Pair getDefaultInstance() {
+        public static com.pilosa.client.Internal.Pair getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -2610,7 +2900,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Pair getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -2683,7 +2973,7 @@ final class Internal {
                         case 8: {
 
                             bitmapID_ = input.readUInt64();
-                            break;
+              break;
                         }
                         case 16: {
 
@@ -2709,14 +2999,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Bit_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Bit_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Bit.class, Internal.Bit.Builder.class);
+                            com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
         }
 
         public static final int BITMAPID_FIELD_NUMBER = 1;
@@ -2801,10 +3091,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Bit)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Bit)) {
                 return super.equals(obj);
             }
-            Internal.Bit other = (Internal.Bit) obj;
+            com.pilosa.client.Internal.Bit other = (com.pilosa.client.Internal.Bit) obj;
 
             boolean result = true;
             result = result && (getBitmapID()
@@ -2837,38 +3127,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Bit parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Bit parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Bit parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Bit parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2876,13 +3166,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Bit parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Bit parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Bit parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Bit parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2890,14 +3180,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Bit parseFrom(
+        public static com.pilosa.client.Internal.Bit parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -2913,7 +3203,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Bit prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Bit prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -2935,17 +3225,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Bit)
-                Internal.BitOrBuilder {
+                com.pilosa.client.Internal.BitOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Bit_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Bit_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Bit.class, Internal.Bit.Builder.class);
+                                com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Bit.newBuilder()
@@ -2978,23 +3268,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Bit_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
             }
 
-            public Internal.Bit getDefaultInstanceForType() {
-                return Internal.Bit.getDefaultInstance();
+            public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Bit.getDefaultInstance();
             }
 
-            public Internal.Bit build() {
-                Internal.Bit result = buildPartial();
+            public com.pilosa.client.Internal.Bit build() {
+                com.pilosa.client.Internal.Bit result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Bit buildPartial() {
-                Internal.Bit result = new Internal.Bit(this);
+            public com.pilosa.client.Internal.Bit buildPartial() {
+                com.pilosa.client.Internal.Bit result = new com.pilosa.client.Internal.Bit(this);
                 result.bitmapID_ = bitmapID_;
                 result.profileID_ = profileID_;
                 result.timestamp_ = timestamp_;
@@ -3035,16 +3325,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Bit) {
-                    return mergeFrom((Internal.Bit) other);
+                if (other instanceof com.pilosa.client.Internal.Bit) {
+                    return mergeFrom((com.pilosa.client.Internal.Bit) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Bit other) {
-                if (other == Internal.Bit.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Bit other) {
+                if (other == com.pilosa.client.Internal.Bit.getDefaultInstance()) return this;
                 if (other.getBitmapID() != 0L) {
                     setBitmapID(other.getBitmapID());
                 }
@@ -3066,11 +3356,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Bit parsedMessage = null;
+                com.pilosa.client.Internal.Bit parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Bit) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Bit) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -3182,13 +3472,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Bit)
-        private static final Internal.Bit DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Bit DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Bit();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bit();
         }
 
-        public static Internal.Bit getDefaultInstance() {
+        public static com.pilosa.client.Internal.Bit getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -3204,14 +3494,14 @@ final class Internal {
 
         public static com.google.protobuf.Parser<Bit> parser() {
             return PARSER;
-        }
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Parser<Bit> getParserForType() {
-            return PARSER;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Parser<Bit> getParserForType() {
+        return PARSER;
+    }
 
-        public Internal.Bit getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -3229,13 +3519,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        java.util.List<Internal.Attr>
+        java.util.List<com.pilosa.client.Internal.Attr>
         getAttrsList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        Internal.Attr getAttrs(int index);
+        com.pilosa.client.Internal.Attr getAttrs(int index);
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
@@ -3245,13 +3535,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        java.util.List<? extends Internal.AttrOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        Internal.AttrOrBuilder getAttrsOrBuilder(
+        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index);
     }
 
@@ -3300,16 +3590,16 @@ final class Internal {
                         }
                         case 8: {
 
-                            iD_ = input.readUInt64();
+              iD_ = input.readUInt64();
                             break;
                         }
                         case 18: {
                             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                                attrs_ = new java.util.ArrayList<Internal.Attr>();
+                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
                                 mutable_bitField0_ |= 0x00000002;
                             }
                             attrs_.add(
-                                    input.readMessage(Internal.Attr.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
                             break;
                         }
                     }
@@ -3329,14 +3619,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Profile_descriptor;
-        }
+            return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
+    }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Profile_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Profile.class, Internal.Profile.Builder.class);
+                            com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
         }
 
         private int bitField0_;
@@ -3351,19 +3641,19 @@ final class Internal {
         }
 
         public static final int ATTRS_FIELD_NUMBER = 2;
-        private java.util.List<Internal.Attr> attrs_;
+        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public java.util.List<Internal.Attr> getAttrsList() {
+        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
             return attrs_;
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public java.util.List<? extends Internal.AttrOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList() {
             return attrs_;
         }
@@ -3378,14 +3668,14 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public Internal.Attr getAttrs(int index) {
+        public com.pilosa.client.Internal.Attr getAttrs(int index) {
             return attrs_.get(index);
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 2;</code>
          */
-        public Internal.AttrOrBuilder getAttrsOrBuilder(
+        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index) {
             return attrs_.get(index);
         }
@@ -3435,10 +3725,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Profile)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Profile)) {
                 return super.equals(obj);
             }
-            Internal.Profile other = (Internal.Profile) obj;
+            com.pilosa.client.Internal.Profile other = (com.pilosa.client.Internal.Profile) obj;
 
             boolean result = true;
             result = result && (getID()
@@ -3467,38 +3757,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Profile parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Profile parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Profile parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Profile parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -3506,13 +3796,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Profile parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Profile parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Profile parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Profile parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -3520,14 +3810,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Profile parseFrom(
+        public static com.pilosa.client.Internal.Profile parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -3543,7 +3833,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Profile prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Profile prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -3565,17 +3855,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Profile)
-                Internal.ProfileOrBuilder {
+                com.pilosa.client.Internal.ProfileOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Profile_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Profile_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Profile.class, Internal.Profile.Builder.class);
+                                com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Profile.newBuilder()
@@ -3611,23 +3901,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Profile_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
             }
 
-            public Internal.Profile getDefaultInstanceForType() {
-                return Internal.Profile.getDefaultInstance();
+            public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Profile.getDefaultInstance();
             }
 
-            public Internal.Profile build() {
-                Internal.Profile result = buildPartial();
+            public com.pilosa.client.Internal.Profile build() {
+                com.pilosa.client.Internal.Profile result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Profile buildPartial() {
-                Internal.Profile result = new Internal.Profile(this);
+            public com.pilosa.client.Internal.Profile buildPartial() {
+                com.pilosa.client.Internal.Profile result = new com.pilosa.client.Internal.Profile(this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
                 result.iD_ = iD_;
@@ -3678,16 +3968,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Profile) {
-                    return mergeFrom((Internal.Profile) other);
+                if (other instanceof com.pilosa.client.Internal.Profile) {
+                    return mergeFrom((com.pilosa.client.Internal.Profile) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Profile other) {
-                if (other == Internal.Profile.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Profile other) {
+                if (other == com.pilosa.client.Internal.Profile.getDefaultInstance()) return this;
                 if (other.getID() != 0L) {
                     setID(other.getID());
                 }
@@ -3729,11 +4019,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Profile parsedMessage = null;
+                com.pilosa.client.Internal.Profile parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Profile) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Profile) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -3774,23 +4064,23 @@ final class Internal {
                 return this;
             }
 
-            private java.util.List<Internal.Attr> attrs_ =
+            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
                     java.util.Collections.emptyList();
 
             private void ensureAttrsIsMutable() {
                 if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = new java.util.ArrayList<Internal.Attr>(attrs_);
+                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
                     bitField0_ |= 0x00000002;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder> attrsBuilder_;
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<Internal.Attr> getAttrsList() {
+            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
                 if (attrsBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(attrs_);
                 } else {
@@ -3812,7 +4102,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr getAttrs(int index) {
+            public com.pilosa.client.Internal.Attr getAttrs(int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
                 } else {
@@ -3824,7 +4114,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -3842,7 +4132,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.set(index, builderForValue.build());
@@ -3856,7 +4146,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Builder addAttrs(Internal.Attr value) {
+            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -3874,7 +4164,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -3892,7 +4182,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    Internal.Attr.Builder builderForValue) {
+                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(builderForValue.build());
@@ -3907,7 +4197,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(index, builderForValue.build());
@@ -3922,7 +4212,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
             public Builder addAllAttrs(
-                    java.lang.Iterable<? extends Internal.Attr> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -3965,7 +4255,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder getAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().getBuilder(index);
             }
@@ -3973,7 +4263,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.AttrOrBuilder getAttrsOrBuilder(
+            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                     int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
@@ -3985,7 +4275,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<? extends Internal.AttrOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsOrBuilderList() {
                 if (attrsBuilder_ != null) {
                     return attrsBuilder_.getMessageOrBuilderList();
@@ -3997,34 +4287,34 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder() {
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
                 return getAttrsFieldBuilder().addBuilder(
-                        Internal.Attr.getDefaultInstance());
+                        com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().addBuilder(
-                        index, Internal.Attr.getDefaultInstance());
+                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 2;</code>
              */
-            public java.util.List<Internal.Attr.Builder>
+            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
             getAttrsBuilderList() {
                 return getAttrsFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsFieldBuilder() {
                 if (attrsBuilder_ == null) {
                     attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>(
+                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
                             attrs_,
                             ((bitField0_ & 0x00000002) == 0x00000002),
                             getParentForChildren(),
@@ -4049,13 +4339,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Profile)
-        private static final Internal.Profile DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Profile DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Profile();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Profile();
         }
 
-        public static Internal.Profile getDefaultInstance() {
+        public static com.pilosa.client.Internal.Profile getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -4078,7 +4368,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Profile getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -4124,6 +4414,11 @@ final class Internal {
          * <code>optional bool BoolValue = 5;</code>
          */
         boolean getBoolValue();
+
+        /**
+         * <code>optional double FloatValue = 6;</code>
+         */
+        double getFloatValue();
     }
 
     /**
@@ -4144,6 +4439,7 @@ final class Internal {
             stringValue_ = "";
             uintValue_ = 0L;
             boolValue_ = false;
+            floatValue_ = 0D;
         }
 
         @java.lang.Override
@@ -4169,7 +4465,7 @@ final class Internal {
                         default: {
                             if (!input.skipField(tag)) {
                                 done = true;
-                            }
+              }
                             break;
                         }
                         case 10: {
@@ -4199,6 +4495,11 @@ final class Internal {
                             boolValue_ = input.readBool();
                             break;
                         }
+                        case 49: {
+
+                            floatValue_ = input.readDouble();
+                            break;
+                        }
                     }
                 }
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4213,14 +4514,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Attr_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Attr_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Attr.class, Internal.Attr.Builder.class);
+                            com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
         }
 
         public static final int KEY_FIELD_NUMBER = 1;
@@ -4237,7 +4538,7 @@ final class Internal {
                 com.google.protobuf.ByteString bs =
                         (com.google.protobuf.ByteString) ref;
                 java.lang.String s = bs.toStringUtf8();
-                key_ = s;
+        key_ = s;
                 return s;
             }
         }
@@ -4325,6 +4626,16 @@ final class Internal {
             return boolValue_;
         }
 
+        public static final int FLOATVALUE_FIELD_NUMBER = 6;
+        private double floatValue_;
+
+        /**
+         * <code>optional double FloatValue = 6;</code>
+         */
+        public double getFloatValue() {
+            return floatValue_;
+        }
+
         private byte memoizedIsInitialized = -1;
 
         public final boolean isInitialized() {
@@ -4353,6 +4664,9 @@ final class Internal {
             if (boolValue_ != false) {
                 output.writeBool(5, boolValue_);
             }
+            if (floatValue_ != 0D) {
+                output.writeDouble(6, floatValue_);
+            }
         }
 
         public int getSerializedSize() {
@@ -4378,6 +4692,10 @@ final class Internal {
                 size += com.google.protobuf.CodedOutputStream
                         .computeBoolSize(5, boolValue_);
             }
+            if (floatValue_ != 0D) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeDoubleSize(6, floatValue_);
+            }
             memoizedSize = size;
             return size;
         }
@@ -4389,10 +4707,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Attr)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Attr)) {
                 return super.equals(obj);
             }
-            Internal.Attr other = (Internal.Attr) obj;
+            com.pilosa.client.Internal.Attr other = (com.pilosa.client.Internal.Attr) obj;
 
             boolean result = true;
             result = result && getKey()
@@ -4405,6 +4723,10 @@ final class Internal {
                     == other.getUintValue());
             result = result && (getBoolValue()
                     == other.getBoolValue());
+            result = result && (
+                    java.lang.Double.doubleToLongBits(getFloatValue())
+                            == java.lang.Double.doubleToLongBits(
+                            other.getFloatValue()));
             return result;
         }
 
@@ -4428,43 +4750,46 @@ final class Internal {
             hash = (37 * hash) + BOOLVALUE_FIELD_NUMBER;
             hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
                     getBoolValue());
+            hash = (37 * hash) + FLOATVALUE_FIELD_NUMBER;
+            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+                    java.lang.Double.doubleToLongBits(getFloatValue()));
             hash = (29 * hash) + unknownFields.hashCode();
             memoizedHashCode = hash;
             return hash;
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Attr parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Attr parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Attr parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Attr parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -4472,13 +4797,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Attr parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Attr parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Attr parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Attr parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -4486,14 +4811,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Attr parseFrom(
+        public static com.pilosa.client.Internal.Attr parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -4509,7 +4834,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Attr prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Attr prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -4531,17 +4856,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Attr)
-                Internal.AttrOrBuilder {
+                com.pilosa.client.Internal.AttrOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Attr_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Attr_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Attr.class, Internal.Attr.Builder.class);
+                                com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Attr.newBuilder()
@@ -4573,33 +4898,36 @@ final class Internal {
 
                 boolValue_ = false;
 
+                floatValue_ = 0D;
+
                 return this;
             }
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Attr_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
             }
 
-            public Internal.Attr getDefaultInstanceForType() {
-                return Internal.Attr.getDefaultInstance();
+            public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Attr.getDefaultInstance();
             }
 
-            public Internal.Attr build() {
-                Internal.Attr result = buildPartial();
+            public com.pilosa.client.Internal.Attr build() {
+                com.pilosa.client.Internal.Attr result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Attr buildPartial() {
-                Internal.Attr result = new Internal.Attr(this);
+            public com.pilosa.client.Internal.Attr buildPartial() {
+                com.pilosa.client.Internal.Attr result = new com.pilosa.client.Internal.Attr(this);
                 result.key_ = key_;
                 result.type_ = type_;
                 result.stringValue_ = stringValue_;
                 result.uintValue_ = uintValue_;
                 result.boolValue_ = boolValue_;
+                result.floatValue_ = floatValue_;
                 onBuilt();
                 return result;
             }
@@ -4637,16 +4965,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Attr) {
-                    return mergeFrom((Internal.Attr) other);
+                if (other instanceof com.pilosa.client.Internal.Attr) {
+                    return mergeFrom((com.pilosa.client.Internal.Attr) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Attr other) {
-                if (other == Internal.Attr.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Attr other) {
+                if (other == com.pilosa.client.Internal.Attr.getDefaultInstance()) return this;
                 if (!other.getKey().isEmpty()) {
                     key_ = other.key_;
                     onChanged();
@@ -4664,6 +4992,9 @@ final class Internal {
                 if (other.getBoolValue() != false) {
                     setBoolValue(other.getBoolValue());
                 }
+                if (other.getFloatValue() != 0D) {
+                    setFloatValue(other.getFloatValue());
+                }
                 onChanged();
                 return this;
             }
@@ -4676,11 +5007,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Attr parsedMessage = null;
+                com.pilosa.client.Internal.Attr parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Attr) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Attr) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -4925,8 +5256,37 @@ final class Internal {
                 return this;
             }
 
+            private double floatValue_;
+
+            /**
+             * <code>optional double FloatValue = 6;</code>
+             */
+            public double getFloatValue() {
+                return floatValue_;
+            }
+
+            /**
+             * <code>optional double FloatValue = 6;</code>
+             */
+            public Builder setFloatValue(double value) {
+
+                floatValue_ = value;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional double FloatValue = 6;</code>
+             */
+            public Builder clearFloatValue() {
+
+                floatValue_ = 0D;
+                onChanged();
+                return this;
+            }
+
             public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return this;
             }
 
@@ -4940,13 +5300,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Attr)
-        private static final Internal.Attr DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Attr DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Attr();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Attr();
         }
 
-        public static Internal.Attr getDefaultInstance() {
+        public static com.pilosa.client.Internal.Attr getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -4969,7 +5329,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Attr getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -4982,13 +5342,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        java.util.List<Internal.Attr>
+        java.util.List<com.pilosa.client.Internal.Attr>
         getAttrsList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        Internal.Attr getAttrs(int index);
+        com.pilosa.client.Internal.Attr getAttrs(int index);
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
@@ -4998,13 +5358,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        java.util.List<? extends Internal.AttrOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList();
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        Internal.AttrOrBuilder getAttrsOrBuilder(
+        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index);
     }
 
@@ -5052,11 +5412,11 @@ final class Internal {
                         }
                         case 10: {
                             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                                attrs_ = new java.util.ArrayList<Internal.Attr>();
-                                mutable_bitField0_ |= 0x00000001;
+                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
+                mutable_bitField0_ |= 0x00000001;
                             }
                             attrs_.add(
-                                    input.readMessage(Internal.Attr.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
                             break;
                         }
                     }
@@ -5076,30 +5436,30 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_AttrMap_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_AttrMap_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.AttrMap.class, Internal.AttrMap.Builder.class);
+                            com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
         }
 
         public static final int ATTRS_FIELD_NUMBER = 1;
-        private java.util.List<Internal.Attr> attrs_;
+        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        public java.util.List<Internal.Attr> getAttrsList() {
+        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
             return attrs_;
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        public java.util.List<? extends Internal.AttrOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
         getAttrsOrBuilderList() {
             return attrs_;
         }
@@ -5114,14 +5474,14 @@ final class Internal {
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        public Internal.Attr getAttrs(int index) {
+        public com.pilosa.client.Internal.Attr getAttrs(int index) {
             return attrs_.get(index);
         }
 
         /**
          * <code>repeated .internal.Attr Attrs = 1;</code>
          */
-        public Internal.AttrOrBuilder getAttrsOrBuilder(
+        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                 int index) {
             return attrs_.get(index);
         }
@@ -5164,10 +5524,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.AttrMap)) {
+            if (!(obj instanceof com.pilosa.client.Internal.AttrMap)) {
                 return super.equals(obj);
             }
-            Internal.AttrMap other = (Internal.AttrMap) obj;
+            com.pilosa.client.Internal.AttrMap other = (com.pilosa.client.Internal.AttrMap) obj;
 
             boolean result = true;
             result = result && getAttrsList()
@@ -5191,38 +5551,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.AttrMap parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.AttrMap parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.AttrMap parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.AttrMap parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -5230,13 +5590,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.AttrMap parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.AttrMap parseDelimitedFrom(
+        public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -5244,14 +5604,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.AttrMap parseFrom(
+        public static com.pilosa.client.Internal.AttrMap parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -5267,7 +5627,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.AttrMap prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.AttrMap prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -5289,17 +5649,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.AttrMap)
-                Internal.AttrMapOrBuilder {
+                com.pilosa.client.Internal.AttrMapOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_AttrMap_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_AttrMap_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.AttrMap.class, Internal.AttrMap.Builder.class);
+                                com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.AttrMap.newBuilder()
@@ -5333,23 +5693,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_AttrMap_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
             }
 
-            public Internal.AttrMap getDefaultInstanceForType() {
-                return Internal.AttrMap.getDefaultInstance();
+            public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.AttrMap.getDefaultInstance();
             }
 
-            public Internal.AttrMap build() {
-                Internal.AttrMap result = buildPartial();
+            public com.pilosa.client.Internal.AttrMap build() {
+                com.pilosa.client.Internal.AttrMap result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.AttrMap buildPartial() {
-                Internal.AttrMap result = new Internal.AttrMap(this);
+            public com.pilosa.client.Internal.AttrMap buildPartial() {
+                com.pilosa.client.Internal.AttrMap result = new com.pilosa.client.Internal.AttrMap(this);
                 int from_bitField0_ = bitField0_;
                 if (attrsBuilder_ == null) {
                     if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -5397,16 +5757,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.AttrMap) {
-                    return mergeFrom((Internal.AttrMap) other);
+                if (other instanceof com.pilosa.client.Internal.AttrMap) {
+                    return mergeFrom((com.pilosa.client.Internal.AttrMap) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.AttrMap other) {
-                if (other == Internal.AttrMap.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.AttrMap other) {
+                if (other == com.pilosa.client.Internal.AttrMap.getDefaultInstance()) return this;
                 if (attrsBuilder_ == null) {
                     if (!other.attrs_.isEmpty()) {
                         if (attrs_.isEmpty()) {
@@ -5445,11 +5805,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.AttrMap parsedMessage = null;
+                com.pilosa.client.Internal.AttrMap parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.AttrMap) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.AttrMap) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -5461,23 +5821,23 @@ final class Internal {
 
             private int bitField0_;
 
-            private java.util.List<Internal.Attr> attrs_ =
+            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
                     java.util.Collections.emptyList();
 
             private void ensureAttrsIsMutable() {
                 if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-                    attrs_ = new java.util.ArrayList<Internal.Attr>(attrs_);
+                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
                     bitField0_ |= 0x00000001;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder> attrsBuilder_;
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
 
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public java.util.List<Internal.Attr> getAttrsList() {
+            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
                 if (attrsBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(attrs_);
                 } else {
@@ -5499,7 +5859,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Internal.Attr getAttrs(int index) {
+            public com.pilosa.client.Internal.Attr getAttrs(int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
                 } else {
@@ -5511,7 +5871,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -5529,7 +5889,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder setAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.set(index, builderForValue.build());
@@ -5543,7 +5903,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Builder addAttrs(Internal.Attr value) {
+            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -5561,7 +5921,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr value) {
+                    int index, com.pilosa.client.Internal.Attr value) {
                 if (attrsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -5579,7 +5939,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder addAttrs(
-                    Internal.Attr.Builder builderForValue) {
+                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(builderForValue.build());
@@ -5594,7 +5954,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder addAttrs(
-                    int index, Internal.Attr.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     attrs_.add(index, builderForValue.build());
@@ -5609,7 +5969,7 @@ final class Internal {
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
             public Builder addAllAttrs(
-                    java.lang.Iterable<? extends Internal.Attr> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
                 if (attrsBuilder_ == null) {
                     ensureAttrsIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -5652,7 +6012,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Internal.Attr.Builder getAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().getBuilder(index);
             }
@@ -5660,7 +6020,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Internal.AttrOrBuilder getAttrsOrBuilder(
+            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
                     int index) {
                 if (attrsBuilder_ == null) {
                     return attrs_.get(index);
@@ -5672,7 +6032,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public java.util.List<? extends Internal.AttrOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsOrBuilderList() {
                 if (attrsBuilder_ != null) {
                     return attrsBuilder_.getMessageOrBuilderList();
@@ -5684,34 +6044,34 @@ final class Internal {
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder() {
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
                 return getAttrsFieldBuilder().addBuilder(
-                        Internal.Attr.getDefaultInstance());
+                        com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public Internal.Attr.Builder addAttrsBuilder(
+            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
                     int index) {
                 return getAttrsFieldBuilder().addBuilder(
-                        index, Internal.Attr.getDefaultInstance());
+                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Attr Attrs = 1;</code>
              */
-            public java.util.List<Internal.Attr.Builder>
+            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
             getAttrsBuilderList() {
                 return getAttrsFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>
+                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
             getAttrsFieldBuilder() {
                 if (attrsBuilder_ == null) {
                     attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.Attr, Internal.Attr.Builder, Internal.AttrOrBuilder>(
+                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
                             attrs_,
                             ((bitField0_ & 0x00000001) == 0x00000001),
                             getParentForChildren(),
@@ -5736,13 +6096,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.AttrMap)
-        private static final Internal.AttrMap DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.AttrMap DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.AttrMap();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.AttrMap();
         }
 
-        public static Internal.AttrMap getDefaultInstance() {
+        public static com.pilosa.client.Internal.AttrMap getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -5765,7 +6125,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.AttrMap getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -5891,8 +6251,8 @@ final class Internal {
                             java.lang.String s = input.readStringRequireUtf8();
 
                             query_ = s;
-                            break;
-                        }
+              break;
+            }
                         case 24: {
                             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                                 slices_ = new java.util.ArrayList<java.lang.Long>();
@@ -5947,15 +6307,15 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_QueryRequest_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_QueryRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            Internal.QueryRequest.class, Internal.QueryRequest.Builder.class);
-        }
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
+    }
 
         private int bitField0_;
         public static final int DB_FIELD_NUMBER = 1;
@@ -6007,7 +6367,7 @@ final class Internal {
             } else {
                 com.google.protobuf.ByteString bs =
                         (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
+        java.lang.String s = bs.toStringUtf8();
                 query_ = s;
                 return s;
             }
@@ -6198,10 +6558,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.QueryRequest)) {
+            if (!(obj instanceof com.pilosa.client.Internal.QueryRequest)) {
                 return super.equals(obj);
             }
-            Internal.QueryRequest other = (Internal.QueryRequest) obj;
+            com.pilosa.client.Internal.QueryRequest other = (com.pilosa.client.Internal.QueryRequest) obj;
 
             boolean result = true;
             result = result && getDB()
@@ -6247,38 +6607,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryRequest parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryRequest parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -6286,13 +6646,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryRequest parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryRequest parseDelimitedFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -6300,14 +6660,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryRequest parseFrom(
+        public static com.pilosa.client.Internal.QueryRequest parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -6323,7 +6683,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.QueryRequest prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.QueryRequest prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -6345,17 +6705,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.QueryRequest)
-                Internal.QueryRequestOrBuilder {
+                com.pilosa.client.Internal.QueryRequestOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_QueryRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_QueryRequest_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.QueryRequest.class, Internal.QueryRequest.Builder.class);
+                                com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.QueryRequest.newBuilder()
@@ -6394,23 +6754,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_QueryRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
             }
 
-            public Internal.QueryRequest getDefaultInstanceForType() {
-                return Internal.QueryRequest.getDefaultInstance();
+            public com.pilosa.client.Internal.QueryRequest getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.QueryRequest.getDefaultInstance();
             }
 
-            public Internal.QueryRequest build() {
-                Internal.QueryRequest result = buildPartial();
+            public com.pilosa.client.Internal.QueryRequest build() {
+                com.pilosa.client.Internal.QueryRequest result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.QueryRequest buildPartial() {
-                Internal.QueryRequest result = new Internal.QueryRequest(this);
+            public com.pilosa.client.Internal.QueryRequest buildPartial() {
+                com.pilosa.client.Internal.QueryRequest result = new com.pilosa.client.Internal.QueryRequest(this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
                 result.dB_ = dB_;
@@ -6461,16 +6821,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.QueryRequest) {
-                    return mergeFrom((Internal.QueryRequest) other);
+                if (other instanceof com.pilosa.client.Internal.QueryRequest) {
+                    return mergeFrom((com.pilosa.client.Internal.QueryRequest) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.QueryRequest other) {
-                if (other == Internal.QueryRequest.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.QueryRequest other) {
+                if (other == com.pilosa.client.Internal.QueryRequest.getDefaultInstance()) return this;
                 if (!other.getDB().isEmpty()) {
                     dB_ = other.dB_;
                     onChanged();
@@ -6511,11 +6871,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.QueryRequest parsedMessage = null;
+                com.pilosa.client.Internal.QueryRequest parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.QueryRequest) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.QueryRequest) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -6864,12 +7224,12 @@ final class Internal {
             /**
              * <code>optional bool Remote = 6;</code>
              */
-            public Builder setRemote(boolean value) {
+      public Builder setRemote(boolean value) {
 
-                remote_ = value;
-                onChanged();
-                return this;
-            }
+          remote_ = value;
+          onChanged();
+          return this;
+      }
 
             /**
              * <code>optional bool Remote = 6;</code>
@@ -6883,7 +7243,7 @@ final class Internal {
 
             public final Builder setUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
+        return this;
             }
 
             public final Builder mergeUnknownFields(
@@ -6896,24 +7256,24 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.QueryRequest)
-        private static final Internal.QueryRequest DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.QueryRequest DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.QueryRequest();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryRequest();
         }
 
-        public static Internal.QueryRequest getDefaultInstance() {
+        public static com.pilosa.client.Internal.QueryRequest getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
         private static final com.google.protobuf.Parser<QueryRequest>
                 PARSER = new com.google.protobuf.AbstractParser<QueryRequest>() {
-            public QueryRequest parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new QueryRequest(input, extensionRegistry);
-            }
+      public QueryRequest parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+          return new QueryRequest(input, extensionRegistry);
+      }
         };
 
         public static com.google.protobuf.Parser<QueryRequest> parser() {
@@ -6925,7 +7285,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.QueryRequest getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.QueryRequest getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -6949,13 +7309,13 @@ final class Internal {
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        java.util.List<Internal.QueryResult>
+        java.util.List<com.pilosa.client.Internal.QueryResult>
         getResultsList();
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        Internal.QueryResult getResults(int index);
+        com.pilosa.client.Internal.QueryResult getResults(int index);
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
@@ -6965,25 +7325,25 @@ final class Internal {
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        java.util.List<? extends Internal.QueryResultOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
         getResultsOrBuilderList();
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        Internal.QueryResultOrBuilder getResultsOrBuilder(
+        com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
                 int index);
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        java.util.List<Internal.Profile>
+        java.util.List<com.pilosa.client.Internal.Profile>
         getProfilesList();
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        Internal.Profile getProfiles(int index);
+        com.pilosa.client.Internal.Profile getProfiles(int index);
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
@@ -6993,13 +7353,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        java.util.List<? extends Internal.ProfileOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
         getProfilesOrBuilderList();
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        Internal.ProfileOrBuilder getProfilesOrBuilder(
+        com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
                 int index);
     }
 
@@ -7028,8 +7388,8 @@ final class Internal {
         }
 
         private QueryResponse(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             this();
             int mutable_bitField0_ = 0;
@@ -7055,20 +7415,20 @@ final class Internal {
                         }
                         case 18: {
                             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                                results_ = new java.util.ArrayList<Internal.QueryResult>();
+                                results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>();
                                 mutable_bitField0_ |= 0x00000002;
                             }
                             results_.add(
-                                    input.readMessage(Internal.QueryResult.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.QueryResult.parser(), extensionRegistry));
                             break;
                         }
                         case 26: {
                             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                                profiles_ = new java.util.ArrayList<Internal.Profile>();
+                                profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>();
                                 mutable_bitField0_ |= 0x00000004;
                             }
                             profiles_.add(
-                                    input.readMessage(Internal.Profile.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.Profile.parser(), extensionRegistry));
                             break;
                         }
                     }
@@ -7077,7 +7437,7 @@ final class Internal {
                 throw e.setUnfinishedMessage(this);
             } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
             } finally {
                 if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                     results_ = java.util.Collections.unmodifiableList(results_);
@@ -7091,14 +7451,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_QueryResponse_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_QueryResponse_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.QueryResponse.class, Internal.QueryResponse.Builder.class);
+                            com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
         }
 
         private int bitField0_;
@@ -7106,7 +7466,7 @@ final class Internal {
         private volatile java.lang.Object err_;
 
         /**
-         * <code>optional string Err = 1;</code>
+     * <code>optional string Err = 1;</code>
          */
         public java.lang.String getErr() {
             java.lang.Object ref = err_;
@@ -7139,19 +7499,19 @@ final class Internal {
         }
 
         public static final int RESULTS_FIELD_NUMBER = 2;
-        private java.util.List<Internal.QueryResult> results_;
+        private java.util.List<com.pilosa.client.Internal.QueryResult> results_;
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        public java.util.List<Internal.QueryResult> getResultsList() {
+        public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
             return results_;
         }
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        public java.util.List<? extends Internal.QueryResultOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
         getResultsOrBuilderList() {
             return results_;
         }
@@ -7166,32 +7526,32 @@ final class Internal {
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        public Internal.QueryResult getResults(int index) {
+        public com.pilosa.client.Internal.QueryResult getResults(int index) {
             return results_.get(index);
         }
 
         /**
          * <code>repeated .internal.QueryResult Results = 2;</code>
          */
-        public Internal.QueryResultOrBuilder getResultsOrBuilder(
+        public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
                 int index) {
             return results_.get(index);
         }
 
         public static final int PROFILES_FIELD_NUMBER = 3;
-        private java.util.List<Internal.Profile> profiles_;
+        private java.util.List<com.pilosa.client.Internal.Profile> profiles_;
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        public java.util.List<Internal.Profile> getProfilesList() {
+        public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
             return profiles_;
         }
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        public java.util.List<? extends Internal.ProfileOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
         getProfilesOrBuilderList() {
             return profiles_;
         }
@@ -7206,14 +7566,14 @@ final class Internal {
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        public Internal.Profile getProfiles(int index) {
+        public com.pilosa.client.Internal.Profile getProfiles(int index) {
             return profiles_.get(index);
         }
 
         /**
          * <code>repeated .internal.Profile Profiles = 3;</code>
          */
-        public Internal.ProfileOrBuilder getProfilesOrBuilder(
+        public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
                 int index) {
             return profiles_.get(index);
         }
@@ -7269,10 +7629,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.QueryResponse)) {
+            if (!(obj instanceof com.pilosa.client.Internal.QueryResponse)) {
                 return super.equals(obj);
             }
-            Internal.QueryResponse other = (Internal.QueryResponse) obj;
+            com.pilosa.client.Internal.QueryResponse other = (com.pilosa.client.Internal.QueryResponse) obj;
 
             boolean result = true;
             result = result && getErr()
@@ -7306,38 +7666,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryResponse parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryResponse parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -7345,13 +7705,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryResponse parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResponse parseDelimitedFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -7359,14 +7719,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResponse parseFrom(
+        public static com.pilosa.client.Internal.QueryResponse parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -7382,7 +7742,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.QueryResponse prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.QueryResponse prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -7404,17 +7764,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.QueryResponse)
-                Internal.QueryResponseOrBuilder {
+                com.pilosa.client.Internal.QueryResponseOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_QueryResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_QueryResponse_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.QueryResponse.class, Internal.QueryResponse.Builder.class);
+                                com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.QueryResponse.newBuilder()
@@ -7457,23 +7817,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_QueryResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
             }
 
-            public Internal.QueryResponse getDefaultInstanceForType() {
-                return Internal.QueryResponse.getDefaultInstance();
+            public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.QueryResponse.getDefaultInstance();
             }
 
-            public Internal.QueryResponse build() {
-                Internal.QueryResponse result = buildPartial();
+            public com.pilosa.client.Internal.QueryResponse build() {
+                com.pilosa.client.Internal.QueryResponse result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.QueryResponse buildPartial() {
-                Internal.QueryResponse result = new Internal.QueryResponse(this);
+            public com.pilosa.client.Internal.QueryResponse buildPartial() {
+                com.pilosa.client.Internal.QueryResponse result = new com.pilosa.client.Internal.QueryResponse(this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
                 result.err_ = err_;
@@ -7533,16 +7893,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.QueryResponse) {
-                    return mergeFrom((Internal.QueryResponse) other);
+                if (other instanceof com.pilosa.client.Internal.QueryResponse) {
+                    return mergeFrom((com.pilosa.client.Internal.QueryResponse) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.QueryResponse other) {
-                if (other == Internal.QueryResponse.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.QueryResponse other) {
+                if (other == com.pilosa.client.Internal.QueryResponse.getDefaultInstance()) return this;
                 if (!other.getErr().isEmpty()) {
                     err_ = other.err_;
                     onChanged();
@@ -7611,11 +7971,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.QueryResponse parsedMessage = null;
+                com.pilosa.client.Internal.QueryResponse parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.QueryResponse) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.QueryResponse) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -7701,23 +8061,23 @@ final class Internal {
                 return this;
             }
 
-            private java.util.List<Internal.QueryResult> results_ =
+            private java.util.List<com.pilosa.client.Internal.QueryResult> results_ =
                     java.util.Collections.emptyList();
 
             private void ensureResultsIsMutable() {
                 if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    results_ = new java.util.ArrayList<Internal.QueryResult>(results_);
+                    results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>(results_);
                     bitField0_ |= 0x00000002;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.QueryResult, Internal.QueryResult.Builder, Internal.QueryResultOrBuilder> resultsBuilder_;
+                    com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder> resultsBuilder_;
 
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public java.util.List<Internal.QueryResult> getResultsList() {
+            public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
                 if (resultsBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(results_);
                 } else {
@@ -7739,7 +8099,7 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Internal.QueryResult getResults(int index) {
+            public com.pilosa.client.Internal.QueryResult getResults(int index) {
                 if (resultsBuilder_ == null) {
                     return results_.get(index);
                 } else {
@@ -7751,7 +8111,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder setResults(
-                    int index, Internal.QueryResult value) {
+                    int index, com.pilosa.client.Internal.QueryResult value) {
                 if (resultsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -7769,7 +8129,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder setResults(
-                    int index, Internal.QueryResult.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
                 if (resultsBuilder_ == null) {
                     ensureResultsIsMutable();
                     results_.set(index, builderForValue.build());
@@ -7783,7 +8143,7 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Builder addResults(Internal.QueryResult value) {
+            public Builder addResults(com.pilosa.client.Internal.QueryResult value) {
                 if (resultsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -7801,7 +8161,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder addResults(
-                    int index, Internal.QueryResult value) {
+                    int index, com.pilosa.client.Internal.QueryResult value) {
                 if (resultsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -7819,7 +8179,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder addResults(
-                    Internal.QueryResult.Builder builderForValue) {
+                    com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
                 if (resultsBuilder_ == null) {
                     ensureResultsIsMutable();
                     results_.add(builderForValue.build());
@@ -7834,7 +8194,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder addResults(
-                    int index, Internal.QueryResult.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
                 if (resultsBuilder_ == null) {
                     ensureResultsIsMutable();
                     results_.add(index, builderForValue.build());
@@ -7849,7 +8209,7 @@ final class Internal {
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
             public Builder addAllResults(
-                    java.lang.Iterable<? extends Internal.QueryResult> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.QueryResult> values) {
                 if (resultsBuilder_ == null) {
                     ensureResultsIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -7892,7 +8252,7 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Internal.QueryResult.Builder getResultsBuilder(
+            public com.pilosa.client.Internal.QueryResult.Builder getResultsBuilder(
                     int index) {
                 return getResultsFieldBuilder().getBuilder(index);
             }
@@ -7900,7 +8260,7 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Internal.QueryResultOrBuilder getResultsOrBuilder(
+            public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
                     int index) {
                 if (resultsBuilder_ == null) {
                     return results_.get(index);
@@ -7912,7 +8272,7 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public java.util.List<? extends Internal.QueryResultOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
             getResultsOrBuilderList() {
                 if (resultsBuilder_ != null) {
                     return resultsBuilder_.getMessageOrBuilderList();
@@ -7924,34 +8284,34 @@ final class Internal {
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Internal.QueryResult.Builder addResultsBuilder() {
+            public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder() {
                 return getResultsFieldBuilder().addBuilder(
-                        Internal.QueryResult.getDefaultInstance());
+                        com.pilosa.client.Internal.QueryResult.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public Internal.QueryResult.Builder addResultsBuilder(
+            public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder(
                     int index) {
                 return getResultsFieldBuilder().addBuilder(
-                        index, Internal.QueryResult.getDefaultInstance());
+                        index, com.pilosa.client.Internal.QueryResult.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.QueryResult Results = 2;</code>
              */
-            public java.util.List<Internal.QueryResult.Builder>
+            public java.util.List<com.pilosa.client.Internal.QueryResult.Builder>
             getResultsBuilderList() {
                 return getResultsFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.QueryResult, Internal.QueryResult.Builder, Internal.QueryResultOrBuilder>
+                    com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>
             getResultsFieldBuilder() {
                 if (resultsBuilder_ == null) {
                     resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.QueryResult, Internal.QueryResult.Builder, Internal.QueryResultOrBuilder>(
+                            com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>(
                             results_,
                             ((bitField0_ & 0x00000002) == 0x00000002),
                             getParentForChildren(),
@@ -7961,23 +8321,23 @@ final class Internal {
                 return resultsBuilder_;
             }
 
-            private java.util.List<Internal.Profile> profiles_ =
+            private java.util.List<com.pilosa.client.Internal.Profile> profiles_ =
                     java.util.Collections.emptyList();
 
             private void ensureProfilesIsMutable() {
                 if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-                    profiles_ = new java.util.ArrayList<Internal.Profile>(profiles_);
+                    profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>(profiles_);
                     bitField0_ |= 0x00000004;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Profile, Internal.Profile.Builder, Internal.ProfileOrBuilder> profilesBuilder_;
+                    com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder> profilesBuilder_;
 
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public java.util.List<Internal.Profile> getProfilesList() {
+            public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
                 if (profilesBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(profiles_);
                 } else {
@@ -7999,7 +8359,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Internal.Profile getProfiles(int index) {
+            public com.pilosa.client.Internal.Profile getProfiles(int index) {
                 if (profilesBuilder_ == null) {
                     return profiles_.get(index);
                 } else {
@@ -8011,7 +8371,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder setProfiles(
-                    int index, Internal.Profile value) {
+                    int index, com.pilosa.client.Internal.Profile value) {
                 if (profilesBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -8029,7 +8389,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder setProfiles(
-                    int index, Internal.Profile.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
                 if (profilesBuilder_ == null) {
                     ensureProfilesIsMutable();
                     profiles_.set(index, builderForValue.build());
@@ -8043,7 +8403,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Builder addProfiles(Internal.Profile value) {
+            public Builder addProfiles(com.pilosa.client.Internal.Profile value) {
                 if (profilesBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -8061,7 +8421,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder addProfiles(
-                    int index, Internal.Profile value) {
+                    int index, com.pilosa.client.Internal.Profile value) {
                 if (profilesBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -8079,7 +8439,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder addProfiles(
-                    Internal.Profile.Builder builderForValue) {
+                    com.pilosa.client.Internal.Profile.Builder builderForValue) {
                 if (profilesBuilder_ == null) {
                     ensureProfilesIsMutable();
                     profiles_.add(builderForValue.build());
@@ -8094,7 +8454,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder addProfiles(
-                    int index, Internal.Profile.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
                 if (profilesBuilder_ == null) {
                     ensureProfilesIsMutable();
                     profiles_.add(index, builderForValue.build());
@@ -8109,7 +8469,7 @@ final class Internal {
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
             public Builder addAllProfiles(
-                    java.lang.Iterable<? extends Internal.Profile> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.Profile> values) {
                 if (profilesBuilder_ == null) {
                     ensureProfilesIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -8152,7 +8512,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Internal.Profile.Builder getProfilesBuilder(
+            public com.pilosa.client.Internal.Profile.Builder getProfilesBuilder(
                     int index) {
                 return getProfilesFieldBuilder().getBuilder(index);
             }
@@ -8160,7 +8520,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Internal.ProfileOrBuilder getProfilesOrBuilder(
+            public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
                     int index) {
                 if (profilesBuilder_ == null) {
                     return profiles_.get(index);
@@ -8172,7 +8532,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public java.util.List<? extends Internal.ProfileOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
             getProfilesOrBuilderList() {
                 if (profilesBuilder_ != null) {
                     return profilesBuilder_.getMessageOrBuilderList();
@@ -8184,34 +8544,34 @@ final class Internal {
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Internal.Profile.Builder addProfilesBuilder() {
+            public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder() {
                 return getProfilesFieldBuilder().addBuilder(
-                        Internal.Profile.getDefaultInstance());
+                        com.pilosa.client.Internal.Profile.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public Internal.Profile.Builder addProfilesBuilder(
+            public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder(
                     int index) {
                 return getProfilesFieldBuilder().addBuilder(
-                        index, Internal.Profile.getDefaultInstance());
+                        index, com.pilosa.client.Internal.Profile.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Profile Profiles = 3;</code>
              */
-            public java.util.List<Internal.Profile.Builder>
+            public java.util.List<com.pilosa.client.Internal.Profile.Builder>
             getProfilesBuilderList() {
                 return getProfilesFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Profile, Internal.Profile.Builder, Internal.ProfileOrBuilder>
+                    com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>
             getProfilesFieldBuilder() {
                 if (profilesBuilder_ == null) {
                     profilesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.Profile, Internal.Profile.Builder, Internal.ProfileOrBuilder>(
+                            com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>(
                             profiles_,
                             ((bitField0_ & 0x00000004) == 0x00000004),
                             getParentForChildren(),
@@ -8236,13 +8596,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.QueryResponse)
-        private static final Internal.QueryResponse DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.QueryResponse DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.QueryResponse();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResponse();
         }
 
-        public static Internal.QueryResponse getDefaultInstance() {
+        public static com.pilosa.client.Internal.QueryResponse getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -8265,7 +8625,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.QueryResponse getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -8283,12 +8643,12 @@ final class Internal {
         /**
          * <code>optional .internal.Bitmap Bitmap = 1;</code>
          */
-        Internal.Bitmap getBitmap();
+        com.pilosa.client.Internal.Bitmap getBitmap();
 
         /**
          * <code>optional .internal.Bitmap Bitmap = 1;</code>
          */
-        Internal.BitmapOrBuilder getBitmapOrBuilder();
+        com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder();
 
         /**
          * <code>optional uint64 N = 2;</code>
@@ -8298,13 +8658,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        java.util.List<Internal.Pair>
+        java.util.List<com.pilosa.client.Internal.Pair>
         getPairsList();
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        Internal.Pair getPairs(int index);
+        com.pilosa.client.Internal.Pair getPairs(int index);
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
@@ -8314,13 +8674,13 @@ final class Internal {
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        java.util.List<? extends Internal.PairOrBuilder>
+        java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
         getPairsOrBuilderList();
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        Internal.PairOrBuilder getPairsOrBuilder(
+        com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
                 int index);
 
         /**
@@ -8333,7 +8693,7 @@ final class Internal {
      * Protobuf type {@code internal.QueryResult}
      */
     public static final class QueryResult extends
-            com.google.protobuf.GeneratedMessageV3 implements
+      com.google.protobuf.GeneratedMessageV3 implements
             // @@protoc_insertion_point(message_implements:internal.QueryResult)
             QueryResultOrBuilder {
         // Use QueryResult.newBuilder() to construct.
@@ -8374,11 +8734,11 @@ final class Internal {
                             break;
                         }
                         case 10: {
-                            Internal.Bitmap.Builder subBuilder = null;
+                            com.pilosa.client.Internal.Bitmap.Builder subBuilder = null;
                             if (bitmap_ != null) {
                                 subBuilder = bitmap_.toBuilder();
                             }
-                            bitmap_ = input.readMessage(Internal.Bitmap.parser(), extensionRegistry);
+                            bitmap_ = input.readMessage(com.pilosa.client.Internal.Bitmap.parser(), extensionRegistry);
                             if (subBuilder != null) {
                                 subBuilder.mergeFrom(bitmap_);
                                 bitmap_ = subBuilder.buildPartial();
@@ -8393,11 +8753,11 @@ final class Internal {
                         }
                         case 26: {
                             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                                pairs_ = new java.util.ArrayList<Internal.Pair>();
+                                pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>();
                                 mutable_bitField0_ |= 0x00000004;
                             }
                             pairs_.add(
-                                    input.readMessage(Internal.Pair.parser(), extensionRegistry));
+                                    input.readMessage(com.pilosa.client.Internal.Pair.parser(), extensionRegistry));
                             break;
                         }
                         case 32: {
@@ -8422,19 +8782,19 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_QueryResult_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_QueryResult_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.QueryResult.class, Internal.QueryResult.Builder.class);
+                            com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
         }
 
         private int bitField0_;
         public static final int BITMAP_FIELD_NUMBER = 1;
-        private Internal.Bitmap bitmap_;
+        private com.pilosa.client.Internal.Bitmap bitmap_;
 
         /**
          * <code>optional .internal.Bitmap Bitmap = 1;</code>
@@ -8446,14 +8806,14 @@ final class Internal {
         /**
          * <code>optional .internal.Bitmap Bitmap = 1;</code>
          */
-        public Internal.Bitmap getBitmap() {
-            return bitmap_ == null ? Internal.Bitmap.getDefaultInstance() : bitmap_;
+        public com.pilosa.client.Internal.Bitmap getBitmap() {
+            return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
         }
 
         /**
          * <code>optional .internal.Bitmap Bitmap = 1;</code>
          */
-        public Internal.BitmapOrBuilder getBitmapOrBuilder() {
+        public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
             return getBitmap();
         }
 
@@ -8468,19 +8828,19 @@ final class Internal {
         }
 
         public static final int PAIRS_FIELD_NUMBER = 3;
-        private java.util.List<Internal.Pair> pairs_;
+        private java.util.List<com.pilosa.client.Internal.Pair> pairs_;
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        public java.util.List<Internal.Pair> getPairsList() {
+        public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
             return pairs_;
         }
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        public java.util.List<? extends Internal.PairOrBuilder>
+        public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
         getPairsOrBuilderList() {
             return pairs_;
         }
@@ -8495,14 +8855,14 @@ final class Internal {
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        public Internal.Pair getPairs(int index) {
+        public com.pilosa.client.Internal.Pair getPairs(int index) {
             return pairs_.get(index);
         }
 
         /**
          * <code>repeated .internal.Pair Pairs = 3;</code>
          */
-        public Internal.PairOrBuilder getPairsOrBuilder(
+        public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
                 int index) {
             return pairs_.get(index);
         }
@@ -8576,10 +8936,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.QueryResult)) {
+            if (!(obj instanceof com.pilosa.client.Internal.QueryResult)) {
                 return super.equals(obj);
             }
-            Internal.QueryResult other = (Internal.QueryResult) obj;
+            com.pilosa.client.Internal.QueryResult other = (com.pilosa.client.Internal.QueryResult) obj;
 
             boolean result = true;
             result = result && (hasBitmap() == other.hasBitmap());
@@ -8622,38 +8982,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryResult parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.QueryResult parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.QueryResult parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryResult parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -8661,13 +9021,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryResult parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResult parseDelimitedFrom(
+        public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -8675,14 +9035,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.QueryResult parseFrom(
+        public static com.pilosa.client.Internal.QueryResult parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -8698,7 +9058,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.QueryResult prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.QueryResult prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -8720,17 +9080,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.QueryResult)
-                Internal.QueryResultOrBuilder {
+                com.pilosa.client.Internal.QueryResultOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_QueryResult_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_QueryResult_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.QueryResult.class, Internal.QueryResult.Builder.class);
+                                com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.QueryResult.newBuilder()
@@ -8774,23 +9134,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_QueryResult_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
             }
 
-            public Internal.QueryResult getDefaultInstanceForType() {
-                return Internal.QueryResult.getDefaultInstance();
+            public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.QueryResult.getDefaultInstance();
             }
 
-            public Internal.QueryResult build() {
-                Internal.QueryResult result = buildPartial();
+            public com.pilosa.client.Internal.QueryResult build() {
+                com.pilosa.client.Internal.QueryResult result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.QueryResult buildPartial() {
-                Internal.QueryResult result = new Internal.QueryResult(this);
+            public com.pilosa.client.Internal.QueryResult buildPartial() {
+                com.pilosa.client.Internal.QueryResult result = new com.pilosa.client.Internal.QueryResult(this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
                 if (bitmapBuilder_ == null) {
@@ -8847,16 +9207,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.QueryResult) {
-                    return mergeFrom((Internal.QueryResult) other);
+                if (other instanceof com.pilosa.client.Internal.QueryResult) {
+                    return mergeFrom((com.pilosa.client.Internal.QueryResult) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.QueryResult other) {
-                if (other == Internal.QueryResult.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.QueryResult other) {
+                if (other == com.pilosa.client.Internal.QueryResult.getDefaultInstance()) return this;
                 if (other.hasBitmap()) {
                     mergeBitmap(other.getBitmap());
                 }
@@ -8904,11 +9264,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.QueryResult parsedMessage = null;
+                com.pilosa.client.Internal.QueryResult parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.QueryResult) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.QueryResult) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -8920,9 +9280,9 @@ final class Internal {
 
             private int bitField0_;
 
-            private Internal.Bitmap bitmap_ = null;
+            private com.pilosa.client.Internal.Bitmap bitmap_ = null;
             private com.google.protobuf.SingleFieldBuilderV3<
-                    Internal.Bitmap, Internal.Bitmap.Builder, Internal.BitmapOrBuilder> bitmapBuilder_;
+                    com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder> bitmapBuilder_;
 
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
@@ -8934,9 +9294,9 @@ final class Internal {
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
-            public Internal.Bitmap getBitmap() {
+            public com.pilosa.client.Internal.Bitmap getBitmap() {
                 if (bitmapBuilder_ == null) {
-                    return bitmap_ == null ? Internal.Bitmap.getDefaultInstance() : bitmap_;
+                    return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
                 } else {
                     return bitmapBuilder_.getMessage();
                 }
@@ -8945,7 +9305,7 @@ final class Internal {
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
-            public Builder setBitmap(Internal.Bitmap value) {
+            public Builder setBitmap(com.pilosa.client.Internal.Bitmap value) {
                 if (bitmapBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -8963,7 +9323,7 @@ final class Internal {
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
             public Builder setBitmap(
-                    Internal.Bitmap.Builder builderForValue) {
+                    com.pilosa.client.Internal.Bitmap.Builder builderForValue) {
                 if (bitmapBuilder_ == null) {
                     bitmap_ = builderForValue.build();
                     onChanged();
@@ -8977,11 +9337,11 @@ final class Internal {
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
-            public Builder mergeBitmap(Internal.Bitmap value) {
+            public Builder mergeBitmap(com.pilosa.client.Internal.Bitmap value) {
                 if (bitmapBuilder_ == null) {
                     if (bitmap_ != null) {
                         bitmap_ =
-                                Internal.Bitmap.newBuilder(bitmap_).mergeFrom(value).buildPartial();
+                                com.pilosa.client.Internal.Bitmap.newBuilder(bitmap_).mergeFrom(value).buildPartial();
                     } else {
                         bitmap_ = value;
                     }
@@ -9011,7 +9371,7 @@ final class Internal {
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
-            public Internal.Bitmap.Builder getBitmapBuilder() {
+            public com.pilosa.client.Internal.Bitmap.Builder getBitmapBuilder() {
 
                 onChanged();
                 return getBitmapFieldBuilder().getBuilder();
@@ -9020,12 +9380,12 @@ final class Internal {
             /**
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
-            public Internal.BitmapOrBuilder getBitmapOrBuilder() {
+            public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
                 if (bitmapBuilder_ != null) {
                     return bitmapBuilder_.getMessageOrBuilder();
                 } else {
                     return bitmap_ == null ?
-                            Internal.Bitmap.getDefaultInstance() : bitmap_;
+                            com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
                 }
             }
 
@@ -9033,11 +9393,11 @@ final class Internal {
              * <code>optional .internal.Bitmap Bitmap = 1;</code>
              */
             private com.google.protobuf.SingleFieldBuilderV3<
-                    Internal.Bitmap, Internal.Bitmap.Builder, Internal.BitmapOrBuilder>
+                    com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>
             getBitmapFieldBuilder() {
                 if (bitmapBuilder_ == null) {
                     bitmapBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                            Internal.Bitmap, Internal.Bitmap.Builder, Internal.BitmapOrBuilder>(
+                            com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>(
                             getBitmap(),
                             getParentForChildren(),
                             isClean());
@@ -9075,23 +9435,23 @@ final class Internal {
                 return this;
             }
 
-            private java.util.List<Internal.Pair> pairs_ =
+            private java.util.List<com.pilosa.client.Internal.Pair> pairs_ =
                     java.util.Collections.emptyList();
 
             private void ensurePairsIsMutable() {
                 if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-                    pairs_ = new java.util.ArrayList<Internal.Pair>(pairs_);
+                    pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>(pairs_);
                     bitField0_ |= 0x00000004;
                 }
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Pair, Internal.Pair.Builder, Internal.PairOrBuilder> pairsBuilder_;
+                    com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder> pairsBuilder_;
 
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public java.util.List<Internal.Pair> getPairsList() {
+            public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
                 if (pairsBuilder_ == null) {
                     return java.util.Collections.unmodifiableList(pairs_);
                 } else {
@@ -9113,7 +9473,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Internal.Pair getPairs(int index) {
+            public com.pilosa.client.Internal.Pair getPairs(int index) {
                 if (pairsBuilder_ == null) {
                     return pairs_.get(index);
                 } else {
@@ -9125,7 +9485,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder setPairs(
-                    int index, Internal.Pair value) {
+                    int index, com.pilosa.client.Internal.Pair value) {
                 if (pairsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -9143,7 +9503,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder setPairs(
-                    int index, Internal.Pair.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
                 if (pairsBuilder_ == null) {
                     ensurePairsIsMutable();
                     pairs_.set(index, builderForValue.build());
@@ -9157,7 +9517,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Builder addPairs(Internal.Pair value) {
+            public Builder addPairs(com.pilosa.client.Internal.Pair value) {
                 if (pairsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -9175,7 +9535,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder addPairs(
-                    int index, Internal.Pair value) {
+                    int index, com.pilosa.client.Internal.Pair value) {
                 if (pairsBuilder_ == null) {
                     if (value == null) {
                         throw new NullPointerException();
@@ -9193,7 +9553,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder addPairs(
-                    Internal.Pair.Builder builderForValue) {
+                    com.pilosa.client.Internal.Pair.Builder builderForValue) {
                 if (pairsBuilder_ == null) {
                     ensurePairsIsMutable();
                     pairs_.add(builderForValue.build());
@@ -9208,7 +9568,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder addPairs(
-                    int index, Internal.Pair.Builder builderForValue) {
+                    int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
                 if (pairsBuilder_ == null) {
                     ensurePairsIsMutable();
                     pairs_.add(index, builderForValue.build());
@@ -9223,7 +9583,7 @@ final class Internal {
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
             public Builder addAllPairs(
-                    java.lang.Iterable<? extends Internal.Pair> values) {
+                    java.lang.Iterable<? extends com.pilosa.client.Internal.Pair> values) {
                 if (pairsBuilder_ == null) {
                     ensurePairsIsMutable();
                     com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -9266,7 +9626,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Internal.Pair.Builder getPairsBuilder(
+            public com.pilosa.client.Internal.Pair.Builder getPairsBuilder(
                     int index) {
                 return getPairsFieldBuilder().getBuilder(index);
             }
@@ -9274,7 +9634,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Internal.PairOrBuilder getPairsOrBuilder(
+            public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
                     int index) {
                 if (pairsBuilder_ == null) {
                     return pairs_.get(index);
@@ -9286,7 +9646,7 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public java.util.List<? extends Internal.PairOrBuilder>
+            public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
             getPairsOrBuilderList() {
                 if (pairsBuilder_ != null) {
                     return pairsBuilder_.getMessageOrBuilderList();
@@ -9298,34 +9658,34 @@ final class Internal {
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Internal.Pair.Builder addPairsBuilder() {
+            public com.pilosa.client.Internal.Pair.Builder addPairsBuilder() {
                 return getPairsFieldBuilder().addBuilder(
-                        Internal.Pair.getDefaultInstance());
+                        com.pilosa.client.Internal.Pair.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public Internal.Pair.Builder addPairsBuilder(
+            public com.pilosa.client.Internal.Pair.Builder addPairsBuilder(
                     int index) {
                 return getPairsFieldBuilder().addBuilder(
-                        index, Internal.Pair.getDefaultInstance());
+                        index, com.pilosa.client.Internal.Pair.getDefaultInstance());
             }
 
             /**
              * <code>repeated .internal.Pair Pairs = 3;</code>
              */
-            public java.util.List<Internal.Pair.Builder>
+            public java.util.List<com.pilosa.client.Internal.Pair.Builder>
             getPairsBuilderList() {
                 return getPairsFieldBuilder().getBuilderList();
             }
 
             private com.google.protobuf.RepeatedFieldBuilderV3<
-                    Internal.Pair, Internal.Pair.Builder, Internal.PairOrBuilder>
+                    com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>
             getPairsFieldBuilder() {
                 if (pairsBuilder_ == null) {
                     pairsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            Internal.Pair, Internal.Pair.Builder, Internal.PairOrBuilder>(
+                            com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>(
                             pairs_,
                             ((bitField0_ & 0x00000004) == 0x00000004),
                             getParentForChildren(),
@@ -9379,13 +9739,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.QueryResult)
-        private static final Internal.QueryResult DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.QueryResult DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.QueryResult();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResult();
         }
 
-        public static Internal.QueryResult getDefaultInstance() {
+        public static com.pilosa.client.Internal.QueryResult getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -9408,7 +9768,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.QueryResult getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -9602,7 +9962,7 @@ final class Internal {
                                 timestamps_ = new java.util.ArrayList<java.lang.Long>();
                                 mutable_bitField0_ |= 0x00000020;
                             }
-                            timestamps_.add(input.readInt64());
+              timestamps_.add(input.readInt64());
                             break;
                         }
                         case 50: {
@@ -9622,7 +9982,7 @@ final class Internal {
                 }
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
                 throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
+      } catch (java.io.IOException e) {
                 throw new com.google.protobuf.InvalidProtocolBufferException(
                         e).setUnfinishedMessage(this);
             } finally {
@@ -9641,18 +10001,18 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_ImportRequest_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_ImportRequest_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.ImportRequest.class, Internal.ImportRequest.Builder.class);
+                            com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
         }
 
         private int bitField0_;
-        public static final int DB_FIELD_NUMBER = 1;
+    public static final int DB_FIELD_NUMBER = 1;
         private volatile java.lang.Object dB_;
 
         /**
@@ -9929,10 +10289,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.ImportRequest)) {
+            if (!(obj instanceof com.pilosa.client.Internal.ImportRequest)) {
                 return super.equals(obj);
             }
-            Internal.ImportRequest other = (Internal.ImportRequest) obj;
+            com.pilosa.client.Internal.ImportRequest other = (com.pilosa.client.Internal.ImportRequest) obj;
 
             boolean result = true;
             result = result && getDB()
@@ -9981,38 +10341,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.ImportRequest parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.ImportRequest parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10020,13 +10380,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.ImportRequest parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportRequest parseDelimitedFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10034,14 +10394,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportRequest parseFrom(
+        public static com.pilosa.client.Internal.ImportRequest parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10057,7 +10417,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.ImportRequest prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.ImportRequest prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -10079,17 +10439,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.ImportRequest)
-                Internal.ImportRequestOrBuilder {
+                com.pilosa.client.Internal.ImportRequestOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_ImportRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_ImportRequest_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.ImportRequest.class, Internal.ImportRequest.Builder.class);
+                                com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.ImportRequest.newBuilder()
@@ -10128,23 +10488,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_ImportRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
             }
 
-            public Internal.ImportRequest getDefaultInstanceForType() {
-                return Internal.ImportRequest.getDefaultInstance();
+            public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.ImportRequest.getDefaultInstance();
             }
 
-            public Internal.ImportRequest build() {
-                Internal.ImportRequest result = buildPartial();
+            public com.pilosa.client.Internal.ImportRequest build() {
+                com.pilosa.client.Internal.ImportRequest result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.ImportRequest buildPartial() {
-                Internal.ImportRequest result = new Internal.ImportRequest(this);
+            public com.pilosa.client.Internal.ImportRequest buildPartial() {
+                com.pilosa.client.Internal.ImportRequest result = new com.pilosa.client.Internal.ImportRequest(this);
                 int from_bitField0_ = bitField0_;
                 int to_bitField0_ = 0;
                 result.dB_ = dB_;
@@ -10203,16 +10563,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.ImportRequest) {
-                    return mergeFrom((Internal.ImportRequest) other);
+                if (other instanceof com.pilosa.client.Internal.ImportRequest) {
+                    return mergeFrom((com.pilosa.client.Internal.ImportRequest) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.ImportRequest other) {
-                if (other == Internal.ImportRequest.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.ImportRequest other) {
+                if (other == com.pilosa.client.Internal.ImportRequest.getDefaultInstance()) return this;
                 if (!other.getDB().isEmpty()) {
                     dB_ = other.dB_;
                     onChanged();
@@ -10266,11 +10626,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.ImportRequest parsedMessage = null;
+                com.pilosa.client.Internal.ImportRequest parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.ImportRequest) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.ImportRequest) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -10676,7 +11036,7 @@ final class Internal {
              */
             public Builder clearTimestamps() {
                 timestamps_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000020);
                 onChanged();
                 return this;
             }
@@ -10696,13 +11056,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.ImportRequest)
-        private static final Internal.ImportRequest DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.ImportRequest DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.ImportRequest();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportRequest();
         }
 
-        public static Internal.ImportRequest getDefaultInstance() {
+        public static com.pilosa.client.Internal.ImportRequest getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -10725,7 +11085,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.ImportRequest getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -10809,14 +11169,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_ImportResponse_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_ImportResponse_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_ImportResponse_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_ImportResponse_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.ImportResponse.class, Internal.ImportResponse.Builder.class);
+                            com.pilosa.client.Internal.ImportResponse.class, com.pilosa.client.Internal.ImportResponse.Builder.class);
         }
 
         public static final int ERR_FIELD_NUMBER = 1;
@@ -10892,10 +11252,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.ImportResponse)) {
+            if (!(obj instanceof com.pilosa.client.Internal.ImportResponse)) {
                 return super.equals(obj);
             }
-            Internal.ImportResponse other = (Internal.ImportResponse) obj;
+            com.pilosa.client.Internal.ImportResponse other = (com.pilosa.client.Internal.ImportResponse) obj;
 
             boolean result = true;
             result = result && getErr()
@@ -10917,38 +11277,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.ImportResponse parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.ImportResponse parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10956,13 +11316,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.ImportResponse parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.ImportResponse parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportResponse parseDelimitedFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10970,14 +11330,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.ImportResponse parseFrom(
+        public static com.pilosa.client.Internal.ImportResponse parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -10993,7 +11353,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.ImportResponse prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.ImportResponse prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -11015,17 +11375,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.ImportResponse)
-                Internal.ImportResponseOrBuilder {
+                com.pilosa.client.Internal.ImportResponseOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_ImportResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_ImportResponse_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_ImportResponse_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_ImportResponse_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.ImportResponse.class, Internal.ImportResponse.Builder.class);
+                                com.pilosa.client.Internal.ImportResponse.class, com.pilosa.client.Internal.ImportResponse.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.ImportResponse.newBuilder()
@@ -11054,23 +11414,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_ImportResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_ImportResponse_descriptor;
             }
 
-            public Internal.ImportResponse getDefaultInstanceForType() {
-                return Internal.ImportResponse.getDefaultInstance();
+            public com.pilosa.client.Internal.ImportResponse getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.ImportResponse.getDefaultInstance();
             }
 
-            public Internal.ImportResponse build() {
-                Internal.ImportResponse result = buildPartial();
+            public com.pilosa.client.Internal.ImportResponse build() {
+                com.pilosa.client.Internal.ImportResponse result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.ImportResponse buildPartial() {
-                Internal.ImportResponse result = new Internal.ImportResponse(this);
+            public com.pilosa.client.Internal.ImportResponse buildPartial() {
+                com.pilosa.client.Internal.ImportResponse result = new com.pilosa.client.Internal.ImportResponse(this);
                 result.err_ = err_;
                 onBuilt();
                 return result;
@@ -11109,16 +11469,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.ImportResponse) {
-                    return mergeFrom((Internal.ImportResponse) other);
+                if (other instanceof com.pilosa.client.Internal.ImportResponse) {
+                    return mergeFrom((com.pilosa.client.Internal.ImportResponse) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.ImportResponse other) {
-                if (other == Internal.ImportResponse.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.ImportResponse other) {
+                if (other == com.pilosa.client.Internal.ImportResponse.getDefaultInstance()) return this;
                 if (!other.getErr().isEmpty()) {
                     err_ = other.err_;
                     onChanged();
@@ -11135,11 +11495,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.ImportResponse parsedMessage = null;
+                com.pilosa.client.Internal.ImportResponse parsedMessage = null;
                 try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.ImportResponse) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.ImportResponse) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -11238,15 +11598,15 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.ImportResponse)
-        private static final Internal.ImportResponse DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.ImportResponse DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.ImportResponse();
-        }
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportResponse();
+    }
 
-        public static Internal.ImportResponse getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
+    public static com.pilosa.client.Internal.ImportResponse getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
 
         private static final com.google.protobuf.Parser<ImportResponse>
                 PARSER = new com.google.protobuf.AbstractParser<ImportResponse>() {
@@ -11267,48 +11627,48 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.ImportResponse getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.ImportResponse getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
-        }
-
     }
 
-    public interface BlockDataRequestOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.BlockDataRequest)
-            com.google.protobuf.MessageOrBuilder {
+  }
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        java.lang.String getDB();
+  public interface BlockDataRequestOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.BlockDataRequest)
+          com.google.protobuf.MessageOrBuilder {
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        com.google.protobuf.ByteString
-        getDBBytes();
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      java.lang.String getDB();
 
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        java.lang.String getFrame();
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      com.google.protobuf.ByteString
+      getDBBytes();
 
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        com.google.protobuf.ByteString
-        getFrameBytes();
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      java.lang.String getFrame();
 
-        /**
-         * <code>optional uint64 Slice = 3;</code>
-         */
-        long getSlice();
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      com.google.protobuf.ByteString
+      getFrameBytes();
 
-        /**
-         * <code>optional uint64 Block = 4;</code>
-         */
-        long getBlock();
-    }
+      /**
+       * <code>optional uint64 Slice = 3;</code>
+       */
+      long getSlice();
+
+      /**
+       * <code>optional uint64 Block = 4;</code>
+       */
+      long getBlock();
+  }
 
     /**
      * Protobuf type {@code internal.BlockDataRequest}
@@ -11391,14 +11751,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_BlockDataRequest_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_BlockDataRequest_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_BlockDataRequest_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_BlockDataRequest_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.BlockDataRequest.class, Internal.BlockDataRequest.Builder.class);
+                            com.pilosa.client.Internal.BlockDataRequest.class, com.pilosa.client.Internal.BlockDataRequest.Builder.class);
         }
 
         public static final int DB_FIELD_NUMBER = 1;
@@ -11550,10 +11910,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.BlockDataRequest)) {
+            if (!(obj instanceof com.pilosa.client.Internal.BlockDataRequest)) {
                 return super.equals(obj);
             }
-            Internal.BlockDataRequest other = (Internal.BlockDataRequest) obj;
+            com.pilosa.client.Internal.BlockDataRequest other = (com.pilosa.client.Internal.BlockDataRequest) obj;
 
             boolean result = true;
             result = result && getDB()
@@ -11589,38 +11949,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.BlockDataRequest parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.BlockDataRequest parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -11628,13 +11988,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.BlockDataRequest parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.BlockDataRequest parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataRequest parseDelimitedFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -11642,14 +12002,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataRequest parseFrom(
+        public static com.pilosa.client.Internal.BlockDataRequest parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -11665,7 +12025,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.BlockDataRequest prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.BlockDataRequest prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -11687,17 +12047,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.BlockDataRequest)
-                Internal.BlockDataRequestOrBuilder {
+                com.pilosa.client.Internal.BlockDataRequestOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_BlockDataRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataRequest_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_BlockDataRequest_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataRequest_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.BlockDataRequest.class, Internal.BlockDataRequest.Builder.class);
+                                com.pilosa.client.Internal.BlockDataRequest.class, com.pilosa.client.Internal.BlockDataRequest.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.BlockDataRequest.newBuilder()
@@ -11732,23 +12092,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_BlockDataRequest_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataRequest_descriptor;
             }
 
-            public Internal.BlockDataRequest getDefaultInstanceForType() {
-                return Internal.BlockDataRequest.getDefaultInstance();
+            public com.pilosa.client.Internal.BlockDataRequest getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.BlockDataRequest.getDefaultInstance();
             }
 
-            public Internal.BlockDataRequest build() {
-                Internal.BlockDataRequest result = buildPartial();
+            public com.pilosa.client.Internal.BlockDataRequest build() {
+                com.pilosa.client.Internal.BlockDataRequest result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.BlockDataRequest buildPartial() {
-                Internal.BlockDataRequest result = new Internal.BlockDataRequest(this);
+            public com.pilosa.client.Internal.BlockDataRequest buildPartial() {
+                com.pilosa.client.Internal.BlockDataRequest result = new com.pilosa.client.Internal.BlockDataRequest(this);
                 result.dB_ = dB_;
                 result.frame_ = frame_;
                 result.slice_ = slice_;
@@ -11790,16 +12150,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.BlockDataRequest) {
-                    return mergeFrom((Internal.BlockDataRequest) other);
+                if (other instanceof com.pilosa.client.Internal.BlockDataRequest) {
+                    return mergeFrom((com.pilosa.client.Internal.BlockDataRequest) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.BlockDataRequest other) {
-                if (other == Internal.BlockDataRequest.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.BlockDataRequest other) {
+                if (other == com.pilosa.client.Internal.BlockDataRequest.getDefaultInstance()) return this;
                 if (!other.getDB().isEmpty()) {
                     dB_ = other.dB_;
                     onChanged();
@@ -11826,11 +12186,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.BlockDataRequest parsedMessage = null;
+                com.pilosa.client.Internal.BlockDataRequest parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.BlockDataRequest) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.BlockDataRequest) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -12061,13 +12421,13 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.BlockDataRequest)
-        private static final Internal.BlockDataRequest DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.BlockDataRequest DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.BlockDataRequest();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.BlockDataRequest();
         }
 
-        public static Internal.BlockDataRequest getDefaultInstance() {
+        public static com.pilosa.client.Internal.BlockDataRequest getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -12090,7 +12450,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.BlockDataRequest getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.BlockDataRequest getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -12112,8 +12472,8 @@ final class Internal {
 
         /**
          * <code>repeated uint64 BitmapIDs = 1;</code>
-         */
-        long getBitmapIDs(int index);
+     */
+    long getBitmapIDs(int index);
 
         /**
          * <code>repeated uint64 ProfileIDs = 2;</code>
@@ -12236,14 +12596,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_BlockDataResponse_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_BlockDataResponse_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_BlockDataResponse_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_BlockDataResponse_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.BlockDataResponse.class, Internal.BlockDataResponse.Builder.class);
+                            com.pilosa.client.Internal.BlockDataResponse.class, com.pilosa.client.Internal.BlockDataResponse.Builder.class);
         }
 
         public static final int BITMAPIDS_FIELD_NUMBER = 1;
@@ -12374,10 +12734,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.BlockDataResponse)) {
+            if (!(obj instanceof com.pilosa.client.Internal.BlockDataResponse)) {
                 return super.equals(obj);
             }
-            Internal.BlockDataResponse other = (Internal.BlockDataResponse) obj;
+            com.pilosa.client.Internal.BlockDataResponse other = (com.pilosa.client.Internal.BlockDataResponse) obj;
 
             boolean result = true;
             result = result && getBitmapIDsList()
@@ -12407,38 +12767,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.BlockDataResponse parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.BlockDataResponse parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -12446,13 +12806,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.BlockDataResponse parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.BlockDataResponse parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataResponse parseDelimitedFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -12460,14 +12820,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.BlockDataResponse parseFrom(
+        public static com.pilosa.client.Internal.BlockDataResponse parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -12483,7 +12843,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.BlockDataResponse prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.BlockDataResponse prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -12505,17 +12865,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.BlockDataResponse)
-                Internal.BlockDataResponseOrBuilder {
+                com.pilosa.client.Internal.BlockDataResponseOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_BlockDataResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataResponse_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_BlockDataResponse_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataResponse_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.BlockDataResponse.class, Internal.BlockDataResponse.Builder.class);
+                                com.pilosa.client.Internal.BlockDataResponse.class, com.pilosa.client.Internal.BlockDataResponse.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.BlockDataResponse.newBuilder()
@@ -12546,23 +12906,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_BlockDataResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_BlockDataResponse_descriptor;
             }
 
-            public Internal.BlockDataResponse getDefaultInstanceForType() {
-                return Internal.BlockDataResponse.getDefaultInstance();
+            public com.pilosa.client.Internal.BlockDataResponse getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.BlockDataResponse.getDefaultInstance();
             }
 
-            public Internal.BlockDataResponse build() {
-                Internal.BlockDataResponse result = buildPartial();
+            public com.pilosa.client.Internal.BlockDataResponse build() {
+                com.pilosa.client.Internal.BlockDataResponse result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.BlockDataResponse buildPartial() {
-                Internal.BlockDataResponse result = new Internal.BlockDataResponse(this);
+            public com.pilosa.client.Internal.BlockDataResponse buildPartial() {
+                com.pilosa.client.Internal.BlockDataResponse result = new com.pilosa.client.Internal.BlockDataResponse(this);
                 int from_bitField0_ = bitField0_;
                 if (((bitField0_ & 0x00000001) == 0x00000001)) {
                     bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
@@ -12611,17 +12971,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.BlockDataResponse) {
-                    return mergeFrom((Internal.BlockDataResponse) other);
+                if (other instanceof com.pilosa.client.Internal.BlockDataResponse) {
+                    return mergeFrom((com.pilosa.client.Internal.BlockDataResponse) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.BlockDataResponse other) {
-                if (other == Internal.BlockDataResponse.getDefaultInstance())
-                    return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.BlockDataResponse other) {
+                if (other == com.pilosa.client.Internal.BlockDataResponse.getDefaultInstance()) return this;
                 if (!other.bitmapIDs_.isEmpty()) {
                     if (bitmapIDs_.isEmpty()) {
                         bitmapIDs_ = other.bitmapIDs_;
@@ -12654,11 +13013,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.BlockDataResponse parsedMessage = null;
+                com.pilosa.client.Internal.BlockDataResponse parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.BlockDataResponse) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.BlockDataResponse) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -12826,20 +13185,20 @@ final class Internal {
             public final Builder mergeUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return this;
-            }
+      }
 
 
-            // @@protoc_insertion_point(builder_scope:internal.BlockDataResponse)
+      // @@protoc_insertion_point(builder_scope:internal.BlockDataResponse)
         }
 
         // @@protoc_insertion_point(class_scope:internal.BlockDataResponse)
-        private static final Internal.BlockDataResponse DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.BlockDataResponse DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.BlockDataResponse();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.BlockDataResponse();
         }
 
-        public static Internal.BlockDataResponse getDefaultInstance() {
+        public static com.pilosa.client.Internal.BlockDataResponse getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -12862,7 +13221,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.BlockDataResponse getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.BlockDataResponse getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -12968,14 +13327,14 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_Cache_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_Cache_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_Cache_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_Cache_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.Cache.class, Internal.Cache.Builder.class);
+                            com.pilosa.client.Internal.Cache.class, com.pilosa.client.Internal.Cache.Builder.class);
         }
 
         public static final int BITMAPIDS_FIELD_NUMBER = 1;
@@ -13058,10 +13417,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.Cache)) {
+            if (!(obj instanceof com.pilosa.client.Internal.Cache)) {
                 return super.equals(obj);
             }
-            Internal.Cache other = (Internal.Cache) obj;
+            com.pilosa.client.Internal.Cache other = (com.pilosa.client.Internal.Cache) obj;
 
             boolean result = true;
             result = result && getBitmapIDsList()
@@ -13085,38 +13444,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Cache parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.Cache parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.Cache parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Cache parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13124,13 +13483,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Cache parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.Cache parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.Cache parseDelimitedFrom(
+        public static com.pilosa.client.Internal.Cache parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13138,14 +13497,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.Cache parseFrom(
+        public static com.pilosa.client.Internal.Cache parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13161,7 +13520,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.Cache prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.Cache prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -13183,17 +13542,17 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.Cache)
-                Internal.CacheOrBuilder {
+                com.pilosa.client.Internal.CacheOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_Cache_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Cache_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_Cache_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_Cache_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.Cache.class, Internal.Cache.Builder.class);
+                                com.pilosa.client.Internal.Cache.class, com.pilosa.client.Internal.Cache.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.Cache.newBuilder()
@@ -13222,23 +13581,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_Cache_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_Cache_descriptor;
             }
 
-            public Internal.Cache getDefaultInstanceForType() {
-                return Internal.Cache.getDefaultInstance();
+            public com.pilosa.client.Internal.Cache getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.Cache.getDefaultInstance();
             }
 
-            public Internal.Cache build() {
-                Internal.Cache result = buildPartial();
+            public com.pilosa.client.Internal.Cache build() {
+                com.pilosa.client.Internal.Cache result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.Cache buildPartial() {
-                Internal.Cache result = new Internal.Cache(this);
+            public com.pilosa.client.Internal.Cache buildPartial() {
+                com.pilosa.client.Internal.Cache result = new com.pilosa.client.Internal.Cache(this);
                 int from_bitField0_ = bitField0_;
                 if (((bitField0_ & 0x00000001) == 0x00000001)) {
                     bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
@@ -13282,16 +13641,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.Cache) {
-                    return mergeFrom((Internal.Cache) other);
+                if (other instanceof com.pilosa.client.Internal.Cache) {
+                    return mergeFrom((com.pilosa.client.Internal.Cache) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.Cache other) {
-                if (other == Internal.Cache.getDefaultInstance()) return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.Cache other) {
+                if (other == com.pilosa.client.Internal.Cache.getDefaultInstance()) return this;
                 if (!other.bitmapIDs_.isEmpty()) {
                     if (bitmapIDs_.isEmpty()) {
                         bitmapIDs_ = other.bitmapIDs_;
@@ -13314,11 +13673,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.Cache parsedMessage = null;
+                com.pilosa.client.Internal.Cache parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.Cache) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.Cache) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -13419,15 +13778,15 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.Cache)
-        private static final Internal.Cache DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.Cache DEFAULT_INSTANCE;
 
         static {
-            DEFAULT_INSTANCE = new Internal.Cache();
+            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Cache();
         }
 
-        public static Internal.Cache getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
+    public static com.pilosa.client.Internal.Cache getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+    }
 
         private static final com.google.protobuf.Parser<Cache>
                 PARSER = new com.google.protobuf.AbstractParser<Cache>() {
@@ -13448,7 +13807,7 @@ final class Internal {
             return PARSER;
         }
 
-        public Internal.Cache getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.Cache getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -13566,7 +13925,7 @@ final class Internal {
 
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return Internal.internal_static_internal_MaxSlicesResponse_descriptor;
+            return com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_descriptor;
         }
 
         @SuppressWarnings({"rawtypes"})
@@ -13583,9 +13942,9 @@ final class Internal {
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return Internal.internal_static_internal_MaxSlicesResponse_fieldAccessorTable
+            return com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
-                            Internal.MaxSlicesResponse.class, Internal.MaxSlicesResponse.Builder.class);
+                            com.pilosa.client.Internal.MaxSlicesResponse.class, com.pilosa.client.Internal.MaxSlicesResponse.Builder.class);
         }
 
         public static final int MAXSLICES_FIELD_NUMBER = 1;
@@ -13595,7 +13954,7 @@ final class Internal {
                     java.lang.String, java.lang.Long> defaultEntry =
                     com.google.protobuf.MapEntry
                             .<java.lang.String, java.lang.Long>newDefaultInstance(
-                                    Internal.internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor,
+                                    com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor,
                                     com.google.protobuf.WireFormat.FieldType.STRING,
                                     "",
                                     com.google.protobuf.WireFormat.FieldType.UINT64,
@@ -13725,10 +14084,10 @@ final class Internal {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Internal.MaxSlicesResponse)) {
+            if (!(obj instanceof com.pilosa.client.Internal.MaxSlicesResponse)) {
                 return super.equals(obj);
             }
-            Internal.MaxSlicesResponse other = (Internal.MaxSlicesResponse) obj;
+            com.pilosa.client.Internal.MaxSlicesResponse other = (com.pilosa.client.Internal.MaxSlicesResponse) obj;
 
             boolean result = true;
             result = result && internalGetMaxSlices().equals(
@@ -13752,38 +14111,38 @@ final class Internal {
             return hash;
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 com.google.protobuf.ByteString data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 com.google.protobuf.ByteString data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(byte[] data)
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(byte[] data)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 byte[] data,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13791,13 +14150,13 @@ final class Internal {
                     .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.MaxSlicesResponse parseDelimitedFrom(java.io.InputStream input)
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseDelimitedFrom(java.io.InputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseDelimitedWithIOException(PARSER, input);
         }
 
-        public static Internal.MaxSlicesResponse parseDelimitedFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseDelimitedFrom(
                 java.io.InputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13805,14 +14164,14 @@ final class Internal {
                     .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 com.google.protobuf.CodedInputStream input)
                 throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
                     .parseWithIOException(PARSER, input);
         }
 
-        public static Internal.MaxSlicesResponse parseFrom(
+        public static com.pilosa.client.Internal.MaxSlicesResponse parseFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                 throws java.io.IOException {
@@ -13828,7 +14187,7 @@ final class Internal {
             return DEFAULT_INSTANCE.toBuilder();
         }
 
-        public static Builder newBuilder(Internal.MaxSlicesResponse prototype) {
+        public static Builder newBuilder(com.pilosa.client.Internal.MaxSlicesResponse prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
 
@@ -13850,10 +14209,10 @@ final class Internal {
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
                 // @@protoc_insertion_point(builder_implements:internal.MaxSlicesResponse)
-                Internal.MaxSlicesResponseOrBuilder {
+                com.pilosa.client.Internal.MaxSlicesResponseOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return Internal.internal_static_internal_MaxSlicesResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_descriptor;
             }
 
             @SuppressWarnings({"rawtypes"})
@@ -13882,9 +14241,9 @@ final class Internal {
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return Internal.internal_static_internal_MaxSlicesResponse_fieldAccessorTable
+                return com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
-                                Internal.MaxSlicesResponse.class, Internal.MaxSlicesResponse.Builder.class);
+                                com.pilosa.client.Internal.MaxSlicesResponse.class, com.pilosa.client.Internal.MaxSlicesResponse.Builder.class);
             }
 
             // Construct using com.pilosa.client.Internal.MaxSlicesResponse.newBuilder()
@@ -13912,23 +14271,23 @@ final class Internal {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return Internal.internal_static_internal_MaxSlicesResponse_descriptor;
+                return com.pilosa.client.Internal.internal_static_internal_MaxSlicesResponse_descriptor;
             }
 
-            public Internal.MaxSlicesResponse getDefaultInstanceForType() {
-                return Internal.MaxSlicesResponse.getDefaultInstance();
+            public com.pilosa.client.Internal.MaxSlicesResponse getDefaultInstanceForType() {
+                return com.pilosa.client.Internal.MaxSlicesResponse.getDefaultInstance();
             }
 
-            public Internal.MaxSlicesResponse build() {
-                Internal.MaxSlicesResponse result = buildPartial();
+            public com.pilosa.client.Internal.MaxSlicesResponse build() {
+                com.pilosa.client.Internal.MaxSlicesResponse result = buildPartial();
                 if (!result.isInitialized()) {
                     throw newUninitializedMessageException(result);
                 }
                 return result;
             }
 
-            public Internal.MaxSlicesResponse buildPartial() {
-                Internal.MaxSlicesResponse result = new Internal.MaxSlicesResponse(this);
+            public com.pilosa.client.Internal.MaxSlicesResponse buildPartial() {
+                com.pilosa.client.Internal.MaxSlicesResponse result = new com.pilosa.client.Internal.MaxSlicesResponse(this);
                 int from_bitField0_ = bitField0_;
                 result.maxSlices_ = internalGetMaxSlices();
                 result.maxSlices_.makeImmutable();
@@ -13969,17 +14328,16 @@ final class Internal {
             }
 
             public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof Internal.MaxSlicesResponse) {
-                    return mergeFrom((Internal.MaxSlicesResponse) other);
+                if (other instanceof com.pilosa.client.Internal.MaxSlicesResponse) {
+                    return mergeFrom((com.pilosa.client.Internal.MaxSlicesResponse) other);
                 } else {
                     super.mergeFrom(other);
                     return this;
                 }
             }
 
-            public Builder mergeFrom(Internal.MaxSlicesResponse other) {
-                if (other == Internal.MaxSlicesResponse.getDefaultInstance())
-                    return this;
+            public Builder mergeFrom(com.pilosa.client.Internal.MaxSlicesResponse other) {
+                if (other == com.pilosa.client.Internal.MaxSlicesResponse.getDefaultInstance()) return this;
                 internalGetMutableMaxSlices().mergeFrom(
                         other.internalGetMaxSlices());
                 onChanged();
@@ -13994,11 +14352,11 @@ final class Internal {
                     com.google.protobuf.CodedInputStream input,
                     com.google.protobuf.ExtensionRegistryLite extensionRegistry)
                     throws java.io.IOException {
-                Internal.MaxSlicesResponse parsedMessage = null;
+                com.pilosa.client.Internal.MaxSlicesResponse parsedMessage = null;
                 try {
                     parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
                 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (Internal.MaxSlicesResponse) e.getUnfinishedMessage();
+                    parsedMessage = (com.pilosa.client.Internal.MaxSlicesResponse) e.getUnfinishedMessage();
                     throw e.unwrapIOException();
                 } finally {
                     if (parsedMessage != null) {
@@ -14029,10 +14387,10 @@ final class Internal {
                 if (maxSlices_ == null) {
                     maxSlices_ = com.google.protobuf.MapField.newMapField(
                             MaxSlicesDefaultEntryHolder.defaultEntry);
-                }
-                if (!maxSlices_.isMutable()) {
-                    maxSlices_ = maxSlices_.copy();
-                }
+        }
+        if (!maxSlices_.isMutable()) {
+            maxSlices_ = maxSlices_.copy();
+        }
                 return maxSlices_;
             }
 
@@ -14041,7 +14399,7 @@ final class Internal {
             }
 
             /**
-             * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
+       * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
              */
 
             public boolean containsMaxSlices(
@@ -14050,27 +14408,25 @@ final class Internal {
                     throw new java.lang.NullPointerException();
                 }
                 return internalGetMaxSlices().getMap().containsKey(key);
-            }
+      }
+      /**
+       * Use {@link #getMaxSlicesMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Long> getMaxSlices() {
+          return getMaxSlicesMap();
+      }
+      /**
+       * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
+       */
 
-            /**
-             * Use {@link #getMaxSlicesMap()} instead.
-             */
-            @java.lang.Deprecated
-            public java.util.Map<java.lang.String, java.lang.Long> getMaxSlices() {
-                return getMaxSlicesMap();
-            }
+      public java.util.Map<java.lang.String, java.lang.Long> getMaxSlicesMap() {
+          return internalGetMaxSlices().getMap();
+      }
 
             /**
              * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
-             */
-
-            public java.util.Map<java.lang.String, java.lang.Long> getMaxSlicesMap() {
-                return internalGetMaxSlices().getMap();
-            }
-
-            /**
-             * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
-             */
+       */
 
             public long getMaxSlicesOrDefault(
                     java.lang.String key,
@@ -14079,7 +14435,7 @@ final class Internal {
                     throw new java.lang.NullPointerException();
                 }
                 java.util.Map<java.lang.String, java.lang.Long> map =
-                        internalGetMaxSlices().getMap();
+            internalGetMaxSlices().getMap();
                 return map.containsKey(key) ? map.get(key) : defaultValue;
             }
 
@@ -14088,14 +14444,14 @@ final class Internal {
              */
 
             public long getMaxSlicesOrThrow(
-                    java.lang.String key) {
+          java.lang.String key) {
                 if (key == null) {
                     throw new java.lang.NullPointerException();
                 }
                 java.util.Map<java.lang.String, java.lang.Long> map =
                         internalGetMaxSlices().getMap();
                 if (!map.containsKey(key)) {
-                    throw new java.lang.IllegalArgumentException();
+          throw new java.lang.IllegalArgumentException();
                 }
                 return map.get(key);
             }
@@ -14107,7 +14463,7 @@ final class Internal {
 
             /**
              * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
-             */
+       */
 
             public Builder removeMaxSlices(
                     java.lang.String key) {
@@ -14116,30 +14472,28 @@ final class Internal {
                 }
                 getMutableMaxSlices().remove(key);
                 return this;
-            }
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.Long>
+      getMutableMaxSlices() {
+          return internalGetMutableMaxSlices().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
+       */
+      public Builder putMaxSlices(
+              java.lang.String key,
+              long value) {
+          if (key == null) {
+              throw new java.lang.NullPointerException();
+          }
 
-            /**
-             * Use alternate mutation accessors instead.
-             */
-            @java.lang.Deprecated
-            public java.util.Map<java.lang.String, java.lang.Long>
-            getMutableMaxSlices() {
-                return internalGetMutableMaxSlices().getMutableMap();
-            }
-
-            /**
-             * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
-             */
-            public Builder putMaxSlices(
-                    java.lang.String key,
-                    long value) {
-                if (key == null) {
-                    throw new java.lang.NullPointerException();
-                }
-
-                getMutableMaxSlices().put(key, value);
-                return this;
-            }
+          getMutableMaxSlices().put(key, value);
+        return this;
+      }
 
             /**
              * <code>map&lt;string, uint64&gt; MaxSlices = 1;</code>
@@ -14148,7 +14502,7 @@ final class Internal {
             public Builder putAllMaxSlices(
                     java.util.Map<java.lang.String, java.lang.Long> values) {
                 getMutableMaxSlices().putAll(values);
-                return this;
+        return this;
             }
 
             public final Builder setUnknownFields(
@@ -14158,7 +14512,7 @@ final class Internal {
 
             public final Builder mergeUnknownFields(
                     final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
+        return this;
             }
 
 
@@ -14166,13 +14520,12 @@ final class Internal {
         }
 
         // @@protoc_insertion_point(class_scope:internal.MaxSlicesResponse)
-        private static final Internal.MaxSlicesResponse DEFAULT_INSTANCE;
+        private static final com.pilosa.client.Internal.MaxSlicesResponse DEFAULT_INSTANCE;
+    static {
+        DEFAULT_INSTANCE = new com.pilosa.client.Internal.MaxSlicesResponse();
+    }
 
-        static {
-            DEFAULT_INSTANCE = new Internal.MaxSlicesResponse();
-        }
-
-        public static Internal.MaxSlicesResponse getDefaultInstance() {
+        public static com.pilosa.client.Internal.MaxSlicesResponse getDefaultInstance() {
             return DEFAULT_INSTANCE;
         }
 
@@ -14188,14 +14541,14 @@ final class Internal {
 
         public static com.google.protobuf.Parser<MaxSlicesResponse> parser() {
             return PARSER;
-        }
+    }
 
-        @java.lang.Override
-        public com.google.protobuf.Parser<MaxSlicesResponse> getParserForType() {
-            return PARSER;
-        }
+    @java.lang.Override
+    public com.google.protobuf.Parser<MaxSlicesResponse> getParserForType() {
+        return PARSER;
+    }
 
-        public Internal.MaxSlicesResponse getDefaultInstanceForType() {
+        public com.pilosa.client.Internal.MaxSlicesResponse getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
@@ -14302,38 +14655,39 @@ final class Internal {
 
     static {
         java.lang.String[] descriptorData = {
-                "\n\016internal.proto\022\010internal\"\031\n\002DB\022\023\n\013Time" +
-                        "Quantum\030\001 \001(\t\"\034\n\005Frame\022\023\n\013TimeQuantum\030\001 " +
-                        "\001(\t\"5\n\006Bitmap\022\014\n\004Bits\030\001 \003(\004\022\035\n\005Attrs\030\002 \003" +
-                        "(\0132\016.internal.Attr\"\"\n\004Pair\022\013\n\003Key\030\001 \001(\004\022" +
-                        "\r\n\005Count\030\002 \001(\004\"=\n\003Bit\022\020\n\010BitmapID\030\001 \001(\004\022" +
-                        "\021\n\tProfileID\030\002 \001(\004\022\021\n\tTimestamp\030\003 \001(\003\"4\n" +
-                        "\007Profile\022\n\n\002ID\030\001 \001(\004\022\035\n\005Attrs\030\002 \003(\0132\016.in" +
-                        "ternal.Attr\"\\\n\004Attr\022\013\n\003Key\030\001 \001(\t\022\014\n\004Type" +
-                        "\030\002 \001(\004\022\023\n\013StringValue\030\003 \001(\t\022\021\n\tUintValue" +
-                        "\030\004 \001(\004\022\021\n\tBoolValue\030\005 \001(\010\"(\n\007AttrMap\022\035\n\005",
-                "Attrs\030\001 \003(\0132\016.internal.Attr\"l\n\014QueryRequ" +
-                        "est\022\n\n\002DB\030\001 \001(\t\022\r\n\005Query\030\002 \001(\t\022\016\n\006Slices" +
-                        "\030\003 \003(\004\022\020\n\010Profiles\030\004 \001(\010\022\017\n\007Quantum\030\005 \001(" +
-                        "\t\022\016\n\006Remote\030\006 \001(\010\"i\n\rQueryResponse\022\013\n\003Er" +
-                        "r\030\001 \001(\t\022&\n\007Results\030\002 \003(\0132\025.internal.Quer" +
-                        "yResult\022#\n\010Profiles\030\003 \003(\0132\021.internal.Pro" +
-                        "file\"j\n\013QueryResult\022 \n\006Bitmap\030\001 \001(\0132\020.in" +
-                        "ternal.Bitmap\022\t\n\001N\030\002 \001(\004\022\035\n\005Pairs\030\003 \003(\0132" +
-                        "\016.internal.Pair\022\017\n\007Changed\030\004 \001(\010\"t\n\rImpo" +
-                        "rtRequest\022\n\n\002DB\030\001 \001(\t\022\r\n\005Frame\030\002 \001(\t\022\r\n\005",
-                "Slice\030\003 \001(\004\022\021\n\tBitmapIDs\030\004 \003(\004\022\022\n\nProfil" +
-                        "eIDs\030\005 \003(\004\022\022\n\nTimestamps\030\006 \003(\003\"\035\n\016Import" +
-                        "Response\022\013\n\003Err\030\001 \001(\t\"K\n\020BlockDataReques" +
-                        "t\022\n\n\002DB\030\001 \001(\t\022\r\n\005Frame\030\002 \001(\t\022\r\n\005Slice\030\003 " +
-                        "\001(\004\022\r\n\005Block\030\004 \001(\004\":\n\021BlockDataResponse\022" +
-                        "\021\n\tBitmapIDs\030\001 \003(\004\022\022\n\nProfileIDs\030\002 \003(\004\"\032" +
-                        "\n\005Cache\022\021\n\tBitmapIDs\030\001 \003(\004\"\204\001\n\021MaxSlices" +
-                        "Response\022=\n\tMaxSlices\030\001 \003(\0132*.internal.M" +
-                        "axSlicesResponse.MaxSlicesEntry\0320\n\016MaxSl" +
-                        "icesEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\004:\0028",
-                "\001B*\n\032com.pilosa.client.internalB\014ClientP" +
-                        "rotosb\006proto3"
+                "\n\016internal.proto\022\010internal\".\n\002DB\022\023\n\013Time" +
+                        "Quantum\030\001 \001(\t\022\023\n\013ColumnLabel\030\002 \001(\t\".\n\005Fr" +
+                        "ame\022\023\n\013TimeQuantum\030\001 \001(\t\022\020\n\010RowLabel\030\002 \001" +
+                        "(\t\"5\n\006Bitmap\022\014\n\004Bits\030\001 \003(\004\022\035\n\005Attrs\030\002 \003(" +
+                        "\0132\016.internal.Attr\"\"\n\004Pair\022\013\n\003Key\030\001 \001(\004\022\r" +
+                        "\n\005Count\030\002 \001(\004\"=\n\003Bit\022\020\n\010BitmapID\030\001 \001(\004\022\021" +
+                        "\n\tProfileID\030\002 \001(\004\022\021\n\tTimestamp\030\003 \001(\003\"4\n\007" +
+                        "Profile\022\n\n\002ID\030\001 \001(\004\022\035\n\005Attrs\030\002 \003(\0132\016.int" +
+                        "ernal.Attr\"p\n\004Attr\022\013\n\003Key\030\001 \001(\t\022\014\n\004Type\030" +
+                        "\002 \001(\004\022\023\n\013StringValue\030\003 \001(\t\022\021\n\tUintValue\030",
+                "\004 \001(\004\022\021\n\tBoolValue\030\005 \001(\010\022\022\n\nFloatValue\030\006" +
+                        " \001(\001\"(\n\007AttrMap\022\035\n\005Attrs\030\001 \003(\0132\016.interna" +
+                        "l.Attr\"l\n\014QueryRequest\022\n\n\002DB\030\001 \001(\t\022\r\n\005Qu" +
+                        "ery\030\002 \001(\t\022\016\n\006Slices\030\003 \003(\004\022\020\n\010Profiles\030\004 " +
+                        "\001(\010\022\017\n\007Quantum\030\005 \001(\t\022\016\n\006Remote\030\006 \001(\010\"i\n\r" +
+                        "QueryResponse\022\013\n\003Err\030\001 \001(\t\022&\n\007Results\030\002 " +
+                        "\003(\0132\025.internal.QueryResult\022#\n\010Profiles\030\003" +
+                        " \003(\0132\021.internal.Profile\"j\n\013QueryResult\022 " +
+                        "\n\006Bitmap\030\001 \001(\0132\020.internal.Bitmap\022\t\n\001N\030\002 " +
+                        "\001(\004\022\035\n\005Pairs\030\003 \003(\0132\016.internal.Pair\022\017\n\007Ch",
+                "anged\030\004 \001(\010\"t\n\rImportRequest\022\n\n\002DB\030\001 \001(\t" +
+                        "\022\r\n\005Frame\030\002 \001(\t\022\r\n\005Slice\030\003 \001(\004\022\021\n\tBitmap" +
+                        "IDs\030\004 \003(\004\022\022\n\nProfileIDs\030\005 \003(\004\022\022\n\nTimesta" +
+                        "mps\030\006 \003(\003\"\035\n\016ImportResponse\022\013\n\003Err\030\001 \001(\t" +
+                        "\"K\n\020BlockDataRequest\022\n\n\002DB\030\001 \001(\t\022\r\n\005Fram" +
+                        "e\030\002 \001(\t\022\r\n\005Slice\030\003 \001(\004\022\r\n\005Block\030\004 \001(\004\":\n" +
+                        "\021BlockDataResponse\022\021\n\tBitmapIDs\030\001 \003(\004\022\022\n" +
+                        "\nProfileIDs\030\002 \003(\004\"\032\n\005Cache\022\021\n\tBitmapIDs\030" +
+                        "\001 \003(\004\"\204\001\n\021MaxSlicesResponse\022=\n\tMaxSlices" +
+                        "\030\001 \003(\0132*.internal.MaxSlicesResponse.MaxS",
+                "licesEntry\0320\n\016MaxSlicesEntry\022\013\n\003key\030\001 \001(" +
+                        "\t\022\r\n\005value\030\002 \001(\004:\0028\001B\035\n\021com.pilosa.clien" +
+                        "tB\010Internalb\006proto3"
         };
         com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
                 new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -14352,13 +14706,13 @@ final class Internal {
         internal_static_internal_DB_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_internal_DB_descriptor,
-                new java.lang.String[]{"TimeQuantum",});
+                new java.lang.String[]{"TimeQuantum", "ColumnLabel",});
         internal_static_internal_Frame_descriptor =
                 getDescriptor().getMessageTypes().get(1);
         internal_static_internal_Frame_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_internal_Frame_descriptor,
-                new java.lang.String[]{"TimeQuantum",});
+                new java.lang.String[]{"TimeQuantum", "RowLabel",});
         internal_static_internal_Bitmap_descriptor =
                 getDescriptor().getMessageTypes().get(2);
         internal_static_internal_Bitmap_fieldAccessorTable = new
@@ -14376,86 +14730,86 @@ final class Internal {
         internal_static_internal_Bit_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_internal_Bit_descriptor,
-                new java.lang.String[]{"BitmapID", "ProfileID", "Timestamp",});
-        internal_static_internal_Profile_descriptor =
-                getDescriptor().getMessageTypes().get(5);
-        internal_static_internal_Profile_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Profile_descriptor,
-                new java.lang.String[]{"ID", "Attrs",});
-        internal_static_internal_Attr_descriptor =
-                getDescriptor().getMessageTypes().get(6);
-        internal_static_internal_Attr_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Attr_descriptor,
-                new java.lang.String[]{"Key", "Type", "StringValue", "UintValue", "BoolValue",});
-        internal_static_internal_AttrMap_descriptor =
-                getDescriptor().getMessageTypes().get(7);
-        internal_static_internal_AttrMap_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_AttrMap_descriptor,
-                new java.lang.String[]{"Attrs",});
-        internal_static_internal_QueryRequest_descriptor =
-                getDescriptor().getMessageTypes().get(8);
-        internal_static_internal_QueryRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_QueryRequest_descriptor,
-                new java.lang.String[]{"DB", "Query", "Slices", "Profiles", "Quantum", "Remote",});
-        internal_static_internal_QueryResponse_descriptor =
-                getDescriptor().getMessageTypes().get(9);
-        internal_static_internal_QueryResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_QueryResponse_descriptor,
-                new java.lang.String[]{"Err", "Results", "Profiles",});
-        internal_static_internal_QueryResult_descriptor =
-                getDescriptor().getMessageTypes().get(10);
-        internal_static_internal_QueryResult_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_QueryResult_descriptor,
-                new java.lang.String[]{"Bitmap", "N", "Pairs", "Changed",});
-        internal_static_internal_ImportRequest_descriptor =
-                getDescriptor().getMessageTypes().get(11);
-        internal_static_internal_ImportRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_ImportRequest_descriptor,
-                new java.lang.String[]{"DB", "Frame", "Slice", "BitmapIDs", "ProfileIDs", "Timestamps",});
-        internal_static_internal_ImportResponse_descriptor =
-                getDescriptor().getMessageTypes().get(12);
-        internal_static_internal_ImportResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_ImportResponse_descriptor,
-                new java.lang.String[]{"Err",});
-        internal_static_internal_BlockDataRequest_descriptor =
-                getDescriptor().getMessageTypes().get(13);
-        internal_static_internal_BlockDataRequest_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_BlockDataRequest_descriptor,
-                new java.lang.String[]{"DB", "Frame", "Slice", "Block",});
-        internal_static_internal_BlockDataResponse_descriptor =
-                getDescriptor().getMessageTypes().get(14);
-        internal_static_internal_BlockDataResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_BlockDataResponse_descriptor,
-                new java.lang.String[]{"BitmapIDs", "ProfileIDs",});
-        internal_static_internal_Cache_descriptor =
-                getDescriptor().getMessageTypes().get(15);
-        internal_static_internal_Cache_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Cache_descriptor,
-                new java.lang.String[]{"BitmapIDs",});
-        internal_static_internal_MaxSlicesResponse_descriptor =
-                getDescriptor().getMessageTypes().get(16);
-        internal_static_internal_MaxSlicesResponse_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_MaxSlicesResponse_descriptor,
-                new java.lang.String[]{"MaxSlices",});
-        internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor =
-                internal_static_internal_MaxSlicesResponse_descriptor.getNestedTypes().get(0);
-        internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor,
-                new java.lang.String[]{"Key", "Value",});
-    }
+        new java.lang.String[] { "BitmapID", "ProfileID", "Timestamp", });
+    internal_static_internal_Profile_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_internal_Profile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_Profile_descriptor,
+        new java.lang.String[] { "ID", "Attrs", });
+    internal_static_internal_Attr_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_internal_Attr_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_Attr_descriptor,
+        new java.lang.String[] { "Key", "Type", "StringValue", "UintValue", "BoolValue", "FloatValue", });
+    internal_static_internal_AttrMap_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_internal_AttrMap_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_AttrMap_descriptor,
+        new java.lang.String[] { "Attrs", });
+    internal_static_internal_QueryRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_internal_QueryRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_QueryRequest_descriptor,
+        new java.lang.String[] { "DB", "Query", "Slices", "Profiles", "Quantum", "Remote", });
+    internal_static_internal_QueryResponse_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_internal_QueryResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_QueryResponse_descriptor,
+        new java.lang.String[] { "Err", "Results", "Profiles", });
+    internal_static_internal_QueryResult_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_internal_QueryResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_QueryResult_descriptor,
+        new java.lang.String[] { "Bitmap", "N", "Pairs", "Changed", });
+    internal_static_internal_ImportRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_internal_ImportRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_ImportRequest_descriptor,
+        new java.lang.String[] { "DB", "Frame", "Slice", "BitmapIDs", "ProfileIDs", "Timestamps", });
+    internal_static_internal_ImportResponse_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_internal_ImportResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_ImportResponse_descriptor,
+        new java.lang.String[] { "Err", });
+    internal_static_internal_BlockDataRequest_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_internal_BlockDataRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_BlockDataRequest_descriptor,
+        new java.lang.String[] { "DB", "Frame", "Slice", "Block", });
+    internal_static_internal_BlockDataResponse_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_internal_BlockDataResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_BlockDataResponse_descriptor,
+        new java.lang.String[] { "BitmapIDs", "ProfileIDs", });
+    internal_static_internal_Cache_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_internal_Cache_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_Cache_descriptor,
+        new java.lang.String[] { "BitmapIDs", });
+    internal_static_internal_MaxSlicesResponse_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_internal_MaxSlicesResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_MaxSlicesResponse_descriptor,
+        new java.lang.String[] { "MaxSlices", });
+    internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor =
+      internal_static_internal_MaxSlicesResponse_descriptor.getNestedTypes().get(0);
+    internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_MaxSlicesResponse_MaxSlicesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+  }
 
-    // @@protoc_insertion_point(outer_class_scope)
+  // @@protoc_insertion_point(outer_class_scope)
 }

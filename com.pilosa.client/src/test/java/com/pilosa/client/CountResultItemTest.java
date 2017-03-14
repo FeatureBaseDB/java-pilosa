@@ -12,7 +12,7 @@ public class CountResultItemTest {
     @Test
     public void testCreateCountResult() {
         CountResultItem result = createSampleResult();
-        assertEquals(45, result.getKey());
+        assertEquals(45, result.getID());
         assertEquals(12, result.getCount());
     }
 

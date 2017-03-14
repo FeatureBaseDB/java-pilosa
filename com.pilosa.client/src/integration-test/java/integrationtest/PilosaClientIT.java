@@ -6,8 +6,8 @@ import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.IPqlQuery;
 import com.pilosa.client.orm.Pql;
-import com.pilosa.client.orm.PqlQuery;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -119,12 +119,6 @@ public class PilosaClientIT {
         client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
     }
 
-    @Test(expected = PilosaException.class)
-    public void protobufParseErrorTest() {
-        PilosaClient client = getClient();
-        client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
-    }
-
     @Test
     public void ormTest() {
         PilosaClient client = getClient();
@@ -133,7 +127,7 @@ public class PilosaClientIT {
         Map<String, Object> profileAttrs;
         List<Long> bits;
         BitmapResult bitmapResult;
-        List<PqlQuery> queryList;
+        List<IPqlQuery> queryList;
 
         client.query(db, Pql.clearBit(5, "test", 10));
         client.query(db, Pql.setBit(5, "test", 10));
@@ -201,7 +195,7 @@ public class PilosaClientIT {
         List<CountResultItem> items = (List<CountResultItem>) response.getResult().getCountItems();
         assertEquals(1, items.size());
         CountResultItem item = items.get(0);
-        assertEquals(155, item.getKey());
+        assertEquals(155, item.getID());
         assertEquals(1, item.getCount());
     }
 
@@ -238,12 +232,17 @@ public class PilosaClientIT {
         Map<String, Object> bitmapAttrs = new HashMap<>(1);
         bitmapAttrs.put("active", true);
         bitmapAttrs.put("unsigned", 5);
+        bitmapAttrs.put("height", 1.81);
+        bitmapAttrs.put("name", "Mr. Pi");
         client.query(this.frame.setBitmapAttrs(10, bitmapAttrs));
         QueryResponse response3 = client.query(this.frame.bitmap(10));
         BitmapResult bitmap = response3.getResult().getBitmap();
         assertEquals(1, bitmap.getBits().size());
-        assertEquals(2, bitmap.getAttributes().size());
+        assertEquals(4, bitmap.getAttributes().size());
         assertEquals(true, bitmap.getAttributes().get("active"));
+        assertEquals(5L, bitmap.getAttributes().get("unsigned"));
+        assertEquals(1.81, bitmap.getAttributes().get("height"));
+        assertEquals("Mr. Pi", bitmap.getAttributes().get("name"));
     }
 
     @Test(expected = DatabaseExistsException.class)

@@ -84,6 +84,25 @@ public class Database {
     }
 
     /**
+     * Creates a batch query.
+     *
+     * @return batch query
+     */
+    public BatchQuery batchQuery() {
+        return new BatchQuery(this);
+    }
+
+    /**
+     * Creates a batch query with the given size.
+     *
+     * @param queryCount number of queries expected to be in the batch
+     * @return batch query
+     */
+    public BatchQuery batchQuery(int queryCount) {
+        return new BatchQuery(queryCount, this);
+    }
+
+    /**
      * Creates a Union query.
      *
      * @param bitmap1 first Bitmap

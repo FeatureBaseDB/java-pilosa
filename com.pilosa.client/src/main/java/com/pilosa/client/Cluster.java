@@ -42,10 +42,10 @@ public final class Cluster implements ICluster {
     }
 
     public URI getAddress() {
-        if (this.nextIndex >= this.addresses.size()) {
+        if (this.addresses.size() == 0) {
             throw new PilosaException("There are no available addresses");
         }
-        URI nextHost = this.addresses.get(this.nextIndex);
+        URI nextHost = this.addresses.get(this.nextIndex % this.addresses.size());
         this.nextIndex = (this.nextIndex + 1) % this.addresses.size();
         return nextHost;
     }

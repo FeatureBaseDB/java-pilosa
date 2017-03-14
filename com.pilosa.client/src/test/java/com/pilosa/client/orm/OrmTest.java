@@ -21,6 +21,35 @@ public class OrmTest {
     private Frame collabFrame = projectDb.frame("collaboration", FrameOptions.withRowLabel("project"));
 
     @Test
+    public void batchTest() {
+        BatchQuery b = sampleDb.batchQuery();
+        b.add(sampleFrame.bitmap(44));
+        b.add(sampleFrame.bitmap(10101));
+        assertEquals(
+                "Bitmap(id=44, frame='sample-frame')Bitmap(id=10101, frame='sample-frame')",
+                b.toString());
+    }
+
+    @Test
+    public void batchWithCapacityTest() {
+        BatchQuery b = projectDb.batchQuery(3);
+        b.add(collabFrame.bitmap(2));
+        b.add(collabFrame.setBit(20, 40));
+        b.add(collabFrame.topN(2));
+        assertEquals(
+                "Bitmap(project=2, frame='collaboration')" +
+                        "SetBit(project=20, frame='collaboration', user=40)" +
+                        "TopN(frame='collaboration', n=2)",
+                b.toString());
+    }
+
+    @Test(expected = PilosaException.class)
+    public void batchAddFailsForDifferentDbsTest() {
+        BatchQuery b = projectDb.batchQuery();
+        b.add(sampleFrame.bitmap(1));
+    }
+
+    @Test
     public void bitmapTest() {
         PqlQuery qry1 = sampleFrame.bitmap(5);
         assertEquals(
@@ -165,9 +194,9 @@ public class OrmTest {
     @Test
     public void rangeTest() {
         Calendar start = Calendar.getInstance();
-        start.set(1970, 0, 1, 0, 0);
+        start.set(1970, Calendar.JANUARY, 1, 0, 0);
         Calendar end = Calendar.getInstance();
-        end.set(2000, 1, 2, 3, 4);
+        end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
         PqlQuery q = collabFrame.range(10, start.getTime(), end.getTime());
         assertEquals(
                 "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",

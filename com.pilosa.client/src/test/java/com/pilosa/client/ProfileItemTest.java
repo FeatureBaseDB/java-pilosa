@@ -61,20 +61,41 @@ public class ProfileItemTest {
 
     @Test
     public void testFromProtobuf() {
-        Internal.Attr attr = Internal.Attr.newBuilder()
+        Internal.Attr stringAttr = Internal.Attr.newBuilder()
                 .setType(Util.PROTOBUF_STRING_TYPE)
-                .setKey("foo")
+                .setKey("string")
                 .setStringValue("bar")
                 .build();
+        Internal.Attr uintAttr = Internal.Attr.newBuilder()
+                .setType(Util.PROTOBUF_UINT_TYPE)
+                .setKey("uint")
+                .setUintValue(42L)
+                .build();
+        Internal.Attr boolAttr = Internal.Attr.newBuilder()
+                .setType(Util.PROTOBUF_BOOL_TYPE)
+                .setKey("bool")
+                .setBoolValue(true)
+                .build();
+        Internal.Attr doubleAttr = Internal.Attr.newBuilder()
+                .setType(Util.PROTOBUF_DOUBLE_TYPE)
+                .setKey("double")
+                .setFloatValue(3.14)
+                .build();
         Internal.Profile profile = Internal.Profile.newBuilder()
-                .addAttrs(attr)
+                .addAttrs(stringAttr)
+                .addAttrs(uintAttr)
+                .addAttrs(boolAttr)
+                .addAttrs(doubleAttr)
                 .setID(500L)
                 .build();
         ProfileItem item = ProfileItem.fromInternal(profile);
         Map<String, Object> attrs = item.getAttributes();
         assertEquals(500L, item.getID());
-        assertEquals(1, attrs.size());
-        assertEquals("bar", attrs.get("foo"));
+        assertEquals(4, attrs.size());
+        assertEquals("bar", attrs.get("string"));
+        assertEquals(42L, attrs.get("uint"));
+        assertEquals(true, attrs.get("bool"));
+        assertEquals(3.14, attrs.get("double"));
     }
 
     private ProfileItem createSampleProfileItem() {

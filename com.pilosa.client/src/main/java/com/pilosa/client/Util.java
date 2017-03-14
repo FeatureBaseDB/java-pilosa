@@ -30,7 +30,7 @@ final class Util {
                     value = attr.getFloatValue();
                     break;
                 default:
-                    throw new PilosaException("Unknown attribute field type: " + attr.getType());
+                    throw new PilosaException("Unknown attribute type: " + attr.getType());
             }
             attrs.put(attr.getKey(), value);
         }

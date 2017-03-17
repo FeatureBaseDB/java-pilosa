@@ -32,7 +32,7 @@ import java.util.*;
  *
  * <pre>
  * // Create a client
- * PilosaClient client = new PilosaClient("localhost:15000");
+ * PilosaClient client = new PilosaClient("localhost:10101");
  * // Send a query. PilosaException is thrown if execution of the query fails.
  * QueryResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result

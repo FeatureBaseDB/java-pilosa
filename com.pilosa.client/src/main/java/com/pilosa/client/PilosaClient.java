@@ -363,7 +363,7 @@ public class PilosaClient {
     }
 
     private String getAddress() {
-        this.currentAddress = this.cluster.getAddress();
+        this.currentAddress = this.cluster.getHost();
         String scheme = this.currentAddress.getScheme();
         if (!scheme.equals(HTTP)) {
             throw new PilosaException("Unknown scheme: " + scheme);
@@ -411,7 +411,7 @@ public class PilosaClient {
             return response;
         } catch (IOException ex) {
             logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
+            this.cluster.removeHost(this.currentAddress);
             this.isConnected = false;
             throw new PilosaException(errorMessage, ex);
         }

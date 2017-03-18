@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contains addresses of nodes in a Pilosa cluster.
+ * Contains hosts in a Pilosa cluster.
  */
 
 public final class Cluster implements ICluster {
-    private List<URI> addresses = new ArrayList<>();
+    private List<URI> hosts = new ArrayList<>();
     private int nextIndex = 0;
 
     /**
@@ -25,32 +25,32 @@ public final class Cluster implements ICluster {
      * @param address Pilosa address
      */
     Cluster(URI address) {
-        this.addAddress(address);
+        this.addHost(address);
     }
 
     /**
-     * Adds an address to the cluster.
+     * Adds a host to the cluster.
      *
-     * @param address Pilosa address
+     * @param address Address of a Pilosa host
      */
-    public void addAddress(URI address) {
-        this.addresses.add(address);
+    public void addHost(URI address) {
+        this.hosts.add(address);
     }
 
-    public void removeAddress(URI address) {
-        this.addresses.remove(address);
+    public void removeHost(URI address) {
+        this.hosts.remove(address);
     }
 
-    public URI getAddress() {
-        if (this.addresses.size() == 0) {
-            throw new PilosaException("There are no available addresses");
+    public URI getHost() {
+        if (this.hosts.size() == 0) {
+            throw new PilosaException("There are no available hosts");
         }
-        URI nextHost = this.addresses.get(this.nextIndex % this.addresses.size());
-        this.nextIndex = (this.nextIndex + 1) % this.addresses.size();
+        URI nextHost = this.hosts.get(this.nextIndex % this.hosts.size());
+        this.nextIndex = (this.nextIndex + 1) % this.hosts.size();
         return nextHost;
     }
 
-    List<URI> getAddresses() {
-        return this.addresses;
+    List<URI> getHosts() {
+        return this.hosts;
     }
 }

@@ -9,7 +9,7 @@ public interface ICluster {
      *
      * @return Pilosa server address
      */
-    URI getAddress();
+    URI getHost();
 
     /**
      * Discards a Pilosa address.
@@ -20,5 +20,5 @@ public interface ICluster {
      *
      * @param address a Pilosa address
      */
-    void removeAddress(URI address);
+    void removeHost(URI address);
 }

@@ -173,12 +173,12 @@ public class OrmTest {
                 "TopN(frame='sample-frame', n=27)",
                 q1.toString());
 
-        PqlQuery q2 = sampleFrame.topN(collabFrame.bitmap(3), 10);
+        PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
                 "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10)",
                 q2.toString());
 
-        PqlQuery q3 = sampleFrame.topN(collabFrame.bitmap(7), 12, "category", 80, 81);
+        PqlQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
 
         assertEquals(
                 "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, field='category', [80,81])",
@@ -187,7 +187,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void topNInvalidValuesTest() {
-        sampleFrame.topN(sampleFrame.bitmap(2), 5, "category", 80, new Object());
+        sampleFrame.topN(5, sampleFrame.bitmap(2), "category", 80, new Object());
 
     }
 

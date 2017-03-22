@@ -208,11 +208,11 @@ public class OrmTest {
     @Test
     public void setBitmapAttrsTest() {
         Map<String, Object> attrsMap = new HashMap<>(2);
-        attrsMap.put("color", "blue");
+        attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
         PqlQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
         assertEquals(
-                "SetBitmapAttrs(project=5, frame='collaboration', color=\"blue\", active=true)",
+                "SetBitmapAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
     }
 
@@ -227,11 +227,11 @@ public class OrmTest {
     @Test
     public void setProfileAttrsTest() {
         Map<String, Object> attrsMap = new HashMap<>(2);
-        attrsMap.put("color", "blue");
+        attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
         PqlQuery q = projectDb.setProfileAttrs(5, attrsMap);
         assertEquals(
-                "SetProfileAttrs(id=5, color=\"blue\", happy=true)",
+                "SetProfileAttrs(user=5, quote=\"\\\"Don't worry, be happy\\\"\", happy=true)",
                 q.toString());
     }
 

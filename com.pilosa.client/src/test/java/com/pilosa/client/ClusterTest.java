@@ -15,7 +15,8 @@ public class ClusterTest {
     public void testClusterCreateWithAddress() {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
-        Cluster c = new Cluster(new URI("http://localhost:3000"));
+        Cluster c = new Cluster();
+        c.addHost(new URI("http://localhost:3000"));
         assertEquals(target, c.getHosts());
     }
 
@@ -31,7 +32,8 @@ public class ClusterTest {
     @Test
     public void testClusterRemoveHost() {
         List<URI> target = new ArrayList<>();
-        Cluster c = new Cluster(new URI("localhost:5000"));
+        Cluster c = new Cluster();
+        c.addHost(new URI("localhost:5000"));
         c.removeHost(new URI("localhost:5000"));
         assertEquals(target, c.getHosts());
     }

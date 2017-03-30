@@ -20,28 +20,19 @@ public final class Cluster implements ICluster {
     }
 
     /**
-     * Creates the cluster from a Pilosa address.
-     *
-     * @param address Pilosa address
-     */
-    Cluster(URI address) {
-        this.addHost(address);
-    }
-
-    /**
      * Adds a host to the cluster.
      *
      * @param address Address of a Pilosa host
      */
-    public void addHost(URI address) {
+    public synchronized void addHost(URI address) {
         this.hosts.add(address);
     }
 
-    public void removeHost(URI address) {
+    public synchronized void removeHost(URI address) {
         this.hosts.remove(address);
     }
 
-    public URI getHost() {
+    public synchronized URI getHost() {
         if (this.hosts.size() == 0) {
             throw new PilosaException("There are no available hosts");
         }

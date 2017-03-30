@@ -7,6 +7,7 @@ import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.IPqlQuery;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -51,13 +52,6 @@ import java.util.*;
  * </pre>
  */
 public class PilosaClient implements AutoCloseable {
-    private static final String HTTP = "http";
-    private static final Logger logger = LogManager.getLogger();
-    private ICluster cluster;
-    private URI currentAddress;
-    private CloseableHttpClient client = null;
-    private Comparator<Bit> bitComparator = new BitComparator();
-
     /**
      * Creates a client with the given server address.
      * @param address address of the server
@@ -73,7 +67,8 @@ public class PilosaClient implements AutoCloseable {
      * @throws PilosaURIException if the given address is malformed
      */
     public PilosaClient(URI address) {
-        this(new Cluster(address));
+        this(new Cluster());
+        ((Cluster) this.cluster).addHost(address);
     }
 
     /**
@@ -81,7 +76,18 @@ public class PilosaClient implements AutoCloseable {
      * @param cluster contains the addresses of the servers in the cluster
      */
     public PilosaClient(ICluster cluster) {
+        this(cluster, new ClientOptions());
+    }
+
+    /**
+     * Creates a client with the given cluster and options.
+     *
+     * @param cluster contains the addresses of the servers in the cluster
+     * @param options connection options for the client
+     */
+    public PilosaClient(ICluster cluster, ClientOptions options) {
         this.cluster = cluster;
+        this.options = options;
     }
 
     public void close() throws IOException {
@@ -379,10 +385,16 @@ public class PilosaClient implements AutoCloseable {
 
     private void connect() {
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        cm.setDefaultMaxPerRoute(10);
-        cm.setMaxTotal(10 * 10); // TODO: get the number of hosts in the cluster
+        cm.setDefaultMaxPerRoute(this.options.getConnectionPoolSizePerRoute());
+        cm.setMaxTotal(this.options.getConnectionPoolTotalSize());
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(this.options.getConnectTimeout())
+                .setSocketTimeout(this.options.getSocketTimeout())
+                .build();
         this.client = HttpClients.custom()
                 .setConnectionManager(cm)
+                .setDefaultRequestConfig(requestConfig)
+                .setUserAgent(makeUserAgent())
                 .build();
         logger.info("Connected to {}", this.currentAddress);
     }
@@ -556,12 +568,23 @@ public class PilosaClient implements AutoCloseable {
         return result.toString();
     }
 
+    private String makeUserAgent() {
+        return String.format("java-pilosa/%s;%s", Version.getVersion(), Version.getBuildTime());
+    }
+
     private enum ReturnClientResponse {
         RAW_RESPONSE,
         ERROR_CHECKED_RESPONSE,
         NO_RESPONSE,
     }
 
+    private static final String HTTP = "http";
+    private static final Logger logger = LogManager.getLogger();
+    private ICluster cluster;
+    private URI currentAddress;
+    private CloseableHttpClient client = null;
+    private Comparator<Bit> bitComparator = new BitComparator();
+    private ClientOptions options;
 }
 
 class HttpDeleteWithBody extends HttpPost {

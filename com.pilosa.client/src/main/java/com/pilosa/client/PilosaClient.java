@@ -6,7 +6,6 @@ import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.IPqlQuery;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -17,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -390,8 +390,8 @@ public class PilosaClient {
             if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode < 200 || statusCode >= 300) {
-                    try {
-                        String responseError = readStream(response.getEntity().getContent());
+                    try (InputStream src = response.getEntity().getContent()) {
+                        String responseError = readStream(src);
                         // try to throw the appropriate exception
                         switch (responseError) {
                             case "database already exists\n":
@@ -401,9 +401,6 @@ public class PilosaClient {
                         }
                         // couldn't find the exact exception, just throw a generic one
                         throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
-                    }
-                    finally {
-                        response.close();
                     }
                 }
                 // the entity should be consumed, if not returned
@@ -439,10 +436,10 @@ public class PilosaClient {
         body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
         try {
-            try (CloseableHttpResponse response = clientExecute(httpPost, "Error while posting query",
-                    ReturnClientResponse.RAW_RESPONSE)) {
-                HttpEntity entity = response.getEntity();
-                QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
+            CloseableHttpResponse response = clientExecute(httpPost, "Error while posting query",
+                    ReturnClientResponse.RAW_RESPONSE);
+            try (InputStream src = response.getEntity().getContent()) {
+                QueryResponse queryResponse = QueryResponse.fromProtobuf(src);
                 if (!queryResponse.isSuccess()) {
                     throw new PilosaException(queryResponse.getErrorMessage());
                 }
@@ -486,11 +483,11 @@ public class PilosaClient {
         String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
         HttpGet httpGet = new HttpGet(uri);
         try {
-            try (CloseableHttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
-                    ReturnClientResponse.ERROR_CHECKED_RESPONSE)) {
-                HttpEntity entity = response.getEntity();
+            CloseableHttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+            try (InputStream src = response.getEntity().getContent()) {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(entity.getContent(), new TypeReference<List<FragmentNode>>() {
+                return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
                 });
             }
         } catch (IOException ex) {

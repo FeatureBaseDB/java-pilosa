@@ -17,8 +17,34 @@ import static org.junit.Assert.assertEquals;
 public class OrmTest {
     private Database sampleDb = Database.named("sample-db");
     private Frame sampleFrame = sampleDb.frame("sample-frame");
-    private Database projectDb = Database.named("project-db", DatabaseOptions.withColumnLabel("user"));
-    private Frame collabFrame = projectDb.frame("collaboration", FrameOptions.withRowLabel("project"));
+    private Database projectDb;
+    private Frame collabFrame;
+
+    {
+        DatabaseOptions projectDbOptions = new DatabaseOptions.Builder()
+                .setColumnLabel("user")
+                .build();
+        this.projectDb = Database.named("project-db", projectDbOptions);
+        FrameOptions collabFrameOptions = new FrameOptions.Builder()
+                .setRowLabel("project")
+                .build();
+        this.collabFrame = projectDb.frame("collaboration", collabFrameOptions);
+    }
+
+    @Test
+    public void pqlQueryCreate() {
+        PqlQuery pql = new PqlQuery("Bitmap(frame='foo', id=10)");
+        assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
+        assertEquals(null, pql.getDatabase());
+    }
+
+    @Test
+    public void pqlBitmapQueryCreate() {
+        PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(frame='foo', id=10)");
+        assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
+        assertEquals(null, pql.getDatabase());
+
+    }
 
     @Test
     public void batchTest() {
@@ -66,7 +92,7 @@ public class OrmTest {
     public void setBitTest() {
         PqlQuery qry1 = sampleFrame.setBit(5, 10);
         assertEquals(
-                "SetBit(id=5, frame='sample-frame', profileID=10)",
+                "SetBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
         PqlQuery qry2 = collabFrame.setBit(10, 20);
@@ -79,7 +105,7 @@ public class OrmTest {
     public void clearBitTest() {
         PqlQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(
-                "ClearBit(id=5, frame='sample-frame', profileID=10)",
+                "ClearBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
         PqlQuery qry2 = collabFrame.clearBit(10, 20);

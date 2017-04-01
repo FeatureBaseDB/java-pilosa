@@ -1,6 +1,5 @@
 package com.pilosa.client;
 
-import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -11,19 +10,14 @@ public class QueryRequestTest {
     @Test
     public void testSetTimeQuantum() {
         QueryRequest qr = QueryRequest.withDatabase("foo");
-        qr.setTimeQuantum("YMDH");
-    }
-
-    @Test(expected = PilosaException.class)
-    public void queryRequestWithInvalidTimeQuantumTest() {
-        QueryRequest.withDatabase("foo").setTimeQuantum("YMDHM");
+        qr.setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR);
     }
 
     @Test
     public void testProtobuf() {
         QueryRequest qr = QueryRequest.withDatabase("somedb");
         qr.setQuery("Range(id=1, frame='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')");
-        qr.setTimeQuantum("YM");
+        qr.setTimeQuantum(TimeQuantum.YEAR_MONTH);
         qr.setRetrieveProfiles(true);
         Internal.QueryRequest request = qr.toProtobuf();
         assertEquals("somedb", request.getDB());

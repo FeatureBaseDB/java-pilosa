@@ -1,23 +1,46 @@
 package com.pilosa.client;
 
-public class FrameOptions {
-    private String rowLabel = "id";
+public final class FrameOptions {
+    public static class Builder {
+        public Builder() {
+        }
 
-    private FrameOptions() {}
+        public Builder setRowLabel(String rowLabel) {
+            Validator.ensureValidLabel(rowLabel);
+            this.rowLabel = rowLabel;
+            return this;
+        }
 
-    public static FrameOptions withDefaults() {
-        return new FrameOptions();
+        public Builder setTimeQuantum(TimeQuantum timeQuantum) {
+            this.timeQuantum = timeQuantum;
+            return this;
+        }
+
+        public FrameOptions build() {
+            return new FrameOptions(this.rowLabel, this.timeQuantum);
+        }
+
+        private String rowLabel = "id";
+        private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
 
-    public static FrameOptions withRowLabel(String rowLabel) {
-        Validator.ensureValidLabel(rowLabel);
-        FrameOptions options = new FrameOptions();
-        options.rowLabel = rowLabel;
-        return options;
+    public static FrameOptions withDefaults() {
+        return new Builder().build();
     }
 
     public String getRowLabel() {
         return this.rowLabel;
     }
 
+    public TimeQuantum getTimeQuantum() {
+        return this.timeQuantum;
+    }
+
+    private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum) {
+        this.rowLabel = rowLabel;
+        this.timeQuantum = timeQuantum;
+    }
+
+    private final String rowLabel;
+    private final TimeQuantum timeQuantum;
 }

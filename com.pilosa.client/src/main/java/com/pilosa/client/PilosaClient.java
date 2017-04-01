@@ -41,14 +41,6 @@ import java.util.*;
  * QueryResult result = response.getResult();
  * // Deai with the result
  *
- * // You can send more than one query with a single query call
- * response = client.query("example_db",
- *                         "Bitmap(id=5, frame=\"sample\")",
- *                         "TopN(frame=\"sample\", n=5)");
- * // Deal with results
- * for (Object result : response.getResults()) {
- *     // ...
- * }
  * </pre>
  */
 public class PilosaClient implements AutoCloseable {
@@ -111,30 +103,6 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Queries the server with the given database name and queries.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, IPqlQuery... queries) {
-        return queryPath(QueryRequest.withDatabase(databaseName), queries);
-    }
-
-    /**
-     * Queries the server with the given database name and queries.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, List<IPqlQuery> queries) {
-        return queryPath(QueryRequest.withDatabase(databaseName), queries);
-    }
-
-    /**
      * Runs the given query against the server.
      *
      * @param query a PqlQuery with its database is not null
@@ -161,33 +129,6 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Queries the server with the given database name and enables profiles in the response.
-     * @param databaseName the database to use
-     * @param queries a single or multiple PqlQuery queries
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, IPqlQuery... queries) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        return queryPath(request, queries);
-    }
-
-    /**
-     * Queries the server with the given database name and enables profiles in the response.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, List<IPqlQuery> queries) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        return queryPath(request, queries);
-    }
-
-    /**
      * Runs the given query against the server and enables profiles in the response.
      *
      * @param query a PqlQuery with its database is not null
@@ -202,40 +143,17 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Creates a database.
-     *
-     * @param name database name
-     * @throws ValidationException     if the passed database name is not valid
-     * @throws DatabaseExistsException if there already is a database with the given name
-     */
-    public void createDatabase(String name) {
-        createDatabase(name, DatabaseOptions.withDefaults());
-    }
-
-    /**
-     * Creates a database with options.
-     * @param name database name
-     * @param options database options
-     * @throws ValidationException if the passed database name is not valid
-     * @throws DatabaseExistsException if there already is a database with the given name
-     */
-    public void createDatabase(String name, DatabaseOptions options) {
-        Validator.ensureValidDatabaseName(name);
-        String uri = this.getAddress() + "/db";
-        HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
-                name, options.getColumnLabel());
-        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPost, "Error while creating database");
-    }
-
-    /**
-     * Creates a database.
      * @param database database object
      * @throws ValidationException if the passed database name is not valid
      * @throws DatabaseExistsException if there already is a database with the given name
      */
     public void createDatabase(Database database) {
-        createDatabase(database.getName(), database.getOptions());
+        String uri = this.getAddress() + "/db";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
+                database.getName(), database.getOptions().getColumnLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating database");
     }
 
     /**
@@ -252,43 +170,18 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a frame with the given name for the specified database
-     * @param databaseName the database this frame belongs to
-     * @param name frame name
-     * @throws ValidationException if the passed database name or frame name is not valid
-     * @throws FrameExistsException if there already a frame with the given name
-     */
-    public void createFrame(String databaseName, String name) {
-        createFrame(databaseName, name, FrameOptions.withDefaults());
-    }
-
-    /**
-     * Creates a frame with the given name and options for the specified database
-     * @param databaseName the database this frame belongs to
-     * @param name frame name
-     * @param options frame options
-     * @throws ValidationException if the passed database name or frame name is not valid
-     * @throws FrameExistsException if there already a frame with the given name
-     */
-    public void createFrame(String databaseName, String name, FrameOptions options) {
-        Validator.ensureValidDatabaseName(databaseName);
-        Validator.ensureValidFrameName(name);
-        String uri = this.getAddress() + "/frame";
-        HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
-                databaseName, name, options.getRowLabel());
-        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPost, "Error while creating frame");
-    }
-
-    /**
      * Creates a frame.
      * @param frame frame object
      * @throws ValidationException if the passed database name or frame name is not valid
      * @throws FrameExistsException if there already a frame with the given name
      */
     public void createFrame(Frame frame) {
-        createFrame(frame.getDatabase().getName(), frame.getName(), frame.getOptions());
+        String uri = this.getAddress() + "/frame";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
+                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getRowLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating frame");
     }
 
     /**
@@ -306,47 +199,34 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Deletes a database.
-     * @param name the database to delete
-     * @throws ValidationException if an invalid database name is passed
+     * @param database database object
      */
-    public void deleteDatabase(String name) {
-        Validator.ensureValidDatabaseName(name);
+    public void deleteDatabase(Database database) {
         String uri = this.getAddress() + "/db";
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
-        String body = String.format("{\"db\":\"%s\"}", name);
+        String body = String.format("{\"db\":\"%s\"}", database.getName());
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpDelete, "Error while deleting database");
     }
 
     /**
-     * Deletes a database.
-     * @param database database object
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public void deleteDatabase(Database database) {
-        deleteDatabase(database.getName());
-    }
-
-    /**
-     * Imports bits to the given database and frame, using 1000000 as the batch size.
+     * Imports bits to the given database and frame.
      *
-     * @param databaseName specify the database name
-     * @param frameName    specify the frame name
+     * @param frame    specify the frame
      * @param iterator     specify the bit iterator
      */
-    public void importFrame(String databaseName, String frameName, IBitIterator iterator) {
-        importFrame(databaseName, frameName, iterator, 100000);
+    public void importFrame(Frame frame, IBitIterator iterator) {
+        importFrame(frame, iterator, 100000);
     }
 
     /**
      * Imports bits to the given database and frame.
      *
-     * @param databaseName specify the database name
-     * @param frameName    specify the frame name
+     * @param frame    specify the frame
      * @param iterator     specify the bit iterator
      * @param batchSize    specify the number of bits to send in each import query
      */
-    public void importFrame(String databaseName, String frameName, IBitIterator iterator, int batchSize) {
+    public void importFrame(Frame frame, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
         while (canContinue) {
@@ -369,7 +249,7 @@ public class PilosaClient implements AutoCloseable {
                 }
             }
             for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
-                importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+                importBits(frame.getDatabase().getName(), frame.getName(), entry.getKey(), entry.getValue());
             }
         }
     }
@@ -488,15 +368,6 @@ public class PilosaClient implements AutoCloseable {
         return queryPath(request);
     }
 
-    private QueryResponse queryPath(QueryRequest request, List<IPqlQuery> queries) {
-        StringBuilder builder = new StringBuilder(queries.size());
-        for (IPqlQuery query : queries) {
-            builder.append(query);
-        }
-        request.setQuery(builder.toString());
-        return queryPath(request);
-    }
-
     private void importBits(String databaseName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
@@ -601,7 +472,7 @@ class HttpDeleteWithBody extends HttpPost {
 class QueryRequest {
     private String databaseName = "";
     private String query = "";
-    private String timeQuantum = "";
+    private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean retrieveProfiles = false;
 
     private QueryRequest(String databaseName) {
@@ -629,17 +500,8 @@ class QueryRequest {
         this.query = query;
     }
 
-    void setTimeQuantum(String quantum) {
-        switch (quantum) {
-            case "YMDH":
-            case "YMD":
-            case "YM":
-            case "Y":
-                this.timeQuantum = quantum;
-                break;
-            default:
-                throw new PilosaException("Invalid time quantum: " + quantum);
-        }
+    void setTimeQuantum(TimeQuantum timeQuantum) {
+        this.timeQuantum = timeQuantum;
     }
 
     void setRetrieveProfiles(boolean ok) {
@@ -651,7 +513,7 @@ class QueryRequest {
                 .setDB(this.databaseName)
                 .setQuery(this.query)
                 .setProfiles(this.retrieveProfiles)
-                .setQuantum(this.timeQuantum);
+                .setQuantum(this.timeQuantum.getStringValue());
         return builder.build();
     }
 }

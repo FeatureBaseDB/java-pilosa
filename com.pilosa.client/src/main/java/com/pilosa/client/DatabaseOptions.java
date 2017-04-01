@@ -1,22 +1,47 @@
 package com.pilosa.client;
 
-public class DatabaseOptions {
-        private String columnLabel = "profileID";
+public final class DatabaseOptions {
 
-        private DatabaseOptions() {}
-
-        public static DatabaseOptions withDefaults() {
-            return new DatabaseOptions();
+    public static class Builder {
+        public Builder() {
         }
 
-        public static DatabaseOptions withColumnLabel(String columnLabel) {
+        public Builder setColumnLabel(String columnLabel) {
             Validator.ensureValidLabel(columnLabel);
-            DatabaseOptions options = new DatabaseOptions();
-            options.columnLabel = columnLabel;
-            return options;
+            this.columnLabel = columnLabel;
+            return this;
         }
 
-        public String getColumnLabel() {
-            return this.columnLabel;
+        public Builder setTimeQuantum(TimeQuantum timeQuantum) {
+            this.timeQuantum = timeQuantum;
+            return this;
+        }
+
+        public DatabaseOptions build() {
+            return new DatabaseOptions(this.columnLabel, this.timeQuantum);
+        }
+
+        private String columnLabel = "col_id";
+        private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
+
+    public static DatabaseOptions withDefaults() {
+        return new Builder().build();
+    }
+
+    public String getColumnLabel() {
+        return this.columnLabel;
+    }
+
+    public TimeQuantum getTimeQuantum() {
+        return timeQuantum;
+    }
+
+    private DatabaseOptions(final String columnLabel, final TimeQuantum timeQuantum) {
+        this.columnLabel = columnLabel;
+        this.timeQuantum = timeQuantum;
+    }
+
+    private final String columnLabel;
+    private final TimeQuantum timeQuantum;
 }

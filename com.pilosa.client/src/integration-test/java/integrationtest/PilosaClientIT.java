@@ -77,6 +77,29 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void createDatabaseWithTimeQuantumTest() throws IOException {
+        DatabaseOptions options = new DatabaseOptions.Builder()
+                .setTimeQuantum(TimeQuantum.YEAR)
+                .build();
+        Database db = Database.named("db-with-timequantum", options);
+        try (PilosaClient client = getClient()) {
+            client.ensureDatabaseExists(db);
+            client.deleteDatabase(db);
+        }
+    }
+
+    @Test
+    public void createFrameWithTimeQuantumTest() throws IOException {
+        FrameOptions options = new FrameOptions.Builder()
+                .setTimeQuantum(TimeQuantum.YEAR)
+                .build();
+        Frame frame = this.db.frame("frame-with-timequantum", options);
+        try (PilosaClient client = getClient()) {
+            client.ensureFrameExists(frame);
+        }
+    }
+
+    @Test
     public void queryTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Frame frame = this.db.frame("query-test");

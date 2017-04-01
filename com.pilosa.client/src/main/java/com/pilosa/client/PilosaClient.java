@@ -8,10 +8,7 @@ import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.IPqlQuery;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -154,6 +151,11 @@ public class PilosaClient implements AutoCloseable {
                 database.getName(), database.getOptions().getColumnLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating database");
+
+        // set time quantum for the database if one was assigned to it
+        if (database.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
+            patchTimeQuantum(database);
+        }
     }
 
     /**
@@ -182,6 +184,11 @@ public class PilosaClient implements AutoCloseable {
                 frame.getDatabase().getName(), frame.getName(), frame.getOptions().getRowLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
+
+        // set time quantum for the frame if one was assigned to it
+        if (frame.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
+            patchTimeQuantum(frame);
+        }
     }
 
     /**
@@ -427,6 +434,24 @@ public class PilosaClient implements AutoCloseable {
                 .addAllProfileIDs(profileIDs)
                 .addAllTimestamps(timestamps)
                 .build();
+    }
+
+    private void patchTimeQuantum(Database database) {
+        String uri = this.getAddress() + "/db/time_quantum";
+        HttpPatch httpPatch = new HttpPatch(uri);
+        String body = String.format("{\"db\":\"%s\", \"time_quantum\":\"%s\"}",
+                database.getName(), database.getOptions().getTimeQuantum().getStringValue());
+        httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPatch, "Error while setting time quantum for the database");
+    }
+
+    private void patchTimeQuantum(Frame frame) {
+        String uri = this.getAddress() + "/frame/time_quantum";
+        HttpPatch httpPatch = new HttpPatch(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"time_quantum\":\"%s\"}",
+                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getTimeQuantum().getStringValue());
+        httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPatch, "Error while setting time quantum for the database");
     }
 
     private String readStream(InputStream stream) throws IOException {

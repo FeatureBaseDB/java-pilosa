@@ -9,7 +9,7 @@ import java.util.List;
  * Contains hosts in a Pilosa cluster.
  */
 
-public final class Cluster implements ICluster {
+public final class Cluster {
     private List<URI> hosts = new ArrayList<>();
     private int nextIndex = 0;
 

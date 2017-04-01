@@ -144,7 +144,7 @@ public class Database {
      * @param bitmap the bitmap query
      * @return a PQL query
      */
-    public PqlQuery count(PqlBitmapQuery bitmap) {
+    public PqlBaseQuery count(PqlBitmapQuery bitmap) {
         return pqlQuery(String.format("Count(%s)", bitmap));
     }
 
@@ -155,14 +155,14 @@ public class Database {
      * @param attributes profile attributes
      * @return a PQL query
      */
-    public PqlQuery setProfileAttrs(long id, Map<String, Object> attributes) {
+    public PqlBaseQuery setProfileAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
         return pqlQuery(String.format("SetProfileAttrs(%s=%d, %s)",
                 this.options.getColumnLabel(), id, attributesString));
     }
 
-    PqlQuery pqlQuery(String query) {
-        return new PqlQuery(query, this);
+    PqlBaseQuery pqlQuery(String query) {
+        return new PqlBaseQuery(query, this);
     }
 
     PqlBitmapQuery pqlBitmapQuery(String query) {

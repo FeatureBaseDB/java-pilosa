@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
-import com.pilosa.client.orm.IPqlQuery;
+import com.pilosa.client.orm.PqlQuery;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
@@ -57,14 +57,14 @@ public class PilosaClient implements AutoCloseable {
      */
     public PilosaClient(URI address) {
         this(new Cluster());
-        ((Cluster) this.cluster).addHost(address);
+        this.cluster.addHost(address);
     }
 
     /**
      * Creates a client with the given cluster.
      * @param cluster contains the addresses of the servers in the cluster
      */
-    public PilosaClient(ICluster cluster) {
+    public PilosaClient(Cluster cluster) {
         this(cluster, new ClientOptions());
     }
 
@@ -74,7 +74,7 @@ public class PilosaClient implements AutoCloseable {
      * @param cluster contains the addresses of the servers in the cluster
      * @param options connection options for the client
      */
-    public PilosaClient(ICluster cluster, ClientOptions options) {
+    public PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
     }
@@ -102,11 +102,11 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Runs the given query against the server.
      *
-     * @param query a PqlQuery with its database is not null
+     * @param query a PqlBaseQuery with its database is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse query(IPqlQuery query) {
+    public QueryResponse query(PqlQuery query) {
         return queryPath(QueryRequest.withQuery(query));
     }
 
@@ -128,11 +128,11 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Runs the given query against the server and enables profiles in the response.
      *
-     * @param query a PqlQuery with its database is not null
+     * @param query a PqlBaseQuery with its database is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse queryWithProfiles(IPqlQuery query) {
+    public QueryResponse queryWithProfiles(PqlQuery query) {
         QueryRequest request = QueryRequest.withQuery(query);
         request.setRetrieveProfiles(true);
         return queryPath(request, query);
@@ -163,7 +163,7 @@ public class PilosaClient implements AutoCloseable {
      *
      * @param database database object
      */
-    public void ensureDatabaseExists(Database database) {
+    public void ensureDatabase(Database database) {
         try {
             createDatabase(database);
         } catch (DatabaseExistsException ex) {
@@ -196,7 +196,7 @@ public class PilosaClient implements AutoCloseable {
      *
      * @param frame frame object
      */
-    public void ensureFrameExists(Frame frame) {
+    public void ensureFrame(Frame frame) {
         try {
             createFrame(frame);
         } catch (FrameExistsException ex) {
@@ -366,9 +366,9 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private QueryResponse queryPath(QueryRequest request, IPqlQuery... queries) {
+    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
-        for (IPqlQuery query : queries) {
+        for (PqlQuery query : queries) {
             builder.append(query);
         }
         request.setQuery(builder.toString());
@@ -476,7 +476,7 @@ public class PilosaClient implements AutoCloseable {
 
     private static final String HTTP = "http";
     private static final Logger logger = LogManager.getLogger();
-    private ICluster cluster;
+    private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;
     private Comparator<Bit> bitComparator = new BitComparator();
@@ -509,7 +509,7 @@ class QueryRequest {
         return new QueryRequest(databaseName);
     }
 
-    static QueryRequest withQuery(IPqlQuery query) {
+    static QueryRequest withQuery(PqlQuery query) {
         // We call QueryRequest.withDatabase in order to protect against database name == null
         // TODO: check that database name is not null and create the QueryRequest object directly.
         QueryRequest request = QueryRequest.withDatabase(query.getDatabase().getName());

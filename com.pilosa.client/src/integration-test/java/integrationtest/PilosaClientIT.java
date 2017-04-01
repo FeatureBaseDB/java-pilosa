@@ -83,7 +83,7 @@ public class PilosaClientIT {
                 .build();
         Database db = Database.named("db-with-timequantum", options);
         try (PilosaClient client = getClient()) {
-            client.ensureDatabaseExists(db);
+            client.ensureDatabase(db);
             client.deleteDatabase(db);
         }
     }
@@ -95,7 +95,7 @@ public class PilosaClientIT {
                 .build();
         Frame frame = this.db.frame("frame-with-timequantum", options);
         try (PilosaClient client = getClient()) {
-            client.ensureFrameExists(frame);
+            client.ensureFrame(frame);
         }
     }
 
@@ -103,7 +103,7 @@ public class PilosaClientIT {
     public void queryTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Frame frame = this.db.frame("query-test");
-            client.ensureFrameExists(frame);
+            client.ensureFrame(frame);
             QueryResponse response = client.query(frame.setBit(555, 10));
             assertNotNull(response.getResult());
         }
@@ -113,7 +113,7 @@ public class PilosaClientIT {
     public void queryWithProfilesTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Frame frame = this.db.frame("query-test");
-            client.ensureFrameExists(frame);
+            client.ensureFrame(frame);
             client.query(frame.setBit(100, 1000));
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
@@ -181,7 +181,7 @@ public class PilosaClientIT {
     public void ormCountTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Frame countFrame = this.db.frame("count-test");
-            client.ensureFrameExists(countFrame);
+            client.ensureFrame(countFrame);
             BatchQuery qry = this.db.batchQuery();
             qry.add(countFrame.setBit(10, 20));
             qry.add(countFrame.setBit(10, 21));
@@ -263,9 +263,9 @@ public class PilosaClientIT {
     public void ensureDatabaseExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             final Database db = Database.named(this.db.getName() + "-ensure");
-            client.ensureDatabaseExists(db);
+            client.ensureDatabase(db);
             client.createFrame(db.frame("frm"));
-            client.ensureDatabaseExists(db);  // shouldn't throw an exception
+            client.ensureDatabase(db);  // shouldn't throw an exception
             client.deleteDatabase(db);
         }
     }
@@ -276,8 +276,8 @@ public class PilosaClientIT {
             final Database db = Database.named(this.db.getName() + "-ensure-frame");
             client.createDatabase(db);
             final Frame frame = db.frame("frame");
-            client.ensureFrameExists(frame);
-            client.ensureFrameExists(frame); // shouldn't throw an exception
+            client.ensureFrame(frame);
+            client.ensureFrame(frame); // shouldn't throw an exception
             client.query(frame.setBit(1, 10));
             client.deleteDatabase(db);
         }
@@ -288,7 +288,7 @@ public class PilosaClientIT {
         try (PilosaClient client = this.getClient()) {
             StaticBitIterator iterator = new StaticBitIterator();
             Frame frame = this.db.frame("importframe");
-            client.ensureFrameExists(frame);
+            client.ensureFrame(frame);
             client.importFrame(frame, iterator);
             BatchQuery bq = db.batchQuery(3);
             bq.add(frame.bitmap(2));

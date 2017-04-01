@@ -72,7 +72,7 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
-    public PqlQuery setBit(long rowID, long columnID) {
+    public PqlBaseQuery setBit(long rowID, long columnID) {
         return this.database.pqlQuery(String.format("SetBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
@@ -84,7 +84,7 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
-    public PqlQuery clearBit(long rowID, long columnID) {
+    public PqlBaseQuery clearBit(long rowID, long columnID) {
         return this.database.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
@@ -154,7 +154,7 @@ public class Frame {
      * @param attributes bitmap attributes
      * @return a PQL query
      */
-    public PqlQuery setBitmapAttrs(long rowID, Map<String, Object> attributes) {
+    public PqlBaseQuery setBitmapAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
         return this.database.pqlQuery(String.format("SetBitmapAttrs(%s=%d, frame='%s', %s)",
                 this.rowLabel, rowID, this.name, attributesString));

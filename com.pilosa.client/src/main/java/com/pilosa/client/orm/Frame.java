@@ -95,7 +95,7 @@ public class Frame {
      * @param n number of items to return
      * @return a PQL Bitmap query
      */
-    public PqlQuery topN(long n) {
+    public PqlBitmapQuery topN(long n) {
         return this.database.pqlBitmapQuery(String.format("TopN(frame='%s', n=%d)", this.name, n));
     }
 
@@ -139,10 +139,10 @@ public class Frame {
      * @param end   end timestamp
      * @return a PQL query
      */
-    public PqlQuery range(long rowID, Date start, Date end) {
+    public PqlBitmapQuery range(long rowID, Date start, Date end) {
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");
-        return this.database.pqlQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.database.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }

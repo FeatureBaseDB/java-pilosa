@@ -48,11 +48,11 @@ The package is located at `target/pilosa-client-X.X.jar`
 
 ### Quick overview
 
-Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localhost:15000` (the default):
+Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localhost:10101` (the default):
 
 ```java
 // Create a client
-Client client = new PilosaClient("localhost:15000");
+Client client = new PilosaClient("localhost:10101");
 
 // Send a query. PilosaException is thrown if execution of the query fails.
 PilosaResponse response = client.query("example_db", "SetBit(id=5, frame='sample', profileID=42)");

@@ -102,24 +102,24 @@ public class Frame {
     /**
      * Creates a TopN query.
      *
-     * @param bitmap the bitmap query
      * @param n      number of items to return
+     * @param bitmap the bitmap query
      * @return a PQL query
      */
-    public PqlBitmapQuery topN(PqlBitmapQuery bitmap, long n) {
+    public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
         return this.database.pqlBitmapQuery(String.format("TopN(%s, frame='%s', n=%d)", bitmap, this.name, n));
     }
 
     /**
      * Creates a TopN query.
      *
-     * @param bitmap the bitmap query
      * @param n      number of items to return
+     * @param bitmap the bitmap query
      * @param field  field name
      * @param values filter values to be matched against the field
      * @return a PQL query
      */
-    public PqlBitmapQuery topN(PqlBitmapQuery bitmap, long n, String field, Object... values) {
+    public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
         // TOOD: make field use its own validator
         Validator.ensureValidLabel(field);
         try {

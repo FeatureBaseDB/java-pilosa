@@ -7,13 +7,15 @@ import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.IPqlQuery;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,32 +34,16 @@ import java.util.*;
  *
  * <pre>
  * // Create a client
- * PilosaClient client = new PilosaClient("localhost:15000");
+ * PilosaClient client = new PilosaClient("localhost:10101");
  * // Send a query. PilosaException is thrown if execution of the query fails.
  * QueryResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
  * // Get the result
  * QueryResult result = response.getResult();
  * // Deai with the result
  *
- * // You can send more than one query with a single query call
- * response = client.query("example_db",
- *                         "Bitmap(id=5, frame=\"sample\")",
- *                         "TopN(frame=\"sample\", n=5)");
- * // Deal with results
- * for (Object result : response.getResults()) {
- *     // ...
- * }
  * </pre>
  */
-public class PilosaClient {
-    private static final String HTTP = "http";
-    private static final Logger logger = LogManager.getLogger();
-    private ICluster cluster;
-    private boolean isConnected = false;
-    private URI currentAddress;
-    private HttpClient client = null;
-    private Comparator<Bit> bitComparator = new BitComparator();
-
+public class PilosaClient implements AutoCloseable {
     /**
      * Creates a client with the given server address.
      * @param address address of the server
@@ -73,15 +59,34 @@ public class PilosaClient {
      * @throws PilosaURIException if the given address is malformed
      */
     public PilosaClient(URI address) {
-        this(new Cluster(address));
+        this(new Cluster());
+        ((Cluster) this.cluster).addHost(address);
     }
 
     /**
      * Creates a client with the given cluster.
-     * @param cluster contains the addreses of the servers in the cluster
+     * @param cluster contains the addresses of the servers in the cluster
      */
     public PilosaClient(ICluster cluster) {
+        this(cluster, new ClientOptions());
+    }
+
+    /**
+     * Creates a client with the given cluster and options.
+     *
+     * @param cluster contains the addresses of the servers in the cluster
+     * @param options connection options for the client
+     */
+    public PilosaClient(ICluster cluster, ClientOptions options) {
         this.cluster = cluster;
+        this.options = options;
+    }
+
+    public void close() throws IOException {
+        if (this.client != null) {
+            this.client.close();
+            this.client = null;
+        }
     }
 
     /**
@@ -95,30 +100,6 @@ public class PilosaClient {
         QueryRequest request = QueryRequest.withDatabase(databaseName);
         request.setQuery(query);
         return queryPath(request);
-    }
-
-    /**
-     * Queries the server with the given database name and queries.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, IPqlQuery... queries) {
-        return queryPath(QueryRequest.withDatabase(databaseName), queries);
-    }
-
-    /**
-     * Queries the server with the given database name and queries.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, List<IPqlQuery> queries) {
-        return queryPath(QueryRequest.withDatabase(databaseName), queries);
     }
 
     /**
@@ -148,33 +129,6 @@ public class PilosaClient {
     }
 
     /**
-     * Queries the server with the given database name and enables profiles in the response.
-     * @param databaseName the database to use
-     * @param queries a single or multiple PqlQuery queries
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, IPqlQuery... queries) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        return queryPath(request, queries);
-    }
-
-    /**
-     * Queries the server with the given database name and enables profiles in the response.
-     *
-     * @param databaseName the database to use
-     * @param queries      a single or multiple PqlQuery queries
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, List<IPqlQuery> queries) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        return queryPath(request, queries);
-    }
-
-    /**
      * Runs the given query against the server and enables profiles in the response.
      *
      * @param query a PqlQuery with its database is not null
@@ -189,40 +143,17 @@ public class PilosaClient {
 
     /**
      * Creates a database.
-     *
-     * @param name database name
-     * @throws ValidationException     if the passed database name is not valid
-     * @throws DatabaseExistsException if there already is a database with the given name
-     */
-    public void createDatabase(String name) {
-        createDatabase(name, DatabaseOptions.withDefaults());
-    }
-
-    /**
-     * Creates a database with options.
-     * @param name database name
-     * @param options database options
-     * @throws ValidationException if the passed database name is not valid
-     * @throws DatabaseExistsException if there already is a database with the given name
-     */
-    public void createDatabase(String name, DatabaseOptions options) {
-        Validator.ensureValidDatabaseName(name);
-        String uri = this.getAddress() + "/db";
-        HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
-                name, options.getColumnLabel());
-        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPost, "Error while creating database");
-    }
-
-    /**
-     * Creates a database.
      * @param database database object
      * @throws ValidationException if the passed database name is not valid
      * @throws DatabaseExistsException if there already is a database with the given name
      */
     public void createDatabase(Database database) {
-        createDatabase(database.getName(), database.getOptions());
+        String uri = this.getAddress() + "/db";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
+                database.getName(), database.getOptions().getColumnLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating database");
     }
 
     /**
@@ -239,43 +170,18 @@ public class PilosaClient {
     }
 
     /**
-     * Creates a frame with the given name for the specified database
-     * @param databaseName the database this frame belongs to
-     * @param name frame name
-     * @throws ValidationException if the passed database name or frame name is not valid
-     * @throws FrameExistsException if there already a frame with the given name
-     */
-    public void createFrame(String databaseName, String name) {
-        createFrame(databaseName, name, FrameOptions.withDefaults());
-    }
-
-    /**
-     * Creates a frame with the given name and options for the specified database
-     * @param databaseName the database this frame belongs to
-     * @param name frame name
-     * @param options frame options
-     * @throws ValidationException if the passed database name or frame name is not valid
-     * @throws FrameExistsException if there already a frame with the given name
-     */
-    public void createFrame(String databaseName, String name, FrameOptions options) {
-        Validator.ensureValidDatabaseName(databaseName);
-        Validator.ensureValidFrameName(name);
-        String uri = this.getAddress() + "/frame";
-        HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
-                databaseName, name, options.getRowLabel());
-        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPost, "Error while creating frame");
-    }
-
-    /**
      * Creates a frame.
      * @param frame frame object
      * @throws ValidationException if the passed database name or frame name is not valid
      * @throws FrameExistsException if there already a frame with the given name
      */
     public void createFrame(Frame frame) {
-        createFrame(frame.getDatabase().getName(), frame.getName(), frame.getOptions());
+        String uri = this.getAddress() + "/frame";
+        HttpPost httpPost = new HttpPost(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
+                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getRowLabel());
+        httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPost, "Error while creating frame");
     }
 
     /**
@@ -293,48 +199,34 @@ public class PilosaClient {
 
     /**
      * Deletes a database.
-     * @param name the database to delete
-     * @throws ValidationException if an invalid database name is passed
+     * @param database database object
      */
-    public void deleteDatabase(String name) {
-        Validator.ensureValidDatabaseName(name);
+    public void deleteDatabase(Database database) {
         String uri = this.getAddress() + "/db";
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
-        String body = String.format("{\"db\":\"%s\"}", name);
+        String body = String.format("{\"db\":\"%s\"}", database.getName());
         httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpDelete, "Error while deleting database");
     }
 
     /**
-     * Deletes a database.
-     * @param database database object
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public void deleteDatabase(Database database) {
-        deleteDatabase(database.getName());
-    }
-
-    /**
-     * Imports bits to the given database and frame, using 1000000 as the batch size.
+     * Imports bits to the given database and frame.
      *
-     * @param databaseName specify the database name
-     * @param frameName    specify the frame name
+     * @param frame    specify the frame
      * @param iterator     specify the bit iterator
      */
-    public void importFrame(String databaseName, String frameName, IBitIterator iterator) {
-        importFrame(databaseName, frameName, iterator, 100000);
+    public void importFrame(Frame frame, IBitIterator iterator) {
+        importFrame(frame, iterator, 100000);
     }
-
 
     /**
      * Imports bits to the given database and frame.
      *
-     * @param databaseName specify the database name
-     * @param frameName    specify the frame name
+     * @param frame    specify the frame
      * @param iterator     specify the bit iterator
      * @param batchSize    specify the number of bits to send in each import query
      */
-    public void importFrame(String databaseName, String frameName, IBitIterator iterator, int batchSize) {
+    public void importFrame(Frame frame, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
         while (canContinue) {
@@ -357,13 +249,13 @@ public class PilosaClient {
                 }
             }
             for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
-                importBits(databaseName, frameName, entry.getKey(), entry.getValue());
+                importBits(frame.getDatabase().getName(), frame.getName(), entry.getKey(), entry.getValue());
             }
         }
     }
 
     private String getAddress() {
-        this.currentAddress = this.cluster.getAddress();
+        this.currentAddress = this.cluster.getHost();
         String scheme = this.currentAddress.getScheme();
         if (!scheme.equals(HTTP)) {
             throw new PilosaException("Unknown scheme: " + scheme);
@@ -372,50 +264,68 @@ public class PilosaClient {
     }
 
     private void connect() {
-        this.client = HttpClients.createDefault();
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setDefaultMaxPerRoute(this.options.getConnectionPoolSizePerRoute());
+        cm.setMaxTotal(this.options.getConnectionPoolTotalSize());
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(this.options.getConnectTimeout())
+                .setSocketTimeout(this.options.getSocketTimeout())
+                .build();
+        this.client = HttpClients.custom()
+                .setConnectionManager(cm)
+                .setDefaultRequestConfig(requestConfig)
+                .setUserAgent(makeUserAgent())
+                .build();
         logger.info("Connected to {}", this.currentAddress);
-        this.isConnected = true;
     }
 
-    private HttpResponse clientExecute(HttpRequestBase request, String errorMessage) {
+    private CloseableHttpResponse clientExecute(HttpRequestBase request, String errorMessage) {
         return clientExecute(request, errorMessage, ReturnClientResponse.NO_RESPONSE);
     }
 
-    private HttpResponse clientExecute(HttpRequestBase request, String errorMessage,
+    private CloseableHttpResponse clientExecute(HttpRequestBase request, String errorMessage,
                                        ReturnClientResponse returnResponse) {
-        if (!this.isConnected) {
+        if (this.client == null) {
             connect();
         }
         try {
-            HttpResponse response = client.execute(request);
+            CloseableHttpResponse response = client.execute(request);
             if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode < 200 || statusCode >= 300) {
-                    String responseError = readStream(response.getEntity().getContent());
-                    // try to throw the appropriate exception
-                    switch (responseError) {
-                        case "database already exists\n":
-                            throw new DatabaseExistsException();
-                        case "frame already exists\n":
-                            throw new FrameExistsException();
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        try (InputStream src = entity.getContent()) {
+                            String responseError = readStream(src);
+                            // try to throw the appropriate exception
+                            switch (responseError) {
+                                case "database already exists\n":
+                                    throw new DatabaseExistsException();
+                                case "frame already exists\n":
+                                    throw new FrameExistsException();
+                            }
+                            // couldn't find the exact exception, just throw a generic one
+                            throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+                        }
                     }
-                    // couldn't find the exact exception, just throw a generic one
-                    throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
-                } else {
-                    // the entity should be consumed, if not returned
-                    if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
+                    throw new PilosaException(String.format("Server error (%d): empty response", statusCode));
+                }
+                // the entity should be consumed, if not returned
+                if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
+                    try {
                         EntityUtils.consume(response.getEntity());
+                    }
+                    finally {
+                        response.close();
                     }
                 }
             }
             return response;
         } catch (IOException ex) {
             logger.error(ex);
-            this.cluster.removeAddress(this.currentAddress);
-            this.isConnected = false;
+            this.cluster.removeHost(this.currentAddress);
             throw new PilosaException(errorMessage, ex);
         }
-
     }
 
     private QueryResponse queryPath(QueryRequest request) {
@@ -430,15 +340,20 @@ public class PilosaClient {
         Internal.QueryRequest qr = request.toProtobuf();
         body = new ByteArrayEntity(qr.toByteArray());
         httpPost.setEntity(body);
-        HttpResponse response = clientExecute(httpPost, "Error while posting query",
-                ReturnClientResponse.RAW_RESPONSE);
         try {
+            CloseableHttpResponse response = clientExecute(httpPost, "Error while posting query",
+                    ReturnClientResponse.RAW_RESPONSE);
             HttpEntity entity = response.getEntity();
-            QueryResponse queryResponse = QueryResponse.fromProtobuf(entity.getContent());
-            if (!queryResponse.isSuccess()) {
-                throw new PilosaException(queryResponse.getErrorMessage());
+            if (entity != null) {
+                try (InputStream src = entity.getContent()) {
+                    QueryResponse queryResponse = QueryResponse.fromProtobuf(src);
+                    if (!queryResponse.isSuccess()) {
+                        throw new PilosaException(queryResponse.getErrorMessage());
+                    }
+                    return queryResponse;
+                }
             }
-            return queryResponse;
+            throw new PilosaException("Server returned empty response");
         } catch (IOException ex) {
             throw new PilosaException("Error while reading response", ex);
         }
@@ -446,15 +361,6 @@ public class PilosaClient {
 
     private QueryResponse queryPath(QueryRequest request, IPqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
-        for (IPqlQuery query : queries) {
-            builder.append(query);
-        }
-        request.setQuery(builder.toString());
-        return queryPath(request);
-    }
-
-    private QueryResponse queryPath(QueryRequest request, List<IPqlQuery> queries) {
-        StringBuilder builder = new StringBuilder(queries.size());
         for (IPqlQuery query : queries) {
             builder.append(query);
         }
@@ -476,12 +382,18 @@ public class PilosaClient {
         String addr = this.getAddress();
         String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
         HttpGet httpGet = new HttpGet(uri);
-        HttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
-                ReturnClientResponse.ERROR_CHECKED_RESPONSE);
-        HttpEntity entity = response.getEntity();
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(entity.getContent(), new TypeReference<List<FragmentNode>>() {});
+            CloseableHttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (InputStream src = response.getEntity().getContent()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
+                    });
+                }
+            }
+            throw new PilosaException("Server returned empty response");
         } catch (IOException ex) {
             throw new PilosaException("Error while reading response", ex);
         }
@@ -527,12 +439,23 @@ public class PilosaClient {
         return result.toString();
     }
 
+    private String makeUserAgent() {
+        return String.format("java-pilosa/%s;%s", Version.getVersion(), Version.getBuildTime());
+    }
+
     private enum ReturnClientResponse {
         RAW_RESPONSE,
         ERROR_CHECKED_RESPONSE,
         NO_RESPONSE,
     }
 
+    private static final String HTTP = "http";
+    private static final Logger logger = LogManager.getLogger();
+    private ICluster cluster;
+    private URI currentAddress;
+    private CloseableHttpClient client = null;
+    private Comparator<Bit> bitComparator = new BitComparator();
+    private ClientOptions options;
 }
 
 class HttpDeleteWithBody extends HttpPost {
@@ -549,7 +472,7 @@ class HttpDeleteWithBody extends HttpPost {
 class QueryRequest {
     private String databaseName = "";
     private String query = "";
-    private String timeQuantum = "";
+    private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean retrieveProfiles = false;
 
     private QueryRequest(String databaseName) {
@@ -577,17 +500,8 @@ class QueryRequest {
         this.query = query;
     }
 
-    void setTimeQuantum(String quantum) {
-        switch (quantum) {
-            case "YMDH":
-            case "YMD":
-            case "YM":
-            case "Y":
-                this.timeQuantum = quantum;
-                break;
-            default:
-                throw new PilosaException("Invalid time quantum: " + quantum);
-        }
+    void setTimeQuantum(TimeQuantum timeQuantum) {
+        this.timeQuantum = timeQuantum;
     }
 
     void setRetrieveProfiles(boolean ok) {
@@ -599,7 +513,7 @@ class QueryRequest {
                 .setDB(this.databaseName)
                 .setQuery(this.query)
                 .setProfiles(this.retrieveProfiles)
-                .setQuantum(this.timeQuantum);
+                .setQuantum(this.timeQuantum.getStringValue());
         return builder.build();
     }
 }

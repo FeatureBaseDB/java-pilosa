@@ -17,8 +17,34 @@ import static org.junit.Assert.assertEquals;
 public class OrmTest {
     private Database sampleDb = Database.named("sample-db");
     private Frame sampleFrame = sampleDb.frame("sample-frame");
-    private Database projectDb = Database.named("project-db", DatabaseOptions.withColumnLabel("user"));
-    private Frame collabFrame = projectDb.frame("collaboration", FrameOptions.withRowLabel("project"));
+    private Database projectDb;
+    private Frame collabFrame;
+
+    {
+        DatabaseOptions projectDbOptions = new DatabaseOptions.Builder()
+                .setColumnLabel("user")
+                .build();
+        this.projectDb = Database.named("project-db", projectDbOptions);
+        FrameOptions collabFrameOptions = new FrameOptions.Builder()
+                .setRowLabel("project")
+                .build();
+        this.collabFrame = projectDb.frame("collaboration", collabFrameOptions);
+    }
+
+    @Test
+    public void pqlQueryCreate() {
+        PqlQuery pql = new PqlQuery("Bitmap(frame='foo', id=10)");
+        assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
+        assertEquals(null, pql.getDatabase());
+    }
+
+    @Test
+    public void pqlBitmapQueryCreate() {
+        PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(frame='foo', id=10)");
+        assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
+        assertEquals(null, pql.getDatabase());
+
+    }
 
     @Test
     public void batchTest() {
@@ -66,7 +92,7 @@ public class OrmTest {
     public void setBitTest() {
         PqlQuery qry1 = sampleFrame.setBit(5, 10);
         assertEquals(
-                "SetBit(id=5, frame='sample-frame', profileID=10)",
+                "SetBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
         PqlQuery qry2 = collabFrame.setBit(10, 20);
@@ -79,7 +105,7 @@ public class OrmTest {
     public void clearBitTest() {
         PqlQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(
-                "ClearBit(id=5, frame='sample-frame', profileID=10)",
+                "ClearBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
         PqlQuery qry2 = collabFrame.clearBit(10, 20);
@@ -173,12 +199,12 @@ public class OrmTest {
                 "TopN(frame='sample-frame', n=27)",
                 q1.toString());
 
-        PqlQuery q2 = sampleFrame.topN(collabFrame.bitmap(3), 10);
+        PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
                 "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10)",
                 q2.toString());
 
-        PqlQuery q3 = sampleFrame.topN(collabFrame.bitmap(7), 12, "category", 80, 81);
+        PqlQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
 
         assertEquals(
                 "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, field='category', [80,81])",
@@ -187,7 +213,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void topNInvalidValuesTest() {
-        sampleFrame.topN(sampleFrame.bitmap(2), 5, "category", 80, new Object());
+        sampleFrame.topN(5, sampleFrame.bitmap(2), "category", 80, new Object());
 
     }
 
@@ -208,11 +234,11 @@ public class OrmTest {
     @Test
     public void setBitmapAttrsTest() {
         Map<String, Object> attrsMap = new HashMap<>(2);
-        attrsMap.put("color", "blue");
+        attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
         PqlQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
         assertEquals(
-                "SetBitmapAttrs(project=5, frame='collaboration', color=\"blue\", active=true)",
+                "SetBitmapAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
     }
 
@@ -227,11 +253,11 @@ public class OrmTest {
     @Test
     public void setProfileAttrsTest() {
         Map<String, Object> attrsMap = new HashMap<>(2);
-        attrsMap.put("color", "blue");
+        attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
         PqlQuery q = projectDb.setProfileAttrs(5, attrsMap);
         assertEquals(
-                "SetProfileAttrs(id=5, color=\"blue\", happy=true)",
+                "SetProfileAttrs(user=5, quote=\"\\\"Don't worry, be happy\\\"\", happy=true)",
                 q.toString());
     }
 

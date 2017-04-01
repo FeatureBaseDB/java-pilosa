@@ -157,8 +157,8 @@ public class Database {
      */
     public PqlQuery setProfileAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetProfileAttrs(id=%d, %s)",
-                id, attributesString));
+        return pqlQuery(String.format("SetProfileAttrs(%s=%d, %s)",
+                this.options.getColumnLabel(), id, attributesString));
     }
 
     PqlQuery pqlQuery(String query) {

@@ -15,48 +15,50 @@ public class ClusterTest {
     public void testClusterCreateWithAddress() {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
-        Cluster c = new Cluster(new URI("http://localhost:3000"));
-        assertEquals(target, c.getAddresses());
+        Cluster c = new Cluster();
+        c.addHost(new URI("http://localhost:3000"));
+        assertEquals(target, c.getHosts());
     }
 
     @Test
-    public void testClusterAddAddress() {
+    public void testClusterAddHost() {
         List<URI> target = new ArrayList<>(1);
         target.add(new URI("http://localhost:3000"));
         Cluster c = new Cluster();
-        c.addAddress(new URI("http://localhost:3000"));
-        assertEquals(target, c.getAddresses());
+        c.addHost(new URI("http://localhost:3000"));
+        assertEquals(target, c.getHosts());
     }
 
     @Test
-    public void testClusterRemoveAddress() {
+    public void testClusterRemoveHost() {
         List<URI> target = new ArrayList<>();
-        Cluster c = new Cluster(new URI("localhost:5000"));
-        c.removeAddress(new URI("localhost:5000"));
-        assertEquals(target, c.getAddresses());
+        Cluster c = new Cluster();
+        c.addHost(new URI("localhost:5000"));
+        c.removeHost(new URI("localhost:5000"));
+        assertEquals(target, c.getHosts());
     }
 
     @Test
-    public void testClusterGetAddress() {
+    public void testClusterGetHost() {
         URI target1 = new URI("db1.pilosa.com");
         URI target2 = new URI("db2.pilosa.com");
 
         Cluster c = new Cluster();
-        c.addAddress(new URI("db1.pilosa.com"));
-        c.addAddress(new URI("db2.pilosa.com"));
-        URI addr = c.getAddress();
+        c.addHost(new URI("db1.pilosa.com"));
+        c.addHost(new URI("db2.pilosa.com"));
+        URI addr = c.getHost();
         assertEquals(target1, addr);
-        addr = c.getAddress();
+        addr = c.getHost();
         assertEquals(target2, addr);
-        c.getAddress();
-        c.removeAddress(new URI("db1.pilosa.com"));
-        addr = c.getAddress();
+        c.getHost();
+        c.removeHost(new URI("db1.pilosa.com"));
+        addr = c.getHost();
         assertEquals(target2, addr);
     }
 
     @Test(expected = PilosaException.class)
-    public void testClusterGetAddressWitEmptyList() {
+    public void testClusterGetHostWitEmptyList() {
         Cluster c = new Cluster();
-        c.getAddress();
+        c.getHost();
     }
 }

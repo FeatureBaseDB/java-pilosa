@@ -13,28 +13,28 @@ import java.util.regex.Pattern;
  * <ul>
  * <li><b>Scheme</b>: Protocol of the URI. Default: <code>http</code>.</li>
  * <li><b>Host</b>: Hostname or IP URI. Default: <code>localhost</code>.</li>
- * <li><b>Port</b>: Port of the URI. Default <code>15000</code>.</li>
+ * <li><b>Port</b>: Port of the URI. Default <code>10101</code>.</li>
  * </ul>
  * <p>
  * All parts of the URI are optional. The following are equivalent:
  * <ul>
- * <li><code>http://localhost:15000</code></li>
+ * <li><code>http://localhost:10101</code></li>
  * <li><code>http://localhost</code></li>
- * <li><code>http://:15000</code></li>
- * <li><code>localhost:15000</code></li>
+ * <li><code>http://:10101</code></li>
+ * <li><code>localhost:10101</code></li>
  * <li><code>localhost</code></li>
- * <li><code>:15000</code></li>
+ * <li><code>:10101</code></li>
  * </ul>
  */
 public final class URI {
     private String scheme = "http";
     private String host = "localhost";
-    private int port = 15000;
+    private int port = 10101;
     private boolean isIPv6 = false;
     private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
 
     /**
-     * Create the default URI. <code>http://localhost:15000</code>
+     * Create the default URI. <code>http://localhost:10101</code>
      */
     public URI() {
     }
@@ -98,7 +98,7 @@ public final class URI {
     /**
      * Returns normalized address, ready to be used with an HttpClent.
      *
-     * @return normalized address by keeping the scheme part upto + (plus) character
+     * @return normalized address by keeping the scheme part up to + (plus) character
      */
     String getNormalizedAddress() {
         String scheme = this.scheme;

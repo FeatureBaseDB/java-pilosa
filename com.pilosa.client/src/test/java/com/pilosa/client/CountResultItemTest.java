@@ -21,6 +21,7 @@ public class CountResultItemTest {
         new CountResultItem();
     }
 
+
     @Test
     public void testCountResultToString() {
         CountResultItem result = createSampleResult();

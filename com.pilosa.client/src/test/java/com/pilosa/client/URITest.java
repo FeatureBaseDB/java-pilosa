@@ -11,7 +11,7 @@ public class URITest {
     @Test
     public void testDefault() {
         URI uri = new URI();
-        compare(uri, "http", "localhost", 15000);
+        compare(uri, "http", "localhost", 10101);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class URITest {
     @Test
     public void testHostOnly() {
         URI uri = new URI("db1.pilosa.com");
-        compare(uri, "http", "db1.pilosa.com", 15000);
+        compare(uri, "http", "db1.pilosa.com", 10101);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class URITest {
     @Test
     public void testSchemeHost() {
         URI uri = new URI("https://db1.big-data.com");
-        compare(uri, "https", "db1.big-data.com", 15000);
+        compare(uri, "https", "db1.big-data.com", 10101);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class URITest {
     @Test
     public void testToString() {
         URI uri = new URI();
-        assertEquals("http://localhost:15000", "" + uri);
+        assertEquals("http://localhost:10101", "" + uri);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class URITest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new URI()).equals("http://localhost:15000");
+        boolean e = (new URI()).equals("http://localhost:10101");
         assertFalse(e);
     }
 

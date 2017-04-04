@@ -116,7 +116,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isRetrieveProfiles());
+        request.setRetrieveProfiles(options.isProfiles());
         return queryPath(request, query);
     }
 

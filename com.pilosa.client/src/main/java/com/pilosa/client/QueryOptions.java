@@ -6,16 +6,16 @@ public class QueryOptions {
         return new QueryOptions();
     }
 
-    public boolean isRetrieveProfiles() {
-        return retrieveProfiles;
+    public boolean isProfiles() {
+        return profiles;
     }
 
-    public void setRetrieveProfiles(boolean retrieveProfiles) {
-        this.retrieveProfiles = retrieveProfiles;
+    public void setProfiles(boolean profiles) {
+        this.profiles = profiles;
     }
 
     private QueryOptions() {
     }
 
-    private boolean retrieveProfiles = false;
+    private boolean profiles = false;
 }

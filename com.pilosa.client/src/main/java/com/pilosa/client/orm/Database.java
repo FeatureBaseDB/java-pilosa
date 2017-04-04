@@ -1,8 +1,6 @@
 package com.pilosa.client.orm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.DatabaseOptions;
-import com.pilosa.client.FrameOptions;
 import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.ValidationException;
 

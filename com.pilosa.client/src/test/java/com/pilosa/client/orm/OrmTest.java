@@ -1,7 +1,5 @@
 package com.pilosa.client.orm;
 
-import com.pilosa.client.DatabaseOptions;
-import com.pilosa.client.FrameOptions;
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;

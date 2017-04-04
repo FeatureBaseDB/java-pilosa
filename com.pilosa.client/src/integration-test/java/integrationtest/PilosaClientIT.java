@@ -4,9 +4,7 @@ import com.pilosa.client.*;
 import com.pilosa.client.exceptions.DatabaseExistsException;
 import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.orm.BatchQuery;
-import com.pilosa.client.orm.Database;
-import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -119,7 +117,7 @@ public class PilosaClientIT {
             profileAttrs.put("name", "bombo");
             client.query(this.db.setProfileAttrs(1000, profileAttrs));
             QueryOptions queryOptions = QueryOptions.defaultOptions();
-            queryOptions.setRetrieveProfiles(true);
+            queryOptions.setProfiles(true);
             QueryResponse response = client.query(frame.bitmap(100), queryOptions);
             assertNotNull(response.getProfile());
             assertEquals(1000, response.getProfile().getID());
@@ -209,7 +207,7 @@ public class PilosaClientIT {
             profileAttrs.put("name", "bombo");
             client.query(this.database.setProfileAttrs(20, profileAttrs));
             QueryOptions queryOptions = QueryOptions.defaultOptions();
-            queryOptions.setRetrieveProfiles(true);
+            queryOptions.setProfiles(true);
             QueryResponse response2 = client.query(this.frame.bitmap(10), queryOptions);
             ProfileItem profile = response2.getProfile();
             assertNotNull(profile);

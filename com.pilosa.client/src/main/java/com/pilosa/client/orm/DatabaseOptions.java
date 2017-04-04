@@ -1,4 +1,7 @@
-package com.pilosa.client;
+package com.pilosa.client.orm;
+
+import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.Validator;
 
 public final class DatabaseOptions {
 

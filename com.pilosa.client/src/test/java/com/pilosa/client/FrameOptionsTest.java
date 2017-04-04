@@ -1,6 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.orm.FrameOptions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

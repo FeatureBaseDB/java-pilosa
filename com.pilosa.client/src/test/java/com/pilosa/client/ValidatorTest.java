@@ -38,14 +38,14 @@ public class ValidatorTest {
     @Test
     public void validDatabaseNameTest() {
         for (String name : validDatabaseNames) {
-            assertTrue(Validator.validateDatabaseName(name));
+            assertTrue(Validator.validDatabaseName(name));
         }
     }
 
     @Test
     public void invalidDatabaseNameTest() {
         for (String name : invalidDatabaseNames) {
-            assertFalse(Validator.validateDatabaseName(name));
+            assertFalse(Validator.validDatabaseName(name));
         }
     }
 
@@ -71,7 +71,7 @@ public class ValidatorTest {
     @Test
     public void invalidFrameNameTest() {
         for (String name : invalidFrameNames) {
-            assertFalse(Validator.validateFrameName(name));
+            assertFalse(Validator.validFrameName(name));
         }
     }
 
@@ -97,14 +97,14 @@ public class ValidatorTest {
     @Test
     public void validLabelTest() {
         for (String label : validLabels) {
-            assertTrue(Validator.validateLabel(label));
+            assertTrue(Validator.validLabel(label));
         }
     }
 
     @Test
     public void invalidLabelTest() {
         for (String label : invalidLabels) {
-            assertFalse(Validator.validateLabel(label));
+            assertFalse(Validator.validLabel(label));
         }
     }
 

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
 public class OrmTest {
-    private Database sampleDb = Database.named("sample-db");
+    private Database sampleDb = Database.withName("sample-db");
     private Frame sampleFrame = sampleDb.frame("sample-frame");
     private Database projectDb;
     private Frame collabFrame;
@@ -24,7 +24,7 @@ public class OrmTest {
         DatabaseOptions projectDbOptions = new DatabaseOptions.Builder()
                 .setColumnLabel("user")
                 .build();
-        this.projectDb = Database.named("project-db", projectDbOptions);
+        this.projectDb = Database.withName("project-db", projectDbOptions);
         FrameOptions collabFrameOptions = new FrameOptions.Builder()
                 .setRowLabel("project")
                 .build();

@@ -42,41 +42,51 @@ import java.util.*;
  */
 public class PilosaClient implements AutoCloseable {
     /**
-     * Creates a client with the given server address.
-     * @param address address of the server
-     * @throws PilosaURIException if the given address is malformed
+     * Creates a client with the default address and options.
+     *
+     * @return a PilosaClient
      */
-    public PilosaClient(String address) {
-        this(new URI(address));
+    public static PilosaClient defaultClient() {
+        return PilosaClient.withURI(URI.defaultURI());
+    }
+
+    /**
+     * Creates a client with the given address and options
+     *
+     * @param address of the Pilosa server
+     * @return a PilosaClient
+     */
+    public static PilosaClient withAddress(String address) {
+        return PilosaClient.withURI(URI.fromAddress(address));
     }
 
     /**
      * Creates a client with the given server address.
-     * @param address address of the server
+     * @param uri address of the server
      * @throws PilosaURIException if the given address is malformed
+     * @return a PilosaClient
      */
-    public PilosaClient(URI address) {
-        this(new Cluster());
-        this.cluster.addHost(address);
+    public static PilosaClient withURI(URI uri) {
+        return PilosaClient.withCluster(Cluster.withHost(uri));
     }
 
     /**
-     * Creates a client with the given cluster.
+     * Creates a client with the given cluster and default options.
      * @param cluster contains the addresses of the servers in the cluster
+     * @return a PilosaClient
      */
-    public PilosaClient(Cluster cluster) {
-        this(cluster, new ClientOptions());
+    public static PilosaClient withCluster(Cluster cluster) {
+        return PilosaClient.withCluster(cluster, new ClientOptions());
     }
 
     /**
      * Creates a client with the given cluster and options.
-     *
      * @param cluster contains the addresses of the servers in the cluster
-     * @param options connection options for the client
+     * @param options client options
+     * @return a PilosaClient
      */
-    public PilosaClient(Cluster cluster, ClientOptions options) {
-        this.cluster = cluster;
-        this.options = options;
+    public static PilosaClient withCluster(Cluster cluster, ClientOptions options) {
+        return new PilosaClient(cluster, options);
     }
 
     public void close() throws IOException {
@@ -217,6 +227,20 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
+     * Deletes a frame.
+     *
+     * @param frame frame object
+     */
+    public void deleteFrame(Frame frame) {
+        String uri = this.getAddress() + "/frame";
+        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\"}",
+                frame.getDatabase().getName(), frame.getName());
+        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpDelete, "Error while deleting frame");
+    }
+
+    /**
      * Imports bits to the given database and frame.
      *
      * @param frame    specify the frame
@@ -267,7 +291,7 @@ public class PilosaClient implements AutoCloseable {
         if (!scheme.equals(HTTP)) {
             throw new PilosaException("Unknown scheme: " + scheme);
         }
-        return this.currentAddress.getNormalizedAddress();
+        return this.currentAddress.getNormalized();
     }
 
     private void connect() {
@@ -379,7 +403,7 @@ public class PilosaClient implements AutoCloseable {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
         for (FragmentNode node : nodes) {
-            PilosaClient client = new PilosaClient(node.toURI());
+            PilosaClient client = PilosaClient.withURI(node.toURI());
             Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, slice, bits);
             client.importNode(importRequest);
         }
@@ -474,6 +498,11 @@ public class PilosaClient implements AutoCloseable {
         NO_RESPONSE,
     }
 
+    private PilosaClient(Cluster cluster, ClientOptions options) {
+        this.cluster = cluster;
+        this.options = options;
+    }
+
     private static final String HTTP = "http";
     private static final Logger logger = LogManager.getLogger();
     private Cluster cluster;
@@ -549,7 +578,7 @@ class FragmentNode {
     }
 
     URI toURI() {
-        return new URI(this.host);
+        return URI.fromAddress(this.host);
     }
 
     private String host;

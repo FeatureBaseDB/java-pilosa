@@ -25,8 +25,8 @@ public class Database {
      * @return a Database object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database named(String name) {
-        return Database.named(name, DatabaseOptions.withDefaults());
+    public static Database withName(String name) {
+        return Database.withName(name, DatabaseOptions.withDefaults());
     }
 
     /**
@@ -37,7 +37,7 @@ public class Database {
      * @return a Database object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database named(String name, DatabaseOptions options) {
+    public static Database withName(String name, DatabaseOptions options) {
         Validator.ensureValidLabel(options.getColumnLabel());
         return new Database(name, options);
     }

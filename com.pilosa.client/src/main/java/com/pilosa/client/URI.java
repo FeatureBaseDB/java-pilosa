@@ -27,48 +27,37 @@ import java.util.regex.Pattern;
  * </ul>
  */
 public final class URI {
-    private String scheme = "http";
-    private String host = "localhost";
-    private int port = 10101;
-    private boolean isIPv6 = false;
-    private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
-
     /**
-     * Create the default URI. <code>http://localhost:10101</code>
+     * Create the default URI.
+     * @return default URI
      */
-    public URI() {
+    public static URI defaultURI() {
+        return new URI();
     }
 
     /**
-     * Create a URI by specifying host and port.
-     *
-     * @param host is Pilosa server's hostname or IP address
-     * @param port is Pilosa server's port
+     * Create a URI by specifying host and port but using the default scheme.
+     * @param host is hostname or IP address of the Pilosa server
+     * @param port is port of the Pilosa server
+     * @return a URI
      */
-    public URI(String host, int port) {
-        this("http", host, port);
+    public static URI withHostPort(String host, int port) {
+        URI uri = new URI();
+        uri.setHost(host);
+        uri.setPort(port);
+        return uri;
     }
 
     /**
-     * Create a URI by specifying each part.
-     *
-     * @param scheme protocol of the URI
-     * @param host   is Pilosa Server's hostname or IP address
-     * @param port is Pilosa Server's port
-     */
-    public URI(String scheme, String host, int port) {
-        setScheme(scheme);
-        setHost(host);
-        setPort(port);
-    }
-
-    /**
-     * Creates a URI by parsing from a string.
+     * Creates a URI from an address.
      * @param address is Pilosa server's address
      * @throws PilosaURIException if the address is malformed
+     * @return a URI
      */
-    public URI(String address) {
-        _parse(address);
+    public static URI fromAddress(String address) {
+        URI uri = new URI();
+        uri._parse(address);
+        return uri;
     }
 
     /**
@@ -100,7 +89,7 @@ public final class URI {
      *
      * @return normalized address by keeping the scheme part up to + (plus) character
      */
-    String getNormalizedAddress() {
+    String getNormalized() {
         String scheme = this.scheme;
         int plusIndex = scheme.indexOf('+');
         if (plusIndex > 0) {
@@ -166,4 +155,13 @@ public final class URI {
             throw new PilosaURIException("Not a Pilosa URI");
         }
     }
+
+    private URI() {
+    }
+
+    private String scheme = "http";
+    private String host = "localhost";
+    private int port = 10101;
+    private boolean isIPv6 = false;
+    private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
 }

@@ -36,7 +36,7 @@ public class PilosaClientIT {
 
     @Before
     public void setUp() throws IOException {
-        this.db = Database.named(getRandomDatabaseName());
+        this.db = Database.withName(getRandomDatabaseName());
         try (PilosaClient client = getClient()) {
             client.createDatabase(this.db);
             client.createFrame(this.db.frame("another-frame"));
@@ -47,7 +47,7 @@ public class PilosaClientIT {
             DatabaseOptions dbOptions = new DatabaseOptions.Builder()
                     .setColumnLabel("user")
                     .build();
-            this.database = Database.named(this.db.getName() + "-opts", dbOptions);
+            this.database = Database.withName(this.db.getName() + "-opts", dbOptions);
             client.createDatabase(this.database);
 
             FrameOptions frameOptions = new FrameOptions.Builder()
@@ -68,10 +68,10 @@ public class PilosaClientIT {
 
     @Test
     public void createClientTest() throws IOException {
-        try (PilosaClient client = new PilosaClient(new URI(":10101"))) {
+        try (PilosaClient client = PilosaClient.withURI(URI.fromAddress(":10101"))) {
             assertNotNull(client);
         }
-        try (PilosaClient client = new PilosaClient(new Cluster())) {
+        try (PilosaClient client = PilosaClient.withCluster(Cluster.defaultCluster())) {
             assertNotNull(client);
         }
     }
@@ -81,7 +81,7 @@ public class PilosaClientIT {
         DatabaseOptions options = new DatabaseOptions.Builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
-        Database db = Database.named("db-with-timequantum", options);
+        Database db = Database.withName("db-with-timequantum", options);
         try (PilosaClient client = getClient()) {
             client.ensureDatabase(db);
             client.deleteDatabase(db);
@@ -130,7 +130,7 @@ public class PilosaClientIT {
 
     @Test
     public void protobufCreateDatabaseDeleteDatabaseTest() throws IOException {
-        final Database dbname = Database.named("to-be-deleted-" + this.db.getName());
+        final Database dbname = Database.withName("to-be-deleted-" + this.db.getName());
         Frame frame = dbname.frame("delframe");
         try (PilosaClient client = getClient()) {
             client.createDatabase(dbname);
@@ -145,7 +145,7 @@ public class PilosaClientIT {
         DatabaseOptions dbOptions = new DatabaseOptions.Builder()
                 .setColumnLabel("cols")
                 .build();
-        final Database db = Database.named("db-col-label-" + this.db.getName(), dbOptions);
+        final Database db = Database.withName("db-col-label-" + this.db.getName(), dbOptions);
         FrameOptions frameOptions = new FrameOptions.Builder()
                 .setRowLabel("rowz")
                 .build();
@@ -158,14 +158,14 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() throws IOException {
-        try (PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222")) {
+        try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
             client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
         }
     }
 
     @Test(expected = PilosaException.class)
     public void unknownSchemeTest() throws IOException {
-        try (PilosaClient client = new PilosaClient("notknown://:15555")) {
+        try (PilosaClient client = PilosaClient.withAddress("notknown://:15555")) {
             client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
         }
     }
@@ -254,15 +254,15 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void failedDeleteDatabaseTest() throws IOException {
-        try (PilosaClient client = new PilosaClient("http://non-existent-sub.pilosa.com:22222")) {
-            client.deleteDatabase(Database.named("non-existent"));
+        try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
+            client.deleteDatabase(Database.withName("non-existent"));
         }
     }
 
     @Test
     public void ensureDatabaseExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Database db = Database.named(this.db.getName() + "-ensure");
+            final Database db = Database.withName(this.db.getName() + "-ensure");
             client.ensureDatabase(db);
             client.createFrame(db.frame("frm"));
             client.ensureDatabase(db);  // shouldn't throw an exception
@@ -273,13 +273,24 @@ public class PilosaClientIT {
     @Test
     public void ensureFrameExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Database db = Database.named(this.db.getName() + "-ensure-frame");
+            final Database db = Database.withName(this.db.getName() + "-ensure-frame");
             client.createDatabase(db);
             final Frame frame = db.frame("frame");
             client.ensureFrame(frame);
             client.ensureFrame(frame); // shouldn't throw an exception
             client.query(frame.setBit(1, 10));
             client.deleteDatabase(db);
+        }
+    }
+
+    @Test
+    public void deleteFrameTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            final Frame frame = db.frame("to-delete");
+            client.ensureFrame(frame);
+            client.deleteFrame(frame);
+            // the following should succeed
+            client.createFrame(frame);
         }
     }
 
@@ -308,7 +319,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
                 client.importFrame(this.db.frame("importframe"), iterator);
@@ -323,7 +334,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void importFail200() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
                 client.importFrame(this.db.frame("importframe"), iterator);
@@ -338,7 +349,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void queryFail200() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/query");
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.query("somedb", "valid query not required here");
             } finally {
@@ -352,9 +363,9 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void fail304EmptyResponse() throws IOException {
         HttpServer server = runContent0HttpServer("/db", 304);
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.createDatabase(Database.named("foo"));
+                client.createDatabase(Database.withName("foo"));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -366,7 +377,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failQueryEmptyResponse() throws IOException {
         HttpServer server = runContent0HttpServer("/query", 304);
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.query("foo", "bar");
             } finally {
@@ -380,7 +391,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failFetchFrameNodesEmptyResponse() throws IOException {
         HttpServer server = runContent0HttpServer("/fragment/nodes", 204);
-        try (PilosaClient client = new PilosaClient(":15999")) {
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
                 client.importFrame(this.db.frame("importframe"), iterator);
@@ -393,7 +404,7 @@ public class PilosaClientIT {
     }
 
     private PilosaClient getClient() {
-        return new PilosaClient(SERVER_ADDRESS);
+        return PilosaClient.withAddress(SERVER_ADDRESS);
     }
 
     private static int counter = 0;

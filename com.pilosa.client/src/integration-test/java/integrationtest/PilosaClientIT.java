@@ -118,12 +118,14 @@ public class PilosaClientIT {
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
             client.query(this.db.setProfileAttrs(1000, profileAttrs));
-            QueryResponse response = client.queryWithProfiles(frame.bitmap(100));
+            QueryOptions queryOptions = QueryOptions.defaultOptions();
+            queryOptions.setRetrieveProfiles(true);
+            QueryResponse response = client.query(frame.bitmap(100), queryOptions);
             assertNotNull(response.getProfile());
             assertEquals(1000, response.getProfile().getID());
             assertEquals(profileAttrs, response.getProfile().getAttributes());
 
-            response = client.queryWithProfiles(this.db.getName(), "Bitmap(frame='query-test', id=300)");
+            response = client.query(frame.bitmap(300));
             assertNull(response.getProfile());
         }
     }
@@ -159,21 +161,21 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
-            client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
+            client.query(this.frame.setBit(15, 10));
         }
     }
 
     @Test(expected = PilosaException.class)
     public void unknownSchemeTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("notknown://:15555")) {
-            client.query("test2db", "SetBit(id=15, frame=\"test\", profileID=10)");
+            client.query(this.frame.setBit(15, 10));
         }
     }
 
     @Test(expected = PilosaException.class)
     public void parseErrorTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query("testdb", "SetBit(id=5, frame=\"test\", profileID:=10)");
+            client.query(this.db.rawQuery("SetBit(id=5, frame=\"test\", profileID:=10)"));
         }
     }
 
@@ -206,7 +208,9 @@ public class PilosaClientIT {
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
             client.query(this.database.setProfileAttrs(20, profileAttrs));
-            QueryResponse response2 = client.queryWithProfiles(this.frame.bitmap(10));
+            QueryOptions queryOptions = QueryOptions.defaultOptions();
+            queryOptions.setRetrieveProfiles(true);
+            QueryResponse response2 = client.query(this.frame.bitmap(10), queryOptions);
             ProfileItem profile = response2.getProfile();
             assertNotNull(profile);
             assertEquals(20, profile.getID());
@@ -351,7 +355,7 @@ public class PilosaClientIT {
         HttpServer server = runContentSizeLyingHttpServer("/query");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.query("somedb", "valid query not required here");
+                client.query(this.frame.setBit(15, 10));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -379,7 +383,7 @@ public class PilosaClientIT {
         HttpServer server = runContent0HttpServer("/query", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.query("foo", "bar");
+                client.query(this.frame.setBit(15, 10));
             } finally {
                 if (server != null) {
                     server.stop(0);

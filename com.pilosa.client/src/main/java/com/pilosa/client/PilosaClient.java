@@ -97,19 +97,6 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Queries the server with the given database name and a query.
-     * @param databaseName the database to use
-     * @param query a Pql query
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, String query) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setQuery(query);
-        return queryPath(request);
-    }
-
-    /**
      * Runs the given query against the server.
      *
      * @param query a PqlBaseQuery with its database is not null
@@ -117,22 +104,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws ValidationException if the given query's database is null
      */
     public QueryResponse query(PqlQuery query) {
-        return queryPath(QueryRequest.withQuery(query));
-    }
-
-    /**
-     * Queries the server with the given database name and enables profiles in the response.
-     *
-     * @param databaseName the database to use
-     * @param query a Pql query
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, String query) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        request.setQuery(query);
-        return queryPath(request);
+        return query(query, QueryOptions.defaultOptions());
     }
 
     /**
@@ -142,9 +114,9 @@ public class PilosaClient implements AutoCloseable {
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse queryWithProfiles(PqlQuery query) {
+    public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(true);
+        request.setRetrieveProfiles(options.isRetrieveProfiles());
         return queryPath(request, query);
     }
 

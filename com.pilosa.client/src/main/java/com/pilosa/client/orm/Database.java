@@ -102,6 +102,10 @@ public class Database {
         return new BatchQuery(queryCount, this);
     }
 
+    public PqlBaseQuery rawQuery(String query) {
+        return new PqlBaseQuery(query, this);
+    }
+
     /**
      * Creates a Union query.
      *

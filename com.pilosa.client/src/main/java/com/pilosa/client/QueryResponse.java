@@ -52,7 +52,7 @@ public final class QueryResponse {
     /**
      * Returns the list of profiles.
      * <p>
-     * The response contains the profiles if <code>PilosaClient.queryWithProfiles()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the profiles if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
      *
      * @return list of profiles or <code>null</code> if the response did not have its profiles field set.
      */
@@ -63,7 +63,7 @@ public final class QueryResponse {
     /**
      * Returns the first profile in the response.
      * <p>
-     * The response contains the profiles if <code>PilosaClient.queryWithProfiles()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the profiles if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
      *
      * @return the first profile or <code>null</code> if the response did not have its profiles field set.
      */

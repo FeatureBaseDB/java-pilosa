@@ -24,6 +24,7 @@ public final class Cluster {
      * @param uri address of the first host
      * @return a Cluster with the given host
      */
+    @SuppressWarnings("WeakerAccess")
     public static Cluster withHost(URI uri) {
         Cluster cluster = new Cluster();
         cluster.addHost(uri);
@@ -34,24 +35,27 @@ public final class Cluster {
      * Adds a host to the cluster.
      * @param uri Address of a Pilosa host
      */
+    @SuppressWarnings("WeakerAccess")
     public synchronized void addHost(URI uri) {
         this.hosts.add(uri);
     }
 
     /**
-     * Remove the host with the given URI from the cluster.
+     * Removes the host with the given URI from the cluster.
      *
      * @param uri of the host to be removed
      */
+    @SuppressWarnings("WeakerAccess")
     public synchronized void removeHost(URI uri) {
         this.hosts.remove(uri);
     }
 
     /**
-     * Return the next host in the cluster.
+     * Returns the next host in the cluster.
      *
      * @return next host
      */
+    @SuppressWarnings("WeakerAccess")
     public synchronized URI getHost() {
         if (this.hosts.size() == 0) {
             throw new PilosaException("There are no available hosts");

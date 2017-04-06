@@ -5,7 +5,7 @@ import com.pilosa.client.Validator;
 
 public final class FrameOptions {
     public static class Builder {
-        public Builder() {
+        private Builder() {
         }
 
         public Builder setRowLabel(String rowLabel) {
@@ -27,12 +27,17 @@ public final class FrameOptions {
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static FrameOptions withDefaults() {
         return new Builder().build();
     }
 
     public String getRowLabel() {
         return this.rowLabel;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public TimeQuantum getTimeQuantum() {

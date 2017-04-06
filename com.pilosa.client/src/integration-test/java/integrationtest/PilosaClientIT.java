@@ -42,13 +42,13 @@ public class PilosaClientIT {
             client.createFrame(this.db.frame("count-test"));
             client.createFrame(this.db.frame("topn_test"));
 
-            DatabaseOptions dbOptions = new DatabaseOptions.Builder()
+            DatabaseOptions dbOptions = DatabaseOptions.builder()
                     .setColumnLabel("user")
                     .build();
             this.database = Database.withName(this.db.getName() + "-opts", dbOptions);
             client.createDatabase(this.database);
 
-            FrameOptions frameOptions = new FrameOptions.Builder()
+            FrameOptions frameOptions = FrameOptions.builder()
                     .setRowLabel("project")
                     .build();
             this.frame = this.database.frame("collab", frameOptions);
@@ -76,7 +76,7 @@ public class PilosaClientIT {
 
     @Test
     public void createDatabaseWithTimeQuantumTest() throws IOException {
-        DatabaseOptions options = new DatabaseOptions.Builder()
+        DatabaseOptions options = DatabaseOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
         Database db = Database.withName("db-with-timequantum", options);
@@ -88,7 +88,7 @@ public class PilosaClientIT {
 
     @Test
     public void createFrameWithTimeQuantumTest() throws IOException {
-        FrameOptions options = new FrameOptions.Builder()
+        FrameOptions options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
         Frame frame = this.db.frame("frame-with-timequantum", options);
@@ -116,8 +116,9 @@ public class PilosaClientIT {
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
             client.query(this.db.setProfileAttrs(1000, profileAttrs));
-            QueryOptions queryOptions = QueryOptions.defaultOptions();
-            queryOptions.setProfiles(true);
+            QueryOptions queryOptions = QueryOptions.builder()
+                    .setProfiles(true)
+                    .build();
             QueryResponse response = client.query(frame.bitmap(100), queryOptions);
             assertNotNull(response.getProfile());
             assertEquals(1000, response.getProfile().getID());
@@ -142,11 +143,11 @@ public class PilosaClientIT {
 
     @Test
     public void createDatabaseWithColumnLabelFrameWithRowLabel() throws IOException {
-        DatabaseOptions dbOptions = new DatabaseOptions.Builder()
+        DatabaseOptions dbOptions = DatabaseOptions.builder()
                 .setColumnLabel("cols")
                 .build();
         final Database db = Database.withName("db-col-label-" + this.db.getName(), dbOptions);
-        FrameOptions frameOptions = new FrameOptions.Builder()
+        FrameOptions frameOptions = FrameOptions.builder()
                 .setRowLabel("rowz")
                 .build();
         try (PilosaClient client = getClient()) {
@@ -206,8 +207,9 @@ public class PilosaClientIT {
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
             client.query(this.database.setProfileAttrs(20, profileAttrs));
-            QueryOptions queryOptions = QueryOptions.defaultOptions();
-            queryOptions.setProfiles(true);
+            QueryOptions queryOptions = QueryOptions.builder()
+                    .setProfiles(true)
+                    .build();
             QueryResponse response2 = client.query(this.frame.bitmap(10), queryOptions);
             ProfileItem profile = response2.getProfile();
             assertNotNull(profile);

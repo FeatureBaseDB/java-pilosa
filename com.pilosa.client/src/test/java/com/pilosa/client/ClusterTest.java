@@ -20,20 +20,22 @@ public class ClusterTest {
     }
 
     @Test
-    public void testClusterAddHost() {
+    public void testClusterAddRemoveHost() {
         List<URI> target = new ArrayList<>(1);
         target.add(URI.fromAddress("http://localhost:3000"));
         Cluster c = Cluster.defaultCluster();
         c.addHost(URI.fromAddress("http://localhost:3000"));
         assertEquals(target, c.getHosts());
-    }
 
-    @Test
-    public void testClusterRemoveHost() {
-        List<URI> target = new ArrayList<>();
-        Cluster c = Cluster.defaultCluster();
-        c.addHost(URI.fromAddress("localhost:5000"));
-        c.removeHost(URI.fromAddress("localhost:5000"));
+        target = new ArrayList<>(2);
+        target.add(URI.fromAddress("http://localhost:3000"));
+        target.add(URI.defaultURI());
+        c.addHost(URI.defaultURI());
+        assertEquals(target, c.getHosts());
+
+        target = new ArrayList<>(1);
+        target.add(URI.defaultURI());
+        c.removeHost(URI.fromAddress("localhost:3000"));
         assertEquals(target, c.getHosts());
     }
 
@@ -56,7 +58,7 @@ public class ClusterTest {
     }
 
     @Test(expected = PilosaException.class)
-    public void testClusterGetHostWitEmptyList() {
+    public void testClusterGetHostWhenNoHosts() {
         Cluster c = Cluster.defaultCluster();
         c.getHost();
     }

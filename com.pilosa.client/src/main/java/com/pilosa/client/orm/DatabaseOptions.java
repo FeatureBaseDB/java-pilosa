@@ -6,7 +6,7 @@ import com.pilosa.client.Validator;
 public final class DatabaseOptions {
 
     public static class Builder {
-        public Builder() {
+        private Builder() {
         }
 
         public Builder setColumnLabel(String columnLabel) {
@@ -28,8 +28,13 @@ public final class DatabaseOptions {
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static DatabaseOptions withDefaults() {
         return new Builder().build();
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getColumnLabel() {

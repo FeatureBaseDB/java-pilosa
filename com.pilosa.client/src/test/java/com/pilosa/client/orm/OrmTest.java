@@ -19,11 +19,11 @@ public class OrmTest {
     private Frame collabFrame;
 
     {
-        DatabaseOptions projectDbOptions = new DatabaseOptions.Builder()
+        DatabaseOptions projectDbOptions = DatabaseOptions.builder()
                 .setColumnLabel("user")
                 .build();
         this.projectDb = Database.withName("project-db", projectDbOptions);
-        FrameOptions collabFrameOptions = new FrameOptions.Builder()
+        FrameOptions collabFrameOptions = FrameOptions.builder()
                 .setRowLabel("project")
                 .build();
         this.collabFrame = projectDb.frame("collaboration", collabFrameOptions);

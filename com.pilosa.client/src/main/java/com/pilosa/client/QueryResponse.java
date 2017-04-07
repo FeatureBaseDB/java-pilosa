@@ -86,6 +86,8 @@ public final class QueryResponse {
     /**
      * Returns true if the response was success.
      *
+     * <p> This method is used internally.
+     *
      * @return true if the response was success, false otherwise
      */
     boolean isSuccess() {

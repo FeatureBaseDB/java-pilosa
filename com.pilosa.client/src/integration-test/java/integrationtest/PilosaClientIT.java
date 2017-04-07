@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
-    private Database database;
+    private Database colDB;
     private Database db;
     private Frame frame;
     private final static String SERVER_ADDRESS = ":10101";
@@ -45,13 +45,13 @@ public class PilosaClientIT {
             DatabaseOptions dbOptions = DatabaseOptions.builder()
                     .setColumnLabel("user")
                     .build();
-            this.database = Database.withName(this.db.getName() + "-opts", dbOptions);
-            client.createDatabase(this.database);
+            this.colDB = Database.withName(this.db.getName() + "-opts", dbOptions);
+            client.createDatabase(this.colDB);
 
             FrameOptions frameOptions = FrameOptions.builder()
                     .setRowLabel("project")
                     .build();
-            this.frame = this.database.frame("collab", frameOptions);
+            this.frame = this.colDB.frame("collab", frameOptions);
             client.createFrame(this.frame);
         }
     }
@@ -60,7 +60,7 @@ public class PilosaClientIT {
     public void tearDown() throws IOException {
         try (PilosaClient client = getClient()) {
             client.deleteDatabase(this.db);
-            client.deleteDatabase(this.database);
+            client.deleteDatabase(this.colDB);
         }
     }
 
@@ -206,7 +206,7 @@ public class PilosaClientIT {
 
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
-            client.query(this.database.setProfileAttrs(20, profileAttrs));
+            client.query(this.colDB.setProfileAttrs(20, profileAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
                     .setProfiles(true)
                     .build();
@@ -241,10 +241,17 @@ public class PilosaClientIT {
         }
     }
 
+    @Test(expected = PilosaException.class)
+    public void queryFailsWithError() throws IOException {
+        try (PilosaClient client = getClient()) {
+            client.query(this.db.rawQuery("invalid query"));
+        }
+    }
+
     @Test(expected = DatabaseExistsException.class)
     public void createExistingDatabaseFails() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.createDatabase(this.database);
+            client.createDatabase(this.colDB);
         }
 
     }

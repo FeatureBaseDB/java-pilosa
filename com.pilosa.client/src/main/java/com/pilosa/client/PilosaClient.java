@@ -46,6 +46,7 @@ public class PilosaClient implements AutoCloseable {
      *
      * @return a PilosaClient
      */
+    @SuppressWarnings("WeakerAccess")
     public static PilosaClient defaultClient() {
         return PilosaClient.withURI(URI.defaultURI());
     }
@@ -57,7 +58,7 @@ public class PilosaClient implements AutoCloseable {
      * @return a PilosaClient
      */
     public static PilosaClient withAddress(String address) {
-        return PilosaClient.withURI(URI.fromAddress(address));
+        return PilosaClient.withURI(URI.address(address));
     }
 
     /**
@@ -85,6 +86,7 @@ public class PilosaClient implements AutoCloseable {
      * @param options client options
      * @return a PilosaClient
      */
+    @SuppressWarnings("WeakerAccess")
     public static PilosaClient withCluster(Cluster cluster, ClientOptions options) {
         return new PilosaClient(cluster, options);
     }
@@ -229,6 +231,7 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @param batchSize    specify the number of bits to send in each import query
      */
+    @SuppressWarnings("WeakerAccess")
     public void importFrame(Frame frame, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
@@ -550,7 +553,7 @@ class FragmentNode {
     }
 
     URI toURI() {
-        return URI.fromAddress(this.host);
+        return URI.address(this.host);
     }
 
     private String host;

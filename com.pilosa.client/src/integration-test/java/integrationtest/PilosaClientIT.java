@@ -66,7 +66,7 @@ public class PilosaClientIT {
 
     @Test
     public void createClientTest() throws IOException {
-        try (PilosaClient client = PilosaClient.withURI(URI.fromAddress(":10101"))) {
+        try (PilosaClient client = PilosaClient.withURI(URI.address(":10101"))) {
             assertNotNull(client);
         }
         try (PilosaClient client = PilosaClient.withCluster(Cluster.defaultCluster())) {

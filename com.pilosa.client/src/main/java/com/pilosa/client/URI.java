@@ -31,6 +31,7 @@ public final class URI {
      * Create the default URI.
      * @return default URI
      */
+    @SuppressWarnings("WeakerAccess")
     public static URI defaultURI() {
         return new URI();
     }
@@ -41,6 +42,7 @@ public final class URI {
      * @param port is port of the Pilosa server
      * @return a URI
      */
+    @SuppressWarnings("WeakerAccess")
     public static URI withHostPort(String host, int port) {
         URI uri = new URI();
         uri.setHost(host);
@@ -54,7 +56,7 @@ public final class URI {
      * @throws PilosaURIException if the address is malformed
      * @return a URI
      */
-    public static URI fromAddress(String address) {
+    public static URI address(String address) {
         URI uri = new URI();
         uri._parse(address);
         return uri;
@@ -64,6 +66,7 @@ public final class URI {
      * Returns the protocol part of the URI.
      * @return the protocol part of the URI
      */
+    @SuppressWarnings("WeakerAccess")
     public String getScheme() {
         return scheme;
     }
@@ -72,6 +75,7 @@ public final class URI {
      * Returns the host part of the URI.
      * @return the host part of the URI
      */
+    @SuppressWarnings("WeakerAccess")
     public String getHost() {
         return host;
     }
@@ -80,6 +84,7 @@ public final class URI {
      * Returns the port part of the URI.
      * @return the port part of the URI
      */
+    @SuppressWarnings("WeakerAccess")
     public int getPort() {
         return port;
     }

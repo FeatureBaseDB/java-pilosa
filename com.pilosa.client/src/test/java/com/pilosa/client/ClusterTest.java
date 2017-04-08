@@ -14,45 +14,45 @@ public class ClusterTest {
     @Test
     public void testClusterCreateWithHost() {
         List<URI> target = new ArrayList<>(1);
-        target.add(URI.fromAddress("http://localhost:3000"));
-        Cluster c = Cluster.withHost(URI.fromAddress("http://localhost:3000"));
+        target.add(URI.address("http://localhost:3000"));
+        Cluster c = Cluster.withHost(URI.address("http://localhost:3000"));
         assertEquals(target, c.getHosts());
     }
 
     @Test
     public void testClusterAddRemoveHost() {
         List<URI> target = new ArrayList<>(1);
-        target.add(URI.fromAddress("http://localhost:3000"));
+        target.add(URI.address("http://localhost:3000"));
         Cluster c = Cluster.defaultCluster();
-        c.addHost(URI.fromAddress("http://localhost:3000"));
+        c.addHost(URI.address("http://localhost:3000"));
         assertEquals(target, c.getHosts());
 
         target = new ArrayList<>(2);
-        target.add(URI.fromAddress("http://localhost:3000"));
+        target.add(URI.address("http://localhost:3000"));
         target.add(URI.defaultURI());
         c.addHost(URI.defaultURI());
         assertEquals(target, c.getHosts());
 
         target = new ArrayList<>(1);
         target.add(URI.defaultURI());
-        c.removeHost(URI.fromAddress("localhost:3000"));
+        c.removeHost(URI.address("localhost:3000"));
         assertEquals(target, c.getHosts());
     }
 
     @Test
     public void testClusterGetHost() {
-        URI target1 = URI.fromAddress("db1.pilosa.com");
-        URI target2 = URI.fromAddress("db2.pilosa.com");
+        URI target1 = URI.address("db1.pilosa.com");
+        URI target2 = URI.address("db2.pilosa.com");
 
         Cluster c = Cluster.defaultCluster();
-        c.addHost(URI.fromAddress("db1.pilosa.com"));
-        c.addHost(URI.fromAddress("db2.pilosa.com"));
+        c.addHost(URI.address("db1.pilosa.com"));
+        c.addHost(URI.address("db2.pilosa.com"));
         URI addr = c.getHost();
         assertEquals(target1, addr);
         addr = c.getHost();
         assertEquals(target2, addr);
         c.getHost();
-        c.removeHost(URI.fromAddress("db1.pilosa.com"));
+        c.removeHost(URI.address("db1.pilosa.com"));
         addr = c.getHost();
         assertEquals(target2, addr);
     }

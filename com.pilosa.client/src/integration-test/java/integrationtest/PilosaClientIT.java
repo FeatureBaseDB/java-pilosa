@@ -199,10 +199,10 @@ public class PilosaClientIT {
             client.query(this.frame.setBit(10, 20));
             QueryResponse response1 = client.query(this.frame.bitmap(10));
             assertEquals(0, response1.getProfiles().size());
-            BitmapResult result1 = response1.getResult().getBitmap();
-            assertEquals(0, result1.getAttributes().size());
-            assertEquals(1, result1.getBits().size());
-            assertEquals(20, (long) result1.getBits().get(0));
+            BitmapResult bitmap1 = response1.getResult().getBitmap();
+            assertEquals(0, bitmap1.getAttributes().size());
+            assertEquals(1, bitmap1.getBits().size());
+            assertEquals(20, (long) bitmap1.getBits().get(0));
 
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");

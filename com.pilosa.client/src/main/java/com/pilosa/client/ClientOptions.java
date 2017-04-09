@@ -1,52 +1,84 @@
 package com.pilosa.client;
 
-public class ClientOptions {
-    public ClientOptions() {
+@SuppressWarnings("WeakerAccess")
+public final class ClientOptions {
+    public static class Builder {
+        private Builder() {
+        }
+
+        public Builder setSocketTimeout(int millis) {
+            this.socketTimeout = millis;
+            return this;
+        }
+
+        public Builder setConnectTimeout(int millis) {
+            this.connectTimeout = millis;
+            return this;
+        }
+
+        public Builder setRetryCount(int count) {
+            this.retryCount = count;
+            return this;
+        }
+
+        public Builder setConnectionPoolSizePerRoute(int size) {
+            this.connectionPoolSizePerRoute = size;
+            return this;
+        }
+
+        public Builder setConnectionPoolTotalSize(int size) {
+            this.connectionPoolTotalSize = size;
+            return this;
+        }
+
+        public ClientOptions build() {
+            return new ClientOptions(this.socketTimeout, this.connectTimeout,
+                    this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize);
+        }
+
+        private int socketTimeout = 300000;
+        private int connectTimeout = 30000;
+        private int retryCount = 3;
+        private int connectionPoolSizePerRoute = 10;
+        private int connectionPoolTotalSize = 100;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public int getSocketTimeout() {
         return socketTimeout;
     }
 
-    public void setSocketTimeout(int socketTimeout) {
-        this.socketTimeout = socketTimeout;
-    }
-
     public int getConnectTimeout() {
         return connectTimeout;
-    }
-
-    public void setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
     }
 
     public int getRetryCount() {
         return retryCount;
     }
 
-    public void setRetryCount(int retryCount) {
-        this.retryCount = retryCount;
-    }
-
     public int getConnectionPoolSizePerRoute() {
         return connectionPoolSizePerRoute;
-    }
-
-    public void setConnectionPoolSizePerRoute(int connectionPoolSizePerRoute) {
-        this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
     }
 
     public int getConnectionPoolTotalSize() {
         return connectionPoolTotalSize;
     }
 
-    public void setConnectionPoolTotalSize(int connectionPoolTotalSize) {
+    private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
+                          final int connectionPoolSizePerRoute, final int connectionPoolTotalSize) {
+        this.socketTimeout = socketTimeout;
+        this.connectTimeout = connectTimeout;
+        this.retryCount = retryCount;
+        this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
     }
 
-    private int socketTimeout = 300000; // milliseconds
-    private int connectTimeout = 30000; // milliseconds
-    private int retryCount = 3;
-    private int connectionPoolSizePerRoute = 10;
-    private int connectionPoolTotalSize = 100;
+    private final int socketTimeout; // milliseconds
+    private final int connectTimeout; // milliseconds
+    private final int retryCount;
+    private final int connectionPoolSizePerRoute;
+    private final int connectionPoolTotalSize;
 }

@@ -77,7 +77,7 @@ public class PilosaClient implements AutoCloseable {
      * @return a PilosaClient
      */
     public static PilosaClient withCluster(Cluster cluster) {
-        return PilosaClient.withCluster(cluster, new ClientOptions());
+        return PilosaClient.withCluster(cluster, ClientOptions.builder().build());
     }
 
     /**

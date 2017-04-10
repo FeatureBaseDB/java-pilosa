@@ -43,7 +43,7 @@ public final class URI {
      * @return a URI
      */
     @SuppressWarnings("WeakerAccess")
-    public static URI withHostPort(String host, int port) {
+    public static URI fromHostPort(String host, int port) {
         URI uri = new URI();
         uri.setHost(host);
         uri.setPort(port);

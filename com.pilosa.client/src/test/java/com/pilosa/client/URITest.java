@@ -22,7 +22,7 @@ public class URITest {
 
     @Test
     public void testHostPortAlternative() {
-        URI uri = URI.withHostPort("db1.pilosa.com", 3333);
+        URI uri = URI.fromHostPort("db1.pilosa.com", 3333);
         compare(uri, "http", "db1.pilosa.com", 3333);
     }
 
@@ -96,7 +96,7 @@ public class URITest {
 
     @Test
     public void testEquals() {
-        URI uri1 = URI.withHostPort("pilosa.com", 1337);
+        URI uri1 = URI.fromHostPort("pilosa.com", 1337);
         URI uri2 = URI.address("http://pilosa.com:1337");
         boolean e = uri1.equals(uri2);
         assertTrue(e);

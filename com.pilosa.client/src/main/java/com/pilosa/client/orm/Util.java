@@ -18,7 +18,7 @@ final class Util {
         try {
             List<String> kvs = new ArrayList<>(attributes.size());
             for (Map.Entry<String, Object> item : attributes.entrySet()) {
-                // TOOD: make key use its own validator
+                // TODO: make key use its own validator
                 Validator.ensureValidLabel(item.getKey());
                 kvs.add(String.format("%s=%s", item.getKey(), mapper.writeValueAsString(item.getValue())));
             }

@@ -1,6 +1,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.orm.FrameOptions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -10,21 +11,21 @@ import static org.junit.Assert.assertEquals;
 public class FrameOptionsTest {
     @Test
     public void testBuilder() {
-        FrameOptions options = new FrameOptions.Builder()
+        FrameOptions options = FrameOptions.builder()
                 .build();
         compare(options, "id", TimeQuantum.NONE);
 
-        options = new FrameOptions.Builder()
+        options = FrameOptions.builder()
                 .setRowLabel("the_row_label")
                 .build();
         compare(options, "the_row_label", TimeQuantum.NONE);
 
-        options = new FrameOptions.Builder()
+        options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
         compare(options, "id", TimeQuantum.YEAR_MONTH_DAY_HOUR);
 
-        options = new FrameOptions.Builder()
+        options = FrameOptions.builder()
                 .setRowLabel("someid")
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
@@ -33,7 +34,7 @@ public class FrameOptionsTest {
 
     @Test(expected = PilosaException.class)
     public void testInvalidRowLabel() {
-        new FrameOptions.Builder()
+        FrameOptions.builder()
                 .setRowLabel("#Justa an invalid label!")
                 .build();
     }

@@ -2,7 +2,6 @@ package com.pilosa.client.orm;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.FrameOptions;
 import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.ValidationException;
@@ -72,7 +71,7 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
-    public PqlQuery setBit(long rowID, long columnID) {
+    public PqlBaseQuery setBit(long rowID, long columnID) {
         return this.database.pqlQuery(String.format("SetBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
@@ -84,7 +83,7 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
-    public PqlQuery clearBit(long rowID, long columnID) {
+    public PqlBaseQuery clearBit(long rowID, long columnID) {
         return this.database.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
@@ -95,7 +94,7 @@ public class Frame {
      * @param n number of items to return
      * @return a PQL Bitmap query
      */
-    public PqlQuery topN(long n) {
+    public PqlBitmapQuery topN(long n) {
         return this.database.pqlBitmapQuery(String.format("TopN(frame='%s', n=%d)", this.name, n));
     }
 
@@ -139,10 +138,10 @@ public class Frame {
      * @param end   end timestamp
      * @return a PQL query
      */
-    public PqlQuery range(long rowID, Date start, Date end) {
+    public PqlBitmapQuery range(long rowID, Date start, Date end) {
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");
-        return this.database.pqlQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.database.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -154,7 +153,7 @@ public class Frame {
      * @param attributes bitmap attributes
      * @return a PQL query
      */
-    public PqlQuery setBitmapAttrs(long rowID, Map<String, Object> attributes) {
+    public PqlBaseQuery setBitmapAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
         return this.database.pqlQuery(String.format("SetBitmapAttrs(%s=%d, frame='%s', %s)",
                 this.rowLabel, rowID, this.name, attributesString));

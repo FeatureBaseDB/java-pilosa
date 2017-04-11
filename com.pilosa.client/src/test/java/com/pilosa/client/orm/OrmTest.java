@@ -1,7 +1,5 @@
 package com.pilosa.client.orm;
 
-import com.pilosa.client.DatabaseOptions;
-import com.pilosa.client.FrameOptions;
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
@@ -15,17 +13,17 @@ import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
 public class OrmTest {
-    private Database sampleDb = Database.named("sample-db");
+    private Database sampleDb = Database.withName("sample-db");
     private Frame sampleFrame = sampleDb.frame("sample-frame");
     private Database projectDb;
     private Frame collabFrame;
 
     {
-        DatabaseOptions projectDbOptions = new DatabaseOptions.Builder()
+        DatabaseOptions projectDbOptions = DatabaseOptions.builder()
                 .setColumnLabel("user")
                 .build();
-        this.projectDb = Database.named("project-db", projectDbOptions);
-        FrameOptions collabFrameOptions = new FrameOptions.Builder()
+        this.projectDb = Database.withName("project-db", projectDbOptions);
+        FrameOptions collabFrameOptions = FrameOptions.builder()
                 .setRowLabel("project")
                 .build();
         this.collabFrame = projectDb.frame("collaboration", collabFrameOptions);
@@ -33,7 +31,7 @@ public class OrmTest {
 
     @Test
     public void pqlQueryCreate() {
-        PqlQuery pql = new PqlQuery("Bitmap(frame='foo', id=10)");
+        PqlBaseQuery pql = new PqlBaseQuery("Bitmap(frame='foo', id=10)");
         assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
         assertEquals(null, pql.getDatabase());
     }
@@ -77,12 +75,12 @@ public class OrmTest {
 
     @Test
     public void bitmapTest() {
-        PqlQuery qry1 = sampleFrame.bitmap(5);
+        PqlBaseQuery qry1 = sampleFrame.bitmap(5);
         assertEquals(
                 "Bitmap(id=5, frame='sample-frame')",
                 qry1.toString());
 
-        PqlQuery qry2 = collabFrame.bitmap(10);
+        PqlBaseQuery qry2 = collabFrame.bitmap(10);
         assertEquals(
                 "Bitmap(project=10, frame='collaboration')",
                 qry2.toString());
@@ -90,12 +88,12 @@ public class OrmTest {
 
     @Test
     public void setBitTest() {
-        PqlQuery qry1 = sampleFrame.setBit(5, 10);
+        PqlBaseQuery qry1 = sampleFrame.setBit(5, 10);
         assertEquals(
                 "SetBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
-        PqlQuery qry2 = collabFrame.setBit(10, 20);
+        PqlBaseQuery qry2 = collabFrame.setBit(10, 20);
         assertEquals(
                 "SetBit(project=10, frame='collaboration', user=20)",
                 qry2.toString());
@@ -103,12 +101,12 @@ public class OrmTest {
 
     @Test
     public void clearBitTest() {
-        PqlQuery qry1 = sampleFrame.clearBit(5, 10);
+        PqlBaseQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(
                 "ClearBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
-        PqlQuery qry2 = collabFrame.clearBit(10, 20);
+        PqlBaseQuery qry2 = collabFrame.clearBit(10, 20);
         assertEquals(
                 "ClearBit(project=10, frame='collaboration', user=20)",
                 qry2.toString());
@@ -121,17 +119,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlQuery q1 = sampleDb.union(b1, b2);
+        PqlBaseQuery q1 = sampleDb.union(b1, b2);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.toString());
 
-        PqlQuery q2 = sampleDb.union(b1, b2, b3);
+        PqlBaseQuery q2 = sampleDb.union(b1, b2, b3);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.toString());
 
-        PqlQuery q3 = sampleDb.union(b1, b4);
+        PqlBaseQuery q3 = sampleDb.union(b1, b4);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.toString());
@@ -144,17 +142,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlQuery q1 = sampleDb.intersect(b1, b2);
+        PqlBaseQuery q1 = sampleDb.intersect(b1, b2);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.toString());
 
-        PqlQuery q2 = sampleDb.intersect(b1, b2, b3);
+        PqlBaseQuery q2 = sampleDb.intersect(b1, b2, b3);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.toString());
 
-        PqlQuery q3 = sampleDb.intersect(b1, b4);
+        PqlBaseQuery q3 = sampleDb.intersect(b1, b4);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.toString());
@@ -167,17 +165,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlQuery q1 = sampleDb.difference(b1, b2);
+        PqlBaseQuery q1 = sampleDb.difference(b1, b2);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.toString());
 
-        PqlQuery q2 = sampleDb.difference(b1, b2, b3);
+        PqlBaseQuery q2 = sampleDb.difference(b1, b2, b3);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.toString());
 
-        PqlQuery q3 = sampleDb.difference(b1, b4);
+        PqlBaseQuery q3 = sampleDb.difference(b1, b4);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.toString());
@@ -186,7 +184,7 @@ public class OrmTest {
     @Test
     public void countTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q = projectDb.count(b);
+        PqlBaseQuery q = projectDb.count(b);
         assertEquals(
                 "Count(Bitmap(project=42, frame='collaboration'))",
                 q.toString());
@@ -194,17 +192,17 @@ public class OrmTest {
 
     @Test
     public void topNTest() {
-        PqlQuery q1 = sampleFrame.topN(27);
+        PqlBaseQuery q1 = sampleFrame.topN(27);
         assertEquals(
                 "TopN(frame='sample-frame', n=27)",
                 q1.toString());
 
-        PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
+        PqlBaseQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
                 "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10)",
                 q2.toString());
 
-        PqlQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
+        PqlBaseQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
 
         assertEquals(
                 "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, field='category', [80,81])",
@@ -223,7 +221,7 @@ public class OrmTest {
         start.set(1970, Calendar.JANUARY, 1, 0, 0);
         Calendar end = Calendar.getInstance();
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
-        PqlQuery q = collabFrame.range(10, start.getTime(), end.getTime());
+        PqlBaseQuery q = collabFrame.range(10, start.getTime(), end.getTime());
         assertEquals(
                 "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.toString());
@@ -236,7 +234,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new HashMap<>(2);
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
-        PqlQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
+        PqlBaseQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
         assertEquals(
                 "SetBitmapAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
@@ -255,7 +253,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new HashMap<>(2);
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
-        PqlQuery q = projectDb.setProfileAttrs(5, attrsMap);
+        PqlBaseQuery q = projectDb.setProfileAttrs(5, attrsMap);
         assertEquals(
                 "SetProfileAttrs(user=5, quote=\"\\\"Don't worry, be happy\\\"\", happy=true)",
                 q.toString());

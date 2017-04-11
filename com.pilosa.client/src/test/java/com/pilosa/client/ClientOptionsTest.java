@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 public class ClientOptionsTest {
     @Test
     public void testCreateDefaults() {
-        ClientOptions options = new ClientOptions();
+        ClientOptions options = ClientOptions.builder().build();
         assertEquals(10, options.getConnectionPoolSizePerRoute());
         assertEquals(100, options.getConnectionPoolTotalSize());
         assertEquals(30000, options.getConnectTimeout());
@@ -19,12 +19,13 @@ public class ClientOptionsTest {
 
     @Test
     public void testCreate() {
-        ClientOptions options = new ClientOptions();
-        options.setConnectionPoolSizePerRoute(2);
-        options.setConnectionPoolTotalSize(50);
-        options.setConnectTimeout(100);
-        options.setSocketTimeout(1000);
-        options.setRetryCount(5);
+        ClientOptions options = ClientOptions.builder()
+                .setConnectionPoolSizePerRoute(2)
+                .setConnectionPoolTotalSize(50)
+                .setConnectTimeout(100)
+                .setSocketTimeout(1000)
+                .setRetryCount(5)
+                .build();
         assertEquals(2, options.getConnectionPoolSizePerRoute());
         assertEquals(50, options.getConnectionPoolTotalSize());
         assertEquals(100, options.getConnectTimeout());

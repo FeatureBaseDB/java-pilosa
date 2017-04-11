@@ -5,9 +5,9 @@ import com.pilosa.client.exceptions.PilosaException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchQuery implements IPqlQuery {
+public class BatchQuery implements PqlQuery {
     private Database database = null;
-    private List<IPqlQuery> queries = null;
+    private List<PqlQuery> queries = null;
 
     BatchQuery(Database database) {
         this.database = database;
@@ -23,7 +23,7 @@ public class BatchQuery implements IPqlQuery {
         return this.database;
     }
 
-    public void add(IPqlQuery query) {
+    public void add(PqlQuery query) {
         if (query.getDatabase() != this.getDatabase()) {
             throw new PilosaException("Query database should be the same as BatchQuery database");
         }
@@ -33,7 +33,7 @@ public class BatchQuery implements IPqlQuery {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(this.queries.size());
-        for (IPqlQuery query : this.queries) {
+        for (PqlQuery query : this.queries) {
             builder.append(query.toString());
         }
         return builder.toString();

@@ -15,7 +15,7 @@ public final class Validator {
 
     Validator() {}
 
-    public static boolean validateDatabaseName(String databaseName) {
+    public static boolean validDatabaseName(String databaseName) {
         //noinspection SimplifiableIfStatement
         if (databaseName.length() > MAX_DATABASE_NAME) {
             return false;
@@ -24,12 +24,12 @@ public final class Validator {
     }
 
     public static void ensureValidDatabaseName(String databaseName) {
-        if (!validateDatabaseName(databaseName)) {
+        if (!validDatabaseName(databaseName)) {
             throw new ValidationException(String.format("Invalid database name: %s", databaseName));
         }
     }
 
-    public static boolean validateFrameName(String frameName) {
+    public static boolean validFrameName(String frameName) {
         //noinspection SimplifiableIfStatement
         if (frameName.length() > MAX_FRAME_NAME) {
             return false;
@@ -38,12 +38,12 @@ public final class Validator {
     }
 
     public static void ensureValidFrameName(String frameName) {
-        if (!validateFrameName(frameName)) {
+        if (!validFrameName(frameName)) {
             throw new ValidationException(String.format("Invalid frame name: %s", frameName));
         }
     }
 
-    public static boolean validateLabel(String label) {
+    public static boolean validLabel(String label) {
         //noinspection SimplifiableIfStatement
         if (label.length() > MAX_LABEL) {
             return false;
@@ -52,7 +52,7 @@ public final class Validator {
     }
 
     public static void ensureValidLabel(String label) {
-        if (!validateLabel(label)) {
+        if (!validLabel(label)) {
             throw new ValidationException(String.format("Invalid label: %s", label));
         }
     }

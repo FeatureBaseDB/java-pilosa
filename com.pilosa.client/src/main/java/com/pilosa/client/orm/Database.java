@@ -1,8 +1,6 @@
 package com.pilosa.client.orm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.DatabaseOptions;
-import com.pilosa.client.FrameOptions;
 import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.ValidationException;
 
@@ -25,8 +23,8 @@ public class Database {
      * @return a Database object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database named(String name) {
-        return Database.named(name, DatabaseOptions.withDefaults());
+    public static Database withName(String name) {
+        return Database.withName(name, DatabaseOptions.withDefaults());
     }
 
     /**
@@ -37,7 +35,7 @@ public class Database {
      * @return a Database object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database named(String name, DatabaseOptions options) {
+    public static Database withName(String name, DatabaseOptions options) {
         Validator.ensureValidLabel(options.getColumnLabel());
         return new Database(name, options);
     }
@@ -102,6 +100,10 @@ public class Database {
         return new BatchQuery(queryCount, this);
     }
 
+    public PqlBaseQuery rawQuery(String query) {
+        return new PqlBaseQuery(query, this);
+    }
+
     /**
      * Creates a Union query.
      *
@@ -144,7 +146,7 @@ public class Database {
      * @param bitmap the bitmap query
      * @return a PQL query
      */
-    public PqlQuery count(PqlBitmapQuery bitmap) {
+    public PqlBaseQuery count(PqlBitmapQuery bitmap) {
         return pqlQuery(String.format("Count(%s)", bitmap));
     }
 
@@ -155,14 +157,14 @@ public class Database {
      * @param attributes profile attributes
      * @return a PQL query
      */
-    public PqlQuery setProfileAttrs(long id, Map<String, Object> attributes) {
+    public PqlBaseQuery setProfileAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
         return pqlQuery(String.format("SetProfileAttrs(%s=%d, %s)",
                 this.options.getColumnLabel(), id, attributesString));
     }
 
-    PqlQuery pqlQuery(String query) {
-        return new PqlQuery(query, this);
+    PqlBaseQuery pqlQuery(String query) {
+        return new PqlBaseQuery(query, this);
     }
 
     PqlBitmapQuery pqlBitmapQuery(String query) {

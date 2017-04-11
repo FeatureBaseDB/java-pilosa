@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Database;
 import com.pilosa.client.orm.Frame;
-import com.pilosa.client.orm.IPqlQuery;
+import com.pilosa.client.orm.PqlQuery;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -45,41 +42,53 @@ import java.util.*;
  */
 public class PilosaClient implements AutoCloseable {
     /**
-     * Creates a client with the given server address.
-     * @param address address of the server
-     * @throws PilosaURIException if the given address is malformed
+     * Creates a client with the default address and options.
+     *
+     * @return a PilosaClient
      */
-    public PilosaClient(String address) {
-        this(new URI(address));
+    @SuppressWarnings("WeakerAccess")
+    public static PilosaClient defaultClient() {
+        return PilosaClient.withURI(URI.defaultURI());
+    }
+
+    /**
+     * Creates a client with the given address and options
+     *
+     * @param address of the Pilosa server
+     * @return a PilosaClient
+     */
+    public static PilosaClient withAddress(String address) {
+        return PilosaClient.withURI(URI.address(address));
     }
 
     /**
      * Creates a client with the given server address.
-     * @param address address of the server
+     * @param uri address of the server
      * @throws PilosaURIException if the given address is malformed
+     * @return a PilosaClient
      */
-    public PilosaClient(URI address) {
-        this(new Cluster());
-        ((Cluster) this.cluster).addHost(address);
+    public static PilosaClient withURI(URI uri) {
+        return PilosaClient.withCluster(Cluster.withHost(uri));
     }
 
     /**
-     * Creates a client with the given cluster.
+     * Creates a client with the given cluster and default options.
      * @param cluster contains the addresses of the servers in the cluster
+     * @return a PilosaClient
      */
-    public PilosaClient(ICluster cluster) {
-        this(cluster, new ClientOptions());
+    public static PilosaClient withCluster(Cluster cluster) {
+        return PilosaClient.withCluster(cluster, ClientOptions.builder().build());
     }
 
     /**
      * Creates a client with the given cluster and options.
-     *
      * @param cluster contains the addresses of the servers in the cluster
-     * @param options connection options for the client
+     * @param options client options
+     * @return a PilosaClient
      */
-    public PilosaClient(ICluster cluster, ClientOptions options) {
-        this.cluster = cluster;
-        this.options = options;
+    @SuppressWarnings("WeakerAccess")
+    public static PilosaClient withCluster(Cluster cluster, ClientOptions options) {
+        return new PilosaClient(cluster, options);
     }
 
     public void close() throws IOException {
@@ -90,54 +99,26 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Queries the server with the given database name and a query.
-     * @param databaseName the database to use
-     * @param query a Pql query
-     * @return Pilosa response
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse query(String databaseName, String query) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setQuery(query);
-        return queryPath(request);
-    }
-
-    /**
      * Runs the given query against the server.
      *
-     * @param query a PqlQuery with its database is not null
+     * @param query a PqlBaseQuery with its database is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse query(IPqlQuery query) {
-        return queryPath(QueryRequest.withQuery(query));
-    }
-
-    /**
-     * Queries the server with the given database name and enables profiles in the response.
-     *
-     * @param databaseName the database to use
-     * @param query a Pql query
-     * @return Pilosa response with profiles
-     * @throws ValidationException if an invalid database name is passed
-     */
-    public QueryResponse queryWithProfiles(String databaseName, String query) {
-        QueryRequest request = QueryRequest.withDatabase(databaseName);
-        request.setRetrieveProfiles(true);
-        request.setQuery(query);
-        return queryPath(request);
+    public QueryResponse query(PqlQuery query) {
+        return query(query, QueryOptions.defaultOptions());
     }
 
     /**
      * Runs the given query against the server and enables profiles in the response.
      *
-     * @param query a PqlQuery with its database is not null
+     * @param query a PqlBaseQuery with its database is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's database is null
      */
-    public QueryResponse queryWithProfiles(IPqlQuery query) {
+    public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(true);
+        request.setRetrieveProfiles(options.isProfiles());
         return queryPath(request, query);
     }
 
@@ -154,6 +135,11 @@ public class PilosaClient implements AutoCloseable {
                 database.getName(), database.getOptions().getColumnLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating database");
+
+        // set time quantum for the database if one was assigned to it
+        if (database.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
+            patchTimeQuantum(database);
+        }
     }
 
     /**
@@ -161,7 +147,7 @@ public class PilosaClient implements AutoCloseable {
      *
      * @param database database object
      */
-    public void ensureDatabaseExists(Database database) {
+    public void ensureDatabase(Database database) {
         try {
             createDatabase(database);
         } catch (DatabaseExistsException ex) {
@@ -182,6 +168,11 @@ public class PilosaClient implements AutoCloseable {
                 frame.getDatabase().getName(), frame.getName(), frame.getOptions().getRowLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
+
+        // set time quantum for the frame if one was assigned to it
+        if (frame.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
+            patchTimeQuantum(frame);
+        }
     }
 
     /**
@@ -189,7 +180,7 @@ public class PilosaClient implements AutoCloseable {
      *
      * @param frame frame object
      */
-    public void ensureFrameExists(Frame frame) {
+    public void ensureFrame(Frame frame) {
         try {
             createFrame(frame);
         } catch (FrameExistsException ex) {
@@ -210,6 +201,20 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
+     * Deletes a frame.
+     *
+     * @param frame frame object
+     */
+    public void deleteFrame(Frame frame) {
+        String uri = this.getAddress() + "/frame";
+        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\"}",
+                frame.getDatabase().getName(), frame.getName());
+        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpDelete, "Error while deleting frame");
+    }
+
+    /**
      * Imports bits to the given database and frame.
      *
      * @param frame    specify the frame
@@ -226,6 +231,7 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @param batchSize    specify the number of bits to send in each import query
      */
+    @SuppressWarnings("WeakerAccess")
     public void importFrame(Frame frame, IBitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
@@ -260,7 +266,7 @@ public class PilosaClient implements AutoCloseable {
         if (!scheme.equals(HTTP)) {
             throw new PilosaException("Unknown scheme: " + scheme);
         }
-        return this.currentAddress.getNormalizedAddress();
+        return this.currentAddress.getNormalized();
     }
 
     private void connect() {
@@ -359,9 +365,9 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private QueryResponse queryPath(QueryRequest request, IPqlQuery... queries) {
+    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
         StringBuilder builder = new StringBuilder(queries.length);
-        for (IPqlQuery query : queries) {
+        for (PqlQuery query : queries) {
             builder.append(query);
         }
         request.setQuery(builder.toString());
@@ -372,7 +378,7 @@ public class PilosaClient implements AutoCloseable {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
         for (FragmentNode node : nodes) {
-            PilosaClient client = new PilosaClient(node.toURI());
+            PilosaClient client = PilosaClient.withURI(node.toURI());
             Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, slice, bits);
             client.importNode(importRequest);
         }
@@ -429,6 +435,24 @@ public class PilosaClient implements AutoCloseable {
                 .build();
     }
 
+    private void patchTimeQuantum(Database database) {
+        String uri = this.getAddress() + "/db/time_quantum";
+        HttpPatch httpPatch = new HttpPatch(uri);
+        String body = String.format("{\"db\":\"%s\", \"time_quantum\":\"%s\"}",
+                database.getName(), database.getOptions().getTimeQuantum().getStringValue());
+        httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPatch, "Error while setting time quantum for the database");
+    }
+
+    private void patchTimeQuantum(Frame frame) {
+        String uri = this.getAddress() + "/frame/time_quantum";
+        HttpPatch httpPatch = new HttpPatch(uri);
+        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"time_quantum\":\"%s\"}",
+                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getTimeQuantum().getStringValue());
+        httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        clientExecute(httpPatch, "Error while setting time quantum for the database");
+    }
+
     private String readStream(InputStream stream) throws IOException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -449,9 +473,14 @@ public class PilosaClient implements AutoCloseable {
         NO_RESPONSE,
     }
 
+    private PilosaClient(Cluster cluster, ClientOptions options) {
+        this.cluster = cluster;
+        this.options = options;
+    }
+
     private static final String HTTP = "http";
     private static final Logger logger = LogManager.getLogger();
-    private ICluster cluster;
+    private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;
     private Comparator<Bit> bitComparator = new BitComparator();
@@ -484,7 +513,7 @@ class QueryRequest {
         return new QueryRequest(databaseName);
     }
 
-    static QueryRequest withQuery(IPqlQuery query) {
+    static QueryRequest withQuery(PqlQuery query) {
         // We call QueryRequest.withDatabase in order to protect against database name == null
         // TODO: check that database name is not null and create the QueryRequest object directly.
         QueryRequest request = QueryRequest.withDatabase(query.getDatabase().getName());
@@ -524,7 +553,7 @@ class FragmentNode {
     }
 
     URI toURI() {
-        return new URI(this.host);
+        return URI.address(this.host);
     }
 
     private String host;

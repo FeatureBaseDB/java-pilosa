@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -231,7 +231,7 @@ public class OrmTest {
 
     @Test
     public void setBitmapAttrsTest() {
-        Map<String, Object> attrsMap = new HashMap<>(2);
+        Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
         PqlBaseQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
@@ -242,7 +242,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void setBitmapAttrsInvalidValuesTest() {
-        Map<String, Object> attrsMap = new HashMap<>(2);
+        Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
         collabFrame.setBitmapAttrs(5, attrsMap);
@@ -250,7 +250,7 @@ public class OrmTest {
 
     @Test
     public void setProfileAttrsTest() {
-        Map<String, Object> attrsMap = new HashMap<>(2);
+        Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
         PqlBaseQuery q = projectDb.setProfileAttrs(5, attrsMap);
@@ -261,7 +261,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void setProfileAttrsInvalidValuesTest() {
-        Map<String, Object> attrsMap = new HashMap<>(2);
+        Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
         projectDb.setProfileAttrs(5, attrsMap);

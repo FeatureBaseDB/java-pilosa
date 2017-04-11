@@ -255,7 +255,7 @@ public class OrmTest {
         attrsMap.put("happy", true);
         PqlBaseQuery q = projectDb.setProfileAttrs(5, attrsMap);
         assertEquals(
-                "SetProfileAttrs(user=5, quote=\"\\\"Don't worry, be happy\\\"\", happy=true)",
+                "SetProfileAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
     }
 

@@ -54,12 +54,27 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 
 ```java
 // Create a client
-Client client = new PilosaClient("localhost:10101");
+Client client = PilosaClient.withAddress("localhost:10101");
 
-// Send a query. PilosaException is thrown if execution of the query fails.
-PilosaResponse response = client.query("example_db", "SetBit(id=5, frame='sample', profileID=42)");
+// Create a Database object
+Database mydb = Database.withName("mydb");
+
+// Make sure the database exists on the server
+client.ensureDatabase(mydb);
+
+// Create a Frame object
+Frame myframe = mydb.frame("myframe");
+
+// Make sure the frame exists on the server
+client.ensureFrame(myframe);
+
+// Send a SetBit query. PilosaException is thrown if execution of the query fails.
+client.query(myframe.setBit(5, 42));
+
+
+
 // Get the result
-Object result = response.getResult();
+QueryResult result = response.getResult();
 // Deai with the result
 
 // You can send more than one query with a single query call

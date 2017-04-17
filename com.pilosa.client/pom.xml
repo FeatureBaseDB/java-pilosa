@@ -180,7 +180,7 @@
             <properties>
                 <build.profile.id>integration-test</build.profile.id>
                 <skip.integration.tests>false</skip.integration.tests>
-                <skip.unit.tests>true</skip.unit.tests>
+                <skip.unit.tests>false</skip.unit.tests>
             </properties>
         </profile>
     </profiles>

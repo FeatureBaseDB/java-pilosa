@@ -2,7 +2,7 @@
 
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 
-<img src="https://github.com/pilosa/java-pilosa/blob/master/logo.png" style="float: right" align="right" height="240">
+<img src="https://dc3kpxyuw05cb.cloudfront.net/img/ee.svg" style="float: right" align="right" height="301">
 
 Java client for Pilosa high performance database.
 

@@ -88,12 +88,12 @@ public class OrmTest {
 
     @Test
     public void setBitTest() {
-        PqlBaseQuery qry1 = sampleFrame.setBit(5, 10);
+        PqlQuery qry1 = sampleFrame.setBit(5, 10);
         assertEquals(
                 "SetBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
-        PqlBaseQuery qry2 = collabFrame.setBit(10, 20);
+        PqlQuery qry2 = collabFrame.setBit(10, 20);
         assertEquals(
                 "SetBit(project=10, frame='collaboration', user=20)",
                 qry2.toString());
@@ -101,12 +101,12 @@ public class OrmTest {
 
     @Test
     public void clearBitTest() {
-        PqlBaseQuery qry1 = sampleFrame.clearBit(5, 10);
+        PqlQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(
                 "ClearBit(id=5, frame='sample-frame', col_id=10)",
                 qry1.toString());
 
-        PqlBaseQuery qry2 = collabFrame.clearBit(10, 20);
+        PqlQuery qry2 = collabFrame.clearBit(10, 20);
         assertEquals(
                 "ClearBit(project=10, frame='collaboration', user=20)",
                 qry2.toString());
@@ -184,7 +184,7 @@ public class OrmTest {
     @Test
     public void countTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlBaseQuery q = projectDb.count(b);
+        PqlQuery q = projectDb.count(b);
         assertEquals(
                 "Count(Bitmap(project=42, frame='collaboration'))",
                 q.toString());
@@ -192,12 +192,12 @@ public class OrmTest {
 
     @Test
     public void topNTest() {
-        PqlBaseQuery q1 = sampleFrame.topN(27);
+        PqlQuery q1 = sampleFrame.topN(27);
         assertEquals(
                 "TopN(frame='sample-frame', n=27)",
                 q1.toString());
 
-        PqlBaseQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
+        PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
                 "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10)",
                 q2.toString());
@@ -234,7 +234,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
-        PqlBaseQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
+        PqlQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
         assertEquals(
                 "SetBitmapAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
@@ -253,7 +253,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
-        PqlBaseQuery q = projectDb.setProfileAttrs(5, attrsMap);
+        PqlQuery q = projectDb.setProfileAttrs(5, attrsMap);
         assertEquals(
                 "SetProfileAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());

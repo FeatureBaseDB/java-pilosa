@@ -21,13 +21,15 @@ public final class Cluster {
 
     /**
      * Returns a cluster with the given URI.
-     * @param uri address of the first host
+     * @param uris addresses of hosts
      * @return a Cluster with the given host
      */
     @SuppressWarnings("WeakerAccess")
-    public static Cluster withHost(URI uri) {
+    public static Cluster withHost(URI... uris) {
         Cluster cluster = new Cluster();
-        cluster.addHost(uri);
+        for (URI uri : uris) {
+            cluster.addHost(uri);
+        }
         return cluster;
     }
 

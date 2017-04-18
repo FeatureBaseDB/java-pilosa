@@ -1,6 +1,6 @@
 # Java Client for Pilosa
 
-<a href="https://travis-ci.com/pilosa/python-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
+<a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 
 <img src="https://github.com/pilosa/java-pilosa/blob/master/logo.png" style="float: right" align="right" height="240">
 

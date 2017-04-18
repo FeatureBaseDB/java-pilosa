@@ -49,7 +49,8 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 
 ```java
 // Create the default client
-PilosaClient client = PilosaClient.defaultClient()) {
+PilosaClient client = PilosaClient.defaultClient();
+
 // Create a Database object
 Database mydb = Database.withName("mydb");
 

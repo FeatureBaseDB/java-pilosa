@@ -164,6 +164,7 @@ PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', stargazer_id=5)"
 Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
 
 Database:
+
 * `PqlQuery union(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery intersect(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery difference(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
@@ -171,6 +172,7 @@ Database:
 * `PqlQuery setProfileAttrs(long id, Map<String, Object> attributes)`
 
 Frame:
+
 * `PqlBitmapQuery bitmap(long rowID)`
 * `PqlQuery setBit(long rowID, long columnID)`
 * `PqlQuery clearBit(long rowID, long columnID)`
@@ -188,6 +190,7 @@ A Pilosa URI has the `${SCHEME}://${HOST}:${PORT}` format:
 * **Port**: Port number. Default: `10101`.
 
 All parts of the URI are optional, but at least one of them must be specified. The following are equivalent:
+
 * `http://localhost:10101`
 * `http://localhost`
 * `http://:10101`
@@ -258,14 +261,14 @@ Once you create a client, you can create databases, frames and start sending que
 Here is how you would create a database and frame:
 
 ```java
-// repository database was created before
+// materialize repository database instance initialized before
 client.createDatabase(repository);
 
-// stargazer frame was created before
+// materialize stargazer frame instance initialized before
 client.createFrame(stargazer);
 ```
 
-If the database or frame was created before, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
+If the database or frame exists on the server, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 
@@ -320,6 +323,7 @@ for (ProfileItem profile : response.getProfiles()) {
 ```
 
 `QueryResult` objects contain
+
 * `getBitmap` method to retrieve a bitmap result,
 * `getCountItems` method to retrieve column count per row ID entries returned from `topN` queries,
 * `getCount` method to retrieve the number of rows per the given row ID returned from `count` queries.

@@ -8,7 +8,7 @@ import java.util.Map;
 
 final class Util {
     static final int PROTOBUF_STRING_TYPE = 1;
-    static final int PROTOBUF_UINT_TYPE = 2;
+    static final int PROTOBUF_INT_TYPE = 2;
     static final int PROTOBUF_BOOL_TYPE = 3;
     static final int PROTOBUF_DOUBLE_TYPE = 4;
 
@@ -20,8 +20,8 @@ final class Util {
                 case PROTOBUF_STRING_TYPE:
                     value = attr.getStringValue();
                     break;
-                case PROTOBUF_UINT_TYPE:
-                    value = attr.getUintValue();
+                case PROTOBUF_INT_TYPE:
+                    value = attr.getIntValue();
                     break;
                 case PROTOBUF_BOOL_TYPE:
                     value = attr.getBoolValue();

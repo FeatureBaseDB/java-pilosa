@@ -4,9857 +4,9706 @@
 package com.pilosa.client;
 
 public final class Internal {
-    private Internal() {
+  private Internal() {
+  }
+
+  public static void registerAllExtensions(
+          com.google.protobuf.ExtensionRegistryLite registry) {
+  }
+
+  public static void registerAllExtensions(
+          com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+            (com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+
+  public interface BitmapOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.Bitmap)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    java.util.List<java.lang.Long> getBitsList();
+
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    int getBitsCount();
+
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    long getBits(int index);
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.Attr>
+    getAttrsList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    com.pilosa.client.Internal.Attr getAttrs(int index);
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    int getAttrsCount();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index);
+  }
+
+  /**
+   * Protobuf type {@code internal.Bitmap}
+   */
+  public static final class Bitmap extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.Bitmap)
+          BitmapOrBuilder {
+    // Use Bitmap.newBuilder() to construct.
+    private Bitmap(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
     }
 
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistryLite registry) {
+    private Bitmap() {
+      bits_ = java.util.Collections.emptyList();
+      attrs_ = java.util.Collections.emptyList();
     }
 
-    public static void registerAllExtensions(
-            com.google.protobuf.ExtensionRegistry registry) {
-        registerAllExtensions(
-                (com.google.protobuf.ExtensionRegistryLite) registry);
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
 
-    public interface BitmapOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.Bitmap)
-            com.google.protobuf.MessageOrBuilder {
+    private Bitmap(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                bits_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              bits_.add(input.readUInt64());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
+                bits_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                bits_.add(input.readUInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              attrs_.add(
+                      input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          bits_ = java.util.Collections.unmodifiableList(bits_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          attrs_ = java.util.Collections.unmodifiableList(attrs_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
+    }
 
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        java.util.List<java.lang.Long> getBitsList();
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
+    }
 
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        int getBitsCount();
+    public static final int BITS_FIELD_NUMBER = 1;
+    private java.util.List<java.lang.Long> bits_;
 
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        long getBits(int index);
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getBitsList() {
+      return bits_;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.Attr>
-        getAttrsList();
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    public int getBitsCount() {
+      return bits_.size();
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        com.pilosa.client.Internal.Attr getAttrs(int index);
+    /**
+     * <code>repeated uint64 Bits = 1;</code>
+     */
+    public long getBits(int index) {
+      return bits_.get(index);
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        int getAttrsCount();
+    private int bitsMemoizedSerializedSize = -1;
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList();
+    public static final int ATTRS_FIELD_NUMBER = 2;
+    private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index);
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public int getAttrsCount() {
+      return attrs_.size();
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public com.pilosa.client.Internal.Attr getAttrs(int index) {
+      return attrs_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index) {
+      return attrs_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      getSerializedSize();
+      if (getBitsList().size() > 0) {
+        output.writeUInt32NoTag(10);
+        output.writeUInt32NoTag(bitsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < bits_.size(); i++) {
+        output.writeUInt64NoTag(bits_.get(i));
+      }
+      for (int i = 0; i < attrs_.size(); i++) {
+        output.writeMessage(2, attrs_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < bits_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeUInt64SizeNoTag(bits_.get(i));
+        }
+        size += dataSize;
+        if (!getBitsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        bitsMemoizedSerializedSize = dataSize;
+      }
+      for (int i = 0; i < attrs_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(2, attrs_.get(i));
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.Bitmap)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.Bitmap other = (com.pilosa.client.Internal.Bitmap) obj;
+
+      boolean result = true;
+      result = result && getBitsList()
+              .equals(other.getBitsList());
+      result = result && getAttrsList()
+              .equals(other.getAttrsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (getBitsCount() > 0) {
+        hash = (37 * hash) + BITS_FIELD_NUMBER;
+        hash = (53 * hash) + getBitsList().hashCode();
+      }
+      if (getAttrsCount() > 0) {
+        hash = (37 * hash) + ATTRS_FIELD_NUMBER;
+        hash = (53 * hash) + getAttrsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bitmap parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.Bitmap prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.Bitmap}
      */
-    public static final class Bitmap extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.Bitmap)
-            BitmapOrBuilder {
-        // Use Bitmap.newBuilder() to construct.
-        private Bitmap(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.Bitmap)
+            com.pilosa.client.Internal.BitmapOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.Bitmap.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getAttrsFieldBuilder();
         }
+      }
 
-        private Bitmap() {
-            bits_ = java.util.Collections.emptyList();
-            attrs_ = java.util.Collections.emptyList();
+      public Builder clear() {
+        super.clear();
+        bits_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
+      }
+
+      public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.Bitmap.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.Bitmap build() {
+        com.pilosa.client.Internal.Bitmap result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
         }
+        return result;
+      }
 
-        private Bitmap(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 8: {
-                            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                                bits_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000001;
-                            }
-                            bits_.add(input.readUInt64());
-                            break;
-                        }
-                        case 10: {
-                            int length = input.readRawVarint32();
-                            int limit = input.pushLimit(length);
-                            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                                bits_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000001;
-                            }
-                            while (input.getBytesUntilLimit() > 0) {
-                                bits_.add(input.readUInt64());
-                            }
-                            input.popLimit(limit);
-                            break;
-                        }
-                        case 18: {
-                            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
-                                mutable_bitField0_ |= 0x00000002;
-                            }
-                            attrs_.add(
-                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    bits_ = java.util.Collections.unmodifiableList(bits_);
-                }
-                if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                }
-                makeExtensionsImmutable();
-            }
+      public com.pilosa.client.Internal.Bitmap buildPartial() {
+        com.pilosa.client.Internal.Bitmap result = new com.pilosa.client.Internal.Bitmap(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          bits_ = java.util.Collections.unmodifiableList(bits_);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
+        result.bits_ = bits_;
+        if (attrsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            attrs_ = java.util.Collections.unmodifiableList(attrs_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.attrs_ = attrs_;
+        } else {
+          result.attrs_ = attrsBuilder_.build();
         }
+        onBuilt();
+        return result;
+      }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.Bitmap) {
+          return mergeFrom((com.pilosa.client.Internal.Bitmap) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
         }
+      }
 
-        public static final int BITS_FIELD_NUMBER = 1;
-        private java.util.List<java.lang.Long> bits_;
-
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        public java.util.List<java.lang.Long>
-        getBitsList() {
-            return bits_;
+      public Builder mergeFrom(com.pilosa.client.Internal.Bitmap other) {
+        if (other == com.pilosa.client.Internal.Bitmap.getDefaultInstance()) return this;
+        if (!other.bits_.isEmpty()) {
+          if (bits_.isEmpty()) {
+            bits_ = other.bits_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureBitsIsMutable();
+            bits_.addAll(other.bits_);
+          }
+          onChanged();
         }
-
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        public int getBitsCount() {
-            return bits_.size();
+        if (attrsBuilder_ == null) {
+          if (!other.attrs_.isEmpty()) {
+            if (attrs_.isEmpty()) {
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAttrsIsMutable();
+              attrs_.addAll(other.attrs_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.attrs_.isEmpty()) {
+            if (attrsBuilder_.isEmpty()) {
+              attrsBuilder_.dispose();
+              attrsBuilder_ = null;
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              attrsBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getAttrsFieldBuilder() : null;
+            } else {
+              attrsBuilder_.addAllMessages(other.attrs_);
+            }
+          }
         }
+        onChanged();
+        return this;
+      }
 
-        /**
-         * <code>repeated uint64 Bits = 1;</code>
-         */
-        public long getBits(int index) {
-            return bits_.get(index);
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.Bitmap parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.Bitmap) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
         }
+        return this;
+      }
 
-        private int bitsMemoizedSerializedSize = -1;
+      private int bitField0_;
 
-        public static final int ATTRS_FIELD_NUMBER = 2;
-        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
+      private java.util.List<java.lang.Long> bits_ = java.util.Collections.emptyList();
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-            return attrs_;
+      private void ensureBitsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          bits_ = new java.util.ArrayList<java.lang.Long>(bits_);
+          bitField0_ |= 0x00000001;
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList() {
-            return attrs_;
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public java.util.List<java.lang.Long>
+      getBitsList() {
+        return java.util.Collections.unmodifiableList(bits_);
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public int getBitsCount() {
+        return bits_.size();
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public long getBits(int index) {
+        return bits_.get(index);
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public Builder setBits(
+              int index, long value) {
+        ensureBitsIsMutable();
+        bits_.set(index, value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public Builder addBits(long value) {
+        ensureBitsIsMutable();
+        bits_.add(value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public Builder addAllBits(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureBitsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, bits_);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Bits = 1;</code>
+       */
+      public Builder clearBits() {
+        bits_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
+              java.util.Collections.emptyList();
+
+      private void ensureAttrsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
+          bitField0_ |= 0x00000002;
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public int getAttrsCount() {
-            return attrs_.size();
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+        if (attrsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(attrs_);
+        } else {
+          return attrsBuilder_.getMessageList();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public com.pilosa.client.Internal.Attr getAttrs(int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public int getAttrsCount() {
+        if (attrsBuilder_ == null) {
+          return attrs_.size();
+        } else {
+          return attrsBuilder_.getCount();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr getAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessage(index);
         }
+      }
 
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.set(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, value);
         }
+        return this;
+      }
 
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            getSerializedSize();
-            if (getBitsList().size() > 0) {
-                output.writeUInt32NoTag(10);
-                output.writeUInt32NoTag(bitsMemoizedSerializedSize);
-            }
-            for (int i = 0; i < bits_.size(); i++) {
-                output.writeUInt64NoTag(bits_.get(i));
-            }
-            for (int i = 0; i < attrs_.size(); i++) {
-                output.writeMessage(2, attrs_.get(i));
-            }
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            {
-                int dataSize = 0;
-                for (int i = 0; i < bits_.size(); i++) {
-                    dataSize += com.google.protobuf.CodedOutputStream
-                            .computeUInt64SizeNoTag(bits_.get(i));
-                }
-                size += dataSize;
-                if (!getBitsList().isEmpty()) {
-                    size += 1;
-                    size += com.google.protobuf.CodedOutputStream
-                            .computeInt32SizeNoTag(dataSize);
-                }
-                bitsMemoizedSerializedSize = dataSize;
-            }
-            for (int i = 0; i < attrs_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(2, attrs_.get(i));
-            }
-            memoizedSize = size;
-            return size;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(value);
         }
+        return this;
+      }
 
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.Bitmap)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.Bitmap other = (com.pilosa.client.Internal.Bitmap) obj;
-
-            boolean result = true;
-            result = result && getBitsList()
-                    .equals(other.getBitsList());
-            result = result && getAttrsList()
-                    .equals(other.getAttrsList());
-            return result;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, value);
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            if (getBitsCount() > 0) {
-                hash = (37 * hash) + BITS_FIELD_NUMBER;
-                hash = (53 * hash) + getBitsList().hashCode();
-            }
-            if (getAttrsCount() > 0) {
-                hash = (37 * hash) + ATTRS_FIELD_NUMBER;
-                hash = (53 * hash) + getAttrsList().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAllAttrs(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, attrs_);
+          onChanged();
+        } else {
+          attrsBuilder_.addAllMessages(values);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder clearAttrs() {
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder removeAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.remove(index);
+          onChanged();
+        } else {
+          attrsBuilder_.remove(index);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+              int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessageOrBuilder(index);
         }
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsOrBuilderList() {
+        if (attrsBuilder_ != null) {
+          return attrsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(attrs_);
         }
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
+        return getAttrsFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr.Builder>
+      getAttrsBuilderList() {
+        return getAttrsFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsFieldBuilder() {
+        if (attrsBuilder_ == null) {
+          attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
+                  attrs_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          attrs_ = null;
         }
+        return attrsBuilder_;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Bitmap parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
 
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.Bitmap prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.Bitmap}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.Bitmap)
-                com.pilosa.client.Internal.BitmapOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_Bitmap_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.Bitmap.class, com.pilosa.client.Internal.Bitmap.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.Bitmap.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                    getAttrsFieldBuilder();
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                bits_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000001);
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_Bitmap_descriptor;
-            }
-
-            public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.Bitmap.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.Bitmap build() {
-                com.pilosa.client.Internal.Bitmap result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.Bitmap buildPartial() {
-                com.pilosa.client.Internal.Bitmap result = new com.pilosa.client.Internal.Bitmap(this);
-                int from_bitField0_ = bitField0_;
-                if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                    bits_ = java.util.Collections.unmodifiableList(bits_);
-                    bitField0_ = (bitField0_ & ~0x00000001);
-                }
-                result.bits_ = bits_;
-                if (attrsBuilder_ == null) {
-                    if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                        attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                        bitField0_ = (bitField0_ & ~0x00000002);
-                    }
-                    result.attrs_ = attrs_;
-                } else {
-                    result.attrs_ = attrsBuilder_.build();
-                }
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.Bitmap) {
-                    return mergeFrom((com.pilosa.client.Internal.Bitmap) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.Bitmap other) {
-                if (other == com.pilosa.client.Internal.Bitmap.getDefaultInstance()) return this;
-                if (!other.bits_.isEmpty()) {
-                    if (bits_.isEmpty()) {
-                        bits_ = other.bits_;
-                        bitField0_ = (bitField0_ & ~0x00000001);
-                    } else {
-                        ensureBitsIsMutable();
-                        bits_.addAll(other.bits_);
-                    }
-                    onChanged();
-                }
-                if (attrsBuilder_ == null) {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrs_.isEmpty()) {
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                        } else {
-                            ensureAttrsIsMutable();
-                            attrs_.addAll(other.attrs_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrsBuilder_.isEmpty()) {
-                            attrsBuilder_.dispose();
-                            attrsBuilder_ = null;
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                            attrsBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getAttrsFieldBuilder() : null;
-                        } else {
-                            attrsBuilder_.addAllMessages(other.attrs_);
-                        }
-                    }
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.Bitmap parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.Bitmap) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private java.util.List<java.lang.Long> bits_ = java.util.Collections.emptyList();
-
-            private void ensureBitsIsMutable() {
-                if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-                    bits_ = new java.util.ArrayList<java.lang.Long>(bits_);
-                    bitField0_ |= 0x00000001;
-                }
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public java.util.List<java.lang.Long>
-            getBitsList() {
-                return java.util.Collections.unmodifiableList(bits_);
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public int getBitsCount() {
-                return bits_.size();
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public long getBits(int index) {
-                return bits_.get(index);
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public Builder setBits(
-                    int index, long value) {
-                ensureBitsIsMutable();
-                bits_.set(index, value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public Builder addBits(long value) {
-                ensureBitsIsMutable();
-                bits_.add(value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public Builder addAllBits(
-                    java.lang.Iterable<? extends java.lang.Long> values) {
-                ensureBitsIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, bits_);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Bits = 1;</code>
-             */
-            public Builder clearBits() {
-                bits_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000001);
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
-                    java.util.Collections.emptyList();
-
-            private void ensureAttrsIsMutable() {
-                if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
-                    bitField0_ |= 0x00000002;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-                if (attrsBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                } else {
-                    return attrsBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public int getAttrsCount() {
-                if (attrsBuilder_ == null) {
-                    return attrs_.size();
-                } else {
-                    return attrsBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr getAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAllAttrs(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, attrs_);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder clearAttrs() {
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                    onChanged();
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder removeAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.remove(index);
-                    onChanged();
-                } else {
-                    attrsBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                    int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsOrBuilderList() {
-                if (attrsBuilder_ != null) {
-                    return attrsBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
-                return getAttrsFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
-            getAttrsBuilderList() {
-                return getAttrsFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsFieldBuilder() {
-                if (attrsBuilder_ == null) {
-                    attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
-                            attrs_,
-                            ((bitField0_ & 0x00000002) == 0x00000002),
-                            getParentForChildren(),
-                            isClean());
-                    attrs_ = null;
-                }
-                return attrsBuilder_;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.Bitmap)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.Bitmap)
-        private static final com.pilosa.client.Internal.Bitmap DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bitmap();
-        }
-
-        public static com.pilosa.client.Internal.Bitmap getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<Bitmap>
-                PARSER = new com.google.protobuf.AbstractParser<Bitmap>() {
-            public Bitmap parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new Bitmap(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<Bitmap> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Bitmap> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+      // @@protoc_insertion_point(builder_scope:internal.Bitmap)
     }
 
-    public interface PairOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.Pair)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.Bitmap)
+    private static final com.pilosa.client.Internal.Bitmap DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional uint64 Key = 1;</code>
-         */
-        long getKey();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bitmap();
+    }
 
-        /**
-         * <code>optional uint64 Count = 2;</code>
-         */
-        long getCount();
+    public static com.pilosa.client.Internal.Bitmap getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Bitmap>
+            PARSER = new com.google.protobuf.AbstractParser<Bitmap>() {
+      public Bitmap parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Bitmap(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Bitmap> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Bitmap> getParserForType() {
+      return PARSER;
+    }
+
+    public com.pilosa.client.Internal.Bitmap getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PairOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.Pair)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional uint64 Key = 1;</code>
+     */
+    long getKey();
+
+    /**
+     * <code>optional uint64 Count = 2;</code>
+     */
+    long getCount();
+  }
+
+  /**
+   * Protobuf type {@code internal.Pair}
+   */
+  public static final class Pair extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.Pair)
+          PairOrBuilder {
+    // Use Pair.newBuilder() to construct.
+    private Pair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private Pair() {
+      key_ = 0L;
+      count_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private Pair(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              key_ = input.readUInt64();
+              break;
+            }
+            case 16: {
+
+              count_ = input.readUInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private long key_;
+
+    /**
+     * <code>optional uint64 Key = 1;</code>
+     */
+    public long getKey() {
+      return key_;
+    }
+
+    public static final int COUNT_FIELD_NUMBER = 2;
+    private long count_;
+
+    /**
+     * <code>optional uint64 Count = 2;</code>
+     */
+    public long getCount() {
+      return count_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (key_ != 0L) {
+        output.writeUInt64(1, key_);
+      }
+      if (count_ != 0L) {
+        output.writeUInt64(2, count_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (key_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(1, key_);
+      }
+      if (count_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(2, count_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.Pair)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.Pair other = (com.pilosa.client.Internal.Pair) obj;
+
+      boolean result = true;
+      result = result && (getKey()
+              == other.getKey());
+      result = result && (getCount()
+              == other.getCount());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getKey());
+      hash = (37 * hash) + COUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getCount());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Pair parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.Pair prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.Pair}
      */
-    public static final class Pair extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.Pair)
-            PairOrBuilder {
-        // Use Pair.newBuilder() to construct.
-        private Pair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.Pair)
+            com.pilosa.client.Internal.PairOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.Pair.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
+      }
 
-        private Pair() {
-            key_ = 0L;
-            count_ = 0L;
+      public Builder clear() {
+        super.clear();
+        key_ = 0L;
+
+        count_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
+      }
+
+      public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.Pair.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.Pair build() {
+        com.pilosa.client.Internal.Pair result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
         }
+        return result;
+      }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      public com.pilosa.client.Internal.Pair buildPartial() {
+        com.pilosa.client.Internal.Pair result = new com.pilosa.client.Internal.Pair(this);
+        result.key_ = key_;
+        result.count_ = count_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.Pair) {
+          return mergeFrom((com.pilosa.client.Internal.Pair) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
         }
+      }
 
-        private Pair(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 8: {
-
-                            key_ = input.readUInt64();
-                            break;
-                        }
-                        case 16: {
-
-                            count_ = input.readUInt64();
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                makeExtensionsImmutable();
-            }
+      public Builder mergeFrom(com.pilosa.client.Internal.Pair other) {
+        if (other == com.pilosa.client.Internal.Pair.getDefaultInstance()) return this;
+        if (other.getKey() != 0L) {
+          setKey(other.getKey());
         }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
+        if (other.getCount() != 0L) {
+          setCount(other.getCount());
         }
+        onChanged();
+        return this;
+      }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.Pair parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.Pair) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
         }
-
-        public static final int KEY_FIELD_NUMBER = 1;
-        private long key_;
-
-        /**
-         * <code>optional uint64 Key = 1;</code>
-         */
-        public long getKey() {
-            return key_;
-        }
-
-        public static final int COUNT_FIELD_NUMBER = 2;
-        private long count_;
-
-        /**
-         * <code>optional uint64 Count = 2;</code>
-         */
-        public long getCount() {
-            return count_;
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (key_ != 0L) {
-                output.writeUInt64(1, key_);
-            }
-            if (count_ != 0L) {
-                output.writeUInt64(2, count_);
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (key_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(1, key_);
-            }
-            if (count_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(2, count_);
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.Pair)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.Pair other = (com.pilosa.client.Internal.Pair) obj;
-
-            boolean result = true;
-            result = result && (getKey()
-                    == other.getKey());
-            result = result && (getCount()
-                    == other.getCount());
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + KEY_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getKey());
-            hash = (37 * hash) + COUNT_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getCount());
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Pair parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.Pair prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.Pair}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.Pair)
-                com.pilosa.client.Internal.PairOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_Pair_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.Pair.class, com.pilosa.client.Internal.Pair.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.Pair.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                key_ = 0L;
-
-                count_ = 0L;
-
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_Pair_descriptor;
-            }
-
-            public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.Pair.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.Pair build() {
-                com.pilosa.client.Internal.Pair result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.Pair buildPartial() {
-                com.pilosa.client.Internal.Pair result = new com.pilosa.client.Internal.Pair(this);
-                result.key_ = key_;
-                result.count_ = count_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.Pair) {
-                    return mergeFrom((com.pilosa.client.Internal.Pair) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.Pair other) {
-                if (other == com.pilosa.client.Internal.Pair.getDefaultInstance()) return this;
-                if (other.getKey() != 0L) {
-                    setKey(other.getKey());
-                }
-                if (other.getCount() != 0L) {
-                    setCount(other.getCount());
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.Pair parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.Pair) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private long key_;
-
-            /**
-             * <code>optional uint64 Key = 1;</code>
-             */
-            public long getKey() {
-                return key_;
-            }
-
-            /**
-             * <code>optional uint64 Key = 1;</code>
-             */
-            public Builder setKey(long value) {
-
-                key_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 Key = 1;</code>
-             */
-            public Builder clearKey() {
-
-                key_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private long count_;
-
-            /**
-             * <code>optional uint64 Count = 2;</code>
-             */
-            public long getCount() {
-                return count_;
-            }
-
-            /**
-             * <code>optional uint64 Count = 2;</code>
-             */
-            public Builder setCount(long value) {
-
-                count_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 Count = 2;</code>
-             */
-            public Builder clearCount() {
-
-                count_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.Pair)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.Pair)
-        private static final com.pilosa.client.Internal.Pair DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Pair();
-        }
-
-        public static com.pilosa.client.Internal.Pair getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<Pair>
-                PARSER = new com.google.protobuf.AbstractParser<Pair>() {
-            public Pair parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new Pair(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<Pair> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Pair> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+        return this;
+      }
+
+      private long key_;
+
+      /**
+       * <code>optional uint64 Key = 1;</code>
+       */
+      public long getKey() {
+        return key_;
+      }
+
+      /**
+       * <code>optional uint64 Key = 1;</code>
+       */
+      public Builder setKey(long value) {
+
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 Key = 1;</code>
+       */
+      public Builder clearKey() {
+
+        key_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long count_;
+
+      /**
+       * <code>optional uint64 Count = 2;</code>
+       */
+      public long getCount() {
+        return count_;
+      }
+
+      /**
+       * <code>optional uint64 Count = 2;</code>
+       */
+      public Builder setCount(long value) {
+
+        count_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 Count = 2;</code>
+       */
+      public Builder clearCount() {
+
+        count_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:internal.Pair)
     }
 
-    public interface BitOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.Bit)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.Pair)
+    private static final com.pilosa.client.Internal.Pair DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional uint64 BitmapID = 1;</code>
-         */
-        long getBitmapID();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.Pair();
+    }
 
-        /**
-         * <code>optional uint64 ProfileID = 2;</code>
-         */
-        long getProfileID();
+    public static com.pilosa.client.Internal.Pair getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional int64 Timestamp = 3;</code>
-         */
-        long getTimestamp();
+    private static final com.google.protobuf.Parser<Pair>
+            PARSER = new com.google.protobuf.AbstractParser<Pair>() {
+      public Pair parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Pair(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Pair> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Pair> getParserForType() {
+      return PARSER;
+    }
+
+    public com.pilosa.client.Internal.Pair getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BitOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.Bit)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional uint64 BitmapID = 1;</code>
+     */
+    long getBitmapID();
+
+    /**
+     * <code>optional uint64 ProfileID = 2;</code>
+     */
+    long getProfileID();
+
+    /**
+     * <code>optional int64 Timestamp = 3;</code>
+     */
+    long getTimestamp();
+  }
+
+  /**
+   * Protobuf type {@code internal.Bit}
+   */
+  public static final class Bit extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.Bit)
+          BitOrBuilder {
+    // Use Bit.newBuilder() to construct.
+    private Bit(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private Bit() {
+      bitmapID_ = 0L;
+      profileID_ = 0L;
+      timestamp_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private Bit(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              bitmapID_ = input.readUInt64();
+              break;
+            }
+            case 16: {
+
+              profileID_ = input.readUInt64();
+              break;
+            }
+            case 24: {
+
+              timestamp_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
+    }
+
+    public static final int BITMAPID_FIELD_NUMBER = 1;
+    private long bitmapID_;
+
+    /**
+     * <code>optional uint64 BitmapID = 1;</code>
+     */
+    public long getBitmapID() {
+      return bitmapID_;
+    }
+
+    public static final int PROFILEID_FIELD_NUMBER = 2;
+    private long profileID_;
+
+    /**
+     * <code>optional uint64 ProfileID = 2;</code>
+     */
+    public long getProfileID() {
+      return profileID_;
+    }
+
+    public static final int TIMESTAMP_FIELD_NUMBER = 3;
+    private long timestamp_;
+
+    /**
+     * <code>optional int64 Timestamp = 3;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (bitmapID_ != 0L) {
+        output.writeUInt64(1, bitmapID_);
+      }
+      if (profileID_ != 0L) {
+        output.writeUInt64(2, profileID_);
+      }
+      if (timestamp_ != 0L) {
+        output.writeInt64(3, timestamp_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (bitmapID_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(1, bitmapID_);
+      }
+      if (profileID_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(2, profileID_);
+      }
+      if (timestamp_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, timestamp_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.Bit)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.Bit other = (com.pilosa.client.Internal.Bit) obj;
+
+      boolean result = true;
+      result = result && (getBitmapID()
+              == other.getBitmapID());
+      result = result && (getProfileID()
+              == other.getProfileID());
+      result = result && (getTimestamp()
+              == other.getTimestamp());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + BITMAPID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getBitmapID());
+      hash = (37 * hash) + PROFILEID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getProfileID());
+      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getTimestamp());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Bit parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.Bit prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.Bit}
      */
-    public static final class Bit extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.Bit)
-            BitOrBuilder {
-        // Use Bit.newBuilder() to construct.
-        private Bit(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.Bit)
+            com.pilosa.client.Internal.BitOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.Bit.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
+      }
 
-        private Bit() {
-            bitmapID_ = 0L;
-            profileID_ = 0L;
-            timestamp_ = 0L;
+      public Builder clear() {
+        super.clear();
+        bitmapID_ = 0L;
+
+        profileID_ = 0L;
+
+        timestamp_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
+      }
+
+      public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.Bit.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.Bit build() {
+        com.pilosa.client.Internal.Bit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
         }
+        return result;
+      }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      public com.pilosa.client.Internal.Bit buildPartial() {
+        com.pilosa.client.Internal.Bit result = new com.pilosa.client.Internal.Bit(this);
+        result.bitmapID_ = bitmapID_;
+        result.profileID_ = profileID_;
+        result.timestamp_ = timestamp_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.Bit) {
+          return mergeFrom((com.pilosa.client.Internal.Bit) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
         }
+      }
 
-        private Bit(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 8: {
-
-                            bitmapID_ = input.readUInt64();
-                            break;
-                        }
-                        case 16: {
-
-                            profileID_ = input.readUInt64();
-                            break;
-                        }
-                        case 24: {
-
-                            timestamp_ = input.readInt64();
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                makeExtensionsImmutable();
-            }
+      public Builder mergeFrom(com.pilosa.client.Internal.Bit other) {
+        if (other == com.pilosa.client.Internal.Bit.getDefaultInstance()) return this;
+        if (other.getBitmapID() != 0L) {
+          setBitmapID(other.getBitmapID());
         }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
+        if (other.getProfileID() != 0L) {
+          setProfileID(other.getProfileID());
         }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
+        if (other.getTimestamp() != 0L) {
+          setTimestamp(other.getTimestamp());
         }
+        onChanged();
+        return this;
+      }
 
-        public static final int BITMAPID_FIELD_NUMBER = 1;
-        private long bitmapID_;
+      public final boolean isInitialized() {
+        return true;
+      }
 
-        /**
-         * <code>optional uint64 BitmapID = 1;</code>
-         */
-        public long getBitmapID() {
-            return bitmapID_;
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.Bit parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.Bit) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
         }
-
-        public static final int PROFILEID_FIELD_NUMBER = 2;
-        private long profileID_;
-
-        /**
-         * <code>optional uint64 ProfileID = 2;</code>
-         */
-        public long getProfileID() {
-            return profileID_;
-        }
-
-        public static final int TIMESTAMP_FIELD_NUMBER = 3;
-        private long timestamp_;
-
-        /**
-         * <code>optional int64 Timestamp = 3;</code>
-         */
-        public long getTimestamp() {
-            return timestamp_;
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (bitmapID_ != 0L) {
-                output.writeUInt64(1, bitmapID_);
-            }
-            if (profileID_ != 0L) {
-                output.writeUInt64(2, profileID_);
-            }
-            if (timestamp_ != 0L) {
-                output.writeInt64(3, timestamp_);
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (bitmapID_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(1, bitmapID_);
-            }
-            if (profileID_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(2, profileID_);
-            }
-            if (timestamp_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeInt64Size(3, timestamp_);
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.Bit)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.Bit other = (com.pilosa.client.Internal.Bit) obj;
-
-            boolean result = true;
-            result = result && (getBitmapID()
-                    == other.getBitmapID());
-            result = result && (getProfileID()
-                    == other.getProfileID());
-            result = result && (getTimestamp()
-                    == other.getTimestamp());
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + BITMAPID_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getBitmapID());
-            hash = (37 * hash) + PROFILEID_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getProfileID());
-            hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getTimestamp());
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Bit parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.Bit prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.Bit}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.Bit)
-                com.pilosa.client.Internal.BitOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_Bit_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.Bit.class, com.pilosa.client.Internal.Bit.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.Bit.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                bitmapID_ = 0L;
-
-                profileID_ = 0L;
-
-                timestamp_ = 0L;
-
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_Bit_descriptor;
-            }
-
-            public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.Bit.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.Bit build() {
-                com.pilosa.client.Internal.Bit result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.Bit buildPartial() {
-                com.pilosa.client.Internal.Bit result = new com.pilosa.client.Internal.Bit(this);
-                result.bitmapID_ = bitmapID_;
-                result.profileID_ = profileID_;
-                result.timestamp_ = timestamp_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.Bit) {
-                    return mergeFrom((com.pilosa.client.Internal.Bit) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.Bit other) {
-                if (other == com.pilosa.client.Internal.Bit.getDefaultInstance()) return this;
-                if (other.getBitmapID() != 0L) {
-                    setBitmapID(other.getBitmapID());
-                }
-                if (other.getProfileID() != 0L) {
-                    setProfileID(other.getProfileID());
-                }
-                if (other.getTimestamp() != 0L) {
-                    setTimestamp(other.getTimestamp());
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.Bit parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.Bit) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private long bitmapID_;
-
-            /**
-             * <code>optional uint64 BitmapID = 1;</code>
-             */
-            public long getBitmapID() {
-                return bitmapID_;
-            }
-
-            /**
-             * <code>optional uint64 BitmapID = 1;</code>
-             */
-            public Builder setBitmapID(long value) {
-
-                bitmapID_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 BitmapID = 1;</code>
-             */
-            public Builder clearBitmapID() {
-
-                bitmapID_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private long profileID_;
-
-            /**
-             * <code>optional uint64 ProfileID = 2;</code>
-             */
-            public long getProfileID() {
-                return profileID_;
-            }
-
-            /**
-             * <code>optional uint64 ProfileID = 2;</code>
-             */
-            public Builder setProfileID(long value) {
-
-                profileID_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 ProfileID = 2;</code>
-             */
-            public Builder clearProfileID() {
-
-                profileID_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private long timestamp_;
-
-            /**
-             * <code>optional int64 Timestamp = 3;</code>
-             */
-            public long getTimestamp() {
-                return timestamp_;
-            }
-
-            /**
-             * <code>optional int64 Timestamp = 3;</code>
-             */
-            public Builder setTimestamp(long value) {
-
-                timestamp_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional int64 Timestamp = 3;</code>
-             */
-            public Builder clearTimestamp() {
-
-                timestamp_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.Bit)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.Bit)
-        private static final com.pilosa.client.Internal.Bit DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bit();
-        }
-
-        public static com.pilosa.client.Internal.Bit getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<Bit>
-                PARSER = new com.google.protobuf.AbstractParser<Bit>() {
-            public Bit parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new Bit(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<Bit> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Bit> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+        return this;
+      }
+
+      private long bitmapID_;
+
+      /**
+       * <code>optional uint64 BitmapID = 1;</code>
+       */
+      public long getBitmapID() {
+        return bitmapID_;
+      }
+
+      /**
+       * <code>optional uint64 BitmapID = 1;</code>
+       */
+      public Builder setBitmapID(long value) {
+
+        bitmapID_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 BitmapID = 1;</code>
+       */
+      public Builder clearBitmapID() {
+
+        bitmapID_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long profileID_;
+
+      /**
+       * <code>optional uint64 ProfileID = 2;</code>
+       */
+      public long getProfileID() {
+        return profileID_;
+      }
+
+      /**
+       * <code>optional uint64 ProfileID = 2;</code>
+       */
+      public Builder setProfileID(long value) {
+
+        profileID_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 ProfileID = 2;</code>
+       */
+      public Builder clearProfileID() {
+
+        profileID_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long timestamp_;
+
+      /**
+       * <code>optional int64 Timestamp = 3;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+
+      /**
+       * <code>optional int64 Timestamp = 3;</code>
+       */
+      public Builder setTimestamp(long value) {
+
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 Timestamp = 3;</code>
+       */
+      public Builder clearTimestamp() {
+
+        timestamp_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:internal.Bit)
     }
 
-    public interface ProfileOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.Profile)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.Bit)
+    private static final com.pilosa.client.Internal.Bit DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional uint64 ID = 1;</code>
-         */
-        long getID();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.Bit();
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.Attr>
-        getAttrsList();
+    public static com.pilosa.client.Internal.Bit getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        com.pilosa.client.Internal.Attr getAttrs(int index);
+    private static final com.google.protobuf.Parser<Bit>
+            PARSER = new com.google.protobuf.AbstractParser<Bit>() {
+      public Bit parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Bit(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        int getAttrsCount();
+    public static com.google.protobuf.Parser<Bit> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList();
+    @java.lang.Override
+    public com.google.protobuf.Parser<Bit> getParserForType() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index);
+    public com.pilosa.client.Internal.Bit getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ProfileOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.Profile)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional uint64 ID = 1;</code>
+     */
+    long getID();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.Attr>
+    getAttrsList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    com.pilosa.client.Internal.Attr getAttrs(int index);
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    int getAttrsCount();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index);
+  }
+
+  /**
+   * Protobuf type {@code internal.Profile}
+   */
+  public static final class Profile extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.Profile)
+          ProfileOrBuilder {
+    // Use Profile.newBuilder() to construct.
+    private Profile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private Profile() {
+      iD_ = 0L;
+      attrs_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private Profile(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              iD_ = input.readUInt64();
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              attrs_.add(
+                      input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          attrs_ = java.util.Collections.unmodifiableList(attrs_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ID_FIELD_NUMBER = 1;
+    private long iD_;
+
+    /**
+     * <code>optional uint64 ID = 1;</code>
+     */
+    public long getID() {
+      return iD_;
+    }
+
+    public static final int ATTRS_FIELD_NUMBER = 2;
+    private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public int getAttrsCount() {
+      return attrs_.size();
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public com.pilosa.client.Internal.Attr getAttrs(int index) {
+      return attrs_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 2;</code>
+     */
+    public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index) {
+      return attrs_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (iD_ != 0L) {
+        output.writeUInt64(1, iD_);
+      }
+      for (int i = 0; i < attrs_.size(); i++) {
+        output.writeMessage(2, attrs_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (iD_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(1, iD_);
+      }
+      for (int i = 0; i < attrs_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(2, attrs_.get(i));
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.Profile)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.Profile other = (com.pilosa.client.Internal.Profile) obj;
+
+      boolean result = true;
+      result = result && (getID()
+              == other.getID());
+      result = result && getAttrsList()
+              .equals(other.getAttrsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getID());
+      if (getAttrsCount() > 0) {
+        hash = (37 * hash) + ATTRS_FIELD_NUMBER;
+        hash = (53 * hash) + getAttrsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Profile parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.Profile prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.Profile}
      */
-    public static final class Profile extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.Profile)
-            ProfileOrBuilder {
-        // Use Profile.newBuilder() to construct.
-        private Profile(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.Profile)
+            com.pilosa.client.Internal.ProfileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.Profile.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getAttrsFieldBuilder();
         }
+      }
 
-        private Profile() {
-            iD_ = 0L;
-            attrs_ = java.util.Collections.emptyList();
+      public Builder clear() {
+        super.clear();
+        iD_ = 0L;
+
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
+      }
+
+      public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.Profile.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.Profile build() {
+        com.pilosa.client.Internal.Profile result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
         }
+        return result;
+      }
 
-        private Profile(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 8: {
-
-                            iD_ = input.readUInt64();
-                            break;
-                        }
-                        case 18: {
-                            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
-                                mutable_bitField0_ |= 0x00000002;
-                            }
-                            attrs_.add(
-                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                }
-                makeExtensionsImmutable();
-            }
+      public com.pilosa.client.Internal.Profile buildPartial() {
+        com.pilosa.client.Internal.Profile result = new com.pilosa.client.Internal.Profile(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.iD_ = iD_;
+        if (attrsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            attrs_ = java.util.Collections.unmodifiableList(attrs_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.attrs_ = attrs_;
+        } else {
+          result.attrs_ = attrsBuilder_.build();
         }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.Profile) {
+          return mergeFrom((com.pilosa.client.Internal.Profile) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
         }
+      }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
+      public Builder mergeFrom(com.pilosa.client.Internal.Profile other) {
+        if (other == com.pilosa.client.Internal.Profile.getDefaultInstance()) return this;
+        if (other.getID() != 0L) {
+          setID(other.getID());
         }
-
-        private int bitField0_;
-        public static final int ID_FIELD_NUMBER = 1;
-        private long iD_;
-
-        /**
-         * <code>optional uint64 ID = 1;</code>
-         */
-        public long getID() {
-            return iD_;
+        if (attrsBuilder_ == null) {
+          if (!other.attrs_.isEmpty()) {
+            if (attrs_.isEmpty()) {
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureAttrsIsMutable();
+              attrs_.addAll(other.attrs_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.attrs_.isEmpty()) {
+            if (attrsBuilder_.isEmpty()) {
+              attrsBuilder_.dispose();
+              attrsBuilder_ = null;
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              attrsBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getAttrsFieldBuilder() : null;
+            } else {
+              attrsBuilder_.addAllMessages(other.attrs_);
+            }
+          }
         }
+        onChanged();
+        return this;
+      }
 
-        public static final int ATTRS_FIELD_NUMBER = 2;
-        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
+      public final boolean isInitialized() {
+        return true;
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-            return attrs_;
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.Profile parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.Profile) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList() {
-            return attrs_;
+      private int bitField0_;
+
+      private long iD_;
+
+      /**
+       * <code>optional uint64 ID = 1;</code>
+       */
+      public long getID() {
+        return iD_;
+      }
+
+      /**
+       * <code>optional uint64 ID = 1;</code>
+       */
+      public Builder setID(long value) {
+
+        iD_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 ID = 1;</code>
+       */
+      public Builder clearID() {
+
+        iD_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
+              java.util.Collections.emptyList();
+
+      private void ensureAttrsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
+          bitField0_ |= 0x00000002;
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public int getAttrsCount() {
-            return attrs_.size();
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+        if (attrsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(attrs_);
+        } else {
+          return attrsBuilder_.getMessageList();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public com.pilosa.client.Internal.Attr getAttrs(int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public int getAttrsCount() {
+        if (attrsBuilder_ == null) {
+          return attrs_.size();
+        } else {
+          return attrsBuilder_.getCount();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 2;</code>
-         */
-        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr getAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessage(index);
         }
+      }
 
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.set(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, value);
         }
+        return this;
+      }
 
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (iD_ != 0L) {
-                output.writeUInt64(1, iD_);
-            }
-            for (int i = 0; i < attrs_.size(); i++) {
-                output.writeMessage(2, attrs_.get(i));
-            }
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (iD_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(1, iD_);
-            }
-            for (int i = 0; i < attrs_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(2, attrs_.get(i));
-            }
-            memoizedSize = size;
-            return size;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(value);
         }
+        return this;
+      }
 
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.Profile)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.Profile other = (com.pilosa.client.Internal.Profile) obj;
-
-            boolean result = true;
-            result = result && (getID()
-                    == other.getID());
-            result = result && getAttrsList()
-                    .equals(other.getAttrsList());
-            return result;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, value);
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + ID_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getID());
-            if (getAttrsCount() > 0) {
-                hash = (37 * hash) + ATTRS_FIELD_NUMBER;
-                hash = (53 * hash) + getAttrsList().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder addAllAttrs(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, attrs_);
+          onChanged();
+        } else {
+          attrsBuilder_.addAllMessages(values);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder clearAttrs() {
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public Builder removeAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.remove(index);
+          onChanged();
+        } else {
+          attrsBuilder_.remove(index);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+              int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessageOrBuilder(index);
         }
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsOrBuilderList() {
+        if (attrsBuilder_ != null) {
+          return attrsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(attrs_);
         }
+      }
 
-        public static com.pilosa.client.Internal.Profile parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
+        return getAttrsFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr.Builder>
+      getAttrsBuilderList() {
+        return getAttrsFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsFieldBuilder() {
+        if (attrsBuilder_ == null) {
+          attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
+                  attrs_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          attrs_ = null;
         }
+        return attrsBuilder_;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.Profile parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
 
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.Profile prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.Profile}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.Profile)
-                com.pilosa.client.Internal.ProfileOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_Profile_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.Profile.class, com.pilosa.client.Internal.Profile.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.Profile.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                    getAttrsFieldBuilder();
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                iD_ = 0L;
-
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_Profile_descriptor;
-            }
-
-            public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.Profile.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.Profile build() {
-                com.pilosa.client.Internal.Profile result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.Profile buildPartial() {
-                com.pilosa.client.Internal.Profile result = new com.pilosa.client.Internal.Profile(this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                result.iD_ = iD_;
-                if (attrsBuilder_ == null) {
-                    if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                        attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                        bitField0_ = (bitField0_ & ~0x00000002);
-                    }
-                    result.attrs_ = attrs_;
-                } else {
-                    result.attrs_ = attrsBuilder_.build();
-                }
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.Profile) {
-                    return mergeFrom((com.pilosa.client.Internal.Profile) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.Profile other) {
-                if (other == com.pilosa.client.Internal.Profile.getDefaultInstance()) return this;
-                if (other.getID() != 0L) {
-                    setID(other.getID());
-                }
-                if (attrsBuilder_ == null) {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrs_.isEmpty()) {
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                        } else {
-                            ensureAttrsIsMutable();
-                            attrs_.addAll(other.attrs_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrsBuilder_.isEmpty()) {
-                            attrsBuilder_.dispose();
-                            attrsBuilder_ = null;
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                            attrsBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getAttrsFieldBuilder() : null;
-                        } else {
-                            attrsBuilder_.addAllMessages(other.attrs_);
-                        }
-                    }
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.Profile parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.Profile) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private long iD_;
-
-            /**
-             * <code>optional uint64 ID = 1;</code>
-             */
-            public long getID() {
-                return iD_;
-            }
-
-            /**
-             * <code>optional uint64 ID = 1;</code>
-             */
-            public Builder setID(long value) {
-
-                iD_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 ID = 1;</code>
-             */
-            public Builder clearID() {
-
-                iD_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
-                    java.util.Collections.emptyList();
-
-            private void ensureAttrsIsMutable() {
-                if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
-                    bitField0_ |= 0x00000002;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-                if (attrsBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                } else {
-                    return attrsBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public int getAttrsCount() {
-                if (attrsBuilder_ == null) {
-                    return attrs_.size();
-                } else {
-                    return attrsBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr getAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder addAllAttrs(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, attrs_);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder clearAttrs() {
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                    onChanged();
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public Builder removeAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.remove(index);
-                    onChanged();
-                } else {
-                    attrsBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                    int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsOrBuilderList() {
-                if (attrsBuilder_ != null) {
-                    return attrsBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
-                return getAttrsFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
-            getAttrsBuilderList() {
-                return getAttrsFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsFieldBuilder() {
-                if (attrsBuilder_ == null) {
-                    attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
-                            attrs_,
-                            ((bitField0_ & 0x00000002) == 0x00000002),
-                            getParentForChildren(),
-                            isClean());
-                    attrs_ = null;
-                }
-                return attrsBuilder_;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.Profile)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.Profile)
-        private static final com.pilosa.client.Internal.Profile DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Profile();
-        }
-
-        public static com.pilosa.client.Internal.Profile getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<Profile>
-                PARSER = new com.google.protobuf.AbstractParser<Profile>() {
-            public Profile parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new Profile(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<Profile> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Profile> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+      // @@protoc_insertion_point(builder_scope:internal.Profile)
     }
 
-    public interface AttrOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.Attr)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.Profile)
+    private static final com.pilosa.client.Internal.Profile DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional string Key = 1;</code>
-         */
-        java.lang.String getKey();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.Profile();
+    }
 
-        /**
-         * <code>optional string Key = 1;</code>
-         */
-        com.google.protobuf.ByteString
-        getKeyBytes();
+    public static com.pilosa.client.Internal.Profile getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional uint64 Type = 2;</code>
-         */
-        long getType();
+    private static final com.google.protobuf.Parser<Profile>
+            PARSER = new com.google.protobuf.AbstractParser<Profile>() {
+      public Profile parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Profile(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>optional string StringValue = 3;</code>
-         */
-        java.lang.String getStringValue();
+    public static com.google.protobuf.Parser<Profile> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>optional string StringValue = 3;</code>
-         */
-        com.google.protobuf.ByteString
-        getStringValueBytes();
+    @java.lang.Override
+    public com.google.protobuf.Parser<Profile> getParserForType() {
+      return PARSER;
+    }
 
-        /**
-         * <code>optional uint64 UintValue = 4;</code>
-         */
-        long getUintValue();
+    public com.pilosa.client.Internal.Profile getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional bool BoolValue = 5;</code>
-         */
-        boolean getBoolValue();
+  }
 
-        /**
-         * <code>optional double FloatValue = 6;</code>
-         */
-        double getFloatValue();
+  public interface AttrOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.Attr)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string Key = 1;</code>
+     */
+    java.lang.String getKey();
+
+    /**
+     * <code>optional string Key = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getKeyBytes();
+
+    /**
+     * <code>optional uint64 Type = 2;</code>
+     */
+    long getType();
+
+    /**
+     * <code>optional string StringValue = 3;</code>
+     */
+    java.lang.String getStringValue();
+
+    /**
+     * <code>optional string StringValue = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getStringValueBytes();
+
+    /**
+     * <code>optional int64 IntValue = 4;</code>
+     */
+    long getIntValue();
+
+    /**
+     * <code>optional bool BoolValue = 5;</code>
+     */
+    boolean getBoolValue();
+
+    /**
+     * <code>optional double FloatValue = 6;</code>
+     */
+    double getFloatValue();
+  }
+
+  /**
+   * Protobuf type {@code internal.Attr}
+   */
+  public static final class Attr extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.Attr)
+          AttrOrBuilder {
+    // Use Attr.newBuilder() to construct.
+    private Attr(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private Attr() {
+      key_ = "";
+      type_ = 0L;
+      stringValue_ = "";
+      intValue_ = 0L;
+      boolValue_ = false;
+      floatValue_ = 0D;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private Attr(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              key_ = s;
+              break;
+            }
+            case 16: {
+
+              type_ = input.readUInt64();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              stringValue_ = s;
+              break;
+            }
+            case 32: {
+
+              intValue_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              boolValue_ = input.readBool();
+              break;
+            }
+            case 49: {
+
+              floatValue_ = input.readDouble();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
+    }
+
+    public static final int KEY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object key_;
+
+    /**
+     * <code>optional string Key = 1;</code>
+     */
+    public java.lang.String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        key_ = s;
+        return s;
+      }
+    }
+
+    /**
+     * <code>optional string Key = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 2;
+    private long type_;
+
+    /**
+     * <code>optional uint64 Type = 2;</code>
+     */
+    public long getType() {
+      return type_;
+    }
+
+    public static final int STRINGVALUE_FIELD_NUMBER = 3;
+    private volatile java.lang.Object stringValue_;
+
+    /**
+     * <code>optional string StringValue = 3;</code>
+     */
+    public java.lang.String getStringValue() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        stringValue_ = s;
+        return s;
+      }
+    }
+
+    /**
+     * <code>optional string StringValue = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getStringValueBytes() {
+      java.lang.Object ref = stringValue_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        stringValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int INTVALUE_FIELD_NUMBER = 4;
+    private long intValue_;
+
+    /**
+     * <code>optional int64 IntValue = 4;</code>
+     */
+    public long getIntValue() {
+      return intValue_;
+    }
+
+    public static final int BOOLVALUE_FIELD_NUMBER = 5;
+    private boolean boolValue_;
+
+    /**
+     * <code>optional bool BoolValue = 5;</code>
+     */
+    public boolean getBoolValue() {
+      return boolValue_;
+    }
+
+    public static final int FLOATVALUE_FIELD_NUMBER = 6;
+    private double floatValue_;
+
+    /**
+     * <code>optional double FloatValue = 6;</code>
+     */
+    public double getFloatValue() {
+      return floatValue_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getKeyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+      }
+      if (type_ != 0L) {
+        output.writeUInt64(2, type_);
+      }
+      if (!getStringValueBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, stringValue_);
+      }
+      if (intValue_ != 0L) {
+        output.writeInt64(4, intValue_);
+      }
+      if (boolValue_ != false) {
+        output.writeBool(5, boolValue_);
+      }
+      if (floatValue_ != 0D) {
+        output.writeDouble(6, floatValue_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getKeyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+      }
+      if (type_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(2, type_);
+      }
+      if (!getStringValueBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, stringValue_);
+      }
+      if (intValue_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(4, intValue_);
+      }
+      if (boolValue_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(5, boolValue_);
+      }
+      if (floatValue_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeDoubleSize(6, floatValue_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.Attr)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.Attr other = (com.pilosa.client.Internal.Attr) obj;
+
+      boolean result = true;
+      result = result && getKey()
+              .equals(other.getKey());
+      result = result && (getType()
+              == other.getType());
+      result = result && getStringValue()
+              .equals(other.getStringValue());
+      result = result && (getIntValue()
+              == other.getIntValue());
+      result = result && (getBoolValue()
+              == other.getBoolValue());
+      result = result && (
+              java.lang.Double.doubleToLongBits(getFloatValue())
+                      == java.lang.Double.doubleToLongBits(
+                      other.getFloatValue()));
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getKey().hashCode();
+      hash = (37 * hash) + TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getType());
+      hash = (37 * hash) + STRINGVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getStringValue().hashCode();
+      hash = (37 * hash) + INTVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getIntValue());
+      hash = (37 * hash) + BOOLVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getBoolValue());
+      hash = (37 * hash) + FLOATVALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              java.lang.Double.doubleToLongBits(getFloatValue()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.Attr parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.Attr prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.Attr}
      */
-    public static final class Attr extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.Attr)
-            AttrOrBuilder {
-        // Use Attr.newBuilder() to construct.
-        private Attr(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.Attr)
+            com.pilosa.client.Internal.AttrOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.Attr.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+
+      public Builder clear() {
+        super.clear();
+        key_ = "";
+
+        type_ = 0L;
+
+        stringValue_ = "";
+
+        intValue_ = 0L;
+
+        boolValue_ = false;
+
+        floatValue_ = 0D;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
+      }
+
+      public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.Attr.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.Attr build() {
+        com.pilosa.client.Internal.Attr result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.pilosa.client.Internal.Attr buildPartial() {
+        com.pilosa.client.Internal.Attr result = new com.pilosa.client.Internal.Attr(this);
+        result.key_ = key_;
+        result.type_ = type_;
+        result.stringValue_ = stringValue_;
+        result.intValue_ = intValue_;
+        result.boolValue_ = boolValue_;
+        result.floatValue_ = floatValue_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.Attr) {
+          return mergeFrom((com.pilosa.client.Internal.Attr) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pilosa.client.Internal.Attr other) {
+        if (other == com.pilosa.client.Internal.Attr.getDefaultInstance()) return this;
+        if (!other.getKey().isEmpty()) {
+          key_ = other.key_;
+          onChanged();
+        }
+        if (other.getType() != 0L) {
+          setType(other.getType());
+        }
+        if (!other.getStringValue().isEmpty()) {
+          stringValue_ = other.stringValue_;
+          onChanged();
+        }
+        if (other.getIntValue() != 0L) {
+          setIntValue(other.getIntValue());
+        }
+        if (other.getBoolValue() != false) {
+          setBoolValue(other.getBoolValue());
+        }
+        if (other.getFloatValue() != 0D) {
+          setFloatValue(other.getFloatValue());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.Attr parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.Attr) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object key_ = "";
+
+      /**
+       * <code>optional string Key = 1;</code>
+       */
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Key = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Key = 1;</code>
+       */
+      public Builder setKey(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
 
-        private Attr() {
-            key_ = "";
-            type_ = 0L;
-            stringValue_ = "";
-            uintValue_ = 0L;
-            boolValue_ = false;
-            floatValue_ = 0D;
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Key = 1;</code>
+       */
+      public Builder clearKey() {
+
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Key = 1;</code>
+       */
+      public Builder setKeyBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        key_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long type_;
+
+      /**
+       * <code>optional uint64 Type = 2;</code>
+       */
+      public long getType() {
+        return type_;
+      }
+
+      /**
+       * <code>optional uint64 Type = 2;</code>
+       */
+      public Builder setType(long value) {
+
+        type_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 Type = 2;</code>
+       */
+      public Builder clearType() {
+
+        type_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object stringValue_ = "";
+
+      /**
+       * <code>optional string StringValue = 3;</code>
+       */
+      public java.lang.String getStringValue() {
+        java.lang.Object ref = stringValue_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          stringValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string StringValue = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getStringValueBytes() {
+        java.lang.Object ref = stringValue_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          stringValue_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string StringValue = 3;</code>
+       */
+      public Builder setStringValue(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        stringValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string StringValue = 3;</code>
+       */
+      public Builder clearStringValue() {
+
+        stringValue_ = getDefaultInstance().getStringValue();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string StringValue = 3;</code>
+       */
+      public Builder setStringValueBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        checkByteStringIsUtf8(value);
+
+        stringValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long intValue_;
+
+      /**
+       * <code>optional int64 IntValue = 4;</code>
+       */
+      public long getIntValue() {
+        return intValue_;
+      }
+
+      /**
+       * <code>optional int64 IntValue = 4;</code>
+       */
+      public Builder setIntValue(long value) {
+
+        intValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 IntValue = 4;</code>
+       */
+      public Builder clearIntValue() {
+
+        intValue_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private boolean boolValue_;
+
+      /**
+       * <code>optional bool BoolValue = 5;</code>
+       */
+      public boolean getBoolValue() {
+        return boolValue_;
+      }
+
+      /**
+       * <code>optional bool BoolValue = 5;</code>
+       */
+      public Builder setBoolValue(boolean value) {
+
+        boolValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional bool BoolValue = 5;</code>
+       */
+      public Builder clearBoolValue() {
+
+        boolValue_ = false;
+        onChanged();
+        return this;
+      }
+
+      private double floatValue_;
+
+      /**
+       * <code>optional double FloatValue = 6;</code>
+       */
+      public double getFloatValue() {
+        return floatValue_;
+      }
+
+      /**
+       * <code>optional double FloatValue = 6;</code>
+       */
+      public Builder setFloatValue(double value) {
+
+        floatValue_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional double FloatValue = 6;</code>
+       */
+      public Builder clearFloatValue() {
+
+        floatValue_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        private Attr(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            java.lang.String s = input.readStringRequireUtf8();
 
-                            key_ = s;
-                            break;
-                        }
-                        case 16: {
-
-                            type_ = input.readUInt64();
-                            break;
-                        }
-                        case 26: {
-                            java.lang.String s = input.readStringRequireUtf8();
-
-                            stringValue_ = s;
-                            break;
-                        }
-                        case 32: {
-
-                            uintValue_ = input.readUInt64();
-                            break;
-                        }
-                        case 40: {
-
-                            boolValue_ = input.readBool();
-                            break;
-                        }
-                        case 49: {
-
-                            floatValue_ = input.readDouble();
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
-        }
-
-        public static final int KEY_FIELD_NUMBER = 1;
-        private volatile java.lang.Object key_;
-
-        /**
-         * <code>optional string Key = 1;</code>
-         */
-        public java.lang.String getKey() {
-            java.lang.Object ref = key_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                key_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string Key = 1;</code>
-         */
-        public com.google.protobuf.ByteString
-        getKeyBytes() {
-            java.lang.Object ref = key_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                key_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int TYPE_FIELD_NUMBER = 2;
-        private long type_;
-
-        /**
-         * <code>optional uint64 Type = 2;</code>
-         */
-        public long getType() {
-            return type_;
-        }
-
-        public static final int STRINGVALUE_FIELD_NUMBER = 3;
-        private volatile java.lang.Object stringValue_;
-
-        /**
-         * <code>optional string StringValue = 3;</code>
-         */
-        public java.lang.String getStringValue() {
-            java.lang.Object ref = stringValue_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                stringValue_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string StringValue = 3;</code>
-         */
-        public com.google.protobuf.ByteString
-        getStringValueBytes() {
-            java.lang.Object ref = stringValue_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                stringValue_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int UINTVALUE_FIELD_NUMBER = 4;
-        private long uintValue_;
-
-        /**
-         * <code>optional uint64 UintValue = 4;</code>
-         */
-        public long getUintValue() {
-            return uintValue_;
-        }
-
-        public static final int BOOLVALUE_FIELD_NUMBER = 5;
-        private boolean boolValue_;
-
-        /**
-         * <code>optional bool BoolValue = 5;</code>
-         */
-        public boolean getBoolValue() {
-            return boolValue_;
-        }
-
-        public static final int FLOATVALUE_FIELD_NUMBER = 6;
-        private double floatValue_;
-
-        /**
-         * <code>optional double FloatValue = 6;</code>
-         */
-        public double getFloatValue() {
-            return floatValue_;
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (!getKeyBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
-            }
-            if (type_ != 0L) {
-                output.writeUInt64(2, type_);
-            }
-            if (!getStringValueBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 3, stringValue_);
-            }
-            if (uintValue_ != 0L) {
-                output.writeUInt64(4, uintValue_);
-            }
-            if (boolValue_ != false) {
-                output.writeBool(5, boolValue_);
-            }
-            if (floatValue_ != 0D) {
-                output.writeDouble(6, floatValue_);
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (!getKeyBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
-            }
-            if (type_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(2, type_);
-            }
-            if (!getStringValueBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, stringValue_);
-            }
-            if (uintValue_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(4, uintValue_);
-            }
-            if (boolValue_ != false) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeBoolSize(5, boolValue_);
-            }
-            if (floatValue_ != 0D) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeDoubleSize(6, floatValue_);
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.Attr)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.Attr other = (com.pilosa.client.Internal.Attr) obj;
-
-            boolean result = true;
-            result = result && getKey()
-                    .equals(other.getKey());
-            result = result && (getType()
-                    == other.getType());
-            result = result && getStringValue()
-                    .equals(other.getStringValue());
-            result = result && (getUintValue()
-                    == other.getUintValue());
-            result = result && (getBoolValue()
-                    == other.getBoolValue());
-            result = result && (
-                    java.lang.Double.doubleToLongBits(getFloatValue())
-                            == java.lang.Double.doubleToLongBits(
-                            other.getFloatValue()));
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + KEY_FIELD_NUMBER;
-            hash = (53 * hash) + getKey().hashCode();
-            hash = (37 * hash) + TYPE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getType());
-            hash = (37 * hash) + STRINGVALUE_FIELD_NUMBER;
-            hash = (53 * hash) + getStringValue().hashCode();
-            hash = (37 * hash) + UINTVALUE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getUintValue());
-            hash = (37 * hash) + BOOLVALUE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-                    getBoolValue());
-            hash = (37 * hash) + FLOATVALUE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    java.lang.Double.doubleToLongBits(getFloatValue()));
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.Attr parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.Attr prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.Attr}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.Attr)
-                com.pilosa.client.Internal.AttrOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_Attr_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.Attr.class, com.pilosa.client.Internal.Attr.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.Attr.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                key_ = "";
-
-                type_ = 0L;
-
-                stringValue_ = "";
-
-                uintValue_ = 0L;
-
-                boolValue_ = false;
-
-                floatValue_ = 0D;
-
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_Attr_descriptor;
-            }
-
-            public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.Attr.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.Attr build() {
-                com.pilosa.client.Internal.Attr result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.Attr buildPartial() {
-                com.pilosa.client.Internal.Attr result = new com.pilosa.client.Internal.Attr(this);
-                result.key_ = key_;
-                result.type_ = type_;
-                result.stringValue_ = stringValue_;
-                result.uintValue_ = uintValue_;
-                result.boolValue_ = boolValue_;
-                result.floatValue_ = floatValue_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.Attr) {
-                    return mergeFrom((com.pilosa.client.Internal.Attr) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.Attr other) {
-                if (other == com.pilosa.client.Internal.Attr.getDefaultInstance()) return this;
-                if (!other.getKey().isEmpty()) {
-                    key_ = other.key_;
-                    onChanged();
-                }
-                if (other.getType() != 0L) {
-                    setType(other.getType());
-                }
-                if (!other.getStringValue().isEmpty()) {
-                    stringValue_ = other.stringValue_;
-                    onChanged();
-                }
-                if (other.getUintValue() != 0L) {
-                    setUintValue(other.getUintValue());
-                }
-                if (other.getBoolValue() != false) {
-                    setBoolValue(other.getBoolValue());
-                }
-                if (other.getFloatValue() != 0D) {
-                    setFloatValue(other.getFloatValue());
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.Attr parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.Attr) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private java.lang.Object key_ = "";
-
-            /**
-             * <code>optional string Key = 1;</code>
-             */
-            public java.lang.String getKey() {
-                java.lang.Object ref = key_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    key_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Key = 1;</code>
-             */
-            public com.google.protobuf.ByteString
-            getKeyBytes() {
-                java.lang.Object ref = key_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    key_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Key = 1;</code>
-             */
-            public Builder setKey(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                key_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Key = 1;</code>
-             */
-            public Builder clearKey() {
-
-                key_ = getDefaultInstance().getKey();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Key = 1;</code>
-             */
-            public Builder setKeyBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                key_ = value;
-                onChanged();
-                return this;
-            }
-
-            private long type_;
-
-            /**
-             * <code>optional uint64 Type = 2;</code>
-             */
-            public long getType() {
-                return type_;
-            }
-
-            /**
-             * <code>optional uint64 Type = 2;</code>
-             */
-            public Builder setType(long value) {
-
-                type_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 Type = 2;</code>
-             */
-            public Builder clearType() {
-
-                type_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private java.lang.Object stringValue_ = "";
-
-            /**
-             * <code>optional string StringValue = 3;</code>
-             */
-            public java.lang.String getStringValue() {
-                java.lang.Object ref = stringValue_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    stringValue_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string StringValue = 3;</code>
-             */
-            public com.google.protobuf.ByteString
-            getStringValueBytes() {
-                java.lang.Object ref = stringValue_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    stringValue_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string StringValue = 3;</code>
-             */
-            public Builder setStringValue(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                stringValue_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string StringValue = 3;</code>
-             */
-            public Builder clearStringValue() {
-
-                stringValue_ = getDefaultInstance().getStringValue();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string StringValue = 3;</code>
-             */
-            public Builder setStringValueBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                stringValue_ = value;
-                onChanged();
-                return this;
-            }
-
-            private long uintValue_;
-
-            /**
-             * <code>optional uint64 UintValue = 4;</code>
-             */
-            public long getUintValue() {
-                return uintValue_;
-            }
-
-            /**
-             * <code>optional uint64 UintValue = 4;</code>
-             */
-            public Builder setUintValue(long value) {
-
-                uintValue_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 UintValue = 4;</code>
-             */
-            public Builder clearUintValue() {
-
-                uintValue_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private boolean boolValue_;
-
-            /**
-             * <code>optional bool BoolValue = 5;</code>
-             */
-            public boolean getBoolValue() {
-                return boolValue_;
-            }
-
-            /**
-             * <code>optional bool BoolValue = 5;</code>
-             */
-            public Builder setBoolValue(boolean value) {
-
-                boolValue_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional bool BoolValue = 5;</code>
-             */
-            public Builder clearBoolValue() {
-
-                boolValue_ = false;
-                onChanged();
-                return this;
-            }
-
-            private double floatValue_;
-
-            /**
-             * <code>optional double FloatValue = 6;</code>
-             */
-            public double getFloatValue() {
-                return floatValue_;
-            }
-
-            /**
-             * <code>optional double FloatValue = 6;</code>
-             */
-            public Builder setFloatValue(double value) {
-
-                floatValue_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional double FloatValue = 6;</code>
-             */
-            public Builder clearFloatValue() {
-
-                floatValue_ = 0D;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.Attr)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.Attr)
-        private static final com.pilosa.client.Internal.Attr DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.Attr();
-        }
-
-        public static com.pilosa.client.Internal.Attr getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<Attr>
-                PARSER = new com.google.protobuf.AbstractParser<Attr>() {
-            public Attr parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new Attr(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<Attr> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<Attr> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+      // @@protoc_insertion_point(builder_scope:internal.Attr)
     }
 
-    public interface AttrMapOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.AttrMap)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.Attr)
+    private static final com.pilosa.client.Internal.Attr DEFAULT_INSTANCE;
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.Attr>
-        getAttrsList();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.Attr();
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        com.pilosa.client.Internal.Attr getAttrs(int index);
+    public static com.pilosa.client.Internal.Attr getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        int getAttrsCount();
+    private static final com.google.protobuf.Parser<Attr>
+            PARSER = new com.google.protobuf.AbstractParser<Attr>() {
+      public Attr parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Attr(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList();
+    public static com.google.protobuf.Parser<Attr> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index);
+    @java.lang.Override
+    public com.google.protobuf.Parser<Attr> getParserForType() {
+      return PARSER;
+    }
+
+    public com.pilosa.client.Internal.Attr getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface AttrMapOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.AttrMap)
+          com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.Attr>
+    getAttrsList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    com.pilosa.client.Internal.Attr getAttrs(int index);
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    int getAttrsCount();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList();
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index);
+  }
+
+  /**
+   * Protobuf type {@code internal.AttrMap}
+   */
+  public static final class AttrMap extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.AttrMap)
+          AttrMapOrBuilder {
+    // Use AttrMap.newBuilder() to construct.
+    private AttrMap(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private AttrMap() {
+      attrs_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private AttrMap(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              attrs_.add(
+                      input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          attrs_ = java.util.Collections.unmodifiableList(attrs_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
+    }
+
+    public static final int ATTRS_FIELD_NUMBER = 1;
+    private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+    getAttrsOrBuilderList() {
+      return attrs_;
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    public int getAttrsCount() {
+      return attrs_.size();
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    public com.pilosa.client.Internal.Attr getAttrs(int index) {
+      return attrs_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.Attr Attrs = 1;</code>
+     */
+    public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+            int index) {
+      return attrs_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      for (int i = 0; i < attrs_.size(); i++) {
+        output.writeMessage(1, attrs_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < attrs_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(1, attrs_.get(i));
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.AttrMap)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.AttrMap other = (com.pilosa.client.Internal.AttrMap) obj;
+
+      boolean result = true;
+      result = result && getAttrsList()
+              .equals(other.getAttrsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (getAttrsCount() > 0) {
+        hash = (37 * hash) + ATTRS_FIELD_NUMBER;
+        hash = (53 * hash) + getAttrsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.AttrMap parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.AttrMap prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.AttrMap}
      */
-    public static final class AttrMap extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.AttrMap)
-            AttrMapOrBuilder {
-        // Use AttrMap.newBuilder() to construct.
-        private AttrMap(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.AttrMap)
+            com.pilosa.client.Internal.AttrMapOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.AttrMap.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getAttrsFieldBuilder();
         }
+      }
 
-        private AttrMap() {
-            attrs_ = java.util.Collections.emptyList();
+      public Builder clear() {
+        super.clear();
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
+      }
+
+      public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.AttrMap.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.AttrMap build() {
+        com.pilosa.client.Internal.AttrMap result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
         }
+        return result;
+      }
 
-        private AttrMap(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                                attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
-                                mutable_bitField0_ |= 0x00000001;
-                            }
-                            attrs_.add(
-                                    input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                    attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                }
-                makeExtensionsImmutable();
-            }
+      public com.pilosa.client.Internal.AttrMap buildPartial() {
+        com.pilosa.client.Internal.AttrMap result = new com.pilosa.client.Internal.AttrMap(this);
+        int from_bitField0_ = bitField0_;
+        if (attrsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            attrs_ = java.util.Collections.unmodifiableList(attrs_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.attrs_ = attrs_;
+        } else {
+          result.attrs_ = attrsBuilder_.build();
         }
+        onBuilt();
+        return result;
+      }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.AttrMap) {
+          return mergeFrom((com.pilosa.client.Internal.AttrMap) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
         }
+      }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
+      public Builder mergeFrom(com.pilosa.client.Internal.AttrMap other) {
+        if (other == com.pilosa.client.Internal.AttrMap.getDefaultInstance()) return this;
+        if (attrsBuilder_ == null) {
+          if (!other.attrs_.isEmpty()) {
+            if (attrs_.isEmpty()) {
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureAttrsIsMutable();
+              attrs_.addAll(other.attrs_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.attrs_.isEmpty()) {
+            if (attrsBuilder_.isEmpty()) {
+              attrsBuilder_.dispose();
+              attrsBuilder_ = null;
+              attrs_ = other.attrs_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              attrsBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getAttrsFieldBuilder() : null;
+            } else {
+              attrsBuilder_.addAllMessages(other.attrs_);
+            }
+          }
         }
+        onChanged();
+        return this;
+      }
 
-        public static final int ATTRS_FIELD_NUMBER = 1;
-        private java.util.List<com.pilosa.client.Internal.Attr> attrs_;
+      public final boolean isInitialized() {
+        return true;
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-            return attrs_;
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.AttrMap parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.AttrMap) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-        getAttrsOrBuilderList() {
-            return attrs_;
+      private int bitField0_;
+
+      private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
+              java.util.Collections.emptyList();
+
+      private void ensureAttrsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
+          bitField0_ |= 0x00000001;
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        public int getAttrsCount() {
-            return attrs_.size();
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
+        if (attrsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(attrs_);
+        } else {
+          return attrsBuilder_.getMessageList();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        public com.pilosa.client.Internal.Attr getAttrs(int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public int getAttrsCount() {
+        if (attrsBuilder_ == null) {
+          return attrs_.size();
+        } else {
+          return attrsBuilder_.getCount();
         }
+      }
 
-        /**
-         * <code>repeated .internal.Attr Attrs = 1;</code>
-         */
-        public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                int index) {
-            return attrs_.get(index);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public com.pilosa.client.Internal.Attr getAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessage(index);
         }
+      }
 
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.set(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, value);
         }
+        return this;
+      }
 
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            for (int i = 0; i < attrs_.size(); i++) {
-                output.writeMessage(1, attrs_.get(i));
-            }
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder setAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.setMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            for (int i = 0; i < attrs_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(1, attrs_.get(i));
-            }
-            memoizedSize = size;
-            return size;
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(value);
         }
+        return this;
+      }
 
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.AttrMap)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.AttrMap other = (com.pilosa.client.Internal.AttrMap) obj;
-
-            boolean result = true;
-            result = result && getAttrsList()
-                    .equals(other.getAttrsList());
-            return result;
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr value) {
+        if (attrsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAttrsIsMutable();
+          attrs_.add(index, value);
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, value);
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            if (getAttrsCount() > 0) {
-                hash = (37 * hash) + ATTRS_FIELD_NUMBER;
-                hash = (53 * hash) + getAttrsList().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder addAttrs(
+              com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder addAttrs(
+              int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          attrsBuilder_.addMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder addAllAttrs(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, attrs_);
+          onChanged();
+        } else {
+          attrsBuilder_.addAllMessages(values);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder clearAttrs() {
+        if (attrsBuilder_ == null) {
+          attrs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          attrsBuilder_.clear();
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public Builder removeAttrs(int index) {
+        if (attrsBuilder_ == null) {
+          ensureAttrsIsMutable();
+          attrs_.remove(index);
+          onChanged();
+        } else {
+          attrsBuilder_.remove(index);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
+              int index) {
+        if (attrsBuilder_ == null) {
+          return attrs_.get(index);
+        } else {
+          return attrsBuilder_.getMessageOrBuilder(index);
         }
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsOrBuilderList() {
+        if (attrsBuilder_ != null) {
+          return attrsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(attrs_);
         }
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
+        return getAttrsFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
+              int index) {
+        return getAttrsFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.Attr.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Attr Attrs = 1;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Attr.Builder>
+      getAttrsBuilderList() {
+        return getAttrsFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
+      getAttrsFieldBuilder() {
+        if (attrsBuilder_ == null) {
+          attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
+                  attrs_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          attrs_ = null;
         }
+        return attrsBuilder_;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.AttrMap parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.AttrMap prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.AttrMap}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.AttrMap)
-                com.pilosa.client.Internal.AttrMapOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_AttrMap_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.AttrMap.class, com.pilosa.client.Internal.AttrMap.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.AttrMap.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                    getAttrsFieldBuilder();
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000001);
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_AttrMap_descriptor;
-            }
-
-            public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.AttrMap.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.AttrMap build() {
-                com.pilosa.client.Internal.AttrMap result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.AttrMap buildPartial() {
-                com.pilosa.client.Internal.AttrMap result = new com.pilosa.client.Internal.AttrMap(this);
-                int from_bitField0_ = bitField0_;
-                if (attrsBuilder_ == null) {
-                    if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                        attrs_ = java.util.Collections.unmodifiableList(attrs_);
-                        bitField0_ = (bitField0_ & ~0x00000001);
-                    }
-                    result.attrs_ = attrs_;
-                } else {
-                    result.attrs_ = attrsBuilder_.build();
-                }
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.AttrMap) {
-                    return mergeFrom((com.pilosa.client.Internal.AttrMap) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.AttrMap other) {
-                if (other == com.pilosa.client.Internal.AttrMap.getDefaultInstance()) return this;
-                if (attrsBuilder_ == null) {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrs_.isEmpty()) {
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000001);
-                        } else {
-                            ensureAttrsIsMutable();
-                            attrs_.addAll(other.attrs_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.attrs_.isEmpty()) {
-                        if (attrsBuilder_.isEmpty()) {
-                            attrsBuilder_.dispose();
-                            attrsBuilder_ = null;
-                            attrs_ = other.attrs_;
-                            bitField0_ = (bitField0_ & ~0x00000001);
-                            attrsBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getAttrsFieldBuilder() : null;
-                        } else {
-                            attrsBuilder_.addAllMessages(other.attrs_);
-                        }
-                    }
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.AttrMap parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.AttrMap) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
-                    java.util.Collections.emptyList();
-
-            private void ensureAttrsIsMutable() {
-                if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-                    attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
-                    bitField0_ |= 0x00000001;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder> attrsBuilder_;
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr> getAttrsList() {
-                if (attrsBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                } else {
-                    return attrsBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public int getAttrsCount() {
-                if (attrsBuilder_ == null) {
-                    return attrs_.size();
-                } else {
-                    return attrsBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public com.pilosa.client.Internal.Attr getAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder setAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder addAttrs(com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr value) {
-                if (attrsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, value);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder addAttrs(
-                    com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder addAttrs(
-                    int index, com.pilosa.client.Internal.Attr.Builder builderForValue) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    attrsBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder addAllAttrs(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.Attr> values) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, attrs_);
-                    onChanged();
-                } else {
-                    attrsBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder clearAttrs() {
-                if (attrsBuilder_ == null) {
-                    attrs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000001);
-                    onChanged();
-                } else {
-                    attrsBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public Builder removeAttrs(int index) {
-                if (attrsBuilder_ == null) {
-                    ensureAttrsIsMutable();
-                    attrs_.remove(index);
-                    onChanged();
-                } else {
-                    attrsBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder getAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public com.pilosa.client.Internal.AttrOrBuilder getAttrsOrBuilder(
-                    int index) {
-                if (attrsBuilder_ == null) {
-                    return attrs_.get(index);
-                } else {
-                    return attrsBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsOrBuilderList() {
-                if (attrsBuilder_ != null) {
-                    return attrsBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(attrs_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder() {
-                return getAttrsFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public com.pilosa.client.Internal.Attr.Builder addAttrsBuilder(
-                    int index) {
-                return getAttrsFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.Attr.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Attr Attrs = 1;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Attr.Builder>
-            getAttrsBuilderList() {
-                return getAttrsFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
-            getAttrsFieldBuilder() {
-                if (attrsBuilder_ == null) {
-                    attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>(
-                            attrs_,
-                            ((bitField0_ & 0x00000001) == 0x00000001),
-                            getParentForChildren(),
-                            isClean());
-                    attrs_ = null;
-                }
-                return attrsBuilder_;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
 
-            // @@protoc_insertion_point(builder_scope:internal.AttrMap)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.AttrMap)
-        private static final com.pilosa.client.Internal.AttrMap DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.AttrMap();
-        }
-
-        public static com.pilosa.client.Internal.AttrMap getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<AttrMap>
-                PARSER = new com.google.protobuf.AbstractParser<AttrMap>() {
-            public AttrMap parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new AttrMap(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<AttrMap> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<AttrMap> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+      // @@protoc_insertion_point(builder_scope:internal.AttrMap)
     }
 
-    public interface QueryRequestOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.QueryRequest)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.AttrMap)
+    private static final com.pilosa.client.Internal.AttrMap DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        java.lang.String getDB();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.AttrMap();
+    }
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        com.google.protobuf.ByteString
-        getDBBytes();
+    public static com.pilosa.client.Internal.AttrMap getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional string Query = 2;</code>
-         */
-        java.lang.String getQuery();
+    private static final com.google.protobuf.Parser<AttrMap>
+            PARSER = new com.google.protobuf.AbstractParser<AttrMap>() {
+      public AttrMap parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new AttrMap(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>optional string Query = 2;</code>
-         */
-        com.google.protobuf.ByteString
-        getQueryBytes();
+    public static com.google.protobuf.Parser<AttrMap> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        java.util.List<java.lang.Long> getSlicesList();
+    @java.lang.Override
+    public com.google.protobuf.Parser<AttrMap> getParserForType() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        int getSlicesCount();
+    public com.pilosa.client.Internal.AttrMap getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        long getSlices(int index);
+  }
 
-        /**
-         * <code>optional bool Profiles = 4;</code>
-         */
-        boolean getProfiles();
+  public interface QueryRequestOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.QueryRequest)
+          com.google.protobuf.MessageOrBuilder {
 
-        /**
-         * <code>optional string Quantum = 5;</code>
-         */
-        java.lang.String getQuantum();
+    /**
+     * <code>optional string Query = 1;</code>
+     */
+    java.lang.String getQuery();
 
-        /**
-         * <code>optional string Quantum = 5;</code>
-         */
-        com.google.protobuf.ByteString
-        getQuantumBytes();
+    /**
+     * <code>optional string Query = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getQueryBytes();
 
-        /**
-         * <code>optional bool Remote = 6;</code>
-         */
-        boolean getRemote();
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    java.util.List<java.lang.Long> getSlicesList();
+
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    int getSlicesCount();
+
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    long getSlices(int index);
+
+    /**
+     * <code>optional bool Profiles = 3;</code>
+     */
+    boolean getProfiles();
+
+    /**
+     * <code>optional string Quantum = 4;</code>
+     */
+    java.lang.String getQuantum();
+
+    /**
+     * <code>optional string Quantum = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getQuantumBytes();
+
+    /**
+     * <code>optional bool Remote = 5;</code>
+     */
+    boolean getRemote();
+  }
+
+  /**
+   * Protobuf type {@code internal.QueryRequest}
+   */
+  public static final class QueryRequest extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.QueryRequest)
+          QueryRequestOrBuilder {
+    // Use QueryRequest.newBuilder() to construct.
+    private QueryRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private QueryRequest() {
+      query_ = "";
+      slices_ = java.util.Collections.emptyList();
+      profiles_ = false;
+      quantum_ = "";
+      remote_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private QueryRequest(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              query_ = s;
+              break;
+            }
+            case 16: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                slices_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              slices_.add(input.readUInt64());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
+                slices_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                slices_.add(input.readUInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 24: {
+
+              profiles_ = input.readBool();
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              quantum_ = s;
+              break;
+            }
+            case 40: {
+
+              remote_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          slices_ = java.util.Collections.unmodifiableList(slices_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int QUERY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object query_;
+
+    /**
+     * <code>optional string Query = 1;</code>
+     */
+    public java.lang.String getQuery() {
+      java.lang.Object ref = query_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        query_ = s;
+        return s;
+      }
+    }
+
+    /**
+     * <code>optional string Query = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getQueryBytes() {
+      java.lang.Object ref = query_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        query_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SLICES_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.Long> slices_;
+
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getSlicesList() {
+      return slices_;
+    }
+
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    public int getSlicesCount() {
+      return slices_.size();
+    }
+
+    /**
+     * <code>repeated uint64 Slices = 2;</code>
+     */
+    public long getSlices(int index) {
+      return slices_.get(index);
+    }
+
+    private int slicesMemoizedSerializedSize = -1;
+
+    public static final int PROFILES_FIELD_NUMBER = 3;
+    private boolean profiles_;
+
+    /**
+     * <code>optional bool Profiles = 3;</code>
+     */
+    public boolean getProfiles() {
+      return profiles_;
+    }
+
+    public static final int QUANTUM_FIELD_NUMBER = 4;
+    private volatile java.lang.Object quantum_;
+
+    /**
+     * <code>optional string Quantum = 4;</code>
+     */
+    public java.lang.String getQuantum() {
+      java.lang.Object ref = quantum_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        quantum_ = s;
+        return s;
+      }
+    }
+
+    /**
+     * <code>optional string Quantum = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getQuantumBytes() {
+      java.lang.Object ref = quantum_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        quantum_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REMOTE_FIELD_NUMBER = 5;
+    private boolean remote_;
+
+    /**
+     * <code>optional bool Remote = 5;</code>
+     */
+    public boolean getRemote() {
+      return remote_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      getSerializedSize();
+      if (!getQueryBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, query_);
+      }
+      if (getSlicesList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(slicesMemoizedSerializedSize);
+      }
+      for (int i = 0; i < slices_.size(); i++) {
+        output.writeUInt64NoTag(slices_.get(i));
+      }
+      if (profiles_ != false) {
+        output.writeBool(3, profiles_);
+      }
+      if (!getQuantumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, quantum_);
+      }
+      if (remote_ != false) {
+        output.writeBool(5, remote_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getQueryBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, query_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < slices_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeUInt64SizeNoTag(slices_.get(i));
+        }
+        size += dataSize;
+        if (!getSlicesList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        slicesMemoizedSerializedSize = dataSize;
+      }
+      if (profiles_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(3, profiles_);
+      }
+      if (!getQuantumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, quantum_);
+      }
+      if (remote_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(5, remote_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.QueryRequest)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.QueryRequest other = (com.pilosa.client.Internal.QueryRequest) obj;
+
+      boolean result = true;
+      result = result && getQuery()
+              .equals(other.getQuery());
+      result = result && getSlicesList()
+              .equals(other.getSlicesList());
+      result = result && (getProfiles()
+              == other.getProfiles());
+      result = result && getQuantum()
+              .equals(other.getQuantum());
+      result = result && (getRemote()
+              == other.getRemote());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + QUERY_FIELD_NUMBER;
+      hash = (53 * hash) + getQuery().hashCode();
+      if (getSlicesCount() > 0) {
+        hash = (37 * hash) + SLICES_FIELD_NUMBER;
+        hash = (53 * hash) + getSlicesList().hashCode();
+      }
+      hash = (37 * hash) + PROFILES_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getProfiles());
+      hash = (37 * hash) + QUANTUM_FIELD_NUMBER;
+      hash = (53 * hash) + getQuantum().hashCode();
+      hash = (37 * hash) + REMOTE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getRemote());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.QueryRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.QueryRequest}
      */
-    public static final class QueryRequest extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.QueryRequest)
-            QueryRequestOrBuilder {
-        // Use QueryRequest.newBuilder() to construct.
-        private QueryRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.QueryRequest)
+            com.pilosa.client.Internal.QueryRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.QueryRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
+      }
 
-        private QueryRequest() {
-            dB_ = "";
-            query_ = "";
-            slices_ = java.util.Collections.emptyList();
-            profiles_ = false;
-            quantum_ = "";
-            remote_ = false;
-        }
+      public Builder clear() {
+        super.clear();
+        query_ = "";
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
+        slices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        profiles_ = false;
 
-        private QueryRequest(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            java.lang.String s = input.readStringRequireUtf8();
+        quantum_ = "";
 
-                            dB_ = s;
-                            break;
-                        }
-                        case 18: {
-                            java.lang.String s = input.readStringRequireUtf8();
+        remote_ = false;
 
-                            query_ = s;
-                            break;
-                        }
-                        case 24: {
-                            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                                slices_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000004;
-                            }
-                            slices_.add(input.readUInt64());
-                            break;
-                        }
-                        case 26: {
-                            int length = input.readRawVarint32();
-                            int limit = input.pushLimit(length);
-                            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
-                                slices_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000004;
-                            }
-                            while (input.getBytesUntilLimit() > 0) {
-                                slices_.add(input.readUInt64());
-                            }
-                            input.popLimit(limit);
-                            break;
-                        }
-                        case 32: {
+        return this;
+      }
 
-                            profiles_ = input.readBool();
-                            break;
-                        }
-                        case 42: {
-                            java.lang.String s = input.readStringRequireUtf8();
-
-                            quantum_ = s;
-                            break;
-                        }
-                        case 48: {
-
-                            remote_ = input.readBool();
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                    slices_ = java.util.Collections.unmodifiableList(slices_);
-                }
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
-        }
-
-        private int bitField0_;
-        public static final int DB_FIELD_NUMBER = 1;
-        private volatile java.lang.Object dB_;
-
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        public java.lang.String getDB() {
-            java.lang.Object ref = dB_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                dB_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        public com.google.protobuf.ByteString
-        getDBBytes() {
-            java.lang.Object ref = dB_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                dB_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int QUERY_FIELD_NUMBER = 2;
-        private volatile java.lang.Object query_;
-
-        /**
-         * <code>optional string Query = 2;</code>
-         */
-        public java.lang.String getQuery() {
-            java.lang.Object ref = query_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                query_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string Query = 2;</code>
-         */
-        public com.google.protobuf.ByteString
-        getQueryBytes() {
-            java.lang.Object ref = query_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                query_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int SLICES_FIELD_NUMBER = 3;
-        private java.util.List<java.lang.Long> slices_;
-
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        public java.util.List<java.lang.Long>
-        getSlicesList() {
-            return slices_;
-        }
-
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        public int getSlicesCount() {
-            return slices_.size();
-        }
-
-        /**
-         * <code>repeated uint64 Slices = 3;</code>
-         */
-        public long getSlices(int index) {
-            return slices_.get(index);
-        }
-
-        private int slicesMemoizedSerializedSize = -1;
-
-        public static final int PROFILES_FIELD_NUMBER = 4;
-        private boolean profiles_;
-
-        /**
-         * <code>optional bool Profiles = 4;</code>
-         */
-        public boolean getProfiles() {
-            return profiles_;
-        }
-
-        public static final int QUANTUM_FIELD_NUMBER = 5;
-        private volatile java.lang.Object quantum_;
-
-        /**
-         * <code>optional string Quantum = 5;</code>
-         */
-        public java.lang.String getQuantum() {
-            java.lang.Object ref = quantum_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                quantum_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string Quantum = 5;</code>
-         */
-        public com.google.protobuf.ByteString
-        getQuantumBytes() {
-            java.lang.Object ref = quantum_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                quantum_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int REMOTE_FIELD_NUMBER = 6;
-        private boolean remote_;
-
-        /**
-         * <code>optional bool Remote = 6;</code>
-         */
-        public boolean getRemote() {
-            return remote_;
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            getSerializedSize();
-            if (!getDBBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, dB_);
-            }
-            if (!getQueryBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 2, query_);
-            }
-            if (getSlicesList().size() > 0) {
-                output.writeUInt32NoTag(26);
-                output.writeUInt32NoTag(slicesMemoizedSerializedSize);
-            }
-            for (int i = 0; i < slices_.size(); i++) {
-                output.writeUInt64NoTag(slices_.get(i));
-            }
-            if (profiles_ != false) {
-                output.writeBool(4, profiles_);
-            }
-            if (!getQuantumBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 5, quantum_);
-            }
-            if (remote_ != false) {
-                output.writeBool(6, remote_);
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (!getDBBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, dB_);
-            }
-            if (!getQueryBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, query_);
-            }
-            {
-                int dataSize = 0;
-                for (int i = 0; i < slices_.size(); i++) {
-                    dataSize += com.google.protobuf.CodedOutputStream
-                            .computeUInt64SizeNoTag(slices_.get(i));
-                }
-                size += dataSize;
-                if (!getSlicesList().isEmpty()) {
-                    size += 1;
-                    size += com.google.protobuf.CodedOutputStream
-                            .computeInt32SizeNoTag(dataSize);
-                }
-                slicesMemoizedSerializedSize = dataSize;
-            }
-            if (profiles_ != false) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeBoolSize(4, profiles_);
-            }
-            if (!getQuantumBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, quantum_);
-            }
-            if (remote_ != false) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeBoolSize(6, remote_);
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.QueryRequest)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.QueryRequest other = (com.pilosa.client.Internal.QueryRequest) obj;
-
-            boolean result = true;
-            result = result && getDB()
-                    .equals(other.getDB());
-            result = result && getQuery()
-                    .equals(other.getQuery());
-            result = result && getSlicesList()
-                    .equals(other.getSlicesList());
-            result = result && (getProfiles()
-                    == other.getProfiles());
-            result = result && getQuantum()
-                    .equals(other.getQuantum());
-            result = result && (getRemote()
-                    == other.getRemote());
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + DB_FIELD_NUMBER;
-            hash = (53 * hash) + getDB().hashCode();
-            hash = (37 * hash) + QUERY_FIELD_NUMBER;
-            hash = (53 * hash) + getQuery().hashCode();
-            if (getSlicesCount() > 0) {
-                hash = (37 * hash) + SLICES_FIELD_NUMBER;
-                hash = (53 * hash) + getSlicesList().hashCode();
-            }
-            hash = (37 * hash) + PROFILES_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-                    getProfiles());
-            hash = (37 * hash) + QUANTUM_FIELD_NUMBER;
-            hash = (53 * hash) + getQuantum().hashCode();
-            hash = (37 * hash) + REMOTE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-                    getRemote());
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.QueryRequest prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.QueryRequest}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.QueryRequest)
-                com.pilosa.client.Internal.QueryRequestOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.QueryRequest.class, com.pilosa.client.Internal.QueryRequest.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.QueryRequest.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                dB_ = "";
-
-                query_ = "";
-
-                slices_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000004);
-                profiles_ = false;
-
-                quantum_ = "";
-
-                remote_ = false;
-
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
-            }
-
-            public com.pilosa.client.Internal.QueryRequest getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.QueryRequest.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.QueryRequest build() {
-                com.pilosa.client.Internal.QueryRequest result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.QueryRequest buildPartial() {
-                com.pilosa.client.Internal.QueryRequest result = new com.pilosa.client.Internal.QueryRequest(this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                result.dB_ = dB_;
-                result.query_ = query_;
-                if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                    slices_ = java.util.Collections.unmodifiableList(slices_);
-                    bitField0_ = (bitField0_ & ~0x00000004);
-                }
-                result.slices_ = slices_;
-                result.profiles_ = profiles_;
-                result.quantum_ = quantum_;
-                result.remote_ = remote_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.QueryRequest) {
-                    return mergeFrom((com.pilosa.client.Internal.QueryRequest) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.QueryRequest other) {
-                if (other == com.pilosa.client.Internal.QueryRequest.getDefaultInstance()) return this;
-                if (!other.getDB().isEmpty()) {
-                    dB_ = other.dB_;
-                    onChanged();
-                }
-                if (!other.getQuery().isEmpty()) {
-                    query_ = other.query_;
-                    onChanged();
-                }
-                if (!other.slices_.isEmpty()) {
-                    if (slices_.isEmpty()) {
-                        slices_ = other.slices_;
-                        bitField0_ = (bitField0_ & ~0x00000004);
-                    } else {
-                        ensureSlicesIsMutable();
-                        slices_.addAll(other.slices_);
-                    }
-                    onChanged();
-                }
-                if (other.getProfiles() != false) {
-                    setProfiles(other.getProfiles());
-                }
-                if (!other.getQuantum().isEmpty()) {
-                    quantum_ = other.quantum_;
-                    onChanged();
-                }
-                if (other.getRemote() != false) {
-                    setRemote(other.getRemote());
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.QueryRequest parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.QueryRequest) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private java.lang.Object dB_ = "";
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public java.lang.String getDB() {
-                java.lang.Object ref = dB_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    dB_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public com.google.protobuf.ByteString
-            getDBBytes() {
-                java.lang.Object ref = dB_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    dB_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder setDB(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                dB_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder clearDB() {
-
-                dB_ = getDefaultInstance().getDB();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder setDBBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                dB_ = value;
-                onChanged();
-                return this;
-            }
-
-            private java.lang.Object query_ = "";
-
-            /**
-             * <code>optional string Query = 2;</code>
-             */
-            public java.lang.String getQuery() {
-                java.lang.Object ref = query_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    query_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Query = 2;</code>
-             */
-            public com.google.protobuf.ByteString
-            getQueryBytes() {
-                java.lang.Object ref = query_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    query_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Query = 2;</code>
-             */
-            public Builder setQuery(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                query_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Query = 2;</code>
-             */
-            public Builder clearQuery() {
-
-                query_ = getDefaultInstance().getQuery();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Query = 2;</code>
-             */
-            public Builder setQueryBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                query_ = value;
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<java.lang.Long> slices_ = java.util.Collections.emptyList();
-
-            private void ensureSlicesIsMutable() {
-                if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-                    slices_ = new java.util.ArrayList<java.lang.Long>(slices_);
-                    bitField0_ |= 0x00000004;
-                }
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public java.util.List<java.lang.Long>
-            getSlicesList() {
-                return java.util.Collections.unmodifiableList(slices_);
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public int getSlicesCount() {
-                return slices_.size();
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public long getSlices(int index) {
-                return slices_.get(index);
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public Builder setSlices(
-                    int index, long value) {
-                ensureSlicesIsMutable();
-                slices_.set(index, value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public Builder addSlices(long value) {
-                ensureSlicesIsMutable();
-                slices_.add(value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public Builder addAllSlices(
-                    java.lang.Iterable<? extends java.lang.Long> values) {
-                ensureSlicesIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, slices_);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 Slices = 3;</code>
-             */
-            public Builder clearSlices() {
-                slices_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000004);
-                onChanged();
-                return this;
-            }
-
-            private boolean profiles_;
-
-            /**
-             * <code>optional bool Profiles = 4;</code>
-             */
-            public boolean getProfiles() {
-                return profiles_;
-            }
-
-            /**
-             * <code>optional bool Profiles = 4;</code>
-             */
-            public Builder setProfiles(boolean value) {
-
-                profiles_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional bool Profiles = 4;</code>
-             */
-            public Builder clearProfiles() {
-
-                profiles_ = false;
-                onChanged();
-                return this;
-            }
-
-            private java.lang.Object quantum_ = "";
-
-            /**
-             * <code>optional string Quantum = 5;</code>
-             */
-            public java.lang.String getQuantum() {
-                java.lang.Object ref = quantum_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    quantum_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Quantum = 5;</code>
-             */
-            public com.google.protobuf.ByteString
-            getQuantumBytes() {
-                java.lang.Object ref = quantum_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    quantum_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Quantum = 5;</code>
-             */
-            public Builder setQuantum(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                quantum_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Quantum = 5;</code>
-             */
-            public Builder clearQuantum() {
-
-                quantum_ = getDefaultInstance().getQuantum();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Quantum = 5;</code>
-             */
-            public Builder setQuantumBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                quantum_ = value;
-                onChanged();
-                return this;
-            }
-
-            private boolean remote_;
-
-            /**
-             * <code>optional bool Remote = 6;</code>
-             */
-            public boolean getRemote() {
-                return remote_;
-            }
-
-            /**
-             * <code>optional bool Remote = 6;</code>
-             */
-            public Builder setRemote(boolean value) {
-
-                remote_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional bool Remote = 6;</code>
-             */
-            public Builder clearRemote() {
-
-                remote_ = false;
-                onChanged();
-                return this;
-            }
-
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.QueryRequest)
-        }
-
-        // @@protoc_insertion_point(class_scope:internal.QueryRequest)
-        private static final com.pilosa.client.Internal.QueryRequest DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryRequest();
-        }
-
-        public static com.pilosa.client.Internal.QueryRequest getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<QueryRequest>
-                PARSER = new com.google.protobuf.AbstractParser<QueryRequest>() {
-            public QueryRequest parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new QueryRequest(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<QueryRequest> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<QueryRequest> getParserForType() {
-            return PARSER;
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryRequest_descriptor;
       }
 
       public com.pilosa.client.Internal.QueryRequest getDefaultInstanceForType() {
-          return DEFAULT_INSTANCE;
+        return com.pilosa.client.Internal.QueryRequest.getDefaultInstance();
       }
+
+      public com.pilosa.client.Internal.QueryRequest build() {
+        com.pilosa.client.Internal.QueryRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.pilosa.client.Internal.QueryRequest buildPartial() {
+        com.pilosa.client.Internal.QueryRequest result = new com.pilosa.client.Internal.QueryRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.query_ = query_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          slices_ = java.util.Collections.unmodifiableList(slices_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.slices_ = slices_;
+        result.profiles_ = profiles_;
+        result.quantum_ = quantum_;
+        result.remote_ = remote_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.QueryRequest) {
+          return mergeFrom((com.pilosa.client.Internal.QueryRequest) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pilosa.client.Internal.QueryRequest other) {
+        if (other == com.pilosa.client.Internal.QueryRequest.getDefaultInstance()) return this;
+        if (!other.getQuery().isEmpty()) {
+          query_ = other.query_;
+          onChanged();
+        }
+        if (!other.slices_.isEmpty()) {
+          if (slices_.isEmpty()) {
+            slices_ = other.slices_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureSlicesIsMutable();
+            slices_.addAll(other.slices_);
+          }
+          onChanged();
+        }
+        if (other.getProfiles() != false) {
+          setProfiles(other.getProfiles());
+        }
+        if (!other.getQuantum().isEmpty()) {
+          quantum_ = other.quantum_;
+          onChanged();
+        }
+        if (other.getRemote() != false) {
+          setRemote(other.getRemote());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.QueryRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.QueryRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int bitField0_;
+
+      private java.lang.Object query_ = "";
+
+      /**
+       * <code>optional string Query = 1;</code>
+       */
+      public java.lang.String getQuery() {
+        java.lang.Object ref = query_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          query_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Query = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getQueryBytes() {
+        java.lang.Object ref = query_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          query_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Query = 1;</code>
+       */
+      public Builder setQuery(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        query_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Query = 1;</code>
+       */
+      public Builder clearQuery() {
+
+        query_ = getDefaultInstance().getQuery();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Query = 1;</code>
+       */
+      public Builder setQueryBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        query_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Long> slices_ = java.util.Collections.emptyList();
+
+      private void ensureSlicesIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          slices_ = new java.util.ArrayList<java.lang.Long>(slices_);
+          bitField0_ |= 0x00000002;
+        }
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public java.util.List<java.lang.Long>
+      getSlicesList() {
+        return java.util.Collections.unmodifiableList(slices_);
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public int getSlicesCount() {
+        return slices_.size();
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public long getSlices(int index) {
+        return slices_.get(index);
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public Builder setSlices(
+              int index, long value) {
+        ensureSlicesIsMutable();
+        slices_.set(index, value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public Builder addSlices(long value) {
+        ensureSlicesIsMutable();
+        slices_.add(value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public Builder addAllSlices(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureSlicesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, slices_);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 Slices = 2;</code>
+       */
+      public Builder clearSlices() {
+        slices_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      private boolean profiles_;
+
+      /**
+       * <code>optional bool Profiles = 3;</code>
+       */
+      public boolean getProfiles() {
+        return profiles_;
+      }
+
+      /**
+       * <code>optional bool Profiles = 3;</code>
+       */
+      public Builder setProfiles(boolean value) {
+
+        profiles_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional bool Profiles = 3;</code>
+       */
+      public Builder clearProfiles() {
+
+        profiles_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object quantum_ = "";
+
+      /**
+       * <code>optional string Quantum = 4;</code>
+       */
+      public java.lang.String getQuantum() {
+        java.lang.Object ref = quantum_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          quantum_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Quantum = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getQuantumBytes() {
+        java.lang.Object ref = quantum_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          quantum_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Quantum = 4;</code>
+       */
+      public Builder setQuantum(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        quantum_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Quantum = 4;</code>
+       */
+      public Builder clearQuantum() {
+
+        quantum_ = getDefaultInstance().getQuantum();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Quantum = 4;</code>
+       */
+      public Builder setQuantumBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        quantum_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean remote_;
+
+      /**
+       * <code>optional bool Remote = 5;</code>
+       */
+      public boolean getRemote() {
+        return remote_;
+      }
+
+      /**
+       * <code>optional bool Remote = 5;</code>
+       */
+      public Builder setRemote(boolean value) {
+
+        remote_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional bool Remote = 5;</code>
+       */
+      public Builder clearRemote() {
+
+        remote_ = false;
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:internal.QueryRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:internal.QueryRequest)
+    private static final com.pilosa.client.Internal.QueryRequest DEFAULT_INSTANCE;
+
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryRequest();
+    }
+
+    public static com.pilosa.client.Internal.QueryRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryRequest>
+            PARSER = new com.google.protobuf.AbstractParser<QueryRequest>() {
+      public QueryRequest parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QueryRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.pilosa.client.Internal.QueryRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
 
   }
 
-    public interface QueryResponseOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.QueryResponse)
-            com.google.protobuf.MessageOrBuilder {
+  public interface QueryResponseOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.QueryResponse)
+          com.google.protobuf.MessageOrBuilder {
 
-        /**
-         * <code>optional string Err = 1;</code>
-         */
-        java.lang.String getErr();
+    /**
+     * <code>optional string Err = 1;</code>
+     */
+    java.lang.String getErr();
 
-        /**
-         * <code>optional string Err = 1;</code>
-         */
-        com.google.protobuf.ByteString
-        getErrBytes();
+    /**
+     * <code>optional string Err = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getErrBytes();
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.QueryResult>
-        getResultsList();
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.QueryResult>
+    getResultsList();
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        com.pilosa.client.Internal.QueryResult getResults(int index);
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    com.pilosa.client.Internal.QueryResult getResults(int index);
+
     /**
      * <code>repeated .internal.QueryResult Results = 2;</code>
      */
     int getResultsCount();
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
-        getResultsOrBuilderList();
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
+    getResultsOrBuilderList();
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
-                int index);
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
+            int index);
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.Profile>
-        getProfilesList();
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.Profile>
+    getProfilesList();
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        com.pilosa.client.Internal.Profile getProfiles(int index);
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    com.pilosa.client.Internal.Profile getProfiles(int index);
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        int getProfilesCount();
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    int getProfilesCount();
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
+    getProfilesOrBuilderList();
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
-        getProfilesOrBuilderList();
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
+            int index);
+  }
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
-                int index);
+  /**
+   * Protobuf type {@code internal.QueryResponse}
+   */
+  public static final class QueryResponse extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.QueryResponse)
+          QueryResponseOrBuilder {
+    // Use QueryResponse.newBuilder() to construct.
+    private QueryResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private QueryResponse() {
+      err_ = "";
+      results_ = java.util.Collections.emptyList();
+      profiles_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private QueryResponse(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              err_ = s;
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              results_.add(
+                      input.readMessage(com.pilosa.client.Internal.QueryResult.parser(), extensionRegistry));
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              profiles_.add(
+                      input.readMessage(com.pilosa.client.Internal.Profile.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          results_ = java.util.Collections.unmodifiableList(results_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          profiles_ = java.util.Collections.unmodifiableList(profiles_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ERR_FIELD_NUMBER = 1;
+    private volatile java.lang.Object err_;
+
+    /**
+     * <code>optional string Err = 1;</code>
+     */
+    public java.lang.String getErr() {
+      java.lang.Object ref = err_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        err_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string Err = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getErrBytes() {
+      java.lang.Object ref = err_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        err_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RESULTS_FIELD_NUMBER = 2;
+    private java.util.List<com.pilosa.client.Internal.QueryResult> results_;
+
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
+      return results_;
+    }
+
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
+    getResultsOrBuilderList() {
+      return results_;
+    }
+
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    public int getResultsCount() {
+      return results_.size();
+    }
+
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    public com.pilosa.client.Internal.QueryResult getResults(int index) {
+      return results_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.QueryResult Results = 2;</code>
+     */
+    public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
+            int index) {
+      return results_.get(index);
+    }
+
+    public static final int PROFILES_FIELD_NUMBER = 3;
+    private java.util.List<com.pilosa.client.Internal.Profile> profiles_;
+
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
+      return profiles_;
+    }
+
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
+    getProfilesOrBuilderList() {
+      return profiles_;
+    }
+
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    public int getProfilesCount() {
+      return profiles_.size();
+    }
+
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    public com.pilosa.client.Internal.Profile getProfiles(int index) {
+      return profiles_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.Profile Profiles = 3;</code>
+     */
+    public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
+            int index) {
+      return profiles_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (!getErrBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, err_);
+      }
+      for (int i = 0; i < results_.size(); i++) {
+        output.writeMessage(2, results_.get(i));
+      }
+      for (int i = 0; i < profiles_.size(); i++) {
+        output.writeMessage(3, profiles_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getErrBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, err_);
+      }
+      for (int i = 0; i < results_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(2, results_.get(i));
+      }
+      for (int i = 0; i < profiles_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(3, profiles_.get(i));
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.QueryResponse)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.QueryResponse other = (com.pilosa.client.Internal.QueryResponse) obj;
+
+      boolean result = true;
+      result = result && getErr()
+              .equals(other.getErr());
+      result = result && getResultsList()
+              .equals(other.getResultsList());
+      result = result && getProfilesList()
+              .equals(other.getProfilesList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + ERR_FIELD_NUMBER;
+      hash = (53 * hash) + getErr().hashCode();
+      if (getResultsCount() > 0) {
+        hash = (37 * hash) + RESULTS_FIELD_NUMBER;
+        hash = (53 * hash) + getResultsList().hashCode();
+      }
+      if (getProfilesCount() > 0) {
+        hash = (37 * hash) + PROFILES_FIELD_NUMBER;
+        hash = (53 * hash) + getProfilesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResponse parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.QueryResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.QueryResponse}
      */
-    public static final class QueryResponse extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.QueryResponse)
-            QueryResponseOrBuilder {
-        // Use QueryResponse.newBuilder() to construct.
-        private QueryResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
-        }
-
-        private QueryResponse() {
-            err_ = "";
-            results_ = java.util.Collections.emptyList();
-            profiles_ = java.util.Collections.emptyList();
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
-
-        private QueryResponse(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-            case 0:
-              done = true;
-                break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            java.lang.String s = input.readStringRequireUtf8();
-
-                            err_ = s;
-                            break;
-                        }
-                        case 18: {
-                            if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>();
-                                mutable_bitField0_ |= 0x00000002;
-                            }
-                            results_.add(
-                                    input.readMessage(com.pilosa.client.Internal.QueryResult.parser(), extensionRegistry));
-                            break;
-                        }
-                        case 26: {
-                            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                                profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>();
-                                mutable_bitField0_ |= 0x00000004;
-                            }
-                            profiles_.add(
-                                    input.readMessage(com.pilosa.client.Internal.Profile.parser(), extensionRegistry));
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                    results_ = java.util.Collections.unmodifiableList(results_);
-                }
-                if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                    profiles_ = java.util.Collections.unmodifiableList(profiles_);
-                }
-                makeExtensionsImmutable();
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.QueryResponse)
+            com.pilosa.client.Internal.QueryResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
       }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.QueryResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getResultsFieldBuilder();
+          getProfilesFieldBuilder();
         }
+      }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
+      public Builder clear() {
+        super.clear();
+        err_ = "";
+
+        if (resultsBuilder_ == null) {
+          results_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          resultsBuilder_.clear();
         }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
+        if (profilesBuilder_ == null) {
+          profiles_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          profilesBuilder_.clear();
         }
+        return this;
+      }
 
-        private int bitField0_;
-        public static final int ERR_FIELD_NUMBER = 1;
-        private volatile java.lang.Object err_;
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
+      }
 
-        /**
-         * <code>optional string Err = 1;</code>
-         */
-        public java.lang.String getErr() {
-            java.lang.Object ref = err_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
+      public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.QueryResponse.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.QueryResponse build() {
+        com.pilosa.client.Internal.QueryResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.pilosa.client.Internal.QueryResponse buildPartial() {
+        com.pilosa.client.Internal.QueryResponse result = new com.pilosa.client.Internal.QueryResponse(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.err_ = err_;
+        if (resultsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            results_ = java.util.Collections.unmodifiableList(results_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.results_ = results_;
+        } else {
+          result.results_ = resultsBuilder_.build();
+        }
+        if (profilesBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            profiles_ = java.util.Collections.unmodifiableList(profiles_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.profiles_ = profiles_;
+        } else {
+          result.profiles_ = profilesBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.QueryResponse) {
+          return mergeFrom((com.pilosa.client.Internal.QueryResponse) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pilosa.client.Internal.QueryResponse other) {
+        if (other == com.pilosa.client.Internal.QueryResponse.getDefaultInstance()) return this;
+        if (!other.getErr().isEmpty()) {
+          err_ = other.err_;
+          onChanged();
+        }
+        if (resultsBuilder_ == null) {
+          if (!other.results_.isEmpty()) {
+            if (results_.isEmpty()) {
+              results_ = other.results_;
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-        err_ = s;
-        return s;
+              ensureResultsIsMutable();
+              results_.addAll(other.results_);
             }
-        }
-
-        /**
-         * <code>optional string Err = 1;</code>
-         */
-        public com.google.protobuf.ByteString
-        getErrBytes() {
-            java.lang.Object ref = err_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                err_ = b;
-                return b;
+            onChanged();
+          }
+        } else {
+          if (!other.results_.isEmpty()) {
+            if (resultsBuilder_.isEmpty()) {
+              resultsBuilder_.dispose();
+              resultsBuilder_ = null;
+              results_ = other.results_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              resultsBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getResultsFieldBuilder() : null;
             } else {
-                return (com.google.protobuf.ByteString) ref;
+              resultsBuilder_.addAllMessages(other.results_);
             }
+          }
+        }
+        if (profilesBuilder_ == null) {
+          if (!other.profiles_.isEmpty()) {
+            if (profiles_.isEmpty()) {
+              profiles_ = other.profiles_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureProfilesIsMutable();
+              profiles_.addAll(other.profiles_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.profiles_.isEmpty()) {
+            if (profilesBuilder_.isEmpty()) {
+              profilesBuilder_.dispose();
+              profilesBuilder_ = null;
+              profiles_ = other.profiles_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              profilesBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getProfilesFieldBuilder() : null;
+            } else {
+              profilesBuilder_.addAllMessages(other.profiles_);
+            }
+          }
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.QueryResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.QueryResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int bitField0_;
+
+      private java.lang.Object err_ = "";
+
+      /**
+       * <code>optional string Err = 1;</code>
+       */
+      public java.lang.String getErr() {
+        java.lang.Object ref = err_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          err_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Err = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getErrBytes() {
+        java.lang.Object ref = err_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          err_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Err = 1;</code>
+       */
+      public Builder setErr(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
 
-        public static final int RESULTS_FIELD_NUMBER = 2;
-        private java.util.List<com.pilosa.client.Internal.QueryResult> results_;
+        err_ = value;
+        onChanged();
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
-            return results_;
+      /**
+       * <code>optional string Err = 1;</code>
+       */
+      public Builder clearErr() {
+
+        err_ = getDefaultInstance().getErr();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Err = 1;</code>
+       */
+      public Builder setErrBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        checkByteStringIsUtf8(value);
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
-        getResultsOrBuilderList() {
-            return results_;
+        err_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.pilosa.client.Internal.QueryResult> results_ =
+              java.util.Collections.emptyList();
+
+      private void ensureResultsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>(results_);
+          bitField0_ |= 0x00000002;
         }
+      }
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        public int getResultsCount() {
-            return results_.size();
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder> resultsBuilder_;
+
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
+        if (resultsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(results_);
+        } else {
+          return resultsBuilder_.getMessageList();
         }
+      }
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        public com.pilosa.client.Internal.QueryResult getResults(int index) {
-            return results_.get(index);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public int getResultsCount() {
+        if (resultsBuilder_ == null) {
+          return results_.size();
+        } else {
+          return resultsBuilder_.getCount();
         }
+      }
 
-        /**
-         * <code>repeated .internal.QueryResult Results = 2;</code>
-         */
-        public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
-                int index) {
-            return results_.get(index);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public com.pilosa.client.Internal.QueryResult getResults(int index) {
+        if (resultsBuilder_ == null) {
+          return results_.get(index);
+        } else {
+          return resultsBuilder_.getMessage(index);
         }
+      }
 
-        public static final int PROFILES_FIELD_NUMBER = 3;
-        private java.util.List<com.pilosa.client.Internal.Profile> profiles_;
-
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
-            return profiles_;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder setResults(
+              int index, com.pilosa.client.Internal.QueryResult value) {
+        if (resultsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultsIsMutable();
+          results_.set(index, value);
+          onChanged();
+        } else {
+          resultsBuilder_.setMessage(index, value);
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
-        getProfilesOrBuilderList() {
-            return profiles_;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder setResults(
+              int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
+        if (resultsBuilder_ == null) {
+          ensureResultsIsMutable();
+          results_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultsBuilder_.setMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        public int getProfilesCount() {
-            return profiles_.size();
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder addResults(com.pilosa.client.Internal.QueryResult value) {
+        if (resultsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultsIsMutable();
+          results_.add(value);
+          onChanged();
+        } else {
+          resultsBuilder_.addMessage(value);
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        public com.pilosa.client.Internal.Profile getProfiles(int index) {
-            return profiles_.get(index);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder addResults(
+              int index, com.pilosa.client.Internal.QueryResult value) {
+        if (resultsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureResultsIsMutable();
+          results_.add(index, value);
+          onChanged();
+        } else {
+          resultsBuilder_.addMessage(index, value);
         }
+        return this;
+      }
 
-        /**
-         * <code>repeated .internal.Profile Profiles = 3;</code>
-         */
-        public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
-                int index) {
-            return profiles_.get(index);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder addResults(
+              com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
+        if (resultsBuilder_ == null) {
+          ensureResultsIsMutable();
+          results_.add(builderForValue.build());
+          onChanged();
+        } else {
+          resultsBuilder_.addMessage(builderForValue.build());
         }
+        return this;
+      }
 
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder addResults(
+              int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
+        if (resultsBuilder_ == null) {
+          ensureResultsIsMutable();
+          results_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          resultsBuilder_.addMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (!getErrBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, err_);
-            }
-            for (int i = 0; i < results_.size(); i++) {
-                output.writeMessage(2, results_.get(i));
-            }
-            for (int i = 0; i < profiles_.size(); i++) {
-                output.writeMessage(3, profiles_.get(i));
-            }
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder addAllResults(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.QueryResult> values) {
+        if (resultsBuilder_ == null) {
+          ensureResultsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, results_);
+          onChanged();
+        } else {
+          resultsBuilder_.addAllMessages(values);
         }
+        return this;
+      }
 
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (!getErrBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, err_);
-            }
-            for (int i = 0; i < results_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(2, results_.get(i));
-            }
-            for (int i = 0; i < profiles_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(3, profiles_.get(i));
-            }
-            memoizedSize = size;
-            return size;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder clearResults() {
+        if (resultsBuilder_ == null) {
+          results_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          resultsBuilder_.clear();
         }
+        return this;
+      }
 
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.QueryResponse)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.QueryResponse other = (com.pilosa.client.Internal.QueryResponse) obj;
-
-            boolean result = true;
-            result = result && getErr()
-                    .equals(other.getErr());
-            result = result && getResultsList()
-                    .equals(other.getResultsList());
-            result = result && getProfilesList()
-                    .equals(other.getProfilesList());
-            return result;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public Builder removeResults(int index) {
+        if (resultsBuilder_ == null) {
+          ensureResultsIsMutable();
+          results_.remove(index);
+          onChanged();
+        } else {
+          resultsBuilder_.remove(index);
         }
+        return this;
+      }
 
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + ERR_FIELD_NUMBER;
-            hash = (53 * hash) + getErr().hashCode();
-            if (getResultsCount() > 0) {
-                hash = (37 * hash) + RESULTS_FIELD_NUMBER;
-                hash = (53 * hash) + getResultsList().hashCode();
-            }
-            if (getProfilesCount() > 0) {
-                hash = (37 * hash) + PROFILES_FIELD_NUMBER;
-                hash = (53 * hash) + getProfilesList().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public com.pilosa.client.Internal.QueryResult.Builder getResultsBuilder(
+              int index) {
+        return getResultsFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
+              int index) {
+        if (resultsBuilder_ == null) {
+          return results_.get(index);
+        } else {
+          return resultsBuilder_.getMessageOrBuilder(index);
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
+      getResultsOrBuilderList() {
+        if (resultsBuilder_ != null) {
+          return resultsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(results_);
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder() {
+        return getResultsFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.QueryResult.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder(
+              int index) {
+        return getResultsFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.QueryResult.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.QueryResult Results = 2;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.QueryResult.Builder>
+      getResultsBuilderList() {
+        return getResultsFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>
+      getResultsFieldBuilder() {
+        if (resultsBuilder_ == null) {
+          resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>(
+                  results_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          results_ = null;
         }
+        return resultsBuilder_;
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
+      private java.util.List<com.pilosa.client.Internal.Profile> profiles_ =
+              java.util.Collections.emptyList();
+
+      private void ensureProfilesIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>(profiles_);
+          bitField0_ |= 0x00000004;
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder> profilesBuilder_;
+
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
+        if (profilesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(profiles_);
+        } else {
+          return profilesBuilder_.getMessageList();
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public int getProfilesCount() {
+        if (profilesBuilder_ == null) {
+          return profiles_.size();
+        } else {
+          return profilesBuilder_.getCount();
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public com.pilosa.client.Internal.Profile getProfiles(int index) {
+        if (profilesBuilder_ == null) {
+          return profiles_.get(index);
+        } else {
+          return profilesBuilder_.getMessage(index);
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder setProfiles(
+              int index, com.pilosa.client.Internal.Profile value) {
+        if (profilesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProfilesIsMutable();
+          profiles_.set(index, value);
+          onChanged();
+        } else {
+          profilesBuilder_.setMessage(index, value);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder setProfiles(
+              int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
+        if (profilesBuilder_ == null) {
+          ensureProfilesIsMutable();
+          profiles_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          profilesBuilder_.setMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder addProfiles(com.pilosa.client.Internal.Profile value) {
+        if (profilesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProfilesIsMutable();
+          profiles_.add(value);
+          onChanged();
+        } else {
+          profilesBuilder_.addMessage(value);
         }
+        return this;
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder addProfiles(
+              int index, com.pilosa.client.Internal.Profile value) {
+        if (profilesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureProfilesIsMutable();
+          profiles_.add(index, value);
+          onChanged();
+        } else {
+          profilesBuilder_.addMessage(index, value);
         }
+        return this;
+      }
 
-        public Builder newBuilderForType() {
-            return newBuilder();
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder addProfiles(
+              com.pilosa.client.Internal.Profile.Builder builderForValue) {
+        if (profilesBuilder_ == null) {
+          ensureProfilesIsMutable();
+          profiles_.add(builderForValue.build());
+          onChanged();
+        } else {
+          profilesBuilder_.addMessage(builderForValue.build());
         }
+        return this;
+      }
 
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder addProfiles(
+              int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
+        if (profilesBuilder_ == null) {
+          ensureProfilesIsMutable();
+          profiles_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          profilesBuilder_.addMessage(index, builderForValue.build());
         }
+        return this;
+      }
 
-        public static Builder newBuilder(com.pilosa.client.Internal.QueryResponse prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder addAllProfiles(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.Profile> values) {
+        if (profilesBuilder_ == null) {
+          ensureProfilesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, profiles_);
+          onChanged();
+        } else {
+          profilesBuilder_.addAllMessages(values);
         }
+        return this;
+      }
 
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder clearProfiles() {
+        if (profilesBuilder_ == null) {
+          profiles_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          profilesBuilder_.clear();
         }
+        return this;
+      }
 
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public Builder removeProfiles(int index) {
+        if (profilesBuilder_ == null) {
+          ensureProfilesIsMutable();
+          profiles_.remove(index);
+          onChanged();
+        } else {
+          profilesBuilder_.remove(index);
         }
-
-        /**
-         * Protobuf type {@code internal.QueryResponse}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.QueryResponse)
-                com.pilosa.client.Internal.QueryResponseOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.QueryResponse.class, com.pilosa.client.Internal.QueryResponse.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.QueryResponse.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                    getResultsFieldBuilder();
-                    getProfilesFieldBuilder();
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                err_ = "";
-
-                if (resultsBuilder_ == null) {
-                    results_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                } else {
-                    resultsBuilder_.clear();
-                }
-                if (profilesBuilder_ == null) {
-                    profiles_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000004);
-                } else {
-                    profilesBuilder_.clear();
-                }
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResponse_descriptor;
-            }
-
-            public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.QueryResponse.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.QueryResponse build() {
-                com.pilosa.client.Internal.QueryResponse result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.QueryResponse buildPartial() {
-                com.pilosa.client.Internal.QueryResponse result = new com.pilosa.client.Internal.QueryResponse(this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                result.err_ = err_;
-                if (resultsBuilder_ == null) {
-                    if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                        results_ = java.util.Collections.unmodifiableList(results_);
-                        bitField0_ = (bitField0_ & ~0x00000002);
-                    }
-                    result.results_ = results_;
-                } else {
-                    result.results_ = resultsBuilder_.build();
-                }
-                if (profilesBuilder_ == null) {
-                    if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                        profiles_ = java.util.Collections.unmodifiableList(profiles_);
-                        bitField0_ = (bitField0_ & ~0x00000004);
-                    }
-                    result.profiles_ = profiles_;
-                } else {
-                    result.profiles_ = profilesBuilder_.build();
-                }
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.QueryResponse) {
-                    return mergeFrom((com.pilosa.client.Internal.QueryResponse) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.QueryResponse other) {
-                if (other == com.pilosa.client.Internal.QueryResponse.getDefaultInstance()) return this;
-                if (!other.getErr().isEmpty()) {
-                    err_ = other.err_;
-                    onChanged();
-                }
-                if (resultsBuilder_ == null) {
-                    if (!other.results_.isEmpty()) {
-                        if (results_.isEmpty()) {
-                            results_ = other.results_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                        } else {
-                            ensureResultsIsMutable();
-                            results_.addAll(other.results_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.results_.isEmpty()) {
-                        if (resultsBuilder_.isEmpty()) {
-                            resultsBuilder_.dispose();
-                            resultsBuilder_ = null;
-                            results_ = other.results_;
-                            bitField0_ = (bitField0_ & ~0x00000002);
-                            resultsBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getResultsFieldBuilder() : null;
-                        } else {
-                            resultsBuilder_.addAllMessages(other.results_);
-                        }
-                    }
-                }
-                if (profilesBuilder_ == null) {
-                    if (!other.profiles_.isEmpty()) {
-                        if (profiles_.isEmpty()) {
-                            profiles_ = other.profiles_;
-                            bitField0_ = (bitField0_ & ~0x00000004);
-                        } else {
-                            ensureProfilesIsMutable();
-                            profiles_.addAll(other.profiles_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.profiles_.isEmpty()) {
-                        if (profilesBuilder_.isEmpty()) {
-                            profilesBuilder_.dispose();
-                            profilesBuilder_ = null;
-                            profiles_ = other.profiles_;
-                            bitField0_ = (bitField0_ & ~0x00000004);
-                            profilesBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getProfilesFieldBuilder() : null;
-                        } else {
-                            profilesBuilder_.addAllMessages(other.profiles_);
-                        }
-                    }
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.QueryResponse parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.QueryResponse) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private java.lang.Object err_ = "";
-
-            /**
-             * <code>optional string Err = 1;</code>
-             */
-            public java.lang.String getErr() {
-                java.lang.Object ref = err_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    err_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Err = 1;</code>
-             */
-            public com.google.protobuf.ByteString
-            getErrBytes() {
-                java.lang.Object ref = err_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    err_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Err = 1;</code>
-             */
-            public Builder setErr(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                err_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Err = 1;</code>
-             */
-            public Builder clearErr() {
-
-                err_ = getDefaultInstance().getErr();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Err = 1;</code>
-             */
-            public Builder setErrBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                err_ = value;
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<com.pilosa.client.Internal.QueryResult> results_ =
-                    java.util.Collections.emptyList();
-
-            private void ensureResultsIsMutable() {
-                if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-                    results_ = new java.util.ArrayList<com.pilosa.client.Internal.QueryResult>(results_);
-                    bitField0_ |= 0x00000002;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder> resultsBuilder_;
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.QueryResult> getResultsList() {
-                if (resultsBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(results_);
-                } else {
-                    return resultsBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public int getResultsCount() {
-                if (resultsBuilder_ == null) {
-                    return results_.size();
-                } else {
-                    return resultsBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public com.pilosa.client.Internal.QueryResult getResults(int index) {
-                if (resultsBuilder_ == null) {
-                    return results_.get(index);
-                } else {
-                    return resultsBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder setResults(
-                    int index, com.pilosa.client.Internal.QueryResult value) {
-                if (resultsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureResultsIsMutable();
-                    results_.set(index, value);
-                    onChanged();
-                } else {
-                    resultsBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder setResults(
-                    int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
-                if (resultsBuilder_ == null) {
-                    ensureResultsIsMutable();
-                    results_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    resultsBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder addResults(com.pilosa.client.Internal.QueryResult value) {
-                if (resultsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureResultsIsMutable();
-                    results_.add(value);
-                    onChanged();
-                } else {
-                    resultsBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder addResults(
-                    int index, com.pilosa.client.Internal.QueryResult value) {
-                if (resultsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureResultsIsMutable();
-                    results_.add(index, value);
-                    onChanged();
-                } else {
-                    resultsBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder addResults(
-                    com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
-                if (resultsBuilder_ == null) {
-                    ensureResultsIsMutable();
-                    results_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    resultsBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder addResults(
-                    int index, com.pilosa.client.Internal.QueryResult.Builder builderForValue) {
-                if (resultsBuilder_ == null) {
-                    ensureResultsIsMutable();
-                    results_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    resultsBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder addAllResults(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.QueryResult> values) {
-                if (resultsBuilder_ == null) {
-                    ensureResultsIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, results_);
-                    onChanged();
-                } else {
-                    resultsBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder clearResults() {
-                if (resultsBuilder_ == null) {
-                    results_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000002);
-                    onChanged();
-                } else {
-                    resultsBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public Builder removeResults(int index) {
-                if (resultsBuilder_ == null) {
-                    ensureResultsIsMutable();
-                    results_.remove(index);
-                    onChanged();
-                } else {
-                    resultsBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public com.pilosa.client.Internal.QueryResult.Builder getResultsBuilder(
-                    int index) {
-                return getResultsFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public com.pilosa.client.Internal.QueryResultOrBuilder getResultsOrBuilder(
-                    int index) {
-                if (resultsBuilder_ == null) {
-                    return results_.get(index);
-                } else {
-                    return resultsBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.QueryResultOrBuilder>
-            getResultsOrBuilderList() {
-                if (resultsBuilder_ != null) {
-                    return resultsBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(results_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder() {
-                return getResultsFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.QueryResult.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public com.pilosa.client.Internal.QueryResult.Builder addResultsBuilder(
-                    int index) {
-                return getResultsFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.QueryResult.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.QueryResult Results = 2;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.QueryResult.Builder>
-            getResultsBuilderList() {
-                return getResultsFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>
-            getResultsFieldBuilder() {
-                if (resultsBuilder_ == null) {
-                    resultsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.QueryResult, com.pilosa.client.Internal.QueryResult.Builder, com.pilosa.client.Internal.QueryResultOrBuilder>(
-                            results_,
-                            ((bitField0_ & 0x00000002) == 0x00000002),
-                            getParentForChildren(),
-                            isClean());
-                    results_ = null;
-                }
-                return resultsBuilder_;
-            }
-
-            private java.util.List<com.pilosa.client.Internal.Profile> profiles_ =
-                    java.util.Collections.emptyList();
-
-            private void ensureProfilesIsMutable() {
-                if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-                    profiles_ = new java.util.ArrayList<com.pilosa.client.Internal.Profile>(profiles_);
-                    bitField0_ |= 0x00000004;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder> profilesBuilder_;
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Profile> getProfilesList() {
-                if (profilesBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(profiles_);
-                } else {
-                    return profilesBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public int getProfilesCount() {
-                if (profilesBuilder_ == null) {
-                    return profiles_.size();
-                } else {
-                    return profilesBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public com.pilosa.client.Internal.Profile getProfiles(int index) {
-                if (profilesBuilder_ == null) {
-                    return profiles_.get(index);
-                } else {
-                    return profilesBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder setProfiles(
-                    int index, com.pilosa.client.Internal.Profile value) {
-                if (profilesBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureProfilesIsMutable();
-                    profiles_.set(index, value);
-                    onChanged();
-                } else {
-                    profilesBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder setProfiles(
-                    int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
-                if (profilesBuilder_ == null) {
-                    ensureProfilesIsMutable();
-                    profiles_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    profilesBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder addProfiles(com.pilosa.client.Internal.Profile value) {
-                if (profilesBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureProfilesIsMutable();
-                    profiles_.add(value);
-                    onChanged();
-                } else {
-                    profilesBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder addProfiles(
-                    int index, com.pilosa.client.Internal.Profile value) {
-                if (profilesBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensureProfilesIsMutable();
-                    profiles_.add(index, value);
-                    onChanged();
-                } else {
-                    profilesBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder addProfiles(
-                    com.pilosa.client.Internal.Profile.Builder builderForValue) {
-                if (profilesBuilder_ == null) {
-                    ensureProfilesIsMutable();
-                    profiles_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    profilesBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder addProfiles(
-                    int index, com.pilosa.client.Internal.Profile.Builder builderForValue) {
-                if (profilesBuilder_ == null) {
-                    ensureProfilesIsMutable();
-                    profiles_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    profilesBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder addAllProfiles(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.Profile> values) {
-                if (profilesBuilder_ == null) {
-                    ensureProfilesIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, profiles_);
-                    onChanged();
-                } else {
-                    profilesBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder clearProfiles() {
-                if (profilesBuilder_ == null) {
-                    profiles_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000004);
-                    onChanged();
-                } else {
-                    profilesBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public Builder removeProfiles(int index) {
-                if (profilesBuilder_ == null) {
-                    ensureProfilesIsMutable();
-                    profiles_.remove(index);
-                    onChanged();
-                } else {
-                    profilesBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public com.pilosa.client.Internal.Profile.Builder getProfilesBuilder(
-                    int index) {
-                return getProfilesFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
-                    int index) {
-                if (profilesBuilder_ == null) {
-                    return profiles_.get(index);
-                } else {
-                    return profilesBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
-            getProfilesOrBuilderList() {
-                if (profilesBuilder_ != null) {
-                    return profilesBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(profiles_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder() {
-                return getProfilesFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.Profile.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder(
-                    int index) {
-                return getProfilesFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.Profile.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Profile Profiles = 3;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Profile.Builder>
-            getProfilesBuilderList() {
-                return getProfilesFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>
-            getProfilesFieldBuilder() {
-                if (profilesBuilder_ == null) {
-                    profilesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>(
-                            profiles_,
-                            ((bitField0_ & 0x00000004) == 0x00000004),
-                            getParentForChildren(),
-                            isClean());
-                    profiles_ = null;
-                }
-                return profilesBuilder_;
-            }
-
-            public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-
-            // @@protoc_insertion_point(builder_scope:internal.QueryResponse)
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public com.pilosa.client.Internal.Profile.Builder getProfilesBuilder(
+              int index) {
+        return getProfilesFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public com.pilosa.client.Internal.ProfileOrBuilder getProfilesOrBuilder(
+              int index) {
+        if (profilesBuilder_ == null) {
+          return profiles_.get(index);  } else {
+          return profilesBuilder_.getMessageOrBuilder(index);
         }
+      }
 
-        // @@protoc_insertion_point(class_scope:internal.QueryResponse)
-    private static final com.pilosa.client.Internal.QueryResponse DEFAULT_INSTANCE;
-
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResponse();
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.ProfileOrBuilder>
+      getProfilesOrBuilderList() {
+        if (profilesBuilder_ != null) {
+          return profilesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(profiles_);
         }
+      }
 
-        public static com.pilosa.client.Internal.QueryResponse getDefaultInstance() {
-            return DEFAULT_INSTANCE;
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder() {
+        return getProfilesFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.Profile.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public com.pilosa.client.Internal.Profile.Builder addProfilesBuilder(
+              int index) {
+        return getProfilesFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.Profile.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Profile Profiles = 3;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Profile.Builder>
+      getProfilesBuilderList() {
+        return getProfilesFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>
+      getProfilesFieldBuilder() {
+        if (profilesBuilder_ == null) {
+          profilesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.Profile, com.pilosa.client.Internal.Profile.Builder, com.pilosa.client.Internal.ProfileOrBuilder>(
+                  profiles_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          profiles_ = null;
         }
+        return profilesBuilder_;
+      }
 
-        private static final com.google.protobuf.Parser<QueryResponse>
-                PARSER = new com.google.protobuf.AbstractParser<QueryResponse>() {
-            public QueryResponse parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new QueryResponse(input, extensionRegistry);
-            }
-        };
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        public static com.google.protobuf.Parser<QueryResponse> parser() {
-            return PARSER;
-        }
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
 
-        @java.lang.Override
-        public com.google.protobuf.Parser<QueryResponse> getParserForType() {
-            return PARSER;
-        }
 
-        public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
+      // @@protoc_insertion_point(builder_scope:internal.QueryResponse)
     }
 
-    public interface QueryResultOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.QueryResult)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.QueryResponse)
+    private static final com.pilosa.client.Internal.QueryResponse DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        boolean hasBitmap();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResponse();
+    }
 
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        com.pilosa.client.Internal.Bitmap getBitmap();
+    public static com.pilosa.client.Internal.QueryResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder();
+    private static final com.google.protobuf.Parser<QueryResponse>
+            PARSER = new com.google.protobuf.AbstractParser<QueryResponse>() {
+      public QueryResponse parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QueryResponse(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>optional uint64 N = 2;</code>
-         */
-        long getN();
+    public static com.google.protobuf.Parser<QueryResponse> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        java.util.List<com.pilosa.client.Internal.Pair>
-        getPairsList();
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryResponse> getParserForType() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        com.pilosa.client.Internal.Pair getPairs(int index);
+    public com.pilosa.client.Internal.QueryResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        int getPairsCount();
+  }
 
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
-        getPairsOrBuilderList();
+  public interface QueryResultOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.QueryResult)
+          com.google.protobuf.MessageOrBuilder {
 
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
-                int index);
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    boolean hasBitmap();
 
-        /**
-         * <code>optional bool Changed = 4;</code>
-         */
-        boolean getChanged();
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    com.pilosa.client.Internal.Bitmap getBitmap();
+
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder();
+
+    /**
+     * <code>optional uint64 N = 2;</code>
+     */
+    long getN();
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    java.util.List<com.pilosa.client.Internal.Pair>
+    getPairsList();
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    com.pilosa.client.Internal.Pair getPairs(int index);
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    int getPairsCount();
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
+    getPairsOrBuilderList();
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
+            int index);
+
+    /**
+     * <code>optional bool Changed = 4;</code>
+     */
+    boolean getChanged();
+  }
+
+  /**
+   * Protobuf type {@code internal.QueryResult}
+   */
+  public static final class QueryResult extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.QueryResult)
+          QueryResultOrBuilder {
+    // Use QueryResult.newBuilder() to construct.
+    private QueryResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private QueryResult() {
+      n_ = 0L;
+      pairs_ = java.util.Collections.emptyList();
+      changed_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private QueryResult(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.pilosa.client.Internal.Bitmap.Builder subBuilder = null;
+              if (bitmap_ != null) {
+                subBuilder = bitmap_.toBuilder();
+              }
+              bitmap_ = input.readMessage(com.pilosa.client.Internal.Bitmap.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(bitmap_);
+                bitmap_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 16: {
+
+              n_ = input.readUInt64();
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              pairs_.add(
+                      input.readMessage(com.pilosa.client.Internal.Pair.parser(), extensionRegistry));
+              break;
+            }
+            case 32: {
+
+              changed_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          pairs_ = java.util.Collections.unmodifiableList(pairs_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int BITMAP_FIELD_NUMBER = 1;
+    private com.pilosa.client.Internal.Bitmap bitmap_;
+
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    public boolean hasBitmap() {
+      return bitmap_ != null;
+    }
+
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    public com.pilosa.client.Internal.Bitmap getBitmap() {
+      return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
+    }
+
+    /**
+     * <code>optional .internal.Bitmap Bitmap = 1;</code>
+     */
+    public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
+      return getBitmap();
+    }
+
+    public static final int N_FIELD_NUMBER = 2;
+    private long n_;
+
+    /**
+     * <code>optional uint64 N = 2;</code>
+     */
+    public long getN() {
+      return n_;
+    }
+
+    public static final int PAIRS_FIELD_NUMBER = 3;
+    private java.util.List<com.pilosa.client.Internal.Pair> pairs_;
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
+      return pairs_;
+    }
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
+    getPairsOrBuilderList() {
+      return pairs_;
+    }
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    public int getPairsCount() {
+      return pairs_.size();
+    }
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    public com.pilosa.client.Internal.Pair getPairs(int index) {
+      return pairs_.get(index);
+    }
+
+    /**
+     * <code>repeated .internal.Pair Pairs = 3;</code>
+     */
+    public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
+            int index) {
+      return pairs_.get(index);
+    }
+
+    public static final int CHANGED_FIELD_NUMBER = 4;
+    private boolean changed_;
+
+    /**
+     * <code>optional bool Changed = 4;</code>
+     */
+    public boolean getChanged() {
+      return changed_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (bitmap_ != null) {
+        output.writeMessage(1, getBitmap());
+      }
+      if (n_ != 0L) {
+        output.writeUInt64(2, n_);
+      }
+      for (int i = 0; i < pairs_.size(); i++) {
+        output.writeMessage(3, pairs_.get(i));
+      }
+      if (changed_ != false) {
+        output.writeBool(4, changed_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (bitmap_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(1, getBitmap());
+      }
+      if (n_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(2, n_);
+      }
+      for (int i = 0; i < pairs_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeMessageSize(3, pairs_.get(i));
+      }
+      if (changed_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(4, changed_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.QueryResult)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.QueryResult other = (com.pilosa.client.Internal.QueryResult) obj;
+
+      boolean result = true;
+      result = result && (hasBitmap() == other.hasBitmap());
+      if (hasBitmap()) {
+        result = result && getBitmap()
+                .equals(other.getBitmap());
+      }
+      result = result && (getN()
+              == other.getN());
+      result = result && getPairsList()
+              .equals(other.getPairsList());
+      result = result && (getChanged()
+              == other.getChanged());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasBitmap()) {
+        hash = (37 * hash) + BITMAP_FIELD_NUMBER;
+        hash = (53 * hash) + getBitmap().hashCode();
+      }
+      hash = (37 * hash) + N_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getN());
+      if (getPairsCount() > 0) {
+        hash = (37 * hash) + PAIRS_FIELD_NUMBER;
+        hash = (53 * hash) + getPairsList().hashCode();
+      }
+      hash = (37 * hash) + CHANGED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+              getChanged());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.QueryResult parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.QueryResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.QueryResult}
      */
-    public static final class QueryResult extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.QueryResult)
-            QueryResultOrBuilder {
-        // Use QueryResult.newBuilder() to construct.
-        private QueryResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
-        }
-
-        private QueryResult() {
-            n_ = 0L;
-            pairs_ = java.util.Collections.emptyList();
-            changed_ = false;
-        }
-
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
-
-        private QueryResult(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            com.pilosa.client.Internal.Bitmap.Builder subBuilder = null;
-                            if (bitmap_ != null) {
-                                subBuilder = bitmap_.toBuilder();
-                            }
-                            bitmap_ = input.readMessage(com.pilosa.client.Internal.Bitmap.parser(), extensionRegistry);
-                            if (subBuilder != null) {
-                                subBuilder.mergeFrom(bitmap_);
-                                bitmap_ = subBuilder.buildPartial();
-                            }
-
-                            break;
-                        }
-                        case 16: {
-
-                            n_ = input.readUInt64();
-                            break;
-                        }
-                        case 26: {
-                            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                                pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>();
-                mutable_bitField0_ |= 0x00000004;
-                            }
-                            pairs_.add(
-                                    input.readMessage(com.pilosa.client.Internal.Pair.parser(), extensionRegistry));
-                            break;
-                        }
-                        case 32: {
-
-                            changed_ = input.readBool();
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                    pairs_ = java.util.Collections.unmodifiableList(pairs_);
-                }
-                makeExtensionsImmutable();
-            }
-        }
-
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
-        }
-
-        private int bitField0_;
-        public static final int BITMAP_FIELD_NUMBER = 1;
-        private com.pilosa.client.Internal.Bitmap bitmap_;
-
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        public boolean hasBitmap() {
-            return bitmap_ != null;
-        }
-
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        public com.pilosa.client.Internal.Bitmap getBitmap() {
-            return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
-        }
-
-        /**
-         * <code>optional .internal.Bitmap Bitmap = 1;</code>
-         */
-        public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
-            return getBitmap();
-        }
-
-        public static final int N_FIELD_NUMBER = 2;
-        private long n_;
-
-        /**
-         * <code>optional uint64 N = 2;</code>
-         */
-        public long getN() {
-            return n_;
-        }
-
-        public static final int PAIRS_FIELD_NUMBER = 3;
-        private java.util.List<com.pilosa.client.Internal.Pair> pairs_;
-
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
-            return pairs_;
-        }
-
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
-        getPairsOrBuilderList() {
-            return pairs_;
-        }
-
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        public int getPairsCount() {
-            return pairs_.size();
-        }
-
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        public com.pilosa.client.Internal.Pair getPairs(int index) {
-            return pairs_.get(index);
-        }
-
-        /**
-         * <code>repeated .internal.Pair Pairs = 3;</code>
-         */
-        public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
-                int index) {
-            return pairs_.get(index);
-        }
-
-        public static final int CHANGED_FIELD_NUMBER = 4;
-        private boolean changed_;
-
-        /**
-         * <code>optional bool Changed = 4;</code>
-         */
-        public boolean getChanged() {
-            return changed_;
-        }
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            if (bitmap_ != null) {
-                output.writeMessage(1, getBitmap());
-            }
-            if (n_ != 0L) {
-                output.writeUInt64(2, n_);
-            }
-            for (int i = 0; i < pairs_.size(); i++) {
-                output.writeMessage(3, pairs_.get(i));
-            }
-            if (changed_ != false) {
-                output.writeBool(4, changed_);
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (bitmap_ != null) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(1, getBitmap());
-            }
-            if (n_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(2, n_);
-            }
-            for (int i = 0; i < pairs_.size(); i++) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeMessageSize(3, pairs_.get(i));
-            }
-            if (changed_ != false) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeBoolSize(4, changed_);
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.QueryResult)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.QueryResult other = (com.pilosa.client.Internal.QueryResult) obj;
-
-            boolean result = true;
-            result = result && (hasBitmap() == other.hasBitmap());
-            if (hasBitmap()) {
-                result = result && getBitmap()
-                        .equals(other.getBitmap());
-            }
-            result = result && (getN()
-                    == other.getN());
-            result = result && getPairsList()
-                    .equals(other.getPairsList());
-            result = result && (getChanged()
-                    == other.getChanged());
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            if (hasBitmap()) {
-                hash = (37 * hash) + BITMAP_FIELD_NUMBER;
-                hash = (53 * hash) + getBitmap().hashCode();
-            }
-            hash = (37 * hash) + N_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getN());
-            if (getPairsCount() > 0) {
-                hash = (37 * hash) + PAIRS_FIELD_NUMBER;
-                hash = (53 * hash) + getPairsList().hashCode();
-            }
-            hash = (37 * hash) + CHANGED_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-                    getChanged());
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.QueryResult parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.QueryResult prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.QueryResult}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.QueryResult)
-                com.pilosa.client.Internal.QueryResultOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.QueryResult.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                    getPairsFieldBuilder();
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                if (bitmapBuilder_ == null) {
-                    bitmap_ = null;
-                } else {
-                    bitmap_ = null;
-                    bitmapBuilder_ = null;
-                }
-                n_ = 0L;
-
-                if (pairsBuilder_ == null) {
-                    pairs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000004);
-                } else {
-                    pairsBuilder_.clear();
-                }
-                changed_ = false;
-
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
-            }
-
-            public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.QueryResult.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.QueryResult build() {
-                com.pilosa.client.Internal.QueryResult result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.QueryResult buildPartial() {
-                com.pilosa.client.Internal.QueryResult result = new com.pilosa.client.Internal.QueryResult(this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                if (bitmapBuilder_ == null) {
-                    result.bitmap_ = bitmap_;
-                } else {
-                    result.bitmap_ = bitmapBuilder_.build();
-                }
-                result.n_ = n_;
-                if (pairsBuilder_ == null) {
-                    if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                        pairs_ = java.util.Collections.unmodifiableList(pairs_);
-                        bitField0_ = (bitField0_ & ~0x00000004);
-                    }
-                    result.pairs_ = pairs_;
-                } else {
-                    result.pairs_ = pairsBuilder_.build();
-                }
-                result.changed_ = changed_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.QueryResult) {
-                    return mergeFrom((com.pilosa.client.Internal.QueryResult) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.QueryResult other) {
-                if (other == com.pilosa.client.Internal.QueryResult.getDefaultInstance()) return this;
-                if (other.hasBitmap()) {
-                    mergeBitmap(other.getBitmap());
-                }
-                if (other.getN() != 0L) {
-                    setN(other.getN());
-                }
-                if (pairsBuilder_ == null) {
-                    if (!other.pairs_.isEmpty()) {
-                        if (pairs_.isEmpty()) {
-                            pairs_ = other.pairs_;
-                            bitField0_ = (bitField0_ & ~0x00000004);
-                        } else {
-                            ensurePairsIsMutable();
-                            pairs_.addAll(other.pairs_);
-                        }
-                        onChanged();
-                    }
-                } else {
-                    if (!other.pairs_.isEmpty()) {
-                        if (pairsBuilder_.isEmpty()) {
-                            pairsBuilder_.dispose();
-                            pairsBuilder_ = null;
-                            pairs_ = other.pairs_;
-                            bitField0_ = (bitField0_ & ~0x00000004);
-                            pairsBuilder_ =
-                                    com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                                            getPairsFieldBuilder() : null;
-                        } else {
-                            pairsBuilder_.addAllMessages(other.pairs_);
-                        }
-                    }
-                }
-                if (other.getChanged() != false) {
-                    setChanged(other.getChanged());
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.QueryResult parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.QueryResult) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private com.pilosa.client.Internal.Bitmap bitmap_ = null;
-            private com.google.protobuf.SingleFieldBuilderV3<
-                    com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder> bitmapBuilder_;
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public boolean hasBitmap() {
-                return bitmapBuilder_ != null || bitmap_ != null;
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public com.pilosa.client.Internal.Bitmap getBitmap() {
-                if (bitmapBuilder_ == null) {
-                    return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
-                } else {
-                    return bitmapBuilder_.getMessage();
-                }
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public Builder setBitmap(com.pilosa.client.Internal.Bitmap value) {
-                if (bitmapBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    bitmap_ = value;
-                    onChanged();
-                } else {
-                    bitmapBuilder_.setMessage(value);
-                }
-
-                return this;
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public Builder setBitmap(
-                    com.pilosa.client.Internal.Bitmap.Builder builderForValue) {
-                if (bitmapBuilder_ == null) {
-                    bitmap_ = builderForValue.build();
-                    onChanged();
-                } else {
-                    bitmapBuilder_.setMessage(builderForValue.build());
-                }
-
-                return this;
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public Builder mergeBitmap(com.pilosa.client.Internal.Bitmap value) {
-                if (bitmapBuilder_ == null) {
-                    if (bitmap_ != null) {
-                        bitmap_ =
-                                com.pilosa.client.Internal.Bitmap.newBuilder(bitmap_).mergeFrom(value).buildPartial();
-                    } else {
-                        bitmap_ = value;
-                    }
-                    onChanged();
-                } else {
-                    bitmapBuilder_.mergeFrom(value);
-                }
-
-                return this;
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public Builder clearBitmap() {
-                if (bitmapBuilder_ == null) {
-                    bitmap_ = null;
-                    onChanged();
-                } else {
-                    bitmap_ = null;
-                    bitmapBuilder_ = null;
-                }
-
-                return this;
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public com.pilosa.client.Internal.Bitmap.Builder getBitmapBuilder() {
-
-                onChanged();
-                return getBitmapFieldBuilder().getBuilder();
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
-                if (bitmapBuilder_ != null) {
-                    return bitmapBuilder_.getMessageOrBuilder();
-                } else {
-                    return bitmap_ == null ?
-                            com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
-                }
-            }
-
-            /**
-             * <code>optional .internal.Bitmap Bitmap = 1;</code>
-             */
-            private com.google.protobuf.SingleFieldBuilderV3<
-                    com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>
-            getBitmapFieldBuilder() {
-                if (bitmapBuilder_ == null) {
-                    bitmapBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                            com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>(
-                            getBitmap(),
-                            getParentForChildren(),
-                            isClean());
-                    bitmap_ = null;
-                }
-                return bitmapBuilder_;
-            }
-
-            private long n_;
-
-            /**
-             * <code>optional uint64 N = 2;</code>
-             */
-            public long getN() {
-                return n_;
-            }
-
-            /**
-             * <code>optional uint64 N = 2;</code>
-             */
-            public Builder setN(long value) {
-
-                n_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 N = 2;</code>
-             */
-            public Builder clearN() {
-
-                n_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<com.pilosa.client.Internal.Pair> pairs_ =
-                    java.util.Collections.emptyList();
-
-            private void ensurePairsIsMutable() {
-                if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-                    pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>(pairs_);
-                    bitField0_ |= 0x00000004;
-                }
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder> pairsBuilder_;
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
-                if (pairsBuilder_ == null) {
-                    return java.util.Collections.unmodifiableList(pairs_);
-                } else {
-                    return pairsBuilder_.getMessageList();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public int getPairsCount() {
-                if (pairsBuilder_ == null) {
-                    return pairs_.size();
-                } else {
-                    return pairsBuilder_.getCount();
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public com.pilosa.client.Internal.Pair getPairs(int index) {
-                if (pairsBuilder_ == null) {
-                    return pairs_.get(index);
-                } else {
-                    return pairsBuilder_.getMessage(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder setPairs(
-                    int index, com.pilosa.client.Internal.Pair value) {
-                if (pairsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensurePairsIsMutable();
-                    pairs_.set(index, value);
-                    onChanged();
-                } else {
-                    pairsBuilder_.setMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder setPairs(
-                    int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
-                if (pairsBuilder_ == null) {
-                    ensurePairsIsMutable();
-                    pairs_.set(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    pairsBuilder_.setMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder addPairs(com.pilosa.client.Internal.Pair value) {
-                if (pairsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensurePairsIsMutable();
-                    pairs_.add(value);
-                    onChanged();
-                } else {
-                    pairsBuilder_.addMessage(value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder addPairs(
-                    int index, com.pilosa.client.Internal.Pair value) {
-                if (pairsBuilder_ == null) {
-                    if (value == null) {
-                        throw new NullPointerException();
-                    }
-                    ensurePairsIsMutable();
-                    pairs_.add(index, value);
-                    onChanged();
-                } else {
-                    pairsBuilder_.addMessage(index, value);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder addPairs(
-                    com.pilosa.client.Internal.Pair.Builder builderForValue) {
-                if (pairsBuilder_ == null) {
-                    ensurePairsIsMutable();
-                    pairs_.add(builderForValue.build());
-                    onChanged();
-                } else {
-                    pairsBuilder_.addMessage(builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder addPairs(
-                    int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
-                if (pairsBuilder_ == null) {
-                    ensurePairsIsMutable();
-                    pairs_.add(index, builderForValue.build());
-                    onChanged();
-                } else {
-                    pairsBuilder_.addMessage(index, builderForValue.build());
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder addAllPairs(
-                    java.lang.Iterable<? extends com.pilosa.client.Internal.Pair> values) {
-                if (pairsBuilder_ == null) {
-                    ensurePairsIsMutable();
-                    com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                            values, pairs_);
-                    onChanged();
-                } else {
-                    pairsBuilder_.addAllMessages(values);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder clearPairs() {
-                if (pairsBuilder_ == null) {
-                    pairs_ = java.util.Collections.emptyList();
-                    bitField0_ = (bitField0_ & ~0x00000004);
-                    onChanged();
-                } else {
-                    pairsBuilder_.clear();
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public Builder removePairs(int index) {
-                if (pairsBuilder_ == null) {
-                    ensurePairsIsMutable();
-                    pairs_.remove(index);
-                    onChanged();
-                } else {
-                    pairsBuilder_.remove(index);
-                }
-                return this;
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public com.pilosa.client.Internal.Pair.Builder getPairsBuilder(
-                    int index) {
-                return getPairsFieldBuilder().getBuilder(index);
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
-                    int index) {
-                if (pairsBuilder_ == null) {
-                    return pairs_.get(index);
-                } else {
-                    return pairsBuilder_.getMessageOrBuilder(index);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
-            getPairsOrBuilderList() {
-                if (pairsBuilder_ != null) {
-                    return pairsBuilder_.getMessageOrBuilderList();
-                } else {
-                    return java.util.Collections.unmodifiableList(pairs_);
-                }
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public com.pilosa.client.Internal.Pair.Builder addPairsBuilder() {
-                return getPairsFieldBuilder().addBuilder(
-                        com.pilosa.client.Internal.Pair.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public com.pilosa.client.Internal.Pair.Builder addPairsBuilder(
-                    int index) {
-                return getPairsFieldBuilder().addBuilder(
-                        index, com.pilosa.client.Internal.Pair.getDefaultInstance());
-            }
-
-            /**
-             * <code>repeated .internal.Pair Pairs = 3;</code>
-             */
-            public java.util.List<com.pilosa.client.Internal.Pair.Builder>
-            getPairsBuilderList() {
-                return getPairsFieldBuilder().getBuilderList();
-            }
-
-            private com.google.protobuf.RepeatedFieldBuilderV3<
-                    com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>
-            getPairsFieldBuilder() {
-                if (pairsBuilder_ == null) {
-                    pairsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-                            com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>(
-                            pairs_,
-                            ((bitField0_ & 0x00000004) == 0x00000004),
-                            getParentForChildren(),
-                    isClean());
-            pairs_ = null;
-        }
-          return pairsBuilder_;
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.QueryResult)
+            com.pilosa.client.Internal.QueryResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
       }
 
-            private boolean changed_;
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
+      }
 
-            /**
-             * <code>optional bool Changed = 4;</code>
-             */
-            public boolean getChanged() {
-                return changed_;
+      // Construct using com.pilosa.client.Internal.QueryResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getPairsFieldBuilder();
+        }
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (bitmapBuilder_ == null) {
+          bitmap_ = null;
+        } else {
+          bitmap_ = null;
+          bitmapBuilder_ = null;
+        }
+        n_ = 0L;
+
+        if (pairsBuilder_ == null) {
+          pairs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          pairsBuilder_.clear();
+        }
+        changed_ = false;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
+      }
+
+      public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.QueryResult.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.QueryResult build() {
+        com.pilosa.client.Internal.QueryResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.pilosa.client.Internal.QueryResult buildPartial() {
+        com.pilosa.client.Internal.QueryResult result = new com.pilosa.client.Internal.QueryResult(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (bitmapBuilder_ == null) {
+          result.bitmap_ = bitmap_;
+        } else {
+          result.bitmap_ = bitmapBuilder_.build();
+        }
+        result.n_ = n_;
+        if (pairsBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            pairs_ = java.util.Collections.unmodifiableList(pairs_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.pairs_ = pairs_;
+        } else {
+          result.pairs_ = pairsBuilder_.build();
+        }
+        result.changed_ = changed_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.QueryResult) {
+          return mergeFrom((com.pilosa.client.Internal.QueryResult) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pilosa.client.Internal.QueryResult other) {
+        if (other == com.pilosa.client.Internal.QueryResult.getDefaultInstance()) return this;
+        if (other.hasBitmap()) {
+          mergeBitmap(other.getBitmap());
+        }
+        if (other.getN() != 0L) {
+          setN(other.getN());
+        }
+        if (pairsBuilder_ == null) {
+          if (!other.pairs_.isEmpty()) {
+            if (pairs_.isEmpty()) {
+              pairs_ = other.pairs_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensurePairsIsMutable();
+              pairs_.addAll(other.pairs_);
             }
-
-            /**
-             * <code>optional bool Changed = 4;</code>
-             */
-            public Builder setChanged(boolean value) {
-
-                changed_ = value;
-                onChanged();
-                return this;
+            onChanged();
+          }
+        } else {
+          if (!other.pairs_.isEmpty()) {
+            if (pairsBuilder_.isEmpty()) {
+              pairsBuilder_.dispose();
+              pairsBuilder_ = null;
+              pairs_ = other.pairs_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              pairsBuilder_ =
+                      com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                              getPairsFieldBuilder() : null;
+            } else {
+              pairsBuilder_.addAllMessages(other.pairs_);
             }
+          }
+        }
+        if (other.getChanged() != false) {
+          setChanged(other.getChanged());
+        }
+        onChanged();
+        return this;
+      }
 
-            /**
-             * <code>optional bool Changed = 4;</code>
-             */
-            public Builder clearChanged() {
+      public final boolean isInitialized() {
+        return true;
+      }
 
-                changed_ = false;
-                onChanged();
-                return this;
-            }
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.QueryResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.QueryResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
 
-            public final Builder setUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
+      private int bitField0_;
 
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
+      private com.pilosa.client.Internal.Bitmap bitmap_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+              com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder> bitmapBuilder_;
 
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public boolean hasBitmap() {
+        return bitmapBuilder_ != null || bitmap_ != null;
+      }
 
-            // @@protoc_insertion_point(builder_scope:internal.QueryResult)
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public com.pilosa.client.Internal.Bitmap getBitmap() {
+        if (bitmapBuilder_ == null) {
+          return bitmap_ == null ? com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
+        } else {
+          return bitmapBuilder_.getMessage();
+        }
+      }
+
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public Builder setBitmap(com.pilosa.client.Internal.Bitmap value) {
+        if (bitmapBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitmap_ = value;
+          onChanged();
+        } else {
+          bitmapBuilder_.setMessage(value);
         }
 
-        // @@protoc_insertion_point(class_scope:internal.QueryResult)
-        private static final com.pilosa.client.Internal.QueryResult DEFAULT_INSTANCE;
+        return this;
+      }
 
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResult();
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public Builder setBitmap(
+              com.pilosa.client.Internal.Bitmap.Builder builderForValue) {
+        if (bitmapBuilder_ == null) {
+          bitmap_ = builderForValue.build();
+          onChanged();
+        } else {
+          bitmapBuilder_.setMessage(builderForValue.build());
         }
 
-        public static com.pilosa.client.Internal.QueryResult getDefaultInstance() {
-            return DEFAULT_INSTANCE;
+        return this;
+      }
+
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public Builder mergeBitmap(com.pilosa.client.Internal.Bitmap value) {
+        if (bitmapBuilder_ == null) {
+          if (bitmap_ != null) {
+            bitmap_ =
+                    com.pilosa.client.Internal.Bitmap.newBuilder(bitmap_).mergeFrom(value).buildPartial();
+          } else {
+            bitmap_ = value;
+          }
+          onChanged();
+        } else {
+          bitmapBuilder_.mergeFrom(value);
         }
 
-        private static final com.google.protobuf.Parser<QueryResult>
-                PARSER = new com.google.protobuf.AbstractParser<QueryResult>() {
-            public QueryResult parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new QueryResult(input, extensionRegistry);
-            }
-        };
+        return this;
+      }
 
-        public static com.google.protobuf.Parser<QueryResult> parser() {
-            return PARSER;
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public Builder clearBitmap() {
+        if (bitmapBuilder_ == null) {
+          bitmap_ = null;
+          onChanged();
+        } else {
+          bitmap_ = null;
+          bitmapBuilder_ = null;
         }
 
-        @java.lang.Override
-        public com.google.protobuf.Parser<QueryResult> getParserForType() {
-            return PARSER;
-        }
+        return this;
+      }
 
-        public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public com.pilosa.client.Internal.Bitmap.Builder getBitmapBuilder() {
 
+        onChanged();
+        return getBitmapFieldBuilder().getBuilder();
+      }
+
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      public com.pilosa.client.Internal.BitmapOrBuilder getBitmapOrBuilder() {
+        if (bitmapBuilder_ != null) {
+          return bitmapBuilder_.getMessageOrBuilder();
+        } else {
+          return bitmap_ == null ?
+                  com.pilosa.client.Internal.Bitmap.getDefaultInstance() : bitmap_;
+        }
+      }
+
+      /**
+       * <code>optional .internal.Bitmap Bitmap = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+              com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>
+      getBitmapFieldBuilder() {
+        if (bitmapBuilder_ == null) {
+          bitmapBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                  com.pilosa.client.Internal.Bitmap, com.pilosa.client.Internal.Bitmap.Builder, com.pilosa.client.Internal.BitmapOrBuilder>(
+                  getBitmap(),
+                  getParentForChildren(),
+                  isClean());
+          bitmap_ = null;
+        }
+        return bitmapBuilder_;
+      }
+
+      private long n_;
+
+      /**
+       * <code>optional uint64 N = 2;</code>
+       */
+      public long getN() {
+        return n_;
+      }
+
+      /**
+       * <code>optional uint64 N = 2;</code>
+       */
+      public Builder setN(long value) {
+
+        n_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 N = 2;</code>
+       */
+      public Builder clearN() {
+
+        n_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.pilosa.client.Internal.Pair> pairs_ =
+              java.util.Collections.emptyList();
+
+      private void ensurePairsIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>(pairs_);
+          bitField0_ |= 0x00000004;
+        }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder> pairsBuilder_;
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Pair> getPairsList() {
+        if (pairsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(pairs_);
+        } else {
+          return pairsBuilder_.getMessageList();
+        }
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public int getPairsCount() {
+        if (pairsBuilder_ == null) {
+          return pairs_.size();
+        } else {
+          return pairsBuilder_.getCount();
+        }
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public com.pilosa.client.Internal.Pair getPairs(int index) {
+        if (pairsBuilder_ == null) {
+          return pairs_.get(index);
+        } else {
+          return pairsBuilder_.getMessage(index);
+        }
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder setPairs(
+              int index, com.pilosa.client.Internal.Pair value) {
+        if (pairsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairsIsMutable();
+          pairs_.set(index, value);
+          onChanged();
+        } else {
+          pairsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder setPairs(
+              int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
+        if (pairsBuilder_ == null) {
+          ensurePairsIsMutable();
+          pairs_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pairsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder addPairs(com.pilosa.client.Internal.Pair value) {
+        if (pairsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairsIsMutable();
+          pairs_.add(value);
+          onChanged();
+        } else {
+          pairsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder addPairs(
+              int index, com.pilosa.client.Internal.Pair value) {
+        if (pairsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePairsIsMutable();
+          pairs_.add(index, value);
+          onChanged();
+        } else {
+          pairsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder addPairs(
+              com.pilosa.client.Internal.Pair.Builder builderForValue) {
+        if (pairsBuilder_ == null) {
+          ensurePairsIsMutable();
+          pairs_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pairsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder addPairs(
+              int index, com.pilosa.client.Internal.Pair.Builder builderForValue) {
+        if (pairsBuilder_ == null) {
+          ensurePairsIsMutable();
+          pairs_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pairsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder addAllPairs(
+              java.lang.Iterable<? extends com.pilosa.client.Internal.Pair> values) {
+        if (pairsBuilder_ == null) {
+          ensurePairsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                  values, pairs_);
+          onChanged();
+        } else {
+          pairsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder clearPairs() {
+        if (pairsBuilder_ == null) {
+          pairs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          pairsBuilder_.clear();
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public Builder removePairs(int index) {
+        if (pairsBuilder_ == null) {
+          ensurePairsIsMutable();
+          pairs_.remove(index);
+          onChanged();
+        } else {
+          pairsBuilder_.remove(index);
+        }
+        return this;
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public com.pilosa.client.Internal.Pair.Builder getPairsBuilder(
+              int index) {
+        return getPairsFieldBuilder().getBuilder(index);
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
+              int index) {
+        if (pairsBuilder_ == null) {
+          return pairs_.get(index);
+        } else {
+          return pairsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public java.util.List<? extends com.pilosa.client.Internal.PairOrBuilder>
+      getPairsOrBuilderList() {
+        if (pairsBuilder_ != null) {
+          return pairsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(pairs_);
+        }
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public com.pilosa.client.Internal.Pair.Builder addPairsBuilder() {
+        return getPairsFieldBuilder().addBuilder(
+                com.pilosa.client.Internal.Pair.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public com.pilosa.client.Internal.Pair.Builder addPairsBuilder(
+              int index) {
+        return getPairsFieldBuilder().addBuilder(
+                index, com.pilosa.client.Internal.Pair.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .internal.Pair Pairs = 3;</code>
+       */
+      public java.util.List<com.pilosa.client.Internal.Pair.Builder>
+      getPairsBuilderList() {
+        return getPairsFieldBuilder().getBuilderList();
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>
+      getPairsFieldBuilder() {
+        if (pairsBuilder_ == null) {
+          pairsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+                  com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>(
+                  pairs_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          pairs_ = null;
+        }
+        return pairsBuilder_;
+      }
+
+      private boolean changed_;
+
+      /**
+       * <code>optional bool Changed = 4;</code>
+       */
+      public boolean getChanged() {
+        return changed_;
+      }
+
+      /**
+       * <code>optional bool Changed = 4;</code>
+       */
+      public Builder setChanged(boolean value) {
+
+        changed_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional bool Changed = 4;</code>
+       */
+      public Builder clearChanged() {
+
+        changed_ = false;
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:internal.QueryResult)
     }
 
-    public interface ImportRequestOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:internal.ImportRequest)
-            com.google.protobuf.MessageOrBuilder {
+    // @@protoc_insertion_point(class_scope:internal.QueryResult)
+    private static final com.pilosa.client.Internal.QueryResult DEFAULT_INSTANCE;
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        java.lang.String getDB();
+    static {
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.QueryResult();
+    }
 
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        com.google.protobuf.ByteString
-        getDBBytes();
+    public static com.pilosa.client.Internal.QueryResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        java.lang.String getFrame();
+    private static final com.google.protobuf.Parser<QueryResult>
+            PARSER = new com.google.protobuf.AbstractParser<QueryResult>() {
+      public QueryResult parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new QueryResult(input, extensionRegistry);
+      }
+    };
 
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        com.google.protobuf.ByteString
-        getFrameBytes();
+    public static com.google.protobuf.Parser<QueryResult> parser() {
+      return PARSER;
+    }
 
-        /**
-         * <code>optional uint64 Slice = 3;</code>
-         */
-        long getSlice();
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryResult> getParserForType() {
+      return PARSER;
+    }
 
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        java.util.List<java.lang.Long> getBitmapIDsList();
+    public com.pilosa.client.Internal.QueryResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
 
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        int getBitmapIDsCount();
+  }
 
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        long getBitmapIDs(int index);
+  public interface ImportRequestOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:internal.ImportRequest)
+          com.google.protobuf.MessageOrBuilder {
 
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        java.util.List<java.lang.Long> getProfileIDsList();
+    /**
+     * <code>optional string DB = 1;</code>
+     */
+    java.lang.String getDB();
 
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        int getProfileIDsCount();
+    /**
+     * <code>optional string DB = 1;</code>
+     */
+    com.google.protobuf.ByteString
+    getDBBytes();
 
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        long getProfileIDs(int index);
+    /**
+     * <code>optional string Frame = 2;</code>
+     */
+    java.lang.String getFrame();
 
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        java.util.List<java.lang.Long> getTimestampsList();
+    /**
+     * <code>optional string Frame = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getFrameBytes();
 
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        int getTimestampsCount();
+    /**
+     * <code>optional uint64 Slice = 3;</code>
+     */
+    long getSlice();
 
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        long getTimestamps(int index);
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    java.util.List<java.lang.Long> getBitmapIDsList();
+
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    int getBitmapIDsCount();
+
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    long getBitmapIDs(int index);
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    java.util.List<java.lang.Long> getProfileIDsList();
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    int getProfileIDsCount();
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    long getProfileIDs(int index);
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    java.util.List<java.lang.Long> getTimestampsList();
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    int getTimestampsCount();
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    long getTimestamps(int index);
+  }
+
+  /**
+   * Protobuf type {@code internal.ImportRequest}
+   */
+  public static final class ImportRequest extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:internal.ImportRequest)
+          ImportRequestOrBuilder {
+    // Use ImportRequest.newBuilder() to construct.
+    private ImportRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+
+    private ImportRequest() {
+      dB_ = "";
+      frame_ = "";
+      slice_ = 0L;
+      bitmapIDs_ = java.util.Collections.emptyList();
+      profileIDs_ = java.util.Collections.emptyList();
+      timestamps_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+
+    private ImportRequest(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              dB_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              frame_ = s;
+              break;
+            }
+            case 24: {
+
+              slice_ = input.readUInt64();
+              break;
+            }
+            case 32: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                bitmapIDs_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              bitmapIDs_.add(input.readUInt64());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
+                bitmapIDs_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                bitmapIDs_.add(input.readUInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 40: {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                profileIDs_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              profileIDs_.add(input.readUInt64());
+              break;
+            }
+            case 42: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
+                profileIDs_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                profileIDs_.add(input.readUInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 48: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                timestamps_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              timestamps_.add(input.readInt64());
+              break;
+            }
+            case 50: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020) && input.getBytesUntilLimit() > 0) {
+                timestamps_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                timestamps_.add(input.readInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
+        }
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          profileIDs_ = java.util.Collections.unmodifiableList(profileIDs_);
+        }
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          timestamps_ = java.util.Collections.unmodifiableList(timestamps_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+    getDescriptor() {
+      return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    internalGetFieldAccessorTable() {
+      return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                      com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int DB_FIELD_NUMBER = 1;
+    private volatile java.lang.Object dB_;
+
+    /**
+     * <code>optional string DB = 1;</code>
+     */
+    public java.lang.String getDB() {
+      java.lang.Object ref = dB_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        dB_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string DB = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+    getDBBytes() {
+      java.lang.Object ref = dB_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        dB_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FRAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object frame_;
+
+    /**
+     * <code>optional string Frame = 2;</code>
+     */
+    public java.lang.String getFrame() {
+      java.lang.Object ref = frame_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        frame_ = s;
+        return s;
+      }
+    }
+
+    /**
+     * <code>optional string Frame = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getFrameBytes() {
+      java.lang.Object ref = frame_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        frame_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SLICE_FIELD_NUMBER = 3;
+    private long slice_;
+
+    /**
+     * <code>optional uint64 Slice = 3;</code>
+     */
+    public long getSlice() {
+      return slice_;
+    }
+
+    public static final int BITMAPIDS_FIELD_NUMBER = 4;
+    private java.util.List<java.lang.Long> bitmapIDs_;
+
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getBitmapIDsList() {
+      return bitmapIDs_;
+    }
+
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    public int getBitmapIDsCount() {
+      return bitmapIDs_.size();
+    }
+
+    /**
+     * <code>repeated uint64 BitmapIDs = 4;</code>
+     */
+    public long getBitmapIDs(int index) {
+      return bitmapIDs_.get(index);
+    }
+
+    private int bitmapIDsMemoizedSerializedSize = -1;
+
+    public static final int PROFILEIDS_FIELD_NUMBER = 5;
+    private java.util.List<java.lang.Long> profileIDs_;
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getProfileIDsList() {
+      return profileIDs_;
+    }
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    public int getProfileIDsCount() {
+      return profileIDs_.size();
+    }
+
+    /**
+     * <code>repeated uint64 ProfileIDs = 5;</code>
+     */
+    public long getProfileIDs(int index) {
+      return profileIDs_.get(index);
+    }
+
+    private int profileIDsMemoizedSerializedSize = -1;
+
+    public static final int TIMESTAMPS_FIELD_NUMBER = 6;
+    private java.util.List<java.lang.Long> timestamps_;
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    public java.util.List<java.lang.Long>
+    getTimestampsList() {
+      return timestamps_;
+    }
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    public int getTimestampsCount() {
+      return timestamps_.size();
+    }
+
+    /**
+     * <code>repeated int64 Timestamps = 6;</code>
+     */
+    public long getTimestamps(int index) {
+      return timestamps_.get(index);
+    }
+
+    private int timestampsMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      getSerializedSize();
+      if (!getDBBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, dB_);
+      }
+      if (!getFrameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, frame_);
+      }
+      if (slice_ != 0L) {
+        output.writeUInt64(3, slice_);
+      }
+      if (getBitmapIDsList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(bitmapIDsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < bitmapIDs_.size(); i++) {
+        output.writeUInt64NoTag(bitmapIDs_.get(i));
+      }
+      if (getProfileIDsList().size() > 0) {
+        output.writeUInt32NoTag(42);
+        output.writeUInt32NoTag(profileIDsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < profileIDs_.size(); i++) {
+        output.writeUInt64NoTag(profileIDs_.get(i));
+      }
+      if (getTimestampsList().size() > 0) {
+        output.writeUInt32NoTag(50);
+        output.writeUInt32NoTag(timestampsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < timestamps_.size(); i++) {
+        output.writeInt64NoTag(timestamps_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getDBBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, dB_);
+      }
+      if (!getFrameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, frame_);
+      }
+      if (slice_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeUInt64Size(3, slice_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < bitmapIDs_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeUInt64SizeNoTag(bitmapIDs_.get(i));
+        }
+        size += dataSize;
+        if (!getBitmapIDsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        bitmapIDsMemoizedSerializedSize = dataSize;
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < profileIDs_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeUInt64SizeNoTag(profileIDs_.get(i));
+        }
+        size += dataSize;
+        if (!getProfileIDsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        profileIDsMemoizedSerializedSize = dataSize;
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < timestamps_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeInt64SizeNoTag(timestamps_.get(i));
+        }
+        size += dataSize;
+        if (!getTimestampsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+                  .computeInt32SizeNoTag(dataSize);
+        }
+        timestampsMemoizedSerializedSize = dataSize;
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+        return true;
+      }
+      if (!(obj instanceof com.pilosa.client.Internal.ImportRequest)) {
+        return super.equals(obj);
+      }
+      com.pilosa.client.Internal.ImportRequest other = (com.pilosa.client.Internal.ImportRequest) obj;
+
+      boolean result = true;
+      result = result && getDB()
+              .equals(other.getDB());
+      result = result && getFrame()
+              .equals(other.getFrame());
+      result = result && (getSlice()
+              == other.getSlice());
+      result = result && getBitmapIDsList()
+              .equals(other.getBitmapIDsList());
+      result = result && getProfileIDsList()
+              .equals(other.getProfileIDsList());
+      result = result && getTimestampsList()
+              .equals(other.getTimestampsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + DB_FIELD_NUMBER;
+      hash = (53 * hash) + getDB().hashCode();
+      hash = (37 * hash) + FRAME_FIELD_NUMBER;
+      hash = (53 * hash) + getFrame().hashCode();
+      hash = (37 * hash) + SLICE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getSlice());
+      if (getBitmapIDsCount() > 0) {
+        hash = (37 * hash) + BITMAPIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getBitmapIDsList().hashCode();
+      }
+      if (getProfileIDsCount() > 0) {
+        hash = (37 * hash) + PROFILEIDS_FIELD_NUMBER;
+        hash = (53 * hash) + getProfileIDsList().hashCode();
+      }
+      if (getTimestampsCount() > 0) {
+        hash = (37 * hash) + TIMESTAMPS_FIELD_NUMBER;
+        hash = (53 * hash) + getTimestampsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+
+    public static Builder newBuilder(com.pilosa.client.Internal.ImportRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
     }
 
     /**
      * Protobuf type {@code internal.ImportRequest}
      */
-    public static final class ImportRequest extends
-            com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:internal.ImportRequest)
-            ImportRequestOrBuilder {
-        // Use ImportRequest.newBuilder() to construct.
-        private ImportRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-            super(builder);
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:internal.ImportRequest)
+            com.pilosa.client.Internal.ImportRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+      getDescriptor() {
+        return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+        return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                        com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
+      }
+
+      // Construct using com.pilosa.client.Internal.ImportRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+
+      public Builder clear() {
+        super.clear();
+        dB_ = "";
+
+        frame_ = "";
+
+        slice_ = 0L;
+
+        bitmapIDs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        profileIDs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        timestamps_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+      getDescriptorForType() {
+        return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
+      }
+
+      public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
+        return com.pilosa.client.Internal.ImportRequest.getDefaultInstance();
+      }
+
+      public com.pilosa.client.Internal.ImportRequest build() {
+        com.pilosa.client.Internal.ImportRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.pilosa.client.Internal.ImportRequest buildPartial() {
+        com.pilosa.client.Internal.ImportRequest result = new com.pilosa.client.Internal.ImportRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.dB_ = dB_;
+        result.frame_ = frame_;
+        result.slice_ = slice_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.bitmapIDs_ = bitmapIDs_;
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          profileIDs_ = java.util.Collections.unmodifiableList(profileIDs_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.profileIDs_ = profileIDs_;
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          timestamps_ = java.util.Collections.unmodifiableList(timestamps_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.timestamps_ = timestamps_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+
+      public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.setField(field, value);
+      }
+
+      public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+
+      public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+
+      public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+
+      public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pilosa.client.Internal.ImportRequest) {
+          return mergeFrom((com.pilosa.client.Internal.ImportRequest) other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pilosa.client.Internal.ImportRequest other) {
+        if (other == com.pilosa.client.Internal.ImportRequest.getDefaultInstance()) return this;
+        if (!other.getDB().isEmpty()) {
+          dB_ = other.dB_;
+          onChanged();
+        }
+        if (!other.getFrame().isEmpty()) {
+          frame_ = other.frame_;
+          onChanged();
+        }
+        if (other.getSlice() != 0L) {
+          setSlice(other.getSlice());
+        }
+        if (!other.bitmapIDs_.isEmpty()) {
+          if (bitmapIDs_.isEmpty()) {
+            bitmapIDs_ = other.bitmapIDs_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureBitmapIDsIsMutable();
+            bitmapIDs_.addAll(other.bitmapIDs_);
+          }
+          onChanged();
+        }
+        if (!other.profileIDs_.isEmpty()) {
+          if (profileIDs_.isEmpty()) {
+            profileIDs_ = other.profileIDs_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureProfileIDsIsMutable();
+            profileIDs_.addAll(other.profileIDs_);
+          }
+          onChanged();
+        }
+        if (!other.timestamps_.isEmpty()) {
+          if (timestamps_.isEmpty()) {
+            timestamps_ = other.timestamps_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureTimestampsIsMutable();
+            timestamps_.addAll(other.timestamps_);
+          }
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        com.pilosa.client.Internal.ImportRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.pilosa.client.Internal.ImportRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int bitField0_;
+
+      private java.lang.Object dB_ = "";
+
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      public java.lang.String getDB() {
+        java.lang.Object ref = dB_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          dB_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+      getDBBytes() {
+        java.lang.Object ref = dB_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          dB_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      public Builder setDB(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
 
-        private ImportRequest() {
-            dB_ = "";
-            frame_ = "";
-            slice_ = 0L;
-            bitmapIDs_ = java.util.Collections.emptyList();
-            profileIDs_ = java.util.Collections.emptyList();
-            timestamps_ = java.util.Collections.emptyList();
+        dB_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      public Builder clearDB() {
+
+        dB_ = getDefaultInstance().getDB();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string DB = 1;</code>
+       */
+      public Builder setDBBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        dB_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object frame_ = "";
+
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      public java.lang.String getFrame() {
+        java.lang.Object ref = frame_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          frame_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getFrameBytes() {
+        java.lang.Object ref = frame_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          frame_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      public Builder setFrame(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
 
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-            return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+        frame_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      public Builder clearFrame() {
+
+        frame_ = getDefaultInstance().getFrame();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional string Frame = 2;</code>
+       */
+      public Builder setFrameBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        checkByteStringIsUtf8(value);
 
-        private ImportRequest(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            this();
-            int mutable_bitField0_ = 0;
-            try {
-                boolean done = false;
-                while (!done) {
-                    int tag = input.readTag();
-                    switch (tag) {
-                        case 0:
-                            done = true;
-                            break;
-                        default: {
-                            if (!input.skipField(tag)) {
-                done = true;
-                            }
-                            break;
-                        }
-                        case 10: {
-                            java.lang.String s = input.readStringRequireUtf8();
+        frame_ = value;
+        onChanged();
+        return this;
+      }
 
-                            dB_ = s;
-                            break;
-                        }
-                        case 18: {
-                            java.lang.String s = input.readStringRequireUtf8();
+      private long slice_;
 
-                            frame_ = s;
-                            break;
-                        }
-                        case 24: {
+      /**
+       * <code>optional uint64 Slice = 3;</code>
+       */
+      public long getSlice() {
+        return slice_;
+      }
 
-                            slice_ = input.readUInt64();
-                            break;
-                        }
-                        case 32: {
-                            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                                bitmapIDs_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000008;
-                            }
-                            bitmapIDs_.add(input.readUInt64());
-                            break;
-                        }
-                        case 34: {
-                            int length = input.readRawVarint32();
-                            int limit = input.pushLimit(length);
-                            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
-                                bitmapIDs_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000008;
-                            }
-                            while (input.getBytesUntilLimit() > 0) {
-                                bitmapIDs_.add(input.readUInt64());
-              }
-              input.popLimit(limit);
-                            break;
-                        }
-                        case 40: {
-                            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-                                profileIDs_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000010;
-                            }
-                            profileIDs_.add(input.readUInt64());
-                            break;
-                        }
-                        case 42: {
-                            int length = input.readRawVarint32();
-                            int limit = input.pushLimit(length);
-                            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
-                                profileIDs_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000010;
-                            }
-                            while (input.getBytesUntilLimit() > 0) {
-                                profileIDs_.add(input.readUInt64());
-                            }
-                            input.popLimit(limit);
-                            break;
-                        }
-                        case 48: {
-                            if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
-                                timestamps_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000020;
-                            }
-                            timestamps_.add(input.readInt64());
-                            break;
-                        }
-                        case 50: {
-                            int length = input.readRawVarint32();
-                            int limit = input.pushLimit(length);
-                            if (!((mutable_bitField0_ & 0x00000020) == 0x00000020) && input.getBytesUntilLimit() > 0) {
-                                timestamps_ = new java.util.ArrayList<java.lang.Long>();
-                                mutable_bitField0_ |= 0x00000020;
-                            }
-                            while (input.getBytesUntilLimit() > 0) {
-                                timestamps_.add(input.readInt64());
-                            }
-                            input.popLimit(limit);
-                            break;
-                        }
-                    }
-                }
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                throw e.setUnfinishedMessage(this);
-            } catch (java.io.IOException e) {
-                throw new com.google.protobuf.InvalidProtocolBufferException(
-                        e).setUnfinishedMessage(this);
-            } finally {
-                if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                    bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
-                }
-                if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-                    profileIDs_ = java.util.Collections.unmodifiableList(profileIDs_);
-                }
-                if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
-                    timestamps_ = java.util.Collections.unmodifiableList(timestamps_);
-                }
-                makeExtensionsImmutable();
-            }
+      /**
+       * <code>optional uint64 Slice = 3;</code>
+       */
+      public Builder setSlice(long value) {
+
+        slice_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>optional uint64 Slice = 3;</code>
+       */
+      public Builder clearSlice() {
+
+        slice_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Long> bitmapIDs_ = java.util.Collections.emptyList();
+
+      private void ensureBitmapIDsIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          bitmapIDs_ = new java.util.ArrayList<java.lang.Long>(bitmapIDs_);
+          bitField0_ |= 0x00000008;
         }
+      }
 
-        public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-            return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public java.util.List<java.lang.Long>
+      getBitmapIDsList() {
+        return java.util.Collections.unmodifiableList(bitmapIDs_);
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public int getBitmapIDsCount() {
+        return bitmapIDs_.size();
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public long getBitmapIDs(int index) {
+        return bitmapIDs_.get(index);
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public Builder setBitmapIDs(
+              int index, long value) {
+        ensureBitmapIDsIsMutable();
+        bitmapIDs_.set(index, value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public Builder addBitmapIDs(long value) {
+        ensureBitmapIDsIsMutable();
+        bitmapIDs_.add(value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public Builder addAllBitmapIDs(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureBitmapIDsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, bitmapIDs_);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 BitmapIDs = 4;</code>
+       */
+      public Builder clearBitmapIDs() {
+        bitmapIDs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Long> profileIDs_ = java.util.Collections.emptyList();
+
+      private void ensureProfileIDsIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          profileIDs_ = new java.util.ArrayList<java.lang.Long>(profileIDs_);
+          bitField0_ |= 0x00000010;
         }
+      }
 
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-            return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(
-                            com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public java.util.List<java.lang.Long>
+      getProfileIDsList() {
+        return java.util.Collections.unmodifiableList(profileIDs_);
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public int getProfileIDsCount() {
+        return profileIDs_.size();
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public long getProfileIDs(int index) {
+        return profileIDs_.get(index);
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public Builder setProfileIDs(
+          int index, long value) {
+        ensureProfileIDsIsMutable();
+        profileIDs_.set(index, value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public Builder addProfileIDs(long value) {
+        ensureProfileIDsIsMutable();
+        profileIDs_.add(value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public Builder addAllProfileIDs(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureProfileIDsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, profileIDs_);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated uint64 ProfileIDs = 5;</code>
+       */
+      public Builder clearProfileIDs() {
+        profileIDs_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Long> timestamps_ = java.util.Collections.emptyList();
+
+      private void ensureTimestampsIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          timestamps_ = new java.util.ArrayList<java.lang.Long>(timestamps_);
+          bitField0_ |= 0x00000020;
         }
-
-        private int bitField0_;
-        public static final int DB_FIELD_NUMBER = 1;
-        private volatile java.lang.Object dB_;
-
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        public java.lang.String getDB() {
-            java.lang.Object ref = dB_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                dB_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string DB = 1;</code>
-         */
-        public com.google.protobuf.ByteString
-        getDBBytes() {
-            java.lang.Object ref = dB_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                dB_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int FRAME_FIELD_NUMBER = 2;
-        private volatile java.lang.Object frame_;
-
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        public java.lang.String getFrame() {
-            java.lang.Object ref = frame_;
-            if (ref instanceof java.lang.String) {
-                return (java.lang.String) ref;
-            } else {
-                com.google.protobuf.ByteString bs =
-                        (com.google.protobuf.ByteString) ref;
-                java.lang.String s = bs.toStringUtf8();
-                frame_ = s;
-                return s;
-            }
-        }
-
-        /**
-         * <code>optional string Frame = 2;</code>
-         */
-        public com.google.protobuf.ByteString
-        getFrameBytes() {
-            java.lang.Object ref = frame_;
-            if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b =
-                        com.google.protobuf.ByteString.copyFromUtf8(
-                                (java.lang.String) ref);
-                frame_ = b;
-                return b;
-            } else {
-                return (com.google.protobuf.ByteString) ref;
-            }
-        }
-
-        public static final int SLICE_FIELD_NUMBER = 3;
-        private long slice_;
-
-        /**
-         * <code>optional uint64 Slice = 3;</code>
-         */
-        public long getSlice() {
-            return slice_;
-        }
-
-        public static final int BITMAPIDS_FIELD_NUMBER = 4;
-        private java.util.List<java.lang.Long> bitmapIDs_;
-
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        public java.util.List<java.lang.Long>
-        getBitmapIDsList() {
-            return bitmapIDs_;
-        }
-
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        public int getBitmapIDsCount() {
-            return bitmapIDs_.size();
-        }
-
-        /**
-         * <code>repeated uint64 BitmapIDs = 4;</code>
-         */
-        public long getBitmapIDs(int index) {
-            return bitmapIDs_.get(index);
-        }
-
-        private int bitmapIDsMemoizedSerializedSize = -1;
-
-        public static final int PROFILEIDS_FIELD_NUMBER = 5;
-        private java.util.List<java.lang.Long> profileIDs_;
-
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        public java.util.List<java.lang.Long>
-        getProfileIDsList() {
-            return profileIDs_;
-        }
-
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        public int getProfileIDsCount() {
-            return profileIDs_.size();
-        }
-
-        /**
-         * <code>repeated uint64 ProfileIDs = 5;</code>
-         */
-        public long getProfileIDs(int index) {
-            return profileIDs_.get(index);
-        }
-
-        private int profileIDsMemoizedSerializedSize = -1;
-
-        public static final int TIMESTAMPS_FIELD_NUMBER = 6;
-        private java.util.List<java.lang.Long> timestamps_;
-
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        public java.util.List<java.lang.Long>
-        getTimestampsList() {
-            return timestamps_;
-        }
-
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        public int getTimestampsCount() {
-            return timestamps_.size();
-        }
-
-        /**
-         * <code>repeated int64 Timestamps = 6;</code>
-         */
-        public long getTimestamps(int index) {
-            return timestamps_.get(index);
-        }
-
-        private int timestampsMemoizedSerializedSize = -1;
-
-        private byte memoizedIsInitialized = -1;
-
-        public final boolean isInitialized() {
-            byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1) return true;
-            if (isInitialized == 0) return false;
-
-            memoizedIsInitialized = 1;
-            return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                throws java.io.IOException {
-            getSerializedSize();
-            if (!getDBBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 1, dB_);
-            }
-            if (!getFrameBytes().isEmpty()) {
-                com.google.protobuf.GeneratedMessageV3.writeString(output, 2, frame_);
-            }
-            if (slice_ != 0L) {
-                output.writeUInt64(3, slice_);
-            }
-            if (getBitmapIDsList().size() > 0) {
-                output.writeUInt32NoTag(34);
-                output.writeUInt32NoTag(bitmapIDsMemoizedSerializedSize);
-            }
-            for (int i = 0; i < bitmapIDs_.size(); i++) {
-                output.writeUInt64NoTag(bitmapIDs_.get(i));
-            }
-            if (getProfileIDsList().size() > 0) {
-                output.writeUInt32NoTag(42);
-                output.writeUInt32NoTag(profileIDsMemoizedSerializedSize);
-            }
-            for (int i = 0; i < profileIDs_.size(); i++) {
-                output.writeUInt64NoTag(profileIDs_.get(i));
-            }
-            if (getTimestampsList().size() > 0) {
-                output.writeUInt32NoTag(50);
-                output.writeUInt32NoTag(timestampsMemoizedSerializedSize);
-            }
-            for (int i = 0; i < timestamps_.size(); i++) {
-                output.writeInt64NoTag(timestamps_.get(i));
-            }
-        }
-
-        public int getSerializedSize() {
-            int size = memoizedSize;
-            if (size != -1) return size;
-
-            size = 0;
-            if (!getDBBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, dB_);
-            }
-            if (!getFrameBytes().isEmpty()) {
-                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, frame_);
-            }
-            if (slice_ != 0L) {
-                size += com.google.protobuf.CodedOutputStream
-                        .computeUInt64Size(3, slice_);
-            }
-            {
-                int dataSize = 0;
-                for (int i = 0; i < bitmapIDs_.size(); i++) {
-                    dataSize += com.google.protobuf.CodedOutputStream
-                            .computeUInt64SizeNoTag(bitmapIDs_.get(i));
-                }
-                size += dataSize;
-                if (!getBitmapIDsList().isEmpty()) {
-                    size += 1;
-                    size += com.google.protobuf.CodedOutputStream
-                            .computeInt32SizeNoTag(dataSize);
-                }
-                bitmapIDsMemoizedSerializedSize = dataSize;
-            }
-            {
-                int dataSize = 0;
-                for (int i = 0; i < profileIDs_.size(); i++) {
-                    dataSize += com.google.protobuf.CodedOutputStream
-                            .computeUInt64SizeNoTag(profileIDs_.get(i));
-                }
-                size += dataSize;
-                if (!getProfileIDsList().isEmpty()) {
-                    size += 1;
-                    size += com.google.protobuf.CodedOutputStream
-                            .computeInt32SizeNoTag(dataSize);
-                }
-                profileIDsMemoizedSerializedSize = dataSize;
-            }
-            {
-                int dataSize = 0;
-                for (int i = 0; i < timestamps_.size(); i++) {
-                    dataSize += com.google.protobuf.CodedOutputStream
-                            .computeInt64SizeNoTag(timestamps_.get(i));
-                }
-                size += dataSize;
-                if (!getTimestampsList().isEmpty()) {
-                    size += 1;
-                    size += com.google.protobuf.CodedOutputStream
-                            .computeInt32SizeNoTag(dataSize);
-                }
-                timestampsMemoizedSerializedSize = dataSize;
-            }
-            memoizedSize = size;
-            return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-
-        @java.lang.Override
-        public boolean equals(final java.lang.Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof com.pilosa.client.Internal.ImportRequest)) {
-                return super.equals(obj);
-            }
-            com.pilosa.client.Internal.ImportRequest other = (com.pilosa.client.Internal.ImportRequest) obj;
-
-            boolean result = true;
-            result = result && getDB()
-                    .equals(other.getDB());
-            result = result && getFrame()
-                    .equals(other.getFrame());
-            result = result && (getSlice()
-                    == other.getSlice());
-            result = result && getBitmapIDsList()
-                    .equals(other.getBitmapIDsList());
-            result = result && getProfileIDsList()
-                    .equals(other.getProfileIDsList());
-            result = result && getTimestampsList()
-                    .equals(other.getTimestampsList());
-            return result;
-        }
-
-        @java.lang.Override
-        public int hashCode() {
-            if (memoizedHashCode != 0) {
-                return memoizedHashCode;
-            }
-            int hash = 41;
-            hash = (19 * hash) + getDescriptorForType().hashCode();
-            hash = (37 * hash) + DB_FIELD_NUMBER;
-            hash = (53 * hash) + getDB().hashCode();
-            hash = (37 * hash) + FRAME_FIELD_NUMBER;
-            hash = (53 * hash) + getFrame().hashCode();
-            hash = (37 * hash) + SLICE_FIELD_NUMBER;
-            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-                    getSlice());
-            if (getBitmapIDsCount() > 0) {
-                hash = (37 * hash) + BITMAPIDS_FIELD_NUMBER;
-                hash = (53 * hash) + getBitmapIDsList().hashCode();
-            }
-            if (getProfileIDsCount() > 0) {
-                hash = (37 * hash) + PROFILEIDS_FIELD_NUMBER;
-                hash = (53 * hash) + getProfileIDsList().hashCode();
-            }
-            if (getTimestampsCount() > 0) {
-                hash = (37 * hash) + TIMESTAMPS_FIELD_NUMBER;
-                hash = (53 * hash) + getTimestampsList().hashCode();
-            }
-            hash = (29 * hash) + unknownFields.hashCode();
-            memoizedHashCode = hash;
-            return hash;
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                com.google.protobuf.ByteString data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                byte[] data,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
-            return PARSER.parseFrom(data, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseDelimitedFrom(
-                java.io.InputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input);
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest parseFrom(
-                com.google.protobuf.CodedInputStream input,
-                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseWithIOException(PARSER, input, extensionRegistry);
-        }
-
-        public Builder newBuilderForType() {
-            return newBuilder();
-        }
-
-        public static Builder newBuilder() {
-            return DEFAULT_INSTANCE.toBuilder();
-        }
-
-        public static Builder newBuilder(com.pilosa.client.Internal.ImportRequest prototype) {
-            return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
-
-        public Builder toBuilder() {
-            return this == DEFAULT_INSTANCE
-                    ? new Builder() : new Builder().mergeFrom(this);
-        }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-            Builder builder = new Builder(parent);
-            return builder;
-        }
-
-        /**
-         * Protobuf type {@code internal.ImportRequest}
-         */
-        public static final class Builder extends
-                com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:internal.ImportRequest)
-                com.pilosa.client.Internal.ImportRequestOrBuilder {
-            public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
-            }
-
-            protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(
-                                com.pilosa.client.Internal.ImportRequest.class, com.pilosa.client.Internal.ImportRequest.Builder.class);
-            }
-
-            // Construct using com.pilosa.client.Internal.ImportRequest.newBuilder()
-            private Builder() {
-                maybeForceBuilderInitialization();
-            }
-
-            private Builder(
-                    com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-                super(parent);
-                maybeForceBuilderInitialization();
-            }
-
-            private void maybeForceBuilderInitialization() {
-                if (com.google.protobuf.GeneratedMessageV3
-                        .alwaysUseFieldBuilders) {
-                }
-            }
-
-            public Builder clear() {
-                super.clear();
-                dB_ = "";
-
-                frame_ = "";
-
-                slice_ = 0L;
-
-                bitmapIDs_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000008);
-                profileIDs_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000010);
-                timestamps_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000020);
-                return this;
-            }
-
-            public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-                return com.pilosa.client.Internal.internal_static_internal_ImportRequest_descriptor;
-            }
-
-            public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
-                return com.pilosa.client.Internal.ImportRequest.getDefaultInstance();
-            }
-
-            public com.pilosa.client.Internal.ImportRequest build() {
-                com.pilosa.client.Internal.ImportRequest result = buildPartial();
-                if (!result.isInitialized()) {
-                    throw newUninitializedMessageException(result);
-                }
-                return result;
-            }
-
-            public com.pilosa.client.Internal.ImportRequest buildPartial() {
-                com.pilosa.client.Internal.ImportRequest result = new com.pilosa.client.Internal.ImportRequest(this);
-                int from_bitField0_ = bitField0_;
-                int to_bitField0_ = 0;
-                result.dB_ = dB_;
-                result.frame_ = frame_;
-                result.slice_ = slice_;
-                if (((bitField0_ & 0x00000008) == 0x00000008)) {
-                    bitmapIDs_ = java.util.Collections.unmodifiableList(bitmapIDs_);
-                    bitField0_ = (bitField0_ & ~0x00000008);
-                }
-                result.bitmapIDs_ = bitmapIDs_;
-                if (((bitField0_ & 0x00000010) == 0x00000010)) {
-                    profileIDs_ = java.util.Collections.unmodifiableList(profileIDs_);
-                    bitField0_ = (bitField0_ & ~0x00000010);
-                }
-                result.profileIDs_ = profileIDs_;
-                if (((bitField0_ & 0x00000020) == 0x00000020)) {
-                    timestamps_ = java.util.Collections.unmodifiableList(timestamps_);
-                    bitField0_ = (bitField0_ & ~0x00000020);
-                }
-                result.timestamps_ = timestamps_;
-                result.bitField0_ = to_bitField0_;
-                onBuilt();
-                return result;
-            }
-
-            public Builder clone() {
-                return (Builder) super.clone();
-            }
-
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.setField(field, value);
-            }
-
-            public Builder clearField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field) {
-                return (Builder) super.clearField(field);
-            }
-
-            public Builder clearOneof(
-                    com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-                return (Builder) super.clearOneof(oneof);
-            }
-
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-                return (Builder) super.setRepeatedField(field, index, value);
-            }
-
-            public Builder addRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-                return (Builder) super.addRepeatedField(field, value);
-            }
-
-            public Builder mergeFrom(com.google.protobuf.Message other) {
-                if (other instanceof com.pilosa.client.Internal.ImportRequest) {
-                    return mergeFrom((com.pilosa.client.Internal.ImportRequest) other);
-                } else {
-                    super.mergeFrom(other);
-                    return this;
-                }
-            }
-
-            public Builder mergeFrom(com.pilosa.client.Internal.ImportRequest other) {
-                if (other == com.pilosa.client.Internal.ImportRequest.getDefaultInstance()) return this;
-                if (!other.getDB().isEmpty()) {
-                    dB_ = other.dB_;
-                    onChanged();
-                }
-                if (!other.getFrame().isEmpty()) {
-                    frame_ = other.frame_;
-                    onChanged();
-                }
-                if (other.getSlice() != 0L) {
-                    setSlice(other.getSlice());
-                }
-                if (!other.bitmapIDs_.isEmpty()) {
-                    if (bitmapIDs_.isEmpty()) {
-                        bitmapIDs_ = other.bitmapIDs_;
-                        bitField0_ = (bitField0_ & ~0x00000008);
-                    } else {
-                        ensureBitmapIDsIsMutable();
-                        bitmapIDs_.addAll(other.bitmapIDs_);
-                    }
-                    onChanged();
-                }
-                if (!other.profileIDs_.isEmpty()) {
-                    if (profileIDs_.isEmpty()) {
-                        profileIDs_ = other.profileIDs_;
-                        bitField0_ = (bitField0_ & ~0x00000010);
-                    } else {
-                        ensureProfileIDsIsMutable();
-                        profileIDs_.addAll(other.profileIDs_);
-                    }
-                    onChanged();
-                }
-                if (!other.timestamps_.isEmpty()) {
-                    if (timestamps_.isEmpty()) {
-                        timestamps_ = other.timestamps_;
-                        bitField0_ = (bitField0_ & ~0x00000020);
-                    } else {
-                        ensureTimestampsIsMutable();
-                        timestamps_.addAll(other.timestamps_);
-                    }
-                    onChanged();
-                }
-                onChanged();
-                return this;
-            }
-
-            public final boolean isInitialized() {
-                return true;
-            }
-
-            public Builder mergeFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws java.io.IOException {
-                com.pilosa.client.Internal.ImportRequest parsedMessage = null;
-                try {
-                    parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                    parsedMessage = (com.pilosa.client.Internal.ImportRequest) e.getUnfinishedMessage();
-                    throw e.unwrapIOException();
-                } finally {
-                    if (parsedMessage != null) {
-                        mergeFrom(parsedMessage);
-                    }
-                }
-                return this;
-            }
-
-            private int bitField0_;
-
-            private java.lang.Object dB_ = "";
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public java.lang.String getDB() {
-                java.lang.Object ref = dB_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    dB_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public com.google.protobuf.ByteString
-            getDBBytes() {
-                java.lang.Object ref = dB_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    dB_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder setDB(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                dB_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder clearDB() {
-
-                dB_ = getDefaultInstance().getDB();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string DB = 1;</code>
-             */
-            public Builder setDBBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                dB_ = value;
-                onChanged();
-                return this;
-            }
-
-            private java.lang.Object frame_ = "";
-
-            /**
-             * <code>optional string Frame = 2;</code>
-             */
-            public java.lang.String getFrame() {
-                java.lang.Object ref = frame_;
-                if (!(ref instanceof java.lang.String)) {
-                    com.google.protobuf.ByteString bs =
-                            (com.google.protobuf.ByteString) ref;
-                    java.lang.String s = bs.toStringUtf8();
-                    frame_ = s;
-                    return s;
-                } else {
-                    return (java.lang.String) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Frame = 2;</code>
-             */
-            public com.google.protobuf.ByteString
-            getFrameBytes() {
-                java.lang.Object ref = frame_;
-                if (ref instanceof String) {
-                    com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8(
-                                    (java.lang.String) ref);
-                    frame_ = b;
-                    return b;
-                } else {
-                    return (com.google.protobuf.ByteString) ref;
-                }
-            }
-
-            /**
-             * <code>optional string Frame = 2;</code>
-             */
-            public Builder setFrame(
-                    java.lang.String value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-
-                frame_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Frame = 2;</code>
-             */
-            public Builder clearFrame() {
-
-                frame_ = getDefaultInstance().getFrame();
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional string Frame = 2;</code>
-             */
-            public Builder setFrameBytes(
-                    com.google.protobuf.ByteString value) {
-                if (value == null) {
-                    throw new NullPointerException();
-                }
-                checkByteStringIsUtf8(value);
-
-                frame_ = value;
-                onChanged();
-                return this;
-            }
-
-            private long slice_;
-
-            /**
-             * <code>optional uint64 Slice = 3;</code>
-             */
-            public long getSlice() {
-                return slice_;
-            }
-
-            /**
-             * <code>optional uint64 Slice = 3;</code>
-             */
-            public Builder setSlice(long value) {
-
-                slice_ = value;
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>optional uint64 Slice = 3;</code>
-             */
-            public Builder clearSlice() {
-
-                slice_ = 0L;
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<java.lang.Long> bitmapIDs_ = java.util.Collections.emptyList();
-
-            private void ensureBitmapIDsIsMutable() {
-                if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-                    bitmapIDs_ = new java.util.ArrayList<java.lang.Long>(bitmapIDs_);
-                    bitField0_ |= 0x00000008;
-                }
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public java.util.List<java.lang.Long>
-            getBitmapIDsList() {
-                return java.util.Collections.unmodifiableList(bitmapIDs_);
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public int getBitmapIDsCount() {
-                return bitmapIDs_.size();
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public long getBitmapIDs(int index) {
-                return bitmapIDs_.get(index);
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public Builder setBitmapIDs(
-                    int index, long value) {
-                ensureBitmapIDsIsMutable();
-                bitmapIDs_.set(index, value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public Builder addBitmapIDs(long value) {
-                ensureBitmapIDsIsMutable();
-                bitmapIDs_.add(value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public Builder addAllBitmapIDs(
-                    java.lang.Iterable<? extends java.lang.Long> values) {
-                ensureBitmapIDsIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, bitmapIDs_);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 BitmapIDs = 4;</code>
-             */
-            public Builder clearBitmapIDs() {
-                bitmapIDs_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000008);
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<java.lang.Long> profileIDs_ = java.util.Collections.emptyList();
-
-            private void ensureProfileIDsIsMutable() {
-                if (!((bitField0_ & 0x00000010) == 0x00000010)) {
-                    profileIDs_ = new java.util.ArrayList<java.lang.Long>(profileIDs_);
-                    bitField0_ |= 0x00000010;
-                }
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public java.util.List<java.lang.Long>
-            getProfileIDsList() {
-                return java.util.Collections.unmodifiableList(profileIDs_);
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public int getProfileIDsCount() {
-                return profileIDs_.size();
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public long getProfileIDs(int index) {
-                return profileIDs_.get(index);
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public Builder setProfileIDs(
-                    int index, long value) {
-                ensureProfileIDsIsMutable();
-                profileIDs_.set(index, value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public Builder addProfileIDs(long value) {
-                ensureProfileIDsIsMutable();
-                profileIDs_.add(value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public Builder addAllProfileIDs(
-                    java.lang.Iterable<? extends java.lang.Long> values) {
-                ensureProfileIDsIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, profileIDs_);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated uint64 ProfileIDs = 5;</code>
-             */
-            public Builder clearProfileIDs() {
-                profileIDs_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000010);
-                onChanged();
-                return this;
-            }
-
-            private java.util.List<java.lang.Long> timestamps_ = java.util.Collections.emptyList();
-
-            private void ensureTimestampsIsMutable() {
-                if (!((bitField0_ & 0x00000020) == 0x00000020)) {
-                    timestamps_ = new java.util.ArrayList<java.lang.Long>(timestamps_);
-                    bitField0_ |= 0x00000020;
-                }
-            }
-
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public java.util.List<java.lang.Long>
-            getTimestampsList() {
-                return java.util.Collections.unmodifiableList(timestamps_);
-            }
-
-            /**
+      }
+
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public java.util.List<java.lang.Long>
+          getTimestampsList() {
+        return java.util.Collections.unmodifiableList(timestamps_);
+      }
+
+      /**
        * <code>repeated int64 Timestamps = 6;</code>
        */
       public int getTimestampsCount() {
-          return timestamps_.size();
+        return timestamps_.size();
       }
 
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public long getTimestamps(int index) {
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public long getTimestamps(int index) {
         return timestamps_.get(index);
-            }
-
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public Builder setTimestamps(
-                    int index, long value) {
-                ensureTimestampsIsMutable();
-        timestamps_.set(index, value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public Builder addTimestamps(long value) {
-                ensureTimestampsIsMutable();
-        timestamps_.add(value);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public Builder addAllTimestamps(
-                    java.lang.Iterable<? extends java.lang.Long> values) {
-        ensureTimestampsIsMutable();
-                com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                        values, timestamps_);
-                onChanged();
-                return this;
-            }
-
-            /**
-             * <code>repeated int64 Timestamps = 6;</code>
-             */
-            public Builder clearTimestamps() {
-          timestamps_ = java.util.Collections.emptyList();
-                bitField0_ = (bitField0_ & ~0x00000020);
-                onChanged();
-          return this;
       }
 
-            public final Builder setUnknownFields(
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public Builder setTimestamps(
+              int index, long value) {
+        ensureTimestampsIsMutable();
+        timestamps_.set(index, value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public Builder addTimestamps(long value) {
+        ensureTimestampsIsMutable();
+        timestamps_.add(value);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public Builder addAllTimestamps(
+              java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureTimestampsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, timestamps_);
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>repeated int64 Timestamps = 6;</code>
+       */
+      public Builder clearTimestamps() {
+        timestamps_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+
+      public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
-
-            public final Builder mergeUnknownFields(
-                    final com.google.protobuf.UnknownFieldSet unknownFields) {
-                return this;
-            }
+        return this;
+      }
 
 
-            // @@protoc_insertion_point(builder_scope:internal.ImportRequest)
+      // @@protoc_insertion_point(builder_scope:internal.ImportRequest)
     }
 
     // @@protoc_insertion_point(class_scope:internal.ImportRequest)
     private static final com.pilosa.client.Internal.ImportRequest DEFAULT_INSTANCE;
 
-        static {
-            DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportRequest();
-        }
-
-        public static com.pilosa.client.Internal.ImportRequest getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        private static final com.google.protobuf.Parser<ImportRequest>
-                PARSER = new com.google.protobuf.AbstractParser<ImportRequest>() {
-            public ImportRequest parsePartialFrom(
-                    com.google.protobuf.CodedInputStream input,
-                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                    throws com.google.protobuf.InvalidProtocolBufferException {
-                return new ImportRequest(input, extensionRegistry);
-            }
-        };
-
-        public static com.google.protobuf.Parser<ImportRequest> parser() {
-            return PARSER;
-        }
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<ImportRequest> getParserForType() {
-            return PARSER;
-        }
-
-        public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
-            return DEFAULT_INSTANCE;
-        }
-
-    }
-
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_Bitmap_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_Bitmap_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_Pair_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_Pair_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_Bit_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_Bit_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_Profile_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_Profile_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_Attr_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_Attr_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_AttrMap_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_AttrMap_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_QueryRequest_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_QueryRequest_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_QueryResponse_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_QueryResponse_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_QueryResult_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_QueryResult_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_internal_ImportRequest_descriptor;
-    private static final
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_internal_ImportRequest_fieldAccessorTable;
-
-    public static com.google.protobuf.Descriptors.FileDescriptor
-    getDescriptor() {
-        return descriptor;
-    }
-
-    private static com.google.protobuf.Descriptors.FileDescriptor
-            descriptor;
-
     static {
-        java.lang.String[] descriptorData = {
-                "\n+com.pilosa.client/src/internal/public." +
-                        "proto\022\010internal\"5\n\006Bitmap\022\014\n\004Bits\030\001 \003(\004\022" +
-                        "\035\n\005Attrs\030\002 \003(\0132\016.internal.Attr\"\"\n\004Pair\022\013" +
-                        "\n\003Key\030\001 \001(\004\022\r\n\005Count\030\002 \001(\004\"=\n\003Bit\022\020\n\010Bit" +
-                        "mapID\030\001 \001(\004\022\021\n\tProfileID\030\002 \001(\004\022\021\n\tTimest" +
-                        "amp\030\003 \001(\003\"4\n\007Profile\022\n\n\002ID\030\001 \001(\004\022\035\n\005Attr" +
-                        "s\030\002 \003(\0132\016.internal.Attr\"p\n\004Attr\022\013\n\003Key\030\001" +
-                        " \001(\t\022\014\n\004Type\030\002 \001(\004\022\023\n\013StringValue\030\003 \001(\t\022" +
-                        "\021\n\tUintValue\030\004 \001(\004\022\021\n\tBoolValue\030\005 \001(\010\022\022\n" +
-                        "\nFloatValue\030\006 \001(\001\"(\n\007AttrMap\022\035\n\005Attrs\030\001 ",
-                "\003(\0132\016.internal.Attr\"l\n\014QueryRequest\022\n\n\002D" +
-                        "B\030\001 \001(\t\022\r\n\005Query\030\002 \001(\t\022\016\n\006Slices\030\003 \003(\004\022\020" +
-                        "\n\010Profiles\030\004 \001(\010\022\017\n\007Quantum\030\005 \001(\t\022\016\n\006Rem" +
-                        "ote\030\006 \001(\010\"i\n\rQueryResponse\022\013\n\003Err\030\001 \001(\t\022" +
-                        "&\n\007Results\030\002 \003(\0132\025.internal.QueryResult\022" +
-                        "#\n\010Profiles\030\003 \003(\0132\021.internal.Profile\"j\n\013" +
-                        "QueryResult\022 \n\006Bitmap\030\001 \001(\0132\020.internal.B" +
-                        "itmap\022\t\n\001N\030\002 \001(\004\022\035\n\005Pairs\030\003 \003(\0132\016.intern" +
-                        "al.Pair\022\017\n\007Changed\030\004 \001(\010\"t\n\rImportReques" +
-                        "t\022\n\n\002DB\030\001 \001(\t\022\r\n\005Frame\030\002 \001(\t\022\r\n\005Slice\030\003 ",
-                "\001(\004\022\021\n\tBitmapIDs\030\004 \003(\004\022\022\n\nProfileIDs\030\005 \003" +
-                        "(\004\022\022\n\nTimestamps\030\006 \003(\003B\035\n\021com.pilosa.cli" +
-                        "entB\010Internalb\006proto3"
+      DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportRequest();
+    }
+
+    public static com.pilosa.client.Internal.ImportRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ImportRequest>
+            PARSER = new com.google.protobuf.AbstractParser<ImportRequest>() {
+      public ImportRequest parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ImportRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ImportRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ImportRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public com.pilosa.client.Internal.ImportRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_Bitmap_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Bitmap_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_Pair_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Pair_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_Bit_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Bit_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_Profile_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Profile_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_Attr_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Attr_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_AttrMap_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_AttrMap_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_QueryRequest_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_QueryRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_QueryResponse_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_QueryResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_QueryResult_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_QueryResult_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+          internal_static_internal_ImportRequest_descriptor;
+  private static final
+  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_ImportRequest_fieldAccessorTable;
+
+  public static com.google.protobuf.Descriptors.FileDescriptor
+  getDescriptor() {
+    return descriptor;
+  }
+
+  private static com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
+  static {
+    java.lang.String[] descriptorData = {
+      "\n+com.pilosa.client/src/internal/public." +
+      "proto\022\010internal\"5\n\006Bitmap\022\014\n\004Bits\030\001 \003(\004\022" +
+      "\035\n\005Attrs\030\002 \003(\0132\016.internal.Attr\"\"\n\004Pair\022\013" +
+      "\n\003Key\030\001 \001(\004\022\r\n\005Count\030\002 \001(\004\"=\n\003Bit\022\020\n\010Bit" +
+      "mapID\030\001 \001(\004\022\021\n\tProfileID\030\002 \001(\004\022\021\n\tTimest" +
+      "amp\030\003 \001(\003\"4\n\007Profile\022\n\n\002ID\030\001 \001(\004\022\035\n\005Attr" +
+      "s\030\002 \003(\0132\016.internal.Attr\"o\n\004Attr\022\013\n\003Key\030\001" +
+              " \001(\t\022\014\n\004Type\030\002 \001(\004\022\023\n\013StringValue\030\003 \001(\t\022" +
+      "\020\n\010IntValue\030\004 \001(\003\022\021\n\tBoolValue\030\005 \001(\010\022\022\n\n" +
+      "FloatValue\030\006 \001(\001\"(\n\007AttrMap\022\035\n\005Attrs\030\001 \003",
+            "(\0132\016.internal.Attr\"`\n\014QueryRequest\022\r\n\005Qu" +
+      "ery\030\001 \001(\t\022\016\n\006Slices\030\002 \003(\004\022\020\n\010Profiles\030\003 " +
+      "\001(\010\022\017\n\007Quantum\030\004 \001(\t\022\016\n\006Remote\030\005 \001(\010\"i\n\r" +
+      "QueryResponse\022\013\n\003Err\030\001 \001(\t\022&\n\007Results\030\002 " +
+      "\003(\0132\025.internal.QueryResult\022#\n\010Profiles\030\003" +
+                    " \003(\0132\021.internal.Profile\"j\n\013QueryResult\022 " +
+      "\n\006Bitmap\030\001 \001(\0132\020.internal.Bitmap\022\t\n\001N\030\002 " +
+      "\001(\004\022\035\n\005Pairs\030\003 \003(\0132\016.internal.Pair\022\017\n\007Ch" +
+      "anged\030\004 \001(\010\"t\n\rImportRequest\022\n\n\002DB\030\001 \001(\t" +
+      "\022\r\n\005Frame\030\002 \001(\t\022\r\n\005Slice\030\003 \001(\004\022\021\n\tBitmap",
+      "IDs\030\004 \003(\004\022\022\n\nProfileIDs\030\005 \003(\004\022\022\n\nTimesta" +
+      "mps\030\006 \003(\003B\035\n\021com.pilosa.clientB\010Internal" +
+      "b\006proto3"
+    };
+    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
+            new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
         };
-        com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-                new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-                    public com.google.protobuf.ExtensionRegistry assignDescriptors(
-                            com.google.protobuf.Descriptors.FileDescriptor root) {
-                        descriptor = root;
-                        return null;
-                    }
-                };
-        com.google.protobuf.Descriptors.FileDescriptor
-                .internalBuildGeneratedFileFrom(descriptorData,
-                        new com.google.protobuf.Descriptors.FileDescriptor[]{
-                        }, assigner);
-        internal_static_internal_Bitmap_descriptor =
-                getDescriptor().getMessageTypes().get(0);
-        internal_static_internal_Bitmap_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Bitmap_descriptor,
-                new java.lang.String[]{"Bits", "Attrs",});
-        internal_static_internal_Pair_descriptor =
-                getDescriptor().getMessageTypes().get(1);
-        internal_static_internal_Pair_fieldAccessorTable = new
-                com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Pair_descriptor,
-                new java.lang.String[]{"Key", "Count",});
-        internal_static_internal_Bit_descriptor =
-                getDescriptor().getMessageTypes().get(2);
-        internal_static_internal_Bit_fieldAccessorTable = new
+    com.google.protobuf.Descriptors.FileDescriptor
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        }, assigner);
+    internal_static_internal_Bitmap_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_internal_Bitmap_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_internal_Bit_descriptor,
-                new java.lang.String[] { "BitmapID", "ProfileID", "Timestamp", });
+        internal_static_internal_Bitmap_descriptor,
+        new java.lang.String[] { "Bits", "Attrs", });
+    internal_static_internal_Pair_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_internal_Pair_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_Pair_descriptor,
+        new java.lang.String[] { "Key", "Count", });
+    internal_static_internal_Bit_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_internal_Bit_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_internal_Bit_descriptor,
+        new java.lang.String[] { "BitmapID", "ProfileID", "Timestamp", });
     internal_static_internal_Profile_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_internal_Profile_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_internal_Profile_descriptor,
+        internal_static_internal_Profile_descriptor,
         new java.lang.String[] { "ID", "Attrs", });
     internal_static_internal_Attr_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_internal_Attr_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_internal_Attr_descriptor,
-            new java.lang.String[]{"Key", "Type", "StringValue", "UintValue", "BoolValue", "FloatValue", });
+        new java.lang.String[] { "Key", "Type", "StringValue", "IntValue", "BoolValue", "FloatValue", });
     internal_static_internal_AttrMap_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_internal_AttrMap_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_internal_AttrMap_descriptor,
+        internal_static_internal_AttrMap_descriptor,
         new java.lang.String[] { "Attrs", });
     internal_static_internal_QueryRequest_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_internal_QueryRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_internal_QueryRequest_descriptor,
-            new java.lang.String[] { "DB", "Query", "Slices", "Profiles", "Quantum", "Remote", });
+        new java.lang.String[] { "Query", "Slices", "Profiles", "Quantum", "Remote", });
     internal_static_internal_QueryResponse_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_internal_QueryResponse_fieldAccessorTable = new
@@ -9866,7 +9715,7 @@ public final class Internal {
     internal_static_internal_QueryResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_internal_QueryResult_descriptor,
-            new java.lang.String[] { "Bitmap", "N", "Pairs", "Changed", });
+        new java.lang.String[] { "Bitmap", "N", "Pairs", "Changed", });
     internal_static_internal_ImportRequest_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_internal_ImportRequest_fieldAccessorTable = new

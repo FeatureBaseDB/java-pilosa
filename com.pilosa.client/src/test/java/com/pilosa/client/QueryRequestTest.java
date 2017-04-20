@@ -20,7 +20,6 @@ public class QueryRequestTest {
         qr.setTimeQuantum(TimeQuantum.YEAR_MONTH);
         qr.setRetrieveProfiles(true);
         Internal.QueryRequest request = qr.toProtobuf();
-        assertEquals("somedb", request.getDB());
         assertEquals("Range(id=1, frame='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')", request.getQuery());
         assertEquals("YM", request.getQuantum());
         assertEquals(true, request.getProfiles());

@@ -67,9 +67,9 @@ public class ProfileItemTest {
                 .setStringValue("bar")
                 .build();
         Internal.Attr uintAttr = Internal.Attr.newBuilder()
-                .setType(Util.PROTOBUF_UINT_TYPE)
-                .setKey("uint")
-                .setUintValue(42L)
+                .setType(Util.PROTOBUF_INT_TYPE)
+                .setKey("int")
+                .setIntValue(42L)
                 .build();
         Internal.Attr boolAttr = Internal.Attr.newBuilder()
                 .setType(Util.PROTOBUF_BOOL_TYPE)
@@ -93,7 +93,7 @@ public class ProfileItemTest {
         assertEquals(500L, item.getID());
         assertEquals(4, attrs.size());
         assertEquals("bar", attrs.get("string"));
-        assertEquals(42L, attrs.get("uint"));
+        assertEquals(42L, attrs.get("int"));
         assertEquals(true, attrs.get("bool"));
         assertEquals(3.14, attrs.get("double"));
     }

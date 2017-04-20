@@ -127,12 +127,12 @@ FrameOptions stargazerOptions = FrameOptions.builder()
     .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
     .build();
 
-Frame stargazer = repository.frame("stargazer", options);
+Frame stargazer = repository.frame("stargazer", stargazerOptions);
 ```
 
 #### Queries
 
-Once you have database and frame objects created, you can create queries for those.  Some of the queries work on the columns; corresponding methods are attached to the database. Other queries work on rows, with related methods attached to frames.
+Once you have database and frame objects created, you can create queries for those. Some of the queries work on the columns; corresponding methods are attached to the database. Other queries work on rows, with related methods attached to frames.
 
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
@@ -164,13 +164,15 @@ PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', stargazer_id=5)"
 Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
 
 Database:
-* `PqlQuery union(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2)`
-* `PqlQuery intersect(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2)`
-* `PqlQuery difference(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2)`
+
+* `PqlQuery union(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
+* `PqlQuery intersect(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
+* `PqlQuery difference(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery count(PqlBitmapQuery bitmap)`
 * `PqlQuery setProfileAttrs(long id, Map<String, Object> attributes)`
 
 Frame:
+
 * `PqlBitmapQuery bitmap(long rowID)`
 * `PqlQuery setBit(long rowID, long columnID)`
 * `PqlQuery clearBit(long rowID, long columnID)`
@@ -188,6 +190,7 @@ A Pilosa URI has the `${SCHEME}://${HOST}:${PORT}` format:
 * **Port**: Port number. Default: `10101`.
 
 All parts of the URI are optional, but at least one of them must be specified. The following are equivalent:
+
 * `http://localhost:10101`
 * `http://localhost`
 * `http://:10101`
@@ -223,7 +226,7 @@ PilosaClient client = PilosaClient.defaultClient();
 To use a a custom server address, you can use the `withAddress` class method:
 
 ```java
-PilosaClient client = PilosaClient.withAddress("http://localhost:10101");
+PilosaClient client = PilosaClient.withAddress("http://db1.pilosa.com:15000");
 ```
 
 If you are running a cluster of Pilosa servers, you can create a `Cluster` object that keeps addresses of those servers for increased robustness:
@@ -246,7 +249,7 @@ ClientOptions options = ClientOptions.builder()
     .setConnectTimeout(1000)  // if can't connect in  a second, close the connection
     .setSocketTimeout(10000)  // if no response received in 10 seconds, close the connection
     .setConnectionPoolSizePerRoute(3)  // number of connections in the pool per host
-    .setConnectionPoolTotalSize(10)  // number of total connections in the ppol
+    .setConnectionPoolTotalSize(10)  // number of total connections in the pool
     .setRetryCount(5)  // number of retries before failing the request
     .build();
 
@@ -258,14 +261,14 @@ Once you create a client, you can create databases, frames and start sending que
 Here is how you would create a database and frame:
 
 ```java
-// repository database was created before
+// materialize repository database instance initialized before
 client.createDatabase(repository);
 
-// stargazer frame was created before
+// materialize stargazer frame instance initialized before
 client.createFrame(stargazer);
 ```
 
-If the database or frame was created before, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
+If the database or frame exists on the server, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 
@@ -314,12 +317,13 @@ if (profile != null) {
 }
 
 // iterate on all profiles
-for (ProfileItem profiles : response.getProfiles()) {
+for (ProfileItem profile : response.getProfiles()) {
     // act on the profile
 }
 ```
 
 `QueryResult` objects contain
+
 * `getBitmap` method to retrieve a bitmap result,
 * `getCountItems` method to retrieve column count per row ID entries returned from `topN` queries,
 * `getCount` method to retrieve the number of rows per the given row ID returned from `count` queries.

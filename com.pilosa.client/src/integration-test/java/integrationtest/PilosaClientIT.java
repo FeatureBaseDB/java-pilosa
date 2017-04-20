@@ -373,7 +373,7 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void fail304EmptyResponse() throws IOException {
-        HttpServer server = runContent0HttpServer("/db", 304);
+        HttpServer server = runContent0HttpServer("/db/foo", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.createDatabase(Database.withName("foo"));
@@ -387,7 +387,8 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void failQueryEmptyResponse() throws IOException {
-        HttpServer server = runContent0HttpServer("/query", 304);
+        String path = String.format("/db/%s/query", this.frame.getDatabase().getName());
+        HttpServer server = runContent0HttpServer(path, 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.query(this.frame.setBit(15, 10));

@@ -22,9 +22,9 @@ public class UtilTest {
                 .setStringValue("somestr")
                 .build());
         attrs.add(Internal.Attr.newBuilder()
-                .setType(Util.PROTOBUF_UINT_TYPE)
+                .setType(Util.PROTOBUF_INT_TYPE)
                 .setKey("intval")
-                .setUintValue(5)
+                .setIntValue(5)
                 .build());
         attrs.add(Internal.Attr.newBuilder()
                 .setType(Util.PROTOBUF_BOOL_TYPE)

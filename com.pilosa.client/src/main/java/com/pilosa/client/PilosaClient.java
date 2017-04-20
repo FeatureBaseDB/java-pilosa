@@ -129,10 +129,10 @@ public class PilosaClient implements AutoCloseable {
      * @throws DatabaseExistsException if there already is a database with the given name
      */
     public void createDatabase(Database database) {
-        String uri = this.getAddress() + "/db";
+        String uri = String.format("%s/db/%s", this.getAddress(), database.getName());
         HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"options\":{\"columnLabel\":\"%s\"}}",
-                database.getName(), database.getOptions().getColumnLabel());
+        String body = String.format("{\"options\":{\"columnLabel\":\"%s\"}}",
+                database.getOptions().getColumnLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating database");
 
@@ -162,10 +162,11 @@ public class PilosaClient implements AutoCloseable {
      * @throws FrameExistsException if there already a frame with the given name
      */
     public void createFrame(Frame frame) {
-        String uri = this.getAddress() + "/frame";
+        String uri = String.format("%s/db/%s/frame/%s", this.getAddress(),
+                frame.getDatabase().getName(), frame.getName());
         HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"options\":{\"rowLabel\":\"%s\"}}",
-                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getRowLabel());
+        String body = String.format("{\"options\":{\"rowLabel\":\"%s\"}}",
+                frame.getOptions().getRowLabel());
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
 
@@ -193,10 +194,8 @@ public class PilosaClient implements AutoCloseable {
      * @param database database object
      */
     public void deleteDatabase(Database database) {
-        String uri = this.getAddress() + "/db";
+        String uri = String.format("%s/db/%s", this.getAddress(), database.getName());
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
-        String body = String.format("{\"db\":\"%s\"}", database.getName());
-        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpDelete, "Error while deleting database");
     }
 
@@ -206,11 +205,9 @@ public class PilosaClient implements AutoCloseable {
      * @param frame frame object
      */
     public void deleteFrame(Frame frame) {
-        String uri = this.getAddress() + "/frame";
-        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
-        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\"}",
+        String uri = String.format("%s/db/%s/frame/%s", this.getAddress(),
                 frame.getDatabase().getName(), frame.getName());
-        httpDelete.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
+        HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         clientExecute(httpDelete, "Error while deleting frame");
     }
 
@@ -335,7 +332,8 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private QueryResponse queryPath(QueryRequest request) {
-        String uri = String.format("%s/query", this.getAddress());
+        String uri = String.format("%s/db/%s/query", this.getAddress(),
+                request.getDatabaseName());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;
@@ -436,19 +434,20 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private void patchTimeQuantum(Database database) {
-        String uri = this.getAddress() + "/db/time_quantum";
+        String uri = String.format("%s/db/%s/time-quantum", this.getAddress(), database.getName());
         HttpPatch httpPatch = new HttpPatch(uri);
-        String body = String.format("{\"db\":\"%s\", \"time_quantum\":\"%s\"}",
-                database.getName(), database.getOptions().getTimeQuantum().getStringValue());
+        String body = String.format("{\"time_quantum\":\"%s\"}",
+                database.getOptions().getTimeQuantum().getStringValue());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPatch, "Error while setting time quantum for the database");
     }
 
     private void patchTimeQuantum(Frame frame) {
-        String uri = this.getAddress() + "/frame/time_quantum";
+        String uri = String.format("%s/db/%s/frame/%s/time-quantum", this.getAddress(),
+                frame.getDatabase().getName(), frame.getName());
         HttpPatch httpPatch = new HttpPatch(uri);
-        String body = String.format("{\"db\":\"%s\", \"frame\":\"%s\", \"time_quantum\":\"%s\"}",
-                frame.getDatabase().getName(), frame.getName(), frame.getOptions().getTimeQuantum().getStringValue());
+        String body = String.format("{\"time_quantum\":\"%s\"}",
+                frame.getOptions().getTimeQuantum().getStringValue());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPatch, "Error while setting time quantum for the database");
     }
@@ -525,6 +524,10 @@ class QueryRequest {
         return this.query;
     }
 
+    String getDatabaseName() {
+        return this.databaseName;
+    }
+
     void setQuery(String query) {
         this.query = query;
     }
@@ -539,7 +542,6 @@ class QueryRequest {
 
     Internal.QueryRequest toProtobuf() {
         Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
-                .setDB(this.databaseName)
                 .setQuery(this.query)
                 .setProfiles(this.retrieveProfiles)
                 .setQuantum(this.timeQuantum.getStringValue());

@@ -1,7 +1,8 @@
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
+import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.orm.DatabaseOptions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

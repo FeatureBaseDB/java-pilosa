@@ -266,4 +266,10 @@ public class OrmTest {
         attrsMap.put("happy", new Object());
         projectDb.setProfileAttrs(5, attrsMap);
     }
+
+    @Test(expected = PilosaException.class)
+    public void inverseBitmapFailsIfNotEnabledTest() {
+        Frame frame = this.sampleDb.frame("inverse-not-enabled");
+        frame.inverseBitmap(5);
+    }
 }

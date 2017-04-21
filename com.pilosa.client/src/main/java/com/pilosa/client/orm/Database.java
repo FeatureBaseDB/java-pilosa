@@ -97,7 +97,17 @@ public class Database {
      * @return batch query
      */
     public BatchQuery batchQuery(int queryCount) {
-        return new BatchQuery(queryCount, this);
+        return new BatchQuery(this, queryCount);
+    }
+
+    /**
+     * Creates a batch query with the given queries
+     *
+     * @param queries the queries in the batch
+     * @return BatchQuery
+     */
+    public BatchQuery batchQuery(PqlQuery... queries) {
+        return new BatchQuery(this, queries);
     }
 
     public PqlBaseQuery rawQuery(String query) {

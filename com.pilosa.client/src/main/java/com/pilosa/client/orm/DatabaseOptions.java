@@ -45,6 +45,12 @@ public final class DatabaseOptions {
         return timeQuantum;
     }
 
+    @Override
+    public String toString() {
+        return String.format("{\"options\":{\"columnLabel\":\"%s\"}}",
+                this.columnLabel);
+    }
+
     private DatabaseOptions(final String columnLabel, final TimeQuantum timeQuantum) {
         this.columnLabel = columnLabel;
         this.timeQuantum = timeQuantum;

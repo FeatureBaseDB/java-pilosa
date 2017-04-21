@@ -131,8 +131,7 @@ public class PilosaClient implements AutoCloseable {
     public void createDatabase(Database database) {
         String uri = String.format("%s/db/%s", this.getAddress(), database.getName());
         HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"options\":{\"columnLabel\":\"%s\"}}",
-                database.getOptions().getColumnLabel());
+        String body = database.getOptions().toString();
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating database");
 
@@ -165,8 +164,7 @@ public class PilosaClient implements AutoCloseable {
         String uri = String.format("%s/db/%s/frame/%s", this.getAddress(),
                 frame.getDatabase().getName(), frame.getName());
         HttpPost httpPost = new HttpPost(uri);
-        String body = String.format("{\"options\":{\"rowLabel\":\"%s\"}}",
-                frame.getOptions().getRowLabel());
+        String body = frame.getOptions().toString();
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
 

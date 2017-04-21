@@ -56,12 +56,26 @@ public class Frame {
     /**
      * Creates a Bitmap query.
      *
-     * @param rowID bitmap ID
+     * @param rowID row ID
      * @return a PQL query
      */
     public PqlBitmapQuery bitmap(long rowID) {
         return this.database.pqlBitmapQuery(String.format("Bitmap(%s=%d, frame='%s')",
                 this.rowLabel, rowID, this.name));
+    }
+
+    /**
+     * Creates an inverse Bitmap query
+     *
+     * @param columnID column ID
+     * @return a PQL query
+     */
+    public PqlBaseQuery inverseBitmap(long columnID) {
+        if (!this.options.isInverseEnabled()) {
+            throw new PilosaException("Inverse bitmaps was not enabled for this frame");
+        }
+        return this.database.pqlQuery(String.format("Bitmap(%s=%d, frame='%s')",
+                this.columnLabel, columnID, this.name));
     }
 
     /**

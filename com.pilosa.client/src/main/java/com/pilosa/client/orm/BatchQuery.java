@@ -14,9 +14,16 @@ public class BatchQuery implements PqlQuery {
         this.queries = new ArrayList<>();
     }
 
-    BatchQuery(int queryCount, Database database) {
+    BatchQuery(Database database, int queryCount) {
         this.database = database;
         this.queries = new ArrayList<>(queryCount);
+    }
+
+    BatchQuery(Database database, PqlQuery... queries) {
+        this(database, queries.length);
+        for (PqlQuery query : queries) {
+            this.add(query);
+        }
     }
 
     public Database getDatabase() {

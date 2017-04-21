@@ -17,9 +17,7 @@ public class PqlBaseQuery implements PqlQuery {
         return this.database;
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         return this.pql;
     }
-
 }

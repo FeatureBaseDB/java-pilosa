@@ -249,25 +249,21 @@ public class PilosaClientIT {
                     .setInverseEnabled(true)
                     .build();
             Frame f1 = this.colDB.frame("f1-inversable", options);
-            try {
-                client.ensureFrame(f1);
-                client.query(
-                        this.colDB.batchQuery(
-                                f1.setBit(1000, 5000),
-                                f1.setBit(1000, 6000),
-                                f1.setBit(3000, 5000)));
-                QueryResponse response = client.query(
-                        this.colDB.batchQuery(
-                                f1.bitmap(1000),
-                                f1.inverseBitmap(5000)));
-                assertEquals(2, response.getResults().size());
-                List<Long> bits1 = response.getResults().get(0).getBitmap().getBits();
-                List<Long> bits2 = response.getResults().get(1).getBitmap().getBits();
-                assertEquals("[5000, 6000]", bits1.toString());
-                assertEquals("[1000, 3000]", bits2.toString());
-            } finally {
-                client.deleteFrame(f1);
-            }
+            client.ensureFrame(f1);
+            client.query(
+                    this.colDB.batchQuery(
+                            f1.setBit(1000, 5000),
+                            f1.setBit(1000, 6000),
+                            f1.setBit(3000, 5000)));
+            QueryResponse response = client.query(
+                    this.colDB.batchQuery(
+                            f1.bitmap(1000),
+                            f1.inverseBitmap(5000)));
+            assertEquals(2, response.getResults().size());
+            List<Long> bits1 = response.getResults().get(0).getBitmap().getBits();
+            List<Long> bits2 = response.getResults().get(1).getBitmap().getBits();
+            assertEquals("[5000, 6000]", bits1.toString());
+            assertEquals("[1000, 3000]", bits2.toString());
         }
     }
 

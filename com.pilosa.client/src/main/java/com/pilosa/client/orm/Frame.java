@@ -72,7 +72,7 @@ public class Frame {
      */
     public PqlBaseQuery inverseBitmap(long columnID) {
         if (!this.options.isInverseEnabled()) {
-            throw new PilosaException("Inverse bitmaps was not enabled for this frame");
+            throw new PilosaException("Inverse bitmaps support was not enabled for this frame");
         }
         return this.database.pqlQuery(String.format("Bitmap(%s=%d, frame='%s')",
                 this.columnLabel, columnID, this.name));
@@ -97,6 +97,7 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(long rowID, long columnID) {
         return this.database.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
@@ -109,7 +110,8 @@ public class Frame {
      * @return a PQL Bitmap query
      */
     public PqlBitmapQuery topN(long n) {
-        return this.database.pqlBitmapQuery(String.format("TopN(frame='%s', n=%d)", this.name, n));
+        String s = String.format("TopN(frame='%s', n=%d)", this.name, n);
+        return this.database.pqlBitmapQuery(s);
     }
 
     /**
@@ -119,8 +121,11 @@ public class Frame {
      * @param bitmap the bitmap query
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
-        return this.database.pqlBitmapQuery(String.format("TopN(%s, frame='%s', n=%d)", bitmap, this.name, n));
+        String s = String.format("TopN(%s, frame='%s', n=%d)",
+                bitmap.serialize(), this.name, n);
+        return this.database.pqlBitmapQuery(s);
     }
 
     /**
@@ -132,13 +137,15 @@ public class Frame {
      * @param values filter values to be matched against the field
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
         // TOOD: make field use its own validator
         Validator.ensureValidLabel(field);
         try {
             String valuesString = this.mapper.writeValueAsString(values);
-            return this.database.pqlBitmapQuery(String.format("TopN(%s, frame='%s', n=%d, field='%s', %s)",
-                    bitmap, this.name, n, field, valuesString));
+            String s = String.format("TopN(%s, frame='%s', n=%d, field='%s', %s)",
+                    bitmap.serialize(), this.name, n, field, valuesString);
+            return this.database.pqlBitmapQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }
@@ -152,6 +159,7 @@ public class Frame {
      * @param end   end timestamp
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");

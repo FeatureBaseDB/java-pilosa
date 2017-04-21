@@ -122,6 +122,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery union(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Union", bitmap1, bitmap2, bitmaps);
     }
@@ -134,6 +135,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery intersect(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Intersect", bitmap1, bitmap2, bitmaps);
     }
@@ -146,6 +148,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Difference", bitmap1, bitmap2, bitmaps);
     }
@@ -157,7 +160,7 @@ public class Database {
      * @return a PQL query
      */
     public PqlBaseQuery count(PqlBitmapQuery bitmap) {
-        return pqlQuery(String.format("Count(%s)", bitmap));
+        return pqlQuery(String.format("Count(%s)", bitmap.serialize()));
     }
 
     /**
@@ -182,13 +185,13 @@ public class Database {
     }
 
     private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        String qry = String.format("%s, %s", bitmap1, bitmap2);
+        String qry = String.format("%s, %s", bitmap1.serialize(), bitmap2.serialize());
         if (bitmaps.length > 0) {
             StringBuilder builder = new StringBuilder(bitmaps.length);
             builder.append(qry);
             for (PqlBitmapQuery bitmap : bitmaps) {
                 builder.append(", ");
-                builder.append(bitmap);
+                builder.append(bitmap.serialize());
             }
             qry = builder.toString();
         }

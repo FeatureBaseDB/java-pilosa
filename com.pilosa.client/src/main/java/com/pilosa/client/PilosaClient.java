@@ -514,7 +514,7 @@ class QueryRequest {
         // We call QueryRequest.withDatabase in order to protect against database name == null
         // TODO: check that database name is not null and create the QueryRequest object directly.
         QueryRequest request = QueryRequest.withDatabase(query.getDatabase().getName());
-        request.setQuery(query.toString());
+        request.setQuery(query.serialize());
         return request;
     }
 

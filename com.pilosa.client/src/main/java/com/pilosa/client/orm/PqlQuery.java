@@ -1,6 +1,6 @@
 package com.pilosa.client.orm;
 
 public interface PqlQuery {
-    Database getDatabase();
+    Index getIndex();
     String toString();
 }

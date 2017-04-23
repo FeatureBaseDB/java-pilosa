@@ -13,16 +13,16 @@ import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
 public class OrmTest {
-    private Database sampleDb = Database.withName("sample-db");
+    private Index sampleDb = Index.withName("sample-db");
     private Frame sampleFrame = sampleDb.frame("sample-frame");
-    private Database projectDb;
+    private Index projectDb;
     private Frame collabFrame;
 
     {
         DatabaseOptions projectDbOptions = DatabaseOptions.builder()
                 .setColumnLabel("user")
                 .build();
-        this.projectDb = Database.withName("project-db", projectDbOptions);
+        this.projectDb = Index.withName("project-db", projectDbOptions);
         FrameOptions collabFrameOptions = FrameOptions.builder()
                 .setRowLabel("project")
                 .build();
@@ -33,14 +33,14 @@ public class OrmTest {
     public void pqlQueryCreate() {
         PqlBaseQuery pql = new PqlBaseQuery("Bitmap(frame='foo', id=10)");
         assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
-        assertEquals(null, pql.getDatabase());
+        assertEquals(null, pql.getIndex());
     }
 
     @Test
     public void pqlBitmapQueryCreate() {
         PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(frame='foo', id=10)");
         assertEquals("Bitmap(frame='foo', id=10)", pql.toString());
-        assertEquals(null, pql.getDatabase());
+        assertEquals(null, pql.getIndex());
 
     }
 
@@ -230,13 +230,13 @@ public class OrmTest {
     }
 
     @Test
-    public void setBitmapAttrsTest() {
+    public void setRowAttrsTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("active", true);
-        PqlQuery q = collabFrame.setBitmapAttrs(5, attrsMap);
+        PqlQuery q = collabFrame.setRowAttrs(5, attrsMap);
         assertEquals(
-                "SetBitmapAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
     }
 
@@ -245,17 +245,17 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
-        collabFrame.setBitmapAttrs(5, attrsMap);
+        collabFrame.setRowAttrs(5, attrsMap);
     }
 
     @Test
-    public void setProfileAttrsTest() {
+    public void setColumnAttrsTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
-        PqlQuery q = projectDb.setProfileAttrs(5, attrsMap);
+        PqlQuery q = projectDb.setColumnAttrs(5, attrsMap);
         assertEquals(
-                "SetProfileAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.toString());
     }
 
@@ -264,7 +264,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
-        projectDb.setProfileAttrs(5, attrsMap);
+        projectDb.setColumnAttrs(5, attrsMap);
     }
 
     @Test(expected = PilosaException.class)

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public final class QueryResponse {
     private List<QueryResult> results;
-    private List<ProfileItem> profiles;
+    private List<ColumnItem> columns;
     private String errorMessage;
     private boolean isError = false;
 
@@ -50,28 +50,28 @@ public final class QueryResponse {
     }
 
     /**
-     * Returns the list of profiles.
+     * Returns the list of columns.
      * <p>
-     * The response contains the profiles if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the columns if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
      *
-     * @return list of profiles or <code>null</code> if the response did not have its profiles field set.
+     * @return list of columns or <code>null</code> if the response did not have its columns field set.
      */
-    public List<ProfileItem> getProfiles() {
-        return this.profiles;
+    public List<ColumnItem> getColumns() {
+        return this.columns;
     }
 
     /**
      * Returns the first profile in the response.
      * <p>
-     * The response contains the profiles if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the columns if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
      *
-     * @return the first profile or <code>null</code> if the response did not have its profiles field set.
+     * @return the first profile or <code>null</code> if the response did not have its columns field set.
      */
-    public ProfileItem getProfile() {
-        if (this.profiles == null || this.profiles.size() == 0) {
+    public ColumnItem getProfile() {
+        if (this.columns == null || this.columns.size() == 0) {
             return null;
         }
-        return this.profiles.get(0);
+        return this.columns.get(0);
     }
 
     /**
@@ -109,11 +109,11 @@ public final class QueryResponse {
         }
         this.results = results;
 
-        ArrayList<ProfileItem> profiles = new ArrayList<>(response.getProfilesCount());
-        for (Internal.Profile profile : response.getProfilesList()) {
-            profiles.add(ProfileItem.fromInternal(profile));
+        ArrayList<ColumnItem> profiles = new ArrayList<>(response.getColumnAttrSetsCount());
+        for (Internal.ColumnAttrSet profile : response.getColumnAttrSetsList()) {
+            profiles.add(ColumnItem.fromInternal(profile));
         }
-        this.profiles = profiles;
+        this.columns = profiles;
     }
 
 }

@@ -2,19 +2,19 @@ package com.pilosa.client.orm;
 
 public class PqlBaseQuery implements PqlQuery {
     private String pql;
-    private Database database = null;
+    private Index index = null;
 
     PqlBaseQuery(String pql) {
         this(pql, null);
     }
 
-    PqlBaseQuery(String pql, Database database) {
+    PqlBaseQuery(String pql, Index index) {
         this.pql = pql;
-        this.database = database;
+        this.index = index;
     }
 
-    public Database getDatabase() {
-        return this.database;
+    public Index getIndex() {
+        return this.index;
     }
 
     @Override

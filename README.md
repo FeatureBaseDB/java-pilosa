@@ -4,7 +4,7 @@
 
 <img src="https://dc3kpxyuw05cb.cloudfront.net/img/ee.svg" style="float: right" align="right" height="301">
 
-Java client for Pilosa high performance database.
+Java client for Pilosa high performance index.
 
 ## Changelog
 
@@ -54,7 +54,7 @@ PilosaClient client = PilosaClient.defaultClient();
 // Create a Database object
 Database mydb = Database.withName("mydb");
 
-// Make sure the database exists on the server
+// Make sure the index exists on the server
 client.ensureDatabase(mydb);
 
 // Create a Frame object
@@ -96,7 +96,7 @@ for (Object result : response.getResults()) {
 
 *Database* and *frame*s are the main data models of Pilosa. You can check the [Pilosa documentation](https://www.pilosa.com/docs) for more detail about the data model.
 
-`Database.withName` class method is used to create a database object. Note that, this does not create a database on the server, the database object just defines the schema.
+`Database.withName` class method is used to create a index object. Note that, this does not create a index on the server, the index object just defines the schema.
 
 ```java
 Database repository = Database.withName("repository");
@@ -119,7 +119,7 @@ Frames are created with a call to `Database.frame` method:
 Frame stargazer = repository.frame("stargazer");
 ```
 
-Similar to database objects, you can pass custom options to frames:
+Similar to index objects, you can pass custom options to frames:
 
 ```java
 FrameOptions stargazerOptions = FrameOptions.builder()
@@ -132,7 +132,7 @@ Frame stargazer = repository.frame("stargazer", stargazerOptions);
 
 #### Queries
 
-Once you have database and frame objects created, you can create queries for those. Some of the queries work on the columns; corresponding methods are attached to the database. Other queries work on rows, with related methods attached to frames.
+Once you have index and frame objects created, you can create queries for those. Some of the queries work on the columns; corresponding methods are attached to the index. Other queries work on rows, with related methods attached to frames.
 
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
@@ -140,13 +140,13 @@ For instance, `Bitmap` queries work on rows; use a frame object to create those 
 PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(frame='stargazer', stargazer_id=1)
 ```
 
-`Union` queries work on columns; use the database object to create them:
+`Union` queries work on columns; use the index object to create them:
 
 ```java
 PqlQuery query = repository.union(bitmapQuery1, bitmapQuery2);
 ```
 
-In order to increase througput, you may want to batch queries sent to the Pilosa server. `database.batchQuery` method is used for that purpose:
+In order to increase througput, you may want to batch queries sent to the Pilosa server. `index.batchQuery` method is used for that purpose:
 
 ```java
 PqlQuery query = repository.batchQuery(
@@ -155,7 +155,7 @@ PqlQuery query = repository.batchQuery(
 );
 ```
 
-The recommended way of creating query objects is, using dedicated methods attached to database and frame objects. But sometimes it would be desirable to send raw queries to Pilosa. You can use `database.rawQuery` method for that. Note that, query string is not validated before sending to the server:
+The recommended way of creating query objects is, using dedicated methods attached to index and frame objects. But sometimes it would be desirable to send raw queries to Pilosa. You can use `index.rawQuery` method for that. Note that, query string is not validated before sending to the server:
 
 ```java
 PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', stargazer_id=5)");
@@ -255,17 +255,17 @@ PilosaClient client = PilosaClient.withCluster(cluster, options);
 
 Once you create a client, you can create databases, frames and start sending queries.
 
-Here is how you would create a database and frame:
+Here is how you would create a index and frame:
 
 ```java
-// repository database was created before
+// repository index was created before
 client.createDatabase(repository);
 
 // stargazer frame was created before
 client.createFrame(stargazer);
 ```
 
-If the database or frame was created before, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
+If the index or frame was created before, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 

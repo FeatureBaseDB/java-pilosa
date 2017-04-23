@@ -9,7 +9,7 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
-public class DatabaseOptionsTest {
+public class IndexOptionsTest {
     @Test
     public void testBuilder() {
         DatabaseOptions options = DatabaseOptions.builder()

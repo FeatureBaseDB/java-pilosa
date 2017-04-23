@@ -6,12 +6,12 @@ import com.pilosa.client.exceptions.ValidationException;
 
 import java.util.Map;
 
-public class Database {
+public class Index {
     private String name;
     private DatabaseOptions options;
     private ObjectMapper mapper = new ObjectMapper();
 
-    private Database(String name, DatabaseOptions options) {
+    private Index(String name, DatabaseOptions options) {
         this.name = name;
         this.options = options;
     }
@@ -20,11 +20,11 @@ public class Database {
      * Create a database with a name using defaults.
      *
      * @param name database name
-     * @return a Database object
+     * @return a Index object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database withName(String name) {
-        return Database.withName(name, DatabaseOptions.withDefaults());
+    public static Index withName(String name) {
+        return Index.withName(name, DatabaseOptions.withDefaults());
     }
 
     /**
@@ -32,12 +32,12 @@ public class Database {
      *
      * @param name    database name
      * @param options database options
-     * @return a Database object
+     * @return a Index object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database withName(String name, DatabaseOptions options) {
+    public static Index withName(String name, DatabaseOptions options) {
         Validator.ensureValidLabel(options.getColumnLabel());
-        return new Database(name, options);
+        return new Index(name, options);
     }
 
     /**
@@ -167,9 +167,9 @@ public class Database {
      * @param attributes profile attributes
      * @return a PQL query
      */
-    public PqlBaseQuery setProfileAttrs(long id, Map<String, Object> attributes) {
+    public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetProfileAttrs(%s=%d, %s)",
+        return pqlQuery(String.format("SetColumnAttrs(%s=%d, %s)",
                 this.options.getColumnLabel(), id, attributesString));
     }
 

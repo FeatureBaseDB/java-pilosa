@@ -5,20 +5,20 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
 
-public final class ProfileItem {
+public final class ColumnItem {
     private long id;
     private Map<String, Object> attributes;
 
-    ProfileItem() {
+    ColumnItem() {
     }
 
-    ProfileItem(long id, Map<String, Object> attributes) {
+    ColumnItem(long id, Map<String, Object> attributes) {
         this.id = id;
         this.attributes = attributes;
     }
 
-    static ProfileItem fromInternal(Internal.Profile profile) {
-        return new ProfileItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
+    static ColumnItem fromInternal(Internal.ColumnAttrSet profile) {
+        return new ColumnItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
     }
 
     /**
@@ -41,7 +41,7 @@ public final class ProfileItem {
 
     @Override
     public String toString() {
-        return String.format("ProfileItem(id=%d, attrs=%s)", this.id, this.attributes);
+        return String.format("ColumnItem(id=%d, attrs=%s)", this.id, this.attributes);
     }
 
     @Override
@@ -54,13 +54,13 @@ public final class ProfileItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ProfileItem)) {
+        if (!(obj instanceof ColumnItem)) {
             return false;
         }
         if (obj == this) {
             return true;
         }
-        ProfileItem rhs = (ProfileItem) obj;
+        ColumnItem rhs = (ColumnItem) obj;
         return new EqualsBuilder()
                 .append(this.id, rhs.id)
                 .append(this.attributes, rhs.attributes)

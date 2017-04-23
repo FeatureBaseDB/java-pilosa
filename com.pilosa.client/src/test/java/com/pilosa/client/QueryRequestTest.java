@@ -22,7 +22,7 @@ public class QueryRequestTest {
         Internal.QueryRequest request = qr.toProtobuf();
         assertEquals("Range(id=1, frame='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')", request.getQuery());
         assertEquals("YM", request.getQuantum());
-        assertEquals(true, request.getProfiles());
+        assertEquals(true, request.getColumnAttrs());
     }
 
     @Test

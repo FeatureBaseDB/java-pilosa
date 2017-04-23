@@ -11,30 +11,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class ProfileItemTest {
+public class ColumnItemTest {
     @Test
     public void testCreateProfileItem() {
-        ProfileItem pi = createSampleProfileItem();
+        ColumnItem pi = createSampleProfileItem();
         assertEquals(33, pi.getID());
         assertEquals("Austin", pi.getAttributes().get("city"));
     }
 
     @Test
     public void testCreateProfileItemDefaultConstructor() {
-        new ProfileItem();
+        new ColumnItem();
     }
 
     @Test
     public void testBitmapResultToString() {
-        ProfileItem result = createSampleProfileItem();
+        ColumnItem result = createSampleProfileItem();
         String s = result.toString();
-        assertEquals("ProfileItem(id=33, attrs={city=Austin})", s);
+        assertEquals("ColumnItem(id=33, attrs={city=Austin})", s);
     }
 
     @Test
     public void testEquals() {
-        ProfileItem result1 = createSampleProfileItem();
-        ProfileItem result2 = createSampleProfileItem();
+        ColumnItem result1 = createSampleProfileItem();
+        ColumnItem result2 = createSampleProfileItem();
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -42,20 +42,20 @@ public class ProfileItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new ProfileItem(1, null)).equals(0);
+        boolean e = (new ColumnItem(1, null)).equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        ProfileItem result = createSampleProfileItem();
+        ColumnItem result = createSampleProfileItem();
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        ProfileItem result1 = createSampleProfileItem();
-        ProfileItem result2 = createSampleProfileItem();
+        ColumnItem result1 = createSampleProfileItem();
+        ColumnItem result2 = createSampleProfileItem();
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
@@ -81,14 +81,14 @@ public class ProfileItemTest {
                 .setKey("double")
                 .setFloatValue(3.14)
                 .build();
-        Internal.Profile profile = Internal.Profile.newBuilder()
+        Internal.ColumnAttrSet profile = Internal.ColumnAttrSet.newBuilder()
                 .addAttrs(stringAttr)
                 .addAttrs(uintAttr)
                 .addAttrs(boolAttr)
                 .addAttrs(doubleAttr)
                 .setID(500L)
                 .build();
-        ProfileItem item = ProfileItem.fromInternal(profile);
+        ColumnItem item = ColumnItem.fromInternal(profile);
         Map<String, Object> attrs = item.getAttributes();
         assertEquals(500L, item.getID());
         assertEquals(4, attrs.size());
@@ -98,9 +98,9 @@ public class ProfileItemTest {
         assertEquals(3.14, attrs.get("double"));
     }
 
-    private ProfileItem createSampleProfileItem() {
+    private ColumnItem createSampleProfileItem() {
         Map<String, Object> attrs = new HashMap<>(1);
         attrs.put("city", "Austin");
-        return new ProfileItem(33, attrs);
+        return new ColumnItem(33, attrs);
     }
 }

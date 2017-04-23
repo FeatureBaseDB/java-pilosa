@@ -37,11 +37,10 @@ public class BatchQuery implements PqlQuery {
         this.queries.add(query);
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         StringBuilder builder = new StringBuilder(this.queries.size());
         for (PqlQuery query : this.queries) {
-            builder.append(query.toString());
+            builder.append(query.serialize());
         }
         return builder.toString();
     }

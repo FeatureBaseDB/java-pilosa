@@ -119,7 +119,8 @@ public class PilosaClient implements AutoCloseable {
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
         request.setRetrieveProfiles(options.isProfiles());
-        return queryPath(request, query);
+        request.setQuery(query.serialize());
+        return queryPath(request);
     }
 
     /**
@@ -361,15 +362,6 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private QueryResponse queryPath(QueryRequest request, PqlQuery... queries) {
-        StringBuilder builder = new StringBuilder(queries.length);
-        for (PqlQuery query : queries) {
-            builder.append(query);
-        }
-        request.setQuery(builder.toString());
-        return queryPath(request);
-    }
-
     private void importBits(String databaseName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
@@ -514,7 +506,7 @@ class QueryRequest {
         // We call QueryRequest.withDatabase in order to protect against database name == null
         // TODO: check that database name is not null and create the QueryRequest object directly.
         QueryRequest request = QueryRequest.withDatabase(query.getIndex().getName());
-        request.setQuery(query.toString());
+        request.setQuery(query.serialize());
         return request;
     }
 

@@ -6,15 +6,15 @@ public class QueryOptions {
         }
 
         public QueryOptions build() {
-            return new QueryOptions(this.profiles);
+            return new QueryOptions(this.columns);
         }
 
-        public Builder setProfiles(boolean profiles) {
-            this.profiles = profiles;
+        public Builder setColumns(boolean columns) {
+            this.columns = columns;
             return this;
         }
 
-        private boolean profiles = false;
+        private boolean columns = false;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -23,17 +23,17 @@ public class QueryOptions {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public boolean isProfiles() {
-        return profiles;
+    public boolean isColumns() {
+        return columns;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    private QueryOptions(boolean profiles) {
-        this.profiles = profiles;
+    private QueryOptions(boolean columns) {
+        this.columns = columns;
     }
 
-    private boolean profiles;
+    private boolean columns;
 }

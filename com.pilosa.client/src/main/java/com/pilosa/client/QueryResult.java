@@ -56,7 +56,7 @@ public final class QueryResult {
     /**
      * Returns the result from Count query
      *
-     * @return number of profiles for the bitmap in the query
+     * @return number of columns for the bitmap in the query
      */
     public long getCount() {
         return this.count;

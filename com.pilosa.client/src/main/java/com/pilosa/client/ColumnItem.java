@@ -17,23 +17,23 @@ public final class ColumnItem {
         this.attributes = attributes;
     }
 
-    static ColumnItem fromInternal(Internal.ColumnAttrSet profile) {
-        return new ColumnItem(profile.getID(), Util.protobufAttrsToMap(profile.getAttrsList()));
+    static ColumnItem fromInternal(Internal.ColumnAttrSet column) {
+        return new ColumnItem(column.getID(), Util.protobufAttrsToMap(column.getAttrsList()));
     }
 
     /**
-     * Returns profile ID.
+     * Returns column ID.
      *
-     * @return profile ID
+     * @return column ID
      */
     public long getID() {
         return this.id;
     }
 
     /**
-     * Returns profile attributes.
+     * Returns column attributes.
      *
-     * @return profile attributes
+     * @return column attributes
      */
     public Map<String, Object> getAttributes() {
         return this.attributes;

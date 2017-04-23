@@ -61,13 +61,13 @@ public final class QueryResponse {
     }
 
     /**
-     * Returns the first profile in the response.
+     * Returns the first column in the response.
      * <p>
      * The response contains the columns if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
      *
-     * @return the first profile or <code>null</code> if the response did not have its columns field set.
+     * @return the first column or <code>null</code> if the response did not have its columns field set.
      */
-    public ColumnItem getProfile() {
+    public ColumnItem getColumn() {
         if (this.columns == null || this.columns.size() == 0) {
             return null;
         }
@@ -109,11 +109,11 @@ public final class QueryResponse {
         }
         this.results = results;
 
-        ArrayList<ColumnItem> profiles = new ArrayList<>(response.getColumnAttrSetsCount());
-        for (Internal.ColumnAttrSet profile : response.getColumnAttrSetsList()) {
-            profiles.add(ColumnItem.fromInternal(profile));
+        ArrayList<ColumnItem> columns = new ArrayList<>(response.getColumnAttrSetsCount());
+        for (Internal.ColumnAttrSet column : response.getColumnAttrSetsList()) {
+            columns.add(ColumnItem.fromInternal(column));
         }
-        this.columns = profiles;
+        this.columns = columns;
     }
 
 }

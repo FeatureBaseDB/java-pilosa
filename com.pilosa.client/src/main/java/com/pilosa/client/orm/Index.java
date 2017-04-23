@@ -17,23 +17,23 @@ public class Index {
     }
 
     /**
-     * Create a database with a name using defaults.
+     * Create an index with a name using defaults.
      *
-     * @param name database name
+     * @param name index name
      * @return a Index object
-     * @throws ValidationException if the passed database name is not valid
+     * @throws ValidationException if the passed index name is not valid
      */
     public static Index withName(String name) {
         return Index.withName(name, IndexOptions.withDefaults());
     }
 
     /**
-     * Creates a database with a name and options
+     * Creates a index with a name and options
      *
-     * @param name    database name
-     * @param options database options
+     * @param name    index name
+     * @param options index options
      * @return a Index object
-     * @throws ValidationException if the passed database name is not valid
+     * @throws ValidationException if the passed index name is not valid
      */
     public static Index withName(String name, IndexOptions options) {
         Validator.ensureValidIndexName(name);
@@ -42,18 +42,18 @@ public class Index {
     }
 
     /**
-     * Gets the database name.
+     * Gets the index name.
      *
-     * @return database name
+     * @return index name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * Gets options for this database.
+     * Gets options for this index.
      *
-     * @return database options
+     * @return index options
      */
     public IndexOptions getOptions() {
         return this.options;
@@ -168,8 +168,8 @@ public class Index {
     /**
      * Creates a SetProfileAttrs query
      *
-     * @param id         profile ID
-     * @param attributes profile attributes
+     * @param id         coumn ID
+     * @param attributes column attributes
      * @return a PQL query
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {

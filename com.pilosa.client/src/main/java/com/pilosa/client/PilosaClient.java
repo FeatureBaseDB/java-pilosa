@@ -91,24 +91,24 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Runs the given query against the server.
      *
-     * @param query a PqlBaseQuery with its database is not null
+     * @param query a PqlBaseQuery with its index is not null
      * @return Pilosa response
-     * @throws ValidationException if the given query's database is null
+     * @throws ValidationException if the given query's index is null
      */
     public QueryResponse query(PqlQuery query) {
         return query(query, QueryOptions.defaultOptions());
     }
 
     /**
-     * Runs the given query against the server and enables profiles in the response.
+     * Runs the given query against the server and enables columns in the response.
      *
-     * @param query a PqlBaseQuery with its database is not null
+     * @param query a PqlBaseQuery with its index is not null
      * @return Pilosa response
-     * @throws ValidationException if the given query's database is null
+     * @throws ValidationException if the given query's index is null
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isProfiles());
+        request.setRetrieveProfiles(options.isColumns());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -148,7 +148,7 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Creates a frame.
      * @param frame frame object
-     * @throws ValidationException if the passed database name or frame name is not valid
+     * @throws ValidationException if the passed index name or frame name is not valid
      * @throws FrameExistsException if there already a frame with the given name
      */
     public void createFrame(Frame frame) {
@@ -201,7 +201,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Imports bits to the given database and frame.
+     * Imports bits to the given index and frame.
      *
      * @param frame    specify the frame
      * @param iterator     specify the bit iterator
@@ -211,7 +211,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Imports bits to the given database and frame.
+     * Imports bits to the given index and frame.
      *
      * @param frame    specify the frame
      * @param iterator     specify the bit iterator
@@ -396,11 +396,11 @@ public class PilosaClient implements AutoCloseable {
     private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
                                                        List<Bit> bits) {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
-        List<Long> profileIDs = new ArrayList<>(bits.size());
+        List<Long> columnIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
         for (Bit bit : bits) {
             bitmapIDs.add(bit.getRowID());
-            profileIDs.add(bit.getColumnID());
+            columnIDs.add(bit.getColumnID());
             timestamps.add(bit.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
@@ -408,7 +408,7 @@ public class PilosaClient implements AutoCloseable {
                 .setFrame(frameName)
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)
-                .addAllColumnIDs(profileIDs)
+                .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
     }
@@ -429,7 +429,7 @@ public class PilosaClient implements AutoCloseable {
         String body = String.format("{\"time_quantum\":\"%s\"}",
                 frame.getOptions().getTimeQuantum().getStringValue());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPatch, "Error while setting time quantum for the database");
+        clientExecute(httpPatch, "Error while setting time quantum for the index");
     }
 
     private String readStream(InputStream stream) throws IOException {

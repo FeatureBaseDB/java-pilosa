@@ -37,7 +37,7 @@ public final class BitmapResult {
     /**
      * Returns the bits of the reply.
      *
-     * @return list of profile IDs where the corresponding bit is 1
+     * @return list of column IDs where the corresponding bit is 1
      */
     public List<Long> getBits() {
         return this.bits;

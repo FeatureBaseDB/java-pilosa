@@ -108,24 +108,24 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void queryWithProfilesTest() throws IOException {
+    public void queryWithColumnsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Frame frame = this.index.frame("query-test");
             client.ensureFrame(frame);
             client.query(frame.setBit(100, 1000));
-            Map<String, Object> profileAttrs = new HashMap<>(1);
-            profileAttrs.put("name", "bombo");
-            client.query(this.index.setColumnAttrs(1000, profileAttrs));
+            Map<String, Object> columnAttrs = new HashMap<>(1);
+            columnAttrs.put("name", "bombo");
+            client.query(this.index.setColumnAttrs(1000, columnAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
-                    .setProfiles(true)
+                    .setColumns(true)
                     .build();
             QueryResponse response = client.query(frame.bitmap(100), queryOptions);
-            assertNotNull(response.getProfile());
-            assertEquals(1000, response.getProfile().getID());
-            assertEquals(profileAttrs, response.getProfile().getAttributes());
+            assertNotNull(response.getColumn());
+            assertEquals(1000, response.getColumn().getID());
+            assertEquals(columnAttrs, response.getColumn().getAttributes());
 
             response = client.query(frame.bitmap(300));
-            assertNull(response.getProfile());
+            assertNull(response.getColumn());
         }
     }
 
@@ -177,7 +177,7 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void parseErrorTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.index.rawQuery("SetBit(id=5, frame=\"test\", profileID:=10)"));
+            client.query(this.index.rawQuery("SetBit(id=5, frame=\"test\", col_id:=10)"));
         }
     }
 
@@ -207,16 +207,16 @@ public class PilosaClientIT {
             assertEquals(1, bitmap1.getBits().size());
             assertEquals(20, (long) bitmap1.getBits().get(0));
 
-            Map<String, Object> profileAttrs = new HashMap<>(1);
-            profileAttrs.put("name", "bombo");
-            client.query(this.colIndex.setColumnAttrs(20, profileAttrs));
+            Map<String, Object> columnAttrs = new HashMap<>(1);
+            columnAttrs.put("name", "bombo");
+            client.query(this.colIndex.setColumnAttrs(20, columnAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
-                    .setProfiles(true)
+                    .setColumns(true)
                     .build();
             QueryResponse response2 = client.query(this.frame.bitmap(10), queryOptions);
-            ColumnItem profile = response2.getProfile();
-            assertNotNull(profile);
-            assertEquals(20, profile.getID());
+            ColumnItem column = response2.getColumn();
+            assertNotNull(column);
+            assertEquals(20, column.getID());
 
             Map<String, Object> bitmapAttrs = new HashMap<>(1);
             bitmapAttrs.put("active", true);

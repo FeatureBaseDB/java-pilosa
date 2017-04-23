@@ -29,7 +29,7 @@ public class QueryRequestTest {
     @Test
     public void testGetQuery() {
         QueryRequest qr = QueryRequest.withIndex(Index.withName("mydb"));
-        qr.setQuery("SetBit(id=1, frame='the-frame', profileID=556");
-        assertEquals("SetBit(id=1, frame='the-frame', profileID=556", qr.getQuery());
+        qr.setQuery("SetBit(id=1, frame='the-frame', col_id=556");
+        assertEquals("SetBit(id=1, frame='the-frame', col_id=556", qr.getQuery());
     }
 }

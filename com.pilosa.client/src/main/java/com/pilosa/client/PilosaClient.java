@@ -100,7 +100,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Runs the given query against the server and enables profiles in the response.
+     * Runs the given query against the server and enables columns in the response.
      *
      * @param query a PqlBaseQuery with its database is not null
      * @return Pilosa response
@@ -108,7 +108,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isProfiles());
+        request.setRetrieveProfiles(options.isColumns());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -396,11 +396,11 @@ public class PilosaClient implements AutoCloseable {
     private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
                                                        List<Bit> bits) {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
-        List<Long> profileIDs = new ArrayList<>(bits.size());
+        List<Long> columnIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
         for (Bit bit : bits) {
             bitmapIDs.add(bit.getRowID());
-            profileIDs.add(bit.getColumnID());
+            columnIDs.add(bit.getColumnID());
             timestamps.add(bit.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
@@ -408,7 +408,7 @@ public class PilosaClient implements AutoCloseable {
                 .setFrame(frameName)
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)
-                .addAllColumnIDs(profileIDs)
+                .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
     }

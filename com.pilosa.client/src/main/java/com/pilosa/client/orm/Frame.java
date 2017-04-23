@@ -83,7 +83,7 @@ public class Frame {
      * Creates a SetBit query
      *
      * @param rowID    bitmap ID
-     * @param columnID profile ID
+     * @param columnID column ID
      * @return a PQL query
      */
     public PqlBaseQuery setBit(long rowID, long columnID) {
@@ -95,7 +95,7 @@ public class Frame {
      * Creates a ClearBit query
      *
      * @param rowID    bitmap ID
-     * @param columnID profile ID
+     * @param columnID column ID
      * @return a PQL query
      */
     @SuppressWarnings("WeakerAccess")

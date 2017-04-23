@@ -168,8 +168,8 @@ public class Index {
     /**
      * Creates a SetProfileAttrs query
      *
-     * @param id         profile ID
-     * @param attributes profile attributes
+     * @param id         coumn ID
+     * @param attributes column attributes
      * @return a PQL query
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {

@@ -81,14 +81,14 @@ public class ColumnItemTest {
                 .setKey("double")
                 .setFloatValue(3.14)
                 .build();
-        Internal.ColumnAttrSet profile = Internal.ColumnAttrSet.newBuilder()
+        Internal.ColumnAttrSet column = Internal.ColumnAttrSet.newBuilder()
                 .addAttrs(stringAttr)
                 .addAttrs(uintAttr)
                 .addAttrs(boolAttr)
                 .addAttrs(doubleAttr)
                 .setID(500L)
                 .build();
-        ColumnItem item = ColumnItem.fromInternal(profile);
+        ColumnItem item = ColumnItem.fromInternal(column);
         Map<String, Object> attrs = item.getAttributes();
         assertEquals(500L, item.getID());
         assertEquals(4, attrs.size());

@@ -20,7 +20,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-// Note that this integration test creates many random databases.
+// Note that this integration test creates many random indexes.
 // It's recommended to run an ephemeral Pilosa server.
 // E.g., with docker:
 // $ docker run -it --rm --name pilosa -p 10101:10101 pilosa:latest

@@ -12,21 +12,21 @@ import static org.junit.Assert.assertEquals;
 public class IndexOptionsTest {
     @Test
     public void testBuilder() {
-        DatabaseOptions options = DatabaseOptions.builder()
+        IndexOptions options = IndexOptions.builder()
                 .build();
         compare(options, "col_id", TimeQuantum.NONE);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setColumnLabel("random_lbl")
                 .build();
         compare(options, "random_lbl", TimeQuantum.NONE);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
         compare(options, "col_id", TimeQuantum.YEAR_MONTH_DAY_HOUR);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setColumnLabel("some_label")
                 .setTimeQuantum(TimeQuantum.DAY)
                 .build();
@@ -35,12 +35,12 @@ public class IndexOptionsTest {
 
     @Test(expected = PilosaException.class)
     public void testInvalidColumnLabel() {
-        DatabaseOptions.builder()
+        IndexOptions.builder()
                 .setColumnLabel("#Justa an invalid label!")
                 .build();
     }
 
-    private void compare(DatabaseOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {
+    private void compare(IndexOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {
         assertEquals(targetColumnLabel, options.getColumnLabel());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
     }

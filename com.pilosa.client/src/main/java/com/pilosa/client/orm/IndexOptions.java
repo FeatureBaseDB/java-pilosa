@@ -3,7 +3,7 @@ package com.pilosa.client.orm;
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.Validator;
 
-public final class DatabaseOptions {
+public final class IndexOptions {
 
     public static class Builder {
         private Builder() {
@@ -20,8 +20,8 @@ public final class DatabaseOptions {
             return this;
         }
 
-        public DatabaseOptions build() {
-            return new DatabaseOptions(this.columnLabel, this.timeQuantum);
+        public IndexOptions build() {
+            return new IndexOptions(this.columnLabel, this.timeQuantum);
         }
 
         private String columnLabel = "col_id";
@@ -29,7 +29,7 @@ public final class DatabaseOptions {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static DatabaseOptions withDefaults() {
+    public static IndexOptions withDefaults() {
         return new Builder().build();
     }
 
@@ -37,6 +37,7 @@ public final class DatabaseOptions {
         return new Builder();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String getColumnLabel() {
         return this.columnLabel;
     }
@@ -51,7 +52,7 @@ public final class DatabaseOptions {
                 this.columnLabel);
     }
 
-    private DatabaseOptions(final String columnLabel, final TimeQuantum timeQuantum) {
+    private IndexOptions(final String columnLabel, final TimeQuantum timeQuantum) {
         this.columnLabel = columnLabel;
         this.timeQuantum = timeQuantum;
     }

@@ -6,29 +6,31 @@ import java.util.regex.Pattern;
 
 public final class Validator {
     // See: https://github.com/pilosa/pilosa/issues/280
-    private final static Pattern DATABASE_NAME = Pattern.compile("^[a-z0-9_-]+$");
+    private final static Pattern INDEX_NAME = Pattern.compile("^[a-z0-9_-]+$");
     private final static Pattern FRAME_NAME = Pattern.compile("^[a-z0-9][.a-z0-9_-]*$");
     private final static Pattern LABEL = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
-    private final static int MAX_DATABASE_NAME = 64;
+    private final static int MAX_INDEX_NAME = 64;
     private final static int MAX_FRAME_NAME = 64;
     private final static int MAX_LABEL = 64;
 
     Validator() {}
 
-    public static boolean validDatabaseName(String databaseName) {
+    @SuppressWarnings("WeakerAccess")
+    public static boolean validIndexName(String indexName) {
         //noinspection SimplifiableIfStatement
-        if (databaseName.length() > MAX_DATABASE_NAME) {
+        if (indexName.length() > MAX_INDEX_NAME) {
             return false;
         }
-        return DATABASE_NAME.matcher(databaseName).matches();
+        return INDEX_NAME.matcher(indexName).matches();
     }
 
-    public static void ensureValidDatabaseName(String databaseName) {
-        if (!validDatabaseName(databaseName)) {
-            throw new ValidationException(String.format("Invalid database name: %s", databaseName));
+    public static void ensureValidIndexName(String indexName) {
+        if (!validIndexName(indexName)) {
+            throw new ValidationException(String.format("Invalid index name: %s", indexName));
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static boolean validFrameName(String frameName) {
         //noinspection SimplifiableIfStatement
         if (frameName.length() > MAX_FRAME_NAME) {
@@ -43,6 +45,7 @@ public final class Validator {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static boolean validLabel(String label) {
         //noinspection SimplifiableIfStatement
         if (label.length() > MAX_LABEL) {

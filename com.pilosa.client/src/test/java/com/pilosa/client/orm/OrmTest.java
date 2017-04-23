@@ -13,20 +13,20 @@ import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
 public class OrmTest {
-    private Index sampleDb = Index.withName("sample-db");
-    private Frame sampleFrame = sampleDb.frame("sample-frame");
-    private Index projectDb;
+    private Index sampleIndex = Index.withName("sample-db");
+    private Frame sampleFrame = sampleIndex.frame("sample-frame");
+    private Index projectIndex;
     private Frame collabFrame;
 
     {
-        DatabaseOptions projectDbOptions = DatabaseOptions.builder()
+        IndexOptions projectIndexOptions = IndexOptions.builder()
                 .setColumnLabel("user")
                 .build();
-        this.projectDb = Index.withName("project-db", projectDbOptions);
+        this.projectIndex = Index.withName("project-db", projectIndexOptions);
         FrameOptions collabFrameOptions = FrameOptions.builder()
                 .setRowLabel("project")
                 .build();
-        this.collabFrame = projectDb.frame("collaboration", collabFrameOptions);
+        this.collabFrame = projectIndex.frame("collaboration", collabFrameOptions);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class OrmTest {
 
     @Test
     public void batchTest() {
-        BatchQuery b = sampleDb.batchQuery();
+        BatchQuery b = sampleIndex.batchQuery();
         b.add(sampleFrame.bitmap(44));
         b.add(sampleFrame.bitmap(10101));
         assertEquals(
@@ -55,7 +55,7 @@ public class OrmTest {
 
     @Test
     public void batchWithCapacityTest() {
-        BatchQuery b = projectDb.batchQuery(3);
+        BatchQuery b = projectIndex.batchQuery(3);
         b.add(collabFrame.bitmap(2));
         b.add(collabFrame.setBit(20, 40));
         b.add(collabFrame.topN(2));
@@ -68,7 +68,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void batchAddFailsForDifferentDbsTest() {
-        BatchQuery b = projectDb.batchQuery();
+        BatchQuery b = projectIndex.batchQuery();
         b.add(sampleFrame.bitmap(1));
     }
 
@@ -91,7 +91,7 @@ public class OrmTest {
                 .setRowLabel("row_label")
                 .setInverseEnabled(true)
                 .build();
-        Frame f1 = this.projectDb.frame("f1-inversable", options);
+        Frame f1 = this.projectIndex.frame("f1-inversable", options);
         PqlBaseQuery qry = f1.inverseBitmap(5);
         assertEquals(
                 "Bitmap(user=5, frame='f1-inversable')",
@@ -132,17 +132,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlBaseQuery q1 = sampleDb.union(b1, b2);
+        PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.serialize());
 
-        PqlBaseQuery q2 = sampleDb.union(b1, b2, b3);
+        PqlBaseQuery q2 = sampleIndex.union(b1, b2, b3);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.serialize());
 
-        PqlBaseQuery q3 = sampleDb.union(b1, b4);
+        PqlBaseQuery q3 = sampleIndex.union(b1, b4);
         assertEquals(
                 "Union(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.serialize());
@@ -155,17 +155,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlBaseQuery q1 = sampleDb.intersect(b1, b2);
+        PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.serialize());
 
-        PqlBaseQuery q2 = sampleDb.intersect(b1, b2, b3);
+        PqlBaseQuery q2 = sampleIndex.intersect(b1, b2, b3);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.serialize());
 
-        PqlBaseQuery q3 = sampleDb.intersect(b1, b4);
+        PqlBaseQuery q3 = sampleIndex.intersect(b1, b4);
         assertEquals(
                 "Intersect(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.serialize());
@@ -178,17 +178,17 @@ public class OrmTest {
         PqlBitmapQuery b3 = sampleFrame.bitmap(42);
         PqlBitmapQuery b4 = collabFrame.bitmap(2);
 
-        PqlBaseQuery q1 = sampleDb.difference(b1, b2);
+        PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'))",
                 q1.serialize());
 
-        PqlBaseQuery q2 = sampleDb.difference(b1, b2, b3);
+        PqlBaseQuery q2 = sampleIndex.difference(b1, b2, b3);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(id=20, frame='sample-frame'), Bitmap(id=42, frame='sample-frame'))",
                 q2.serialize());
 
-        PqlBaseQuery q3 = sampleDb.difference(b1, b4);
+        PqlBaseQuery q3 = sampleIndex.difference(b1, b4);
         assertEquals(
                 "Difference(Bitmap(id=10, frame='sample-frame'), Bitmap(project=2, frame='collaboration'))",
                 q3.serialize());
@@ -197,7 +197,7 @@ public class OrmTest {
     @Test
     public void countTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q = projectDb.count(b);
+        PqlQuery q = projectIndex.count(b);
         assertEquals(
                 "Count(Bitmap(project=42, frame='collaboration'))",
                 q.serialize());
@@ -238,8 +238,6 @@ public class OrmTest {
         assertEquals(
                 "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
-
-
     }
 
     @Test
@@ -266,7 +264,7 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
         attrsMap.put("happy", true);
-        PqlQuery q = projectDb.setColumnAttrs(5, attrsMap);
+        PqlQuery q = projectIndex.setColumnAttrs(5, attrsMap);
         assertEquals(
                 "SetColumnAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
@@ -277,12 +275,12 @@ public class OrmTest {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
-        projectDb.setColumnAttrs(5, attrsMap);
+        projectIndex.setColumnAttrs(5, attrsMap);
     }
 
     @Test(expected = PilosaException.class)
     public void inverseBitmapFailsIfNotEnabledTest() {
-        Frame frame = this.sampleDb.frame("inverse-not-enabled");
+        Frame frame = this.sampleIndex.frame("inverse-not-enabled");
         frame.inverseBitmap(5);
     }
 }

@@ -1,7 +1,7 @@
 package com.pilosa.client.exceptions;
 
-public class DatabaseExistsException extends PilosaException {
-    public DatabaseExistsException() {
+public class IndexExistsException extends PilosaException {
+    public IndexExistsException() {
         super("Index already exists");
     }
 }

@@ -30,15 +30,16 @@ public class Frame {
     /**
      * Creates a frame.
      *
-     * @param db      the index this frame belongs to
+     * @param index   the index this frame belongs to
      * @param name    name of the frame
      * @param options frame options or <code>FrameOptions.withDefaults()</code>
      * @return a Frame object
      * @throws ValidationException if an invalid frame name is passed
      */
-    static Frame create(Index db, String name, FrameOptions options) {
+    static Frame create(Index index, String name, FrameOptions options) {
+        Validator.ensureValidFrameName(name);
         Validator.ensureValidLabel(options.getRowLabel());
-        return new Frame(db, name, options);
+        return new Frame(index, name, options);
     }
 
     public Index getIndex() {

@@ -28,17 +28,7 @@ import java.util.*;
  *
  * <p>
  * Usage:
- *
- * <pre>
- * // Create a client
- * PilosaClient client = new PilosaClient("localhost:10101");
- * // Send a query. PilosaException is thrown if execution of the query fails.
- * QueryResponse response = client.query("example_db", "SetBit(id=5, frame=\"sample\", profileID=42)");
- * // Get the result
- * QueryResult result = response.getResult();
- * // Deai with the result
- *
- * </pre>
+ * TODO
  */
 public class PilosaClient implements AutoCloseable {
     /**
@@ -124,12 +114,12 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a index.
+     * Creates an index.
      * @param index index object
      * @throws ValidationException if the passed index name is not valid
-     * @throws DatabaseExistsException if there already is a index with the given name
+     * @throws IndexExistsException if there already is a index with the given name
      */
-    public void createDatabase(Index index) {
+    public void createIndex(Index index) {
         String uri = String.format("%s/db/%s", this.getAddress(), index.getName());
         HttpPost httpPost = new HttpPost(uri);
         String body = index.getOptions().toString();
@@ -143,14 +133,14 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a index if it does not exist
+     * Creates an index if it does not exist
      *
      * @param index index object
      */
-    public void ensureDatabase(Index index) {
+    public void ensureIndex(Index index) {
         try {
-            createDatabase(index);
-        } catch (DatabaseExistsException ex) {
+            createIndex(index);
+        } catch (IndexExistsException ex) {
             // pass
         }
     }
@@ -189,10 +179,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes a index.
+     * Deletes an index.
      * @param index index object
      */
-    public void deleteDatabase(Index index) {
+    public void deleteIndex(Index index) {
         String uri = String.format("%s/db/%s", this.getAddress(), index.getName());
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         clientExecute(httpDelete, "Error while deleting index");
@@ -232,7 +222,7 @@ public class PilosaClient implements AutoCloseable {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
         while (canContinue) {
-            // The maximum ingestion speed is accomplished by sorting bits by bitmap ID and then profile ID
+            // The maximum ingestion speed is accomplished by sorting bits by row ID and then column ID
             Map<Long, List<Bit>> bitGroup = new HashMap<>();
             for (int i = 0; i < batchSize; i++) {
                 if (iterator.hasNext()) {
@@ -302,7 +292,7 @@ public class PilosaClient implements AutoCloseable {
                             // try to throw the appropriate exception
                             switch (responseError) {
                                 case "database already exists\n":
-                                    throw new DatabaseExistsException();
+                                    throw new IndexExistsException();
                                 case "frame already exists\n":
                                     throw new FrameExistsException();
                             }
@@ -332,7 +322,7 @@ public class PilosaClient implements AutoCloseable {
 
     private QueryResponse queryPath(QueryRequest request) {
         String uri = String.format("%s/db/%s/query", this.getAddress(),
-                request.getDatabaseName());
+                request.getIndex().getName());
         logger.debug("Posting to {}", uri);
 
         HttpPost httpPost;
@@ -362,19 +352,19 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private void importBits(String databaseName, String frameName, long slice, List<Bit> bits) {
+    private void importBits(String indexName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
-        List<FragmentNode> nodes = fetchFrameNodes(databaseName, slice);
+        List<FragmentNode> nodes = fetchFrameNodes(indexName, slice);
         for (FragmentNode node : nodes) {
             PilosaClient client = PilosaClient.withURI(node.toURI());
-            Internal.ImportRequest importRequest = bitsToImportRequest(databaseName, frameName, slice, bits);
+            Internal.ImportRequest importRequest = bitsToImportRequest(indexName, frameName, slice, bits);
             client.importNode(importRequest);
         }
     }
 
-    List<FragmentNode> fetchFrameNodes(String databaseName, long slice) {
+    List<FragmentNode> fetchFrameNodes(String indexName, long slice) {
         String addr = this.getAddress();
-        String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, databaseName, slice);
+        String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, indexName, slice);
         HttpGet httpGet = new HttpGet(uri);
         try {
             CloseableHttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",
@@ -403,7 +393,7 @@ public class PilosaClient implements AutoCloseable {
         clientExecute(httpPost, "Error while importing");
     }
 
-    private Internal.ImportRequest bitsToImportRequest(String databaseName, String frameName, long slice,
+    private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
                                                        List<Bit> bits) {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
         List<Long> profileIDs = new ArrayList<>(bits.size());
@@ -414,7 +404,7 @@ public class PilosaClient implements AutoCloseable {
             timestamps.add(bit.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
-                .setDB(databaseName)
+                .setDB(indexName)
                 .setFrame(frameName)
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)
@@ -488,24 +478,21 @@ class HttpDeleteWithBody extends HttpPost {
 }
 
 class QueryRequest {
-    private String databaseName = "";
+    private Index index;
     private String query = "";
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean retrieveProfiles = false;
 
-    private QueryRequest(String databaseName) {
-        this.databaseName = databaseName;
+    private QueryRequest(Index index) {
+        this.index = index;
     }
 
-    static QueryRequest withDatabase(String databaseName) {
-        Validator.ensureValidDatabaseName(databaseName);
-        return new QueryRequest(databaseName);
+    static QueryRequest withIndex(Index index) {
+        return new QueryRequest(index);
     }
 
     static QueryRequest withQuery(PqlQuery query) {
-        // We call QueryRequest.withDatabase in order to protect against database name == null
-        // TODO: check that database name is not null and create the QueryRequest object directly.
-        QueryRequest request = QueryRequest.withDatabase(query.getIndex().getName());
+        QueryRequest request = QueryRequest.withIndex(query.getIndex());
         request.setQuery(query.serialize());
         return request;
     }
@@ -514,8 +501,8 @@ class QueryRequest {
         return this.query;
     }
 
-    String getDatabaseName() {
-        return this.databaseName;
+    Index getIndex() {
+        return this.index;
     }
 
     void setQuery(String query) {

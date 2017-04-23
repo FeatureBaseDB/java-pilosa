@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class Index {
     private String name;
-    private DatabaseOptions options;
+    private IndexOptions options;
     private ObjectMapper mapper = new ObjectMapper();
 
-    private Index(String name, DatabaseOptions options) {
+    private Index(String name, IndexOptions options) {
         this.name = name;
         this.options = options;
     }
@@ -24,7 +24,7 @@ public class Index {
      * @throws ValidationException if the passed database name is not valid
      */
     public static Index withName(String name) {
-        return Index.withName(name, DatabaseOptions.withDefaults());
+        return Index.withName(name, IndexOptions.withDefaults());
     }
 
     /**
@@ -35,7 +35,8 @@ public class Index {
      * @return a Index object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Index withName(String name, DatabaseOptions options) {
+    public static Index withName(String name, IndexOptions options) {
+        Validator.ensureValidIndexName(name);
         Validator.ensureValidLabel(options.getColumnLabel());
         return new Index(name, options);
     }
@@ -54,7 +55,7 @@ public class Index {
      *
      * @return database options
      */
-    public DatabaseOptions getOptions() {
+    public IndexOptions getOptions() {
         return this.options;
     }
 
@@ -96,6 +97,7 @@ public class Index {
      * @param queryCount number of queries expected to be in the batch
      * @return batch query
      */
+    @SuppressWarnings("WeakerAccess")
     public BatchQuery batchQuery(int queryCount) {
         return new BatchQuery(this, queryCount);
     }

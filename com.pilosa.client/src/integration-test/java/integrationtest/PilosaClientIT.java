@@ -1,8 +1,8 @@
 package integrationtest;
 
 import com.pilosa.client.*;
-import com.pilosa.client.exceptions.DatabaseExistsException;
 import com.pilosa.client.exceptions.FrameExistsException;
+import com.pilosa.client.exceptions.IndexExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.*;
 import com.sun.net.httpserver.HttpExchange;
@@ -27,31 +27,31 @@ import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
-    private Index colDB;
-    private Index db;
+    private Index colIndex;
+    private Index index;
     private Frame frame;
     private final static String SERVER_ADDRESS = ":10101";
 
     @Before
     public void setUp() throws IOException {
-        this.db = Index.withName(getRandomDatabaseName());
+        this.index = Index.withName(getRandomIndexName());
         try (PilosaClient client = getClient()) {
-            client.createDatabase(this.db);
-            client.createFrame(this.db.frame("another-frame"));
-            client.createFrame(this.db.frame("test"));
-            client.createFrame(this.db.frame("count-test"));
-            client.createFrame(this.db.frame("topn_test"));
+            client.createIndex(this.index);
+            client.createFrame(this.index.frame("another-frame"));
+            client.createFrame(this.index.frame("test"));
+            client.createFrame(this.index.frame("count-test"));
+            client.createFrame(this.index.frame("topn_test"));
 
-            DatabaseOptions dbOptions = DatabaseOptions.builder()
+            IndexOptions indexOptions = IndexOptions.builder()
                     .setColumnLabel("user")
                     .build();
-            this.colDB = Index.withName(this.db.getName() + "-opts", dbOptions);
-            client.createDatabase(this.colDB);
+            this.colIndex = Index.withName(this.index.getName() + "-opts", indexOptions);
+            client.createIndex(this.colIndex);
 
             FrameOptions frameOptions = FrameOptions.builder()
                     .setRowLabel("project")
                     .build();
-            this.frame = this.colDB.frame("collab", frameOptions);
+            this.frame = this.colIndex.frame("collab", frameOptions);
             client.createFrame(this.frame);
         }
     }
@@ -59,8 +59,8 @@ public class PilosaClientIT {
     @After
     public void tearDown() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.deleteDatabase(this.db);
-            client.deleteDatabase(this.colDB);
+            client.deleteIndex(this.index);
+            client.deleteIndex(this.colIndex);
         }
     }
 
@@ -75,14 +75,14 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void createDatabaseWithTimeQuantumTest() throws IOException {
-        DatabaseOptions options = DatabaseOptions.builder()
+    public void createIndexWithTimeQuantumTest() throws IOException {
+        IndexOptions options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
         Index db = Index.withName("db-with-timequantum", options);
         try (PilosaClient client = getClient()) {
-            client.ensureDatabase(db);
-            client.deleteDatabase(db);
+            client.ensureIndex(db);
+            client.deleteIndex(db);
         }
     }
 
@@ -91,7 +91,7 @@ public class PilosaClientIT {
         FrameOptions options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
-        Frame frame = this.db.frame("frame-with-timequantum", options);
+        Frame frame = this.index.frame("frame-with-timequantum", options);
         try (PilosaClient client = getClient()) {
             client.ensureFrame(frame);
         }
@@ -100,7 +100,7 @@ public class PilosaClientIT {
     @Test
     public void queryTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            Frame frame = this.db.frame("query-test");
+            Frame frame = this.index.frame("query-test");
             client.ensureFrame(frame);
             QueryResponse response = client.query(frame.setBit(555, 10));
             assertNotNull(response.getResult());
@@ -110,12 +110,12 @@ public class PilosaClientIT {
     @Test
     public void queryWithProfilesTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            Frame frame = this.db.frame("query-test");
+            Frame frame = this.index.frame("query-test");
             client.ensureFrame(frame);
             client.query(frame.setBit(100, 1000));
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
-            client.query(this.db.setColumnAttrs(1000, profileAttrs));
+            client.query(this.index.setColumnAttrs(1000, profileAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
                     .setProfiles(true)
                     .build();
@@ -130,33 +130,33 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void protobufCreateDatabaseDeleteDatabaseTest() throws IOException {
-        final Index dbname = Index.withName("to-be-deleted-" + this.db.getName());
+    public void protobufCreateIndexDeleteIndexTest() throws IOException {
+        final Index dbname = Index.withName("to-be-deleted-" + this.index.getName());
         Frame frame = dbname.frame("delframe");
         try (PilosaClient client = getClient()) {
             try {
-                client.createDatabase(dbname);
+                client.createIndex(dbname);
                 client.createFrame(frame);
                 client.query(frame.setBit(1, 2));
             } finally {
-                client.deleteDatabase(dbname);
+                client.deleteIndex(dbname);
             }
         }
     }
 
     @Test
-    public void createDatabaseWithColumnLabelFrameWithRowLabel() throws IOException {
-        DatabaseOptions dbOptions = DatabaseOptions.builder()
+    public void createIndexWithColumnLabelFrameWithRowLabel() throws IOException {
+        IndexOptions dbOptions = IndexOptions.builder()
                 .setColumnLabel("cols")
                 .build();
-        final Index db = Index.withName("db-col-label-" + this.db.getName(), dbOptions);
+        final Index db = Index.withName("db-col-label-" + this.index.getName(), dbOptions);
         FrameOptions frameOptions = FrameOptions.builder()
                 .setRowLabel("rowz")
                 .build();
         try (PilosaClient client = getClient()) {
-            client.createDatabase(db);
+            client.createIndex(db);
             client.createFrame(db.frame("my-frame", frameOptions));
-            client.deleteDatabase(db);
+            client.deleteIndex(db);
         }
     }
 
@@ -177,21 +177,21 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void parseErrorTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.db.rawQuery("SetBit(id=5, frame=\"test\", profileID:=10)"));
+            client.query(this.index.rawQuery("SetBit(id=5, frame=\"test\", profileID:=10)"));
         }
     }
 
     @Test
     public void ormCountTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            Frame countFrame = this.db.frame("count-test");
+            Frame countFrame = this.index.frame("count-test");
             client.ensureFrame(countFrame);
-            BatchQuery qry = this.db.batchQuery();
+            BatchQuery qry = this.index.batchQuery();
             qry.add(countFrame.setBit(10, 20));
             qry.add(countFrame.setBit(10, 21));
             qry.add(countFrame.setBit(15, 25));
             client.query(qry);
-            QueryResponse response = client.query(this.db.count(countFrame.bitmap(10)));
+            QueryResponse response = client.query(this.index.count(countFrame.bitmap(10)));
             assertEquals(2, response.getResult().getCount());
         }
     }
@@ -209,7 +209,7 @@ public class PilosaClientIT {
 
             Map<String, Object> profileAttrs = new HashMap<>(1);
             profileAttrs.put("name", "bombo");
-            client.query(this.colDB.setColumnAttrs(20, profileAttrs));
+            client.query(this.colIndex.setColumnAttrs(20, profileAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
                     .setProfiles(true)
                     .build();
@@ -233,7 +233,7 @@ public class PilosaClientIT {
             assertEquals(1.81, bitmap.getAttributes().get("height"));
             assertEquals("Mr. Pi", bitmap.getAttributes().get("name"));
 
-            Frame topnFrame = this.db.frame("topn_test");
+            Frame topnFrame = this.index.frame("topn_test");
             client.query(topnFrame.setBit(155, 551));
             QueryResponse response4 = client.query(topnFrame.topN(1));
             List<CountResultItem> items = response4.getResult().getCountItems();
@@ -251,15 +251,15 @@ public class PilosaClientIT {
                     .setRowLabel("row_label")
                     .setInverseEnabled(true)
                     .build();
-            Frame f1 = this.colDB.frame("f1-inversable", options);
+            Frame f1 = this.colIndex.frame("f1-inversable", options);
             client.ensureFrame(f1);
             client.query(
-                    this.colDB.batchQuery(
+                    this.colIndex.batchQuery(
                             f1.setBit(1000, 5000),
                             f1.setBit(1000, 6000),
                             f1.setBit(3000, 5000)));
             QueryResponse response = client.query(
-                    this.colDB.batchQuery(
+                    this.colIndex.batchQuery(
                             f1.bitmap(1000),
                             f1.inverseBitmap(5000)));
             assertEquals(2, response.getResults().size());
@@ -273,14 +273,14 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void queryFailsWithError() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.db.rawQuery("invalid query"));
+            client.query(this.index.rawQuery("invalid query"));
         }
     }
 
-    @Test(expected = DatabaseExistsException.class)
+    @Test(expected = IndexExistsException.class)
     public void createExistingDatabaseFails() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.createDatabase(this.colDB);
+            client.createIndex(this.colIndex);
         }
 
     }
@@ -293,35 +293,35 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failedDeleteDatabaseTest() throws IOException {
+    public void failedDeleteIndexTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
-            client.deleteDatabase(Index.withName("non-existent"));
+            client.deleteIndex(Index.withName("non-existent"));
         }
     }
 
     @Test
-    public void ensureDatabaseExistsTest() throws IOException {
+    public void ensureIndexExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Index db = Index.withName(this.db.getName() + "-ensure");
-            client.ensureDatabase(db);
-            client.createFrame(db.frame("frm"));
-            client.ensureDatabase(db);  // shouldn't throw an exception
-            client.deleteDatabase(db);
+            final Index index = Index.withName(this.index.getName() + "-ensure");
+            client.ensureIndex(index);
+            client.createFrame(index.frame("frm"));
+            client.ensureIndex(index);  // shouldn't throw an exception
+            client.deleteIndex(index);
         }
     }
 
     @Test
     public void ensureFrameExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Index db = Index.withName(this.db.getName() + "-ensure-frame");
+            final Index index = Index.withName(this.index.getName() + "-ensure-frame");
             try {
-                client.createDatabase(db);
-                final Frame frame = db.frame("frame");
+                client.createIndex(index);
+                final Frame frame = index.frame("frame");
                 client.ensureFrame(frame);
                 client.ensureFrame(frame); // shouldn't throw an exception
                 client.query(frame.setBit(1, 10));
             } finally {
-                client.deleteDatabase(db);
+                client.deleteIndex(index);
             }
         }
     }
@@ -329,7 +329,7 @@ public class PilosaClientIT {
     @Test
     public void deleteFrameTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Frame frame = db.frame("to-delete");
+            final Frame frame = index.frame("to-delete");
             client.ensureFrame(frame);
             client.deleteFrame(frame);
             // the following should succeed
@@ -341,13 +341,14 @@ public class PilosaClientIT {
     public void importTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             StaticBitIterator iterator = new StaticBitIterator();
-            Frame frame = this.db.frame("importframe");
+            Frame frame = this.index.frame("importframe");
             client.ensureFrame(frame);
             client.importFrame(frame, iterator);
-            BatchQuery bq = db.batchQuery(3);
-            bq.add(frame.bitmap(2));
-            bq.add(frame.bitmap(7));
-            bq.add(frame.bitmap(10));
+            BatchQuery bq = index.batchQuery(
+                    frame.bitmap(2),
+                    frame.bitmap(7),
+                    frame.bitmap(10)
+            );
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(3L, 1L, 5L);
@@ -365,7 +366,7 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.db.frame("importframe"), iterator);
+                client.importFrame(this.index.frame("importframe"), iterator);
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -380,7 +381,7 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.db.frame("importframe"), iterator);
+                client.importFrame(this.index.frame("importframe"), iterator);
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -408,7 +409,7 @@ public class PilosaClientIT {
         HttpServer server = runContent0HttpServer("/db/foo", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.createDatabase(Index.withName("foo"));
+                client.createIndex(Index.withName("foo"));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -438,7 +439,7 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.db.frame("importframe"), iterator);
+                client.importFrame(this.index.frame("importframe"), iterator);
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -453,7 +454,7 @@ public class PilosaClientIT {
 
     private static int counter = 0;
 
-    private static String getRandomDatabaseName() {
+    private static String getRandomIndexName() {
         return String.format("testdb-%d", ++counter);
     }
 

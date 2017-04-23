@@ -10,11 +10,11 @@ import static org.junit.Assert.fail;
 
 @Category(UnitTest.class)
 public class ValidatorTest {
-    private final static String[] validDatabaseNames = new String[]{
+    private final static String[] validIndexNames = new String[]{
             "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
-    private final static String[] invalidDatabaseNames = new String[]{
+    private final static String[] invalidIndexNames = new String[]{
             "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
@@ -36,31 +36,31 @@ public class ValidatorTest {
     };
 
     @Test
-    public void validDatabaseNameTest() {
-        for (String name : validDatabaseNames) {
-            assertTrue(Validator.validDatabaseName(name));
+    public void validIndexNameTest() {
+        for (String name : validIndexNames) {
+            assertTrue(Validator.validIndexName(name));
         }
     }
 
     @Test
-    public void invalidDatabaseNameTest() {
-        for (String name : invalidDatabaseNames) {
-            assertFalse(Validator.validDatabaseName(name));
+    public void invalidIndexNameTest() {
+        for (String name : invalidIndexNames) {
+            assertFalse(Validator.validIndexName(name));
         }
     }
 
     @Test
-    public void ensureValidDatabaseNameTest() {
-        for (String name : validDatabaseNames) {
-            Validator.ensureValidDatabaseName(name);
+    public void ensureValidIndexNameTest() {
+        for (String name : validIndexNames) {
+            Validator.ensureValidIndexName(name);
         }
     }
 
     @Test
-    public void ensureValidDatabaseNameFailsTest() {
-        for (String name : invalidDatabaseNames) {
+    public void ensureValidIndexNameFailsTest() {
+        for (String name : invalidIndexNames) {
             try {
-                Validator.ensureValidDatabaseName(name);
+                Validator.ensureValidIndexName(name);
             } catch (ValidationException ex) {
                 continue;
             }

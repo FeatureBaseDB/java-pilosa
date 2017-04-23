@@ -5,7 +5,7 @@ public class PqlBitmapQuery extends PqlBaseQuery {
         super(pql);
     }
 
-    PqlBitmapQuery(String pql, Database database) {
-        super(pql, database);
+    PqlBitmapQuery(String pql, Index index) {
+        super(pql, index);
     }
 }

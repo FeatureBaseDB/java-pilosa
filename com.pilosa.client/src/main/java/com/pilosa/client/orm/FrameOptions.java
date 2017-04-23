@@ -19,12 +19,18 @@ public final class FrameOptions {
             return this;
         }
 
+        public Builder setInverseEnabled(boolean enabled) {
+            this.inverseEnabled = enabled;
+            return this;
+        }
+
         public FrameOptions build() {
-            return new FrameOptions(this.rowLabel, this.timeQuantum);
+            return new FrameOptions(this.rowLabel, this.timeQuantum, this.inverseEnabled);
         }
 
         private String rowLabel = "id";
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
+        private boolean inverseEnabled = false;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -44,11 +50,25 @@ public final class FrameOptions {
         return this.timeQuantum;
     }
 
-    private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum) {
+    public boolean isInverseEnabled() {
+        return this.inverseEnabled;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{\"options\":{\"rowLabel\":\"%s\", \"inverseEnabled\": %s}}",
+                this.rowLabel,
+                this.inverseEnabled ? "true" : "false");
+    }
+
+    private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum,
+                         final boolean inverseEnabled) {
         this.rowLabel = rowLabel;
         this.timeQuantum = timeQuantum;
+        this.inverseEnabled = inverseEnabled;
     }
 
     private final String rowLabel;
     private final TimeQuantum timeQuantum;
+    private final boolean inverseEnabled;
 }

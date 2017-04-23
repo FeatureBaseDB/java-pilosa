@@ -4,14 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@SuppressWarnings("WeakerAccess")
 public final class Version {
+    @SuppressWarnings("WeakerAccess")
     Version() {
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static String getVersion() {
         return Version.properties.getProperty("version");
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static String getBuildTime() {
         return Version.properties.getProperty("build.time");
     }

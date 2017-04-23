@@ -36,6 +36,7 @@ public class CsvFileBitIterator implements IBitIterator {
      * @param stream CSV stream
      * @return bit iterator
      */
+    @SuppressWarnings("WeakerAccess")
     public static CsvFileBitIterator fromStream(InputStream stream) {
         CsvFileBitIterator iterator = new CsvFileBitIterator();
         iterator.scanner = new Scanner(stream);
@@ -51,13 +52,13 @@ public class CsvFileBitIterator implements IBitIterator {
             String line = this.scanner.nextLine();
             if (!line.isEmpty()) {
                 String[] fields = line.split(",");
-                long bitmapID = Long.parseLong(fields[0]);
-                long profileID = Long.parseLong(fields[1]);
+                long rowID = Long.parseLong(fields[0]);
+                long columnID = Long.parseLong(fields[1]);
                 long timestamp = 0;
                 if (fields.length > 2) {
                     timestamp = Long.parseLong(fields[2]);
                 }
-                this.nextBit = Bit.create(bitmapID, profileID, timestamp);
+                this.nextBit = Bit.create(rowID, columnID, timestamp);
                 return true;
             }
         }

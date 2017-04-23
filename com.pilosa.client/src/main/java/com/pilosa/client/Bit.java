@@ -6,31 +6,31 @@ public class Bit {
     private Bit() {
     }
 
-    public static Bit create(long bitmapID, long profileID) {
+    public static Bit create(long rowID, long columnID) {
         Bit bit = new Bit();
         bit.iBit = Internal.Bit.newBuilder()
-                .setBitmapID(bitmapID)
-                .setProfileID(profileID)
+                .setRowID(rowID)
+                .setColumnID(columnID)
                 .build();
         return bit;
     }
 
-    public static Bit create(long bitmapID, long profileID, long timestamp) {
+    public static Bit create(long rowID, long columnID, long timestamp) {
         Bit bit = new Bit();
         bit.iBit = Internal.Bit.newBuilder()
-                .setBitmapID(bitmapID)
-                .setProfileID(profileID)
+                .setRowID(rowID)
+                .setColumnID(columnID)
                 .setTimestamp(timestamp)
                 .build();
         return bit;
     }
 
-    public long getBitmapID() {
-        return this.iBit.getBitmapID();
+    public long getRowID() {
+        return this.iBit.getRowID();
     }
 
-    public long getProfileID() {
-        return this.iBit.getProfileID();
+    public long getColumnID() {
+        return this.iBit.getColumnID();
     }
 
     public long getTimestamp() {

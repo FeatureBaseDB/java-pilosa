@@ -6,35 +6,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BatchQuery implements PqlQuery {
-    private Database database = null;
+    private Index index = null;
     private List<PqlQuery> queries = null;
 
-    BatchQuery(Database database) {
-        this.database = database;
+    BatchQuery(Index index) {
+        this.index = index;
         this.queries = new ArrayList<>();
     }
 
-    BatchQuery(int queryCount, Database database) {
-        this.database = database;
+    BatchQuery(Index index, int queryCount) {
+        this.index = index;
         this.queries = new ArrayList<>(queryCount);
     }
 
-    public Database getDatabase() {
-        return this.database;
+    BatchQuery(Index index, PqlQuery... queries) {
+        this(index, queries.length);
+        for (PqlQuery query : queries) {
+            this.add(query);
+        }
+    }
+
+    public Index getIndex() {
+        return this.index;
     }
 
     public void add(PqlQuery query) {
-        if (query.getDatabase() != this.getDatabase()) {
-            throw new PilosaException("Query database should be the same as BatchQuery database");
+        if (query.getIndex() != this.getIndex()) {
+            throw new PilosaException("Query index should be the same as BatchQuery index");
         }
         this.queries.add(query);
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         StringBuilder builder = new StringBuilder(this.queries.size());
         for (PqlQuery query : this.queries) {
-            builder.append(query.toString());
+            builder.append(query.serialize());
         }
         return builder.toString();
     }

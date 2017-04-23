@@ -6,12 +6,12 @@ import com.pilosa.client.exceptions.ValidationException;
 
 import java.util.Map;
 
-public class Database {
+public class Index {
     private String name;
-    private DatabaseOptions options;
+    private IndexOptions options;
     private ObjectMapper mapper = new ObjectMapper();
 
-    private Database(String name, DatabaseOptions options) {
+    private Index(String name, IndexOptions options) {
         this.name = name;
         this.options = options;
     }
@@ -20,11 +20,11 @@ public class Database {
      * Create a database with a name using defaults.
      *
      * @param name database name
-     * @return a Database object
+     * @return a Index object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database withName(String name) {
-        return Database.withName(name, DatabaseOptions.withDefaults());
+    public static Index withName(String name) {
+        return Index.withName(name, IndexOptions.withDefaults());
     }
 
     /**
@@ -32,12 +32,13 @@ public class Database {
      *
      * @param name    database name
      * @param options database options
-     * @return a Database object
+     * @return a Index object
      * @throws ValidationException if the passed database name is not valid
      */
-    public static Database withName(String name, DatabaseOptions options) {
+    public static Index withName(String name, IndexOptions options) {
+        Validator.ensureValidIndexName(name);
         Validator.ensureValidLabel(options.getColumnLabel());
-        return new Database(name, options);
+        return new Index(name, options);
     }
 
     /**
@@ -54,7 +55,7 @@ public class Database {
      *
      * @return database options
      */
-    public DatabaseOptions getOptions() {
+    public IndexOptions getOptions() {
         return this.options;
     }
 
@@ -96,8 +97,19 @@ public class Database {
      * @param queryCount number of queries expected to be in the batch
      * @return batch query
      */
+    @SuppressWarnings("WeakerAccess")
     public BatchQuery batchQuery(int queryCount) {
-        return new BatchQuery(queryCount, this);
+        return new BatchQuery(this, queryCount);
+    }
+
+    /**
+     * Creates a batch query with the given queries
+     *
+     * @param queries the queries in the batch
+     * @return BatchQuery
+     */
+    public BatchQuery batchQuery(PqlQuery... queries) {
+        return new BatchQuery(this, queries);
     }
 
     public PqlBaseQuery rawQuery(String query) {
@@ -112,6 +124,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery union(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Union", bitmap1, bitmap2, bitmaps);
     }
@@ -124,6 +137,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery intersect(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Intersect", bitmap1, bitmap2, bitmaps);
     }
@@ -136,6 +150,7 @@ public class Database {
      * @param bitmaps other Bitmaps
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
         return bitmapOperation("Difference", bitmap1, bitmap2, bitmaps);
     }
@@ -147,7 +162,7 @@ public class Database {
      * @return a PQL query
      */
     public PqlBaseQuery count(PqlBitmapQuery bitmap) {
-        return pqlQuery(String.format("Count(%s)", bitmap));
+        return pqlQuery(String.format("Count(%s)", bitmap.serialize()));
     }
 
     /**
@@ -157,9 +172,9 @@ public class Database {
      * @param attributes profile attributes
      * @return a PQL query
      */
-    public PqlBaseQuery setProfileAttrs(long id, Map<String, Object> attributes) {
+    public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetProfileAttrs(%s=%d, %s)",
+        return pqlQuery(String.format("SetColumnAttrs(%s=%d, %s)",
                 this.options.getColumnLabel(), id, attributesString));
     }
 
@@ -172,13 +187,13 @@ public class Database {
     }
 
     private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        String qry = String.format("%s, %s", bitmap1, bitmap2);
+        String qry = String.format("%s, %s", bitmap1.serialize(), bitmap2.serialize());
         if (bitmaps.length > 0) {
             StringBuilder builder = new StringBuilder(bitmaps.length);
             builder.append(qry);
             for (PqlBitmapQuery bitmap : bitmaps) {
                 builder.append(", ");
-                builder.append(bitmap);
+                builder.append(bitmap.serialize());
             }
             qry = builder.toString();
         }

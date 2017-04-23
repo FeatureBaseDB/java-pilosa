@@ -13,36 +13,37 @@ import java.util.Map;
 
 public class Frame {
     private String name;
-    private Database database;
+    private Index index;
     private FrameOptions options;
     private String rowLabel;
     private String columnLabel;
     private ObjectMapper mapper = new ObjectMapper();
 
-    private Frame(Database database, String name, FrameOptions options) {
-        this.database = database;
+    private Frame(Index index, String name, FrameOptions options) {
+        this.index = index;
         this.name = name;
         this.options = options;
-        this.columnLabel = database.getOptions().getColumnLabel();
+        this.columnLabel = index.getOptions().getColumnLabel();
         this.rowLabel = options.getRowLabel();
     }
 
     /**
      * Creates a frame.
      *
-     * @param db      the database this frame belongs to
+     * @param index   the index this frame belongs to
      * @param name    name of the frame
      * @param options frame options or <code>FrameOptions.withDefaults()</code>
      * @return a Frame object
      * @throws ValidationException if an invalid frame name is passed
      */
-    static Frame create(Database db, String name, FrameOptions options) {
+    static Frame create(Index index, String name, FrameOptions options) {
+        Validator.ensureValidFrameName(name);
         Validator.ensureValidLabel(options.getRowLabel());
-        return new Frame(db, name, options);
+        return new Frame(index, name, options);
     }
 
-    public Database getDatabase() {
-        return this.database;
+    public Index getIndex() {
+        return this.index;
     }
 
     public String getName() {
@@ -56,12 +57,26 @@ public class Frame {
     /**
      * Creates a Bitmap query.
      *
-     * @param rowID bitmap ID
+     * @param rowID row ID
      * @return a PQL query
      */
     public PqlBitmapQuery bitmap(long rowID) {
-        return this.database.pqlBitmapQuery(String.format("Bitmap(%s=%d, frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(%s=%d, frame='%s')",
                 this.rowLabel, rowID, this.name));
+    }
+
+    /**
+     * Creates an inverse Bitmap query
+     *
+     * @param columnID column ID
+     * @return a PQL query
+     */
+    public PqlBaseQuery inverseBitmap(long columnID) {
+        if (!this.options.isInverseEnabled()) {
+            throw new PilosaException("Inverse bitmaps support was not enabled for this frame");
+        }
+        return this.index.pqlQuery(String.format("Bitmap(%s=%d, frame='%s')",
+                this.columnLabel, columnID, this.name));
     }
 
     /**
@@ -72,7 +87,7 @@ public class Frame {
      * @return a PQL query
      */
     public PqlBaseQuery setBit(long rowID, long columnID) {
-        return this.database.pqlQuery(String.format("SetBit(%s=%d, frame='%s', %s=%d)",
+        return this.index.pqlQuery(String.format("SetBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
 
@@ -83,8 +98,9 @@ public class Frame {
      * @param columnID profile ID
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(long rowID, long columnID) {
-        return this.database.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
+        return this.index.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
                 this.rowLabel, rowID, name, this.columnLabel, columnID));
     }
 
@@ -95,7 +111,8 @@ public class Frame {
      * @return a PQL Bitmap query
      */
     public PqlBitmapQuery topN(long n) {
-        return this.database.pqlBitmapQuery(String.format("TopN(frame='%s', n=%d)", this.name, n));
+        String s = String.format("TopN(frame='%s', n=%d)", this.name, n);
+        return this.index.pqlBitmapQuery(s);
     }
 
     /**
@@ -105,8 +122,11 @@ public class Frame {
      * @param bitmap the bitmap query
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
-        return this.database.pqlBitmapQuery(String.format("TopN(%s, frame='%s', n=%d)", bitmap, this.name, n));
+        String s = String.format("TopN(%s, frame='%s', n=%d)",
+                bitmap.serialize(), this.name, n);
+        return this.index.pqlBitmapQuery(s);
     }
 
     /**
@@ -118,13 +138,15 @@ public class Frame {
      * @param values filter values to be matched against the field
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
         // TOOD: make field use its own validator
         Validator.ensureValidLabel(field);
         try {
             String valuesString = this.mapper.writeValueAsString(values);
-            return this.database.pqlBitmapQuery(String.format("TopN(%s, frame='%s', n=%d, field='%s', %s)",
-                    bitmap, this.name, n, field, valuesString));
+            String s = String.format("TopN(%s, frame='%s', n=%d, field='%s', %s)",
+                    bitmap.serialize(), this.name, n, field, valuesString);
+            return this.index.pqlBitmapQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }
@@ -138,24 +160,25 @@ public class Frame {
      * @param end   end timestamp
      * @return a PQL query
      */
+    @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
         DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat fmtTime = new SimpleDateFormat("HH:mm");
-        return this.database.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 
     /**
-     * Creates a SetBitmapAttrs query.
+     * Creates a SetRowAttrs query.
      *
-     * @param rowID      bitmap ID
-     * @param attributes bitmap attributes
+     * @param rowID      row ID
+     * @param attributes row attributes
      * @return a PQL query
      */
-    public PqlBaseQuery setBitmapAttrs(long rowID, Map<String, Object> attributes) {
+    public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.database.pqlQuery(String.format("SetBitmapAttrs(%s=%d, frame='%s', %s)",
+        return this.index.pqlQuery(String.format("SetRowAttrs(%s=%d, frame='%s', %s)",
                 this.rowLabel, rowID, this.name, attributesString));
     }
 }

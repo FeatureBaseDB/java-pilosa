@@ -1,31 +1,32 @@
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
+import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.orm.DatabaseOptions;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
-public class DatabaseOptionsTest {
+public class IndexOptionsTest {
     @Test
     public void testBuilder() {
-        DatabaseOptions options = DatabaseOptions.builder()
+        IndexOptions options = IndexOptions.builder()
                 .build();
         compare(options, "col_id", TimeQuantum.NONE);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setColumnLabel("random_lbl")
                 .build();
         compare(options, "random_lbl", TimeQuantum.NONE);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
         compare(options, "col_id", TimeQuantum.YEAR_MONTH_DAY_HOUR);
 
-        options = DatabaseOptions.builder()
+        options = IndexOptions.builder()
                 .setColumnLabel("some_label")
                 .setTimeQuantum(TimeQuantum.DAY)
                 .build();
@@ -34,12 +35,12 @@ public class DatabaseOptionsTest {
 
     @Test(expected = PilosaException.class)
     public void testInvalidColumnLabel() {
-        DatabaseOptions.builder()
+        IndexOptions.builder()
                 .setColumnLabel("#Justa an invalid label!")
                 .build();
     }
 
-    private void compare(DatabaseOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {
+    private void compare(IndexOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {
         assertEquals(targetColumnLabel, options.getColumnLabel());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
     }

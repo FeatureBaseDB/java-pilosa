@@ -19,6 +19,6 @@ public class QueryResponseTest {
     public void testNoResult() {
         QueryResponse response = new QueryResponse();
         assertNull(response.getResult());
-        assertNull(response.getProfiles());
+        assertNull(response.getColumns());
     }
 }

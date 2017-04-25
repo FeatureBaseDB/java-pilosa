@@ -406,7 +406,7 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void fail304EmptyResponse() throws IOException {
-        HttpServer server = runContent0HttpServer("/db/foo", 304);
+        HttpServer server = runContent0HttpServer("/index/foo", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.createIndex(Index.withName("foo"));
@@ -420,7 +420,7 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void failQueryEmptyResponse() throws IOException {
-        String path = String.format("/db/%s/query", this.frame.getIndex().getName());
+        String path = String.format("/index/%s/query", this.frame.getIndex().getName());
         HttpServer server = runContent0HttpServer(path, 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {

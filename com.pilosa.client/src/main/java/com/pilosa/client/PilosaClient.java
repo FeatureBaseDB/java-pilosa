@@ -120,7 +120,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws IndexExistsException if there already is a index with the given name
      */
     public void createIndex(Index index) {
-        String uri = String.format("%s/db/%s", this.getAddress(), index.getName());
+        String uri = String.format("%s/index/%s", this.getAddress(), index.getName());
         HttpPost httpPost = new HttpPost(uri);
         String body = index.getOptions().toString();
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
@@ -152,7 +152,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws FrameExistsException if there already a frame with the given name
      */
     public void createFrame(Frame frame) {
-        String uri = String.format("%s/db/%s/frame/%s", this.getAddress(),
+        String uri = String.format("%s/index/%s/frame/%s", this.getAddress(),
                 frame.getIndex().getName(), frame.getName());
         HttpPost httpPost = new HttpPost(uri);
         String body = frame.getOptions().toString();
@@ -183,7 +183,7 @@ public class PilosaClient implements AutoCloseable {
      * @param index index object
      */
     public void deleteIndex(Index index) {
-        String uri = String.format("%s/db/%s", this.getAddress(), index.getName());
+        String uri = String.format("%s/index/%s", this.getAddress(), index.getName());
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         clientExecute(httpDelete, "Error while deleting index");
     }
@@ -194,7 +194,7 @@ public class PilosaClient implements AutoCloseable {
      * @param frame frame object
      */
     public void deleteFrame(Frame frame) {
-        String uri = String.format("%s/db/%s/frame/%s", this.getAddress(),
+        String uri = String.format("%s/index/%s/frame/%s", this.getAddress(),
                 frame.getIndex().getName(), frame.getName());
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(uri);
         clientExecute(httpDelete, "Error while deleting frame");
@@ -291,7 +291,7 @@ public class PilosaClient implements AutoCloseable {
                             String responseError = readStream(src);
                             // try to throw the appropriate exception
                             switch (responseError) {
-                                case "database already exists\n":
+                                case "index already exists\n":
                                     throw new IndexExistsException();
                                 case "frame already exists\n":
                                     throw new FrameExistsException();
@@ -321,7 +321,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private QueryResponse queryPath(QueryRequest request) {
-        String uri = String.format("%s/db/%s/query", this.getAddress(),
+        String uri = String.format("%s/index/%s/query", this.getAddress(),
                 request.getIndex().getName());
         logger.debug("Posting to {}", uri);
 
@@ -414,19 +414,19 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private void patchTimeQuantum(Index index) {
-        String uri = String.format("%s/db/%s/time-quantum", this.getAddress(), index.getName());
+        String uri = String.format("%s/index/%s/time-quantum", this.getAddress(), index.getName());
         HttpPatch httpPatch = new HttpPatch(uri);
-        String body = String.format("{\"time_quantum\":\"%s\"}",
+        String body = String.format("{\"timeQuantum\":\"%s\"}",
                 index.getOptions().getTimeQuantum().getStringValue());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPatch, "Error while setting time quantum for the index");
     }
 
     private void patchTimeQuantum(Frame frame) {
-        String uri = String.format("%s/db/%s/frame/%s/time-quantum", this.getAddress(),
+        String uri = String.format("%s/index/%s/frame/%s/time-quantum", this.getAddress(),
                 frame.getIndex().getName(), frame.getName());
         HttpPatch httpPatch = new HttpPatch(uri);
-        String body = String.format("{\"time_quantum\":\"%s\"}",
+        String body = String.format("{\"timeQuantum\":\"%s\"}",
                 frame.getOptions().getTimeQuantum().getStringValue());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPatch, "Error while setting time quantum for the index");
@@ -527,10 +527,12 @@ class QueryRequest {
 }
 
 class FragmentNode {
+    @SuppressWarnings("unused")
     public void setHost(String host) {
         this.host = host;
     }
 
+    @SuppressWarnings("unused")
     public void setInternalHost(String host) {
         // internal host is used for internode communication
         // just adding this no op so jackson doesn't complain... --YT

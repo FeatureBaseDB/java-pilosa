@@ -113,6 +113,16 @@ public class OrmTest {
     }
 
     @Test
+    public void setBitWithTimestampTest() {
+        Calendar timestamp = Calendar.getInstance();
+        timestamp.set(2017, Calendar.APRIL, 24, 12, 14);
+        PqlQuery qry = collabFrame.setBit(10, 20, timestamp.getTime());
+        assertEquals(
+                "SetBit(project=10, frame='collaboration', user=20, timestamp='2017-04-24T12:14')",
+                qry.serialize());
+    }
+
+    @Test
     public void clearBitTest() {
         PqlQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(

@@ -12,13 +12,6 @@ import java.util.Date;
 import java.util.Map;
 
 public class Frame {
-    private String name;
-    private Index index;
-    private FrameOptions options;
-    private String rowLabel;
-    private String columnLabel;
-    private ObjectMapper mapper = new ObjectMapper();
-
     private Frame(Index index, String name, FrameOptions options) {
         this.index = index;
         this.name = name;
@@ -92,6 +85,22 @@ public class Frame {
     }
 
     /**
+     * Creates a SetBit query
+     *
+     * @param rowID     bitmap ID
+     * @param columnID  column ID
+     * @param timestamp timestamp of the bit
+     * @return a PQL query
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery setBit(long rowID, long columnID, Date timestamp) {
+        String qry = String.format("SetBit(%s=%d, frame='%s', %s=%d, timestamp='%sT%s')",
+                this.rowLabel, rowID, name, this.columnLabel, columnID,
+                fmtDate.format(timestamp), fmtTime.format(timestamp));
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
      * Creates a ClearBit query
      *
      * @param rowID    bitmap ID
@@ -162,8 +171,6 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat fmtTime = new SimpleDateFormat("HH:mm");
         return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
@@ -181,4 +188,13 @@ public class Frame {
         return this.index.pqlQuery(String.format("SetRowAttrs(%s=%d, frame='%s', %s)",
                 this.rowLabel, rowID, this.name, attributesString));
     }
+
+    private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
+    private final static DateFormat fmtTime = new SimpleDateFormat("HH:mm");
+    private String name;
+    private Index index;
+    private FrameOptions options;
+    private String rowLabel;
+    private String columnLabel;
+    private ObjectMapper mapper = new ObjectMapper();
 }

@@ -6,7 +6,7 @@
 
 Java client for Pilosa high performance index.
 
-## Changelog
+## Change Log
 
 * 2017-05-01: Initial version
 
@@ -51,11 +51,11 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 // Create the default client
 PilosaClient client = PilosaClient.defaultClient();
 
-// Create a Database object
-Database mydb = Database.withName("mydb");
+// Create an Index object
+Index mydb = Index.withName("mydb");
 
 // Make sure the index exists on the server
-client.ensureDatabase(mydb);
+client.ensureIndex(mydb);
 
 // Create a Frame object
 Frame myframe = mydb.frame("myframe");
@@ -72,7 +72,7 @@ QueryResponse response = client.query(myframe.bitmap(5));
 // Get the result
 QueryResult result = response.getResult();
 
-// Deal with the result
+// Act on the result
 if (result != null) {
     List<Long> bits = result.getBitmap().getBits();
     System.out.println("Got bits: " + bits);
@@ -86,34 +86,34 @@ QueryResponse response = client.query(
     )    
 );
 for (Object result : response.getResults()) {
-    // Deal with the result
+    // Act on the result
 }
 ```
 
 ### Data Model and Queries
 
-#### Databases and Frames
+#### Indexess and Frames
 
-*Database* and *frame*s are the main data models of Pilosa. You can check the [Pilosa documentation](https://www.pilosa.com/docs) for more detail about the data model.
+*Index* and *frame*s are the main data models of Pilosa. You can check the [Pilosa documentation](https://www.pilosa.com/docs) for more detail about the data model.
 
-`Database.withName` class method is used to create a index object. Note that, this does not create a index on the server, the index object just defines the schema.
+`Index.withName` class method is used to create an index object. Note that this does not create a index on the server; the index object simply defines the schema.
 
 ```java
-Database repository = Database.withName("repository");
+Index repository = Index.withName("repository");
 ```
 
-Databases support changing the column label and time quantum (*resolution*). `DatabaseOptions` objects store that kind of data. In order to associate a `DatabaseOptions` object to a `Database` object, just pass it as the second argument to `Database.withName`:
+Indexes support changing the column label and time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Index.withName`:
 
 ```java
-DatabaseOptions options = DatabaseOptions.builder()
+IndexOptions options = IndexOptions.builder()
     .setColumnLabel("repo_id")
     .setTimeQuantum(TimeQuantum.YEAR_MONTH)
     .build();
 
-Database repository = Database.withName("repository", options);
+Index repository = Index.withName("repository", options);
 ```
 
-Frames are created with a call to `Database.frame` method:
+Frames are created with a call to `Index.frame` method:
 
 ```java
 Frame stargazer = repository.frame("stargazer");
@@ -132,7 +132,7 @@ Frame stargazer = repository.frame("stargazer", stargazerOptions);
 
 #### Queries
 
-Once you have index and frame objects created, you can create queries for those. Some of the queries work on the columns; corresponding methods are attached to the index. Other queries work on rows, with related methods attached to frames.
+Once you have indexes and frame objects created, you can create queries for them. Some of the queries work on the columns; corresponding methods are attached to the index. Other queries work on rows, with related methods attached to frames.
 
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
@@ -146,7 +146,7 @@ PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(
 PqlQuery query = repository.union(bitmapQuery1, bitmapQuery2);
 ```
 
-In order to increase througput, you may want to batch queries sent to the Pilosa server. `index.batchQuery` method is used for that purpose:
+In order to increase througput, you may want to batch queries sent to the Pilosa server. The `index.batchQuery` method is used for that purpose:
 
 ```java
 PqlQuery query = repository.batchQuery(
@@ -163,13 +163,13 @@ PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', stargazer_id=5)"
 
 Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
 
-Database:
+Index:
 
 * `PqlQuery union(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery intersect(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery difference(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
 * `PqlQuery count(PqlBitmapQuery bitmap)`
-* `PqlQuery setProfileAttrs(long id, Map<String, Object> attributes)`
+* `PqlQuery setColumnAttrs(long id, Map<String, Object> attributes)`
 
 Frame:
 
@@ -180,7 +180,7 @@ Frame:
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap)`
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
 * `PqlBitmapQuery range(long rowID, Date start, Date end)`
-* `PqlQuery setBitmapAttrs(long rowID, Map<String, Object> attributes)`
+* `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
 
 ### Pilosa URI
 
@@ -198,7 +198,7 @@ All parts of the URI are optional, but at least one of them must be specified. T
 * `localhost`
 * `:10101`
 
-A Pilosa URI is represented by `com.pilosa.client.URI` class. Below is a few ways to create `URI` objects:
+A Pilosa URI is represented by the `com.pilosa.client.URI` class. Below are a few ways to create `URI` objects:
 
 ```java
 import com.pilosa.client.URI;
@@ -217,19 +217,19 @@ URI uri3 = URI.fromHostPort("db1.pilosa.com", 20202);
 
 In order to interact with a Pilosa server, an instance of `com.pilosa.client.PilosaClient` should be created. The client is thread-safe and uses a pool of connections to the server, so we recommend creating a single instance of the client and share it with other objects when necessary.
 
-If the Pilosa server is running at the default address (`http://localhost:10101`) you can create the default client with default options using:
+If the Pilosa server is running at the default address (`http://localhost:10101`) you can create the client with default options using:
 
 ```java
 PilosaClient client = PilosaClient.defaultClient();
 ```
 
-To use a a custom server address, you can use the `withAddress` class method:
+To use a custom server address, you can use the `withAddress` class method:
 
 ```java
 PilosaClient client = PilosaClient.withAddress("http://db1.pilosa.com:15000");
 ```
 
-If you are running a cluster of Pilosa servers, you can create a `Cluster` object that keeps addresses of those servers for increased robustness:
+If you are running a cluster of Pilosa servers, you can create a `Cluster` object that keeps addresses of those servers:
 
 ```java
 Cluster cluster = Cluster.withURI(
@@ -256,19 +256,19 @@ ClientOptions options = ClientOptions.builder()
 PilosaClient client = PilosaClient.withCluster(cluster, options);
 ```
 
-Once you create a client, you can create databases, frames and start sending queries.
+Once you create a client, you can create indexes, frames and start sending queries.
 
 Here is how you would create a index and frame:
 
 ```java
 // materialize repository index instance initialized before
-client.createDatabase(repository);
+client.createIndex(repository);
 
 // materialize stargazer frame instance initialized before
 client.createFrame(stargazer);
 ```
 
-If the index or frame was created before, you would receive a `PilosaException`. You can use `ensureDatabase` and `ensureFrame` methods to ignore existing databases and frames.
+If the index or frame exists on the server, you will receive a `PilosaException`. You can use `ensureIndex` and `ensureFrame` methods to ignore existing indexes and frames.
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 
@@ -280,7 +280,7 @@ QueryResponse response = client.query(frame.bitmap(5));
 
 ```java
 QueryOptions options = QueryOptions.builder()
-    .setProfiles(true)  // return column data in the response
+    .setColumns(true)  // return column data in the response
     .build();
 
 QueryResponse response = client.query(frame.bitmap(5), options);
@@ -288,9 +288,9 @@ QueryResponse response = client.query(frame.bitmap(5), options);
 
 ### Server Response
 
-When a query is sent to a Pilosa server, the server fulfills the query or sends an error message. In the latter case, `PilosaException` is thrown, otherwise a `QueryResponse` object is returned.
+When a query is sent to a Pilosa server, the server either fulfills the query or sends an error message. In the case of an error, `PilosaException` is thrown, otherwise a `QueryResponse` object is returned.
 
-A `QueryResponse` object may contain zero or more results of `QueryResult` type. You can access all results using `getResults` method of `QueryResponse`, which returns a list of `QueryResult` objects. Or, using `getResult` method, which returns the first result if there are any or `null` otherwise:
+A `QueryResponse` object may contain zero or more results of `QueryResult` type. You can access all results using the `getResults` method of `QueryResponse` (which returns a list of `QueryResult` objects),or you can use the `getResult` method (which returns either the first result or `null` if there are no results):
 
 ```java
 QueryResponse response = client.query(frame.bitmap(5));
@@ -301,28 +301,28 @@ if (result != null) {
     // act on the result
 }
 
-// iterate on all results
+// iterate over all results
 for (QueryResult result : response.getResults()) {
     // act on the result
 }
 ```
 
-Similarly, a `QueryResponse` object may include a number of profiles (column objects), if `setProfiles(true)` query option was used:
+Similarly, a `QueryResponse` object may include a number of column objects, if `setColumns(true)` query option was used:
 
 ```java
-// check that there's a profile and act on it
-ProfileItem profile = response.getProfile();
-if (profile != null) {
-    // act on the profile
+// check that there's a column and act on it
+ColumnItem column = response.getColumn();
+if (column != null) {
+    // act on the column
 }
 
-// iterate on all profiles
-for (ProfileItem profile : response.getProfiles()) {
-    // act on the profile
+// iterate over all columns
+for (OlumnItem column : response.getColumns()) {
+    // act on the column
 }
 ```
 
-`QueryResult` objects contain
+`QueryResult` objects contain:
 
 * `getBitmap` method to retrieve a bitmap result,
 * `getCountItems` method to retrieve column count per row ID entries returned from `topN` queries,

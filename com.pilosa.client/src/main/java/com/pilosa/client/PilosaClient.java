@@ -1,11 +1,13 @@
 package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
+import com.pilosa.client.status.StatusInfo;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
@@ -243,6 +245,32 @@ public class PilosaClient implements AutoCloseable {
             for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
                 importBits(frame.getIndex().getName(), frame.getName(), entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    public StatusInfo readStatus() {
+        String uri = String.format("%s/status", this.getAddress());
+        HttpGet request = new HttpGet(uri);
+        CloseableHttpResponse response = null;
+        try {
+            try {
+                response = clientExecute(request, "Error while reading status",
+                        ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream src = entity.getContent()) {
+                        StatusMessage msg = StatusMessage.fromInputStream(src);
+                        return msg.getStatus();
+                    }
+                }
+                throw new PilosaException("Server returned empty response");
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
         }
     }
 
@@ -552,4 +580,27 @@ class BitComparator implements Comparator<Bit> {
         int prfCmp = Long.signum(bit.getColumnID() - other.getColumnID());
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
+}
+
+final class StatusMessage {
+
+    static StatusMessage fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, StatusMessage.class);
+    }
+
+    StatusInfo getStatus() {
+        return this.status;
+    }
+
+    void setStatus(StatusInfo status) {
+        this.status = status;
+    }
+
+    static {
+        mapper = new ObjectMapper();
+        StatusMessage.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    private StatusInfo status;
+    private final static ObjectMapper mapper;
 }

@@ -11,6 +11,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Frames are used to segment and define different functional characteristics within your entire index.
+ * <p>
+ * You can think of a Frame as a table-like data partition within your Index.
+ * Row-level attributes are namespaced at the Frame level.
+ * <p>
+ * <p>
+ * Use <code>Index.frame</code> method to create a <code>Frame</code> object.
+ *
+ * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+ * @see com.pilosa.client.orm.Index#frame(String) Index.frame
+ * </p>
+ */
 public class Frame {
     private Frame(Index index, String name, FrameOptions options) {
         this.index = index;

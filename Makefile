@@ -7,10 +7,10 @@ build:
 clean:
 	mvn -f com.pilosa.client/pom.xml clean
 
-docs:
+doc:
 	mvn -f com.pilosa.client/pom.xml javadoc:javadoc
 
-generate-proto:
+generate:
 	protoc --java_out=com.pilosa.client/src/main/java/ com.pilosa.client/src/internal/public.proto
 
 test:

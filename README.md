@@ -366,10 +366,18 @@ make test-all
 Protobuf classes are already checked in to source control, so this step is only needed when the upstream `public.proto` changes.
 
 Before running the following step, make sure you have the [Protobuf compiler](https://github.com/google/protobuf) installed:
+```
+make generate
+```
 
+### Generating documentation
+
+The documentation can be generated using:
 ```
-make generate-proto
+make doc
 ```
+
+Generated documentation will be saved to `com.pilosa.client/target/apidocs`.
 
 ## License
 

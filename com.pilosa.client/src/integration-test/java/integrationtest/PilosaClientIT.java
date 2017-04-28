@@ -5,6 +5,10 @@ import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.IndexExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.*;
+import com.pilosa.client.status.FrameInfo;
+import com.pilosa.client.status.IndexInfo;
+import com.pilosa.client.status.NodeInfo;
+import com.pilosa.client.status.StatusInfo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -79,21 +83,32 @@ public class PilosaClientIT {
         IndexOptions options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
-        Index db = Index.withName("db-with-timequantum", options);
+        Index index = Index.withName("index-with-timequantum", options);
         try (PilosaClient client = getClient()) {
-            client.ensureIndex(db);
-            client.deleteIndex(db);
+            client.ensureIndex(index);
+            try {
+                StatusInfo status = client.readStatus();
+                IndexInfo info = findIndexInfo(status, index);
+                assertNotNull(info);
+                assertEquals(TimeQuantum.YEAR, info.getTimeQuantum());
+            } finally {
+                client.deleteIndex(index);
+            }
         }
     }
 
     @Test
     public void createFrameWithTimeQuantumTest() throws IOException {
         FrameOptions options = FrameOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR)
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Frame frame = this.index.frame("frame-with-timequantum", options);
         try (PilosaClient client = getClient()) {
             client.ensureFrame(frame);
+            StatusInfo status = client.readStatus();
+            FrameInfo info = findFrameInfo(status, frame);
+            assertNotNull(info);
+            assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getTimeQuantum());
         }
     }
 
@@ -391,8 +406,8 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void queryFail200() throws IOException {
-        HttpServer server = runContentSizeLyingHttpServer("/query");
+    public void queryFail404() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer("/404");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.query(this.frame.setBit(15, 10));
@@ -447,6 +462,35 @@ public class PilosaClientIT {
             }
         }
     }
+
+    @Test(expected = PilosaException.class)
+    public void failStatusEmptyResponse() throws IOException {
+        HttpServer server = runContent0HttpServer("/status", 204);
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.readStatus();
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failStatus200() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer("/status");
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.readStatus();
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
 
     private PilosaClient getClient() {
         return PilosaClient.withAddress(SERVER_ADDRESS);
@@ -534,9 +578,34 @@ public class PilosaClientIT {
 
         private int statusCode;
     }
+
+    private IndexInfo findIndexInfo(StatusInfo status, Index target) {
+        if (status.getNodes().size() == 0) {
+            return null;
+        }
+        NodeInfo node = status.getNodes().get(0);
+        for (IndexInfo index : node.getIndexes()) {
+            if (index.getName().equals(target.getName())) {
+                return index;
+            }
+        }
+        return null;
+    }
+
+    private FrameInfo findFrameInfo(StatusInfo status, Frame target) {
+        IndexInfo index = findIndexInfo(status, target.getIndex());
+        if (index != null) {
+            for (FrameInfo frame : index.getFrames()) {
+                if (frame.getName().equals(target.getName())) {
+                    return frame;
+                }
+            }
+        }
+        return null;
+    }
 }
 
-class StaticBitIterator implements IBitIterator {
+class StaticBitIterator implements BitIterator {
     private List<Bit> bits;
     private int index = 0;
 

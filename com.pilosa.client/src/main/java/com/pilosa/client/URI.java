@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
  */
 public final class URI {
     /**
-     * Create the default URI.
+     * Creates the default URI.
+     *
      * @return default URI
      */
     @SuppressWarnings("WeakerAccess")
@@ -37,7 +38,8 @@ public final class URI {
     }
 
     /**
-     * Create a URI by specifying host and port but using the default scheme.
+     * Creates a URI by specifying host and port but using the default scheme.
+     *
      * @param host is hostname or IP address of the Pilosa server
      * @param port is port of the Pilosa server
      * @return a URI
@@ -52,9 +54,10 @@ public final class URI {
 
     /**
      * Creates a URI from an address.
+     *
      * @param address is Pilosa server's address
-     * @throws PilosaURIException if the address is malformed
      * @return a URI
+     * @throws PilosaURIException if the address is malformed
      */
     public static URI address(String address) {
         URI uri = new URI();
@@ -62,35 +65,23 @@ public final class URI {
         return uri;
     }
 
-    /**
-     * Returns the protocol part of the URI.
-     * @return the protocol part of the URI
-     */
     @SuppressWarnings("WeakerAccess")
     public String getScheme() {
         return scheme;
     }
 
-    /**
-     * Returns the host part of the URI.
-     * @return the host part of the URI
-     */
     @SuppressWarnings("WeakerAccess")
     public String getHost() {
         return host;
     }
 
-    /**
-     * Returns the port part of the URI.
-     * @return the port part of the URI
-     */
     @SuppressWarnings("WeakerAccess")
     public int getPort() {
         return port;
     }
 
     /**
-     * Returns normalized address, ready to be used with an HttpClent.
+     * Returns normalized address, ready to be used with an HttpClient.
      *
      * @return normalized address by keeping the scheme part up to + (plus) character
      */

@@ -1,11 +1,13 @@
 package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
+import com.pilosa.client.status.StatusInfo;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
@@ -25,10 +27,24 @@ import java.util.*;
 
 /**
  * Pilosa HTTP client.
- *
+ *<p>
+ *     This client uses Pilosa's http+protobuf API.
  * <p>
  * Usage:
- * TODO
+ * <pre>
+ * <code>
+ *     // Create a PilosaClient instance
+ *     PilosaClient client = PilosaClient.defaultClient();
+ *     // Crate an Index instance
+ *     Index index = Index.withName("repository");
+ *     Frame stargazer = index.frame("stargazer");
+ *     QueryResponse response = client.query(stargazer.bitmap(5));
+ *     // Act on the result
+ *     System.out.println(response.getResult());
+ * </code>
+ * </pre>
+ * @see <a href="https://www.pilosa.com/docs/api-reference/">Pilosa API Reference</a>
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public class PilosaClient implements AutoCloseable {
     /**
@@ -94,6 +110,7 @@ public class PilosaClient implements AutoCloseable {
      * @param query a PqlBaseQuery with its index is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's index is null
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
      */
     public QueryResponse query(PqlQuery query) {
         return query(query, QueryOptions.defaultOptions());
@@ -105,6 +122,7 @@ public class PilosaClient implements AutoCloseable {
      * @param query a PqlBaseQuery with its index is not null
      * @return Pilosa response
      * @throws ValidationException if the given query's index is null
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
@@ -114,10 +132,13 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates an index.
+     * Creates an index on the server using the given Index object.
+     *
      * @param index index object
      * @throws ValidationException if the passed index name is not valid
      * @throws IndexExistsException if there already is a index with the given name
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
     public void createIndex(Index index) {
         String uri = String.format("%s/index/%s", this.getAddress(), index.getName());
@@ -133,9 +154,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates an index if it does not exist
+     * Creates an index if it does not exist.
      *
      * @param index index object
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
     public void ensureIndex(Index index) {
         try {
@@ -149,7 +171,8 @@ public class PilosaClient implements AutoCloseable {
      * Creates a frame.
      * @param frame frame object
      * @throws ValidationException if the passed index name or frame name is not valid
-     * @throws FrameExistsException if there already a frame with the given name
+     * @throws FrameExistsException if there already is a frame with the given name
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
      */
     public void createFrame(Frame frame) {
         String uri = String.format("%s/index/%s/frame/%s", this.getAddress(),
@@ -166,9 +189,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a frame if it does not exist
+     * Creates a frame if it does not exist.
      *
      * @param frame frame object
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
      */
     public void ensureFrame(Frame frame) {
         try {
@@ -179,8 +203,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes an index.
-     * @param index index object
+     * Deletes the given index.
+     * @param index the index to delete
+     * @throws PilosaException if the index does not exist
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
     public void deleteIndex(Index index) {
         String uri = String.format("%s/index/%s", this.getAddress(), index.getName());
@@ -189,9 +215,11 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes a frame.
+     * Deletes the given frame.
      *
-     * @param frame frame object
+     * @param frame the frame to delete
+     * @throws PilosaException if the frame does not exist
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
      */
     public void deleteFrame(Frame frame) {
         String uri = String.format("%s/index/%s/frame/%s", this.getAddress(),
@@ -201,24 +229,30 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Imports bits to the given index and frame.
+     * Imports bits to the given index and frame with the default batch size.
      *
      * @param frame    specify the frame
      * @param iterator     specify the bit iterator
+     * @throws PilosaException if the import cannot be completed
      */
-    public void importFrame(Frame frame, IBitIterator iterator) {
+    public void importFrame(Frame frame, BitIterator iterator) {
         importFrame(frame, iterator, 100000);
     }
 
     /**
      * Imports bits to the given index and frame.
+     *<p>
+     *     This method sorts and sends the bits in batches.
+     *     Pilosa queries may return inconsistent results while importing data.
      *
      * @param frame    specify the frame
      * @param iterator     specify the bit iterator
-     * @param batchSize    specify the number of bits to send in each import query
+     * @param batchSize    specify the number of bits to send in each import request
+     * @throws PilosaException if the import cannot be completed
+     * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Frame frame, IBitIterator iterator, int batchSize) {
+    public void importFrame(Frame frame, BitIterator iterator, int batchSize) {
         final long sliceWidth = 1048576L;
         boolean canContinue = true;
         while (canContinue) {
@@ -243,6 +277,38 @@ public class PilosaClient implements AutoCloseable {
             for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
                 importBits(frame.getIndex().getName(), frame.getName(), entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    /**
+     * Returns the status of the cluster and schema info.
+     *
+     * @return StatusInfo object.
+     * @throws PilosaException if the status cannot be read
+     */
+    public StatusInfo readStatus() {
+        String uri = String.format("%s/status", this.getAddress());
+        HttpGet request = new HttpGet(uri);
+        CloseableHttpResponse response = null;
+        try {
+            try {
+                response = clientExecute(request, "Error while reading status",
+                        ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream src = entity.getContent()) {
+                        StatusMessage msg = StatusMessage.fromInputStream(src);
+                        return msg.getStatus();
+                    }
+                }
+                throw new PilosaException("Server returned empty response");
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
         }
     }
 
@@ -552,4 +618,27 @@ class BitComparator implements Comparator<Bit> {
         int prfCmp = Long.signum(bit.getColumnID() - other.getColumnID());
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
+}
+
+final class StatusMessage {
+
+    static StatusMessage fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, StatusMessage.class);
+    }
+
+    StatusInfo getStatus() {
+        return this.status;
+    }
+
+    void setStatus(StatusInfo status) {
+        this.status = status;
+    }
+
+    static {
+        mapper = new ObjectMapper();
+        StatusMessage.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    private StatusInfo status;
+    private final static ObjectMapper mapper;
 }

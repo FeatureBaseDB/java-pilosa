@@ -5,6 +5,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
 
+/**
+ * Contains data about a column.
+ * <p>
+ * Column data is returned from {@link QueryResponse#getColumns()} method.
+ * They are only returned if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
+ *
+ * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
+ */
 public final class ColumnItem {
     private long id;
     private Map<String, Object> attributes;
@@ -22,7 +31,7 @@ public final class ColumnItem {
     }
 
     /**
-     * Returns column ID.
+     * Returns column ID
      *
      * @return column ID
      */
@@ -30,11 +39,6 @@ public final class ColumnItem {
         return this.id;
     }
 
-    /**
-     * Returns column attributes.
-     *
-     * @return column attributes
-     */
     public Map<String, Object> getAttributes() {
         return this.attributes;
     }

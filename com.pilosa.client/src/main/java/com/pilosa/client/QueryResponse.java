@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Represents the response from a Pilosa query.
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class QueryResponse {
     private List<QueryResult> results;
@@ -14,11 +15,6 @@ public final class QueryResponse {
     private String errorMessage;
     private boolean isError = false;
 
-    /**
-     * Creates a default response.
-     * <p>
-     * This constructor is not available outside of this package.
-     */
     QueryResponse() {
     }
 
@@ -40,7 +36,7 @@ public final class QueryResponse {
     /**
      * Returns the first result in the response.
      *
-     * @return first result in the response
+     * @return first result in the response or <code>null</code> if there are none
      */
     public QueryResult getResult() {
         if (this.results == null || this.results.size() == 0) {
@@ -52,7 +48,7 @@ public final class QueryResponse {
     /**
      * Returns the list of columns.
      * <p>
-     * The response contains the columns if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the columns if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
      *
      * @return list of columns or <code>null</code> if the response did not have its columns field set.
      */
@@ -63,7 +59,7 @@ public final class QueryResponse {
     /**
      * Returns the first column in the response.
      * <p>
-     * The response contains the columns if <code>PilosaClient.query()</code> is used instead of <code>PilosaClient.query()</code>.
+     * The response contains the columns if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
      *
      * @return the first column or <code>null</code> if the response did not have its columns field set.
      */
@@ -115,5 +111,4 @@ public final class QueryResponse {
         }
         this.columns = columns;
     }
-
 }

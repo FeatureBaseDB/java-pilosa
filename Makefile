@@ -1,5 +1,5 @@
 
-.PHONY: build clean generate-proto test test-all
+.PHONY: build clean docs generate-proto test test-all
 
 build:
 	mvn -f com.pilosa.client/pom.xml clean package
@@ -7,7 +7,10 @@ build:
 clean:
 	mvn -f com.pilosa.client/pom.xml clean
 
-generate-proto:
+doc:
+	mvn -f com.pilosa.client/pom.xml javadoc:javadoc
+
+generate:
 	protoc --java_out=com.pilosa.client/src/main/java/ com.pilosa.client/src/internal/public.proto
 
 test:

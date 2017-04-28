@@ -8,12 +8,15 @@ import java.util.Scanner;
 /**
  * Iterates over a CSV of bitmaps.
  * <p>
+ * This class is used for iterating over bitmaps for a import operation.
+ * <p>
  * The CSV file should not have a header and should have the following structure:
  * <pre>
  *     BITMAP_ID,PROFILE_ID[,TIMESTAMP]
  * </pre>
+ * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
  */
-public class CsvFileBitIterator implements IBitIterator {
+public class CsvFileBitIterator implements BitIterator {
     private Scanner scanner = null;
     private Bit nextBit = null;
 
@@ -22,6 +25,7 @@ public class CsvFileBitIterator implements IBitIterator {
 
     /**
      * Creates a bit iterator from the CSV file at the given path.
+     *
      * @param path of the CSV file
      * @return bit iterator
      * @throws FileNotFoundException if the path does not exist

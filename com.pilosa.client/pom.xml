@@ -6,10 +6,10 @@
 
     <groupId>com.pilosa</groupId>
     <artifactId>pilosa-client</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
 
     <name>pilosa-client</name>
-    <description>Java client library for Pilosa high performance database</description>
+    <description>Java client library for Pilosa high performance index</description>
     <url>https://github.com/pilosa/java-pilosa</url>
     <inceptionYear>2017</inceptionYear>
     <organization>

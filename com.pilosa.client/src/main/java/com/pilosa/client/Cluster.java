@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Contains hosts in a Pilosa cluster.
+ *
+ * @see <a href="https://www.pilosa.com/docs/configuration/#all-options">Pilosa Configuration: All Options</a>
  */
 
 public final class Cluster {
@@ -21,6 +23,7 @@ public final class Cluster {
 
     /**
      * Returns a cluster with the given URI.
+     *
      * @param uris addresses of hosts
      * @return a Cluster with the given host
      */
@@ -35,6 +38,7 @@ public final class Cluster {
 
     /**
      * Adds a host to the cluster.
+     *
      * @param uri Address of a Pilosa host
      */
     @SuppressWarnings("WeakerAccess")
@@ -68,7 +72,8 @@ public final class Cluster {
     }
 
     /**
-     * Return all hosts in the cluster
+     * Returns all hosts in the cluster.
+     *
      * @return all hosts
      */
     List<URI> getHosts() {

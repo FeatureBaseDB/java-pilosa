@@ -3,7 +3,9 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Represents a result from TopN call.
+ * Represents a result from {@link com.pilosa.client.orm.Frame#topN(long)} call.
+ *
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class CountResultItem {
     private long id;
@@ -22,9 +24,9 @@ public final class CountResultItem {
     }
 
     /**
-     * Returns the bitmap ID.
+     * Returns the row ID.
      *
-     * @return bitmap ID
+     * @return row ID
      */
     public long getID() {
         return this.id;

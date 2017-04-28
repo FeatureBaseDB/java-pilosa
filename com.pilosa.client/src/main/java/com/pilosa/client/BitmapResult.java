@@ -8,6 +8,8 @@ import java.util.Map;
 
 /**
  * Represents a result from Bitmap, Union, Intersect, Difference and Range PQL calls.
+ *
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class BitmapResult {
     private Map<String, Object> attributes;
@@ -35,7 +37,7 @@ public final class BitmapResult {
     }
 
     /**
-     * Returns the bits of the reply.
+     * Returns the bits in the reply.
      *
      * @return list of column IDs where the corresponding bit is 1
      */

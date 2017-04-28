@@ -1,36 +1,87 @@
 package com.pilosa.client;
 
+/**
+ * Contains options to customize {@link PilosaClient}.
+ * <p>
+ * In order to set options, create a {@link ClientOptions.Builder} object using {@link ClientOptions#builder()}.
+ * <p>
+ * <pre>
+ * <code>
+ *     ClientOptions options = ClientOptions.builder()
+ *          .setSocketTimeout(10000)
+ *          .setConnectTimeout(100)
+ *          .build();
+ * </code>
+ * </pre>
+ */
 @SuppressWarnings("WeakerAccess")
 public final class ClientOptions {
     public static class Builder {
         private Builder() {
         }
 
+        /**
+         * Sets the timeout for waiting for data from the socket.
+         *
+         * @param millis timeout in milliseconds
+         * @return ClientOptions builder object
+         */
         public Builder setSocketTimeout(int millis) {
             this.socketTimeout = millis;
             return this;
         }
 
+        /**
+         * Sets the timeout for establishing a connection.
+         *
+         * @param millis timeout in milliseconds
+         * @return ClientOptions builder object
+         */
         public Builder setConnectTimeout(int millis) {
             this.connectTimeout = millis;
             return this;
         }
 
+        /**
+         * Sets the number of retries before failing a request.
+         * @param count number of retries
+         * @return ClientOptions builder object
+         */
         public Builder setRetryCount(int count) {
             this.retryCount = count;
             return this;
         }
 
+        /**
+         * Sets the number of maximum connections per host.
+         * <p>
+         *     Determines the number of concurrent requests that can run against a Pilosa host.
+         *
+         * @param size maximum number of connections per host
+         * @return ClientOptions builder object
+         */
         public Builder setConnectionPoolSizePerRoute(int size) {
             this.connectionPoolSizePerRoute = size;
             return this;
         }
 
+        /**
+         * Sets the number of maximum total connections.
+         * <p>
+         *     Determines the number of concurrent requests that can run against a Pilosa cluster.
+         *
+         * @param size maximum number of connections per cluster
+         * @return ClientOptions builder object
+         */
         public Builder setConnectionPoolTotalSize(int size) {
             this.connectionPoolTotalSize = size;
             return this;
         }
 
+        /**
+         * Creates the ClientOptions object.
+         * @return ClientOptions object
+         */
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize);
@@ -43,6 +94,10 @@ public final class ClientOptions {
         private int connectionPoolTotalSize = 100;
     }
 
+    /**
+     * Creates a ClientOptions.Builder object.
+     * @return a Builder object
+     */
     public static Builder builder() {
         return new Builder();
     }

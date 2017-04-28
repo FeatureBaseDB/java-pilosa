@@ -6,16 +6,16 @@ import com.pilosa.client.exceptions.ValidationException;
 
 import java.util.Map;
 
+/**
+ * The purpose of the Index is to represent a data namespace.
+ * <p>
+ * You cannot perform
+ * cross-index queries. Column-level attributes are global to the Index.
+ *
+ * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
+ */
 public class Index {
-    private String name;
-    private IndexOptions options;
-    private ObjectMapper mapper = new ObjectMapper();
-
-    private Index(String name, IndexOptions options) {
-        this.name = name;
-        this.options = options;
-    }
-
     /**
      * Create an index with a name using defaults.
      *
@@ -28,7 +28,7 @@ public class Index {
     }
 
     /**
-     * Creates a index with a name and options
+     * Creates a index with a name and options.
      *
      * @param name    index name
      * @param options index options
@@ -41,20 +41,10 @@ public class Index {
         return new Index(name, options);
     }
 
-    /**
-     * Gets the index name.
-     *
-     * @return index name
-     */
     public String getName() {
         return this.name;
     }
 
-    /**
-     * Gets options for this index.
-     *
-     * @return index options
-     */
     public IndexOptions getOptions() {
         return this.options;
     }
@@ -71,7 +61,7 @@ public class Index {
     }
 
     /**
-     * Creates a frame with the specified name and options
+     * Creates a frame with the specified name and options.
      *
      * @param name    frame name
      * @param options frame options
@@ -92,7 +82,13 @@ public class Index {
     }
 
     /**
-     * Creates a batch query with the given size.
+     * Creates a batch query which has the specified query count pre-allocated.
+     * <p>
+     *     If the number of queries in the batch is known beforehand, calling this constructor
+     *     is more efficient than calling it without the query count.
+     *
+     *     Note that <code>queryCount</code> is not the limit of queries in the batch; the batch can
+     *     grow beyond that.
      *
      * @param queryCount number of queries expected to be in the batch
      * @return batch query
@@ -112,65 +108,94 @@ public class Index {
         return new BatchQuery(this, queries);
     }
 
+    /**
+     * Creates a raw query.
+     * <p>
+     * Note that the query is not validated before sending to the server.
+     *
+     * @param query raw query
+     * @return a Pql query
+     */
     public PqlBaseQuery rawQuery(String query) {
         return new PqlBaseQuery(query, this);
     }
 
     /**
      * Creates a Union query.
+     * <p>
+     *     Union performs a logical OR on the results of each BITMAP_CALL query passed to it.
      *
-     * @param bitmap1 first Bitmap
-     * @param bitmap2 second Bitmap
-     * @param bitmaps other Bitmaps
+     * @param bitmaps 2 or more bitmaps to union
      * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#union">Union Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery union(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        return bitmapOperation("Union", bitmap1, bitmap2, bitmaps);
+    public PqlBitmapQuery union(PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Union", bitmaps);
     }
 
     /**
      * Creates an Intersect query.
+     * <p>
+     *     Intersect performs a logical AND on the results of each BITMAP_CALL query passed to it.
      *
-     * @param bitmap1 first Bitmap
-     * @param bitmap2 second Bitmap
-     * @param bitmaps other Bitmaps
+     * @param bitmaps 2 or more bitmaps to intersect
      * @return a PQL query
+     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @see <a href="https://www.pilosa.com/docs/query-language/#intersect">Intersect Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery intersect(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        return bitmapOperation("Intersect", bitmap1, bitmap2, bitmaps);
+    public PqlBitmapQuery intersect(PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Intersect", bitmaps);
     }
 
     /**
      * Creates a Difference query.
+     * <p>
+     *     Difference returns all of the bits from the first BITMAP_CALL argument
+     *     passed to it, without the bits from each subsequent BITMAP_CALL.
      *
-     * @param bitmap1 first Bitmap
-     * @param bitmap2 second Bitmap
-     * @param bitmaps other Bitmaps
+     * @param bitmaps 2 or more bitmaps to differentiate
      * @return a PQL query
+     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @see <a href="https://www.pilosa.com/docs/query-language/#difference">Difference Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery difference(PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        return bitmapOperation("Difference", bitmap1, bitmap2, bitmaps);
+    public PqlBitmapQuery difference(PqlBitmapQuery... bitmaps) {
+        return bitmapOperation("Difference", bitmaps);
     }
 
     /**
      * Creates a Count query.
+     * <p>
+     *     Returns the number of set bits in the BITMAP_CALL passed in.
      *
      * @param bitmap the bitmap query
      * @return a PQL query
+     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */
     public PqlBaseQuery count(PqlBitmapQuery bitmap) {
         return pqlQuery(String.format("Count(%s)", bitmap.serialize()));
     }
 
     /**
-     * Creates a SetProfileAttrs query
+     * Creates a SetColumnAttrs query.
+     * <p>
+     *     SetColumnAttrs associates arbitrary key/value pairs with a column in an index.
+     * <p>
+     *     Following object types are accepted:
+     *     <ul>
+     *         <li>Long</li>
+     *         <li>String</li>
+     *         <li>Boolean</li>
+     *         <li>Double</li>
+     *     </ul>
      *
-     * @param id         coumn ID
+     * @param id         column ID
      * @param attributes column attributes
      * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
@@ -186,17 +211,25 @@ public class Index {
         return new PqlBitmapQuery(query, this);
     }
 
-    private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery bitmap1, PqlBitmapQuery bitmap2, PqlBitmapQuery... bitmaps) {
-        String qry = String.format("%s, %s", bitmap1.serialize(), bitmap2.serialize());
-        if (bitmaps.length > 0) {
-            StringBuilder builder = new StringBuilder(bitmaps.length);
-            builder.append(qry);
-            for (PqlBitmapQuery bitmap : bitmaps) {
-                builder.append(", ");
-                builder.append(bitmap.serialize());
-            }
-            qry = builder.toString();
+    private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery... bitmaps) {
+        if (bitmaps.length < 2) {
+            throw new IllegalArgumentException(String.format("%s operation requires at least 2 bitmaps", name));
         }
-        return pqlBitmapQuery(String.format("%s(%s)", name, qry));
+        StringBuilder builder = new StringBuilder(bitmaps.length - 1);
+        builder.append(bitmaps[0].serialize());
+        for (int i = 1; i < bitmaps.length; i++) {
+            builder.append(", ");
+            builder.append(bitmaps[i].serialize());
+        }
+        return pqlBitmapQuery(String.format("%s(%s)", name, builder.toString()));
     }
+
+    private Index(String name, IndexOptions options) {
+        this.name = name;
+        this.options = options;
+    }
+
+    private String name;
+    private IndexOptions options;
+    private ObjectMapper mapper = new ObjectMapper();
 }

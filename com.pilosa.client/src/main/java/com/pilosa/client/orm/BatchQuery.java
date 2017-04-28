@@ -8,9 +8,20 @@ import java.util.List;
 /**
  * Contains a batch of PQL queries.
  * <p>
- * <p>
  * Use <code>Index.batchQuery</code> method to create an instance.
  * This class is not thread-safe, do not update the same BatchQuery object in different threads.
+ * <p>
+ *     Usage
+ * <pre>
+ * <code>
+ *     Index repo = Index.withName("reposistory");
+ *     Frame stargazer = repo.frame("stargazer");
+ *     PqlBatchQuery query = repo.batchQuery(
+ *          stargazer.bitmap(5),
+ *          stargazer.bitmap(15),
+ *          repo.union(stargazer.bitmap(20), stargazer.bitmap(25)));
+ * </code>
+ * </pre>
  */
 public class BatchQuery implements PqlQuery {
     private Index index = null;
@@ -44,7 +55,7 @@ public class BatchQuery implements PqlQuery {
     }
 
     /**
-     * Creates   a BatchQuery object with the given index and queries
+     * Creates a BatchQuery object with the given index and queries
      * @param index the index this batch query belongs to
      * @param queries queries in the batch
      */

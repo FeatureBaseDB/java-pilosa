@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Represent one of the results in the response.
+ * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class QueryResult {
     private BitmapResult bitmapResult = null;
@@ -54,7 +55,7 @@ public final class QueryResult {
     }
 
     /**
-     * Returns the result from Count query
+     * Returns the result from Count query.
      *
      * @return number of columns for the bitmap in the query
      */

@@ -605,7 +605,7 @@ public class PilosaClientIT {
     }
 }
 
-class StaticBitIterator implements IBitIterator {
+class StaticBitIterator implements BitIterator {
     private List<Bit> bits;
     private int index = 0;
 

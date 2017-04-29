@@ -94,7 +94,7 @@ public final class IndexOptions {
             return new IndexOptions(this.columnLabel, this.timeQuantum);
         }
 
-        private String columnLabel = "col_id";
+        private String columnLabel = "columnID";
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
 

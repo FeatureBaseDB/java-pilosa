@@ -48,7 +48,7 @@ public class FrameOptionsTest {
     public void testBuilder() {
         FrameOptions options = FrameOptions.builder()
                 .build();
-        compare(options, "id", TimeQuantum.NONE, false);
+        compare(options, "rowID", TimeQuantum.NONE, false);
 
         options = FrameOptions.builder()
                 .setRowLabel("the_row_label")
@@ -58,7 +58,7 @@ public class FrameOptionsTest {
         options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
-        compare(options, "id", TimeQuantum.YEAR_MONTH_DAY_HOUR, false);
+        compare(options, "rowID", TimeQuantum.YEAR_MONTH_DAY_HOUR, false);
 
         options = FrameOptions.builder()
                 .setRowLabel("someid")

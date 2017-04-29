@@ -109,7 +109,7 @@ public final class FrameOptions {
             return new FrameOptions(this.rowLabel, this.timeQuantum, this.inverseEnabled);
         }
 
-        private String rowLabel = "id";
+        private String rowLabel = "rowID";
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private boolean inverseEnabled = false;
     }

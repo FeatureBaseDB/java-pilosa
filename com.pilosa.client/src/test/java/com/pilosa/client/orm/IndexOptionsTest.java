@@ -48,7 +48,7 @@ public class IndexOptionsTest {
     public void testBuilder() {
         IndexOptions options = IndexOptions.builder()
                 .build();
-        compare(options, "col_id", TimeQuantum.NONE);
+        compare(options, "columnID", TimeQuantum.NONE);
 
         options = IndexOptions.builder()
                 .setColumnLabel("random_lbl")
@@ -58,7 +58,7 @@ public class IndexOptionsTest {
         options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
-        compare(options, "col_id", TimeQuantum.YEAR_MONTH_DAY_HOUR);
+        compare(options, "columnID", TimeQuantum.YEAR_MONTH_DAY_HOUR);
 
         options = IndexOptions.builder()
                 .setColumnLabel("some_label")

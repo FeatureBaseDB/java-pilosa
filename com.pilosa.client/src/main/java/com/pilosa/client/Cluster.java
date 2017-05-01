@@ -56,7 +56,7 @@ public final class Cluster {
     }
 
     /**
-     * Returns a cluster with the given URI.
+     * Returns a cluster with the given URIs.
      *
      * @param uris addresses of hosts
      * @return a Cluster with the given host

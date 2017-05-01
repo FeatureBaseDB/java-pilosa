@@ -43,8 +43,7 @@ import java.util.Map;
 /**
  * The purpose of the Index is to represent a data namespace.
  * <p>
- * You cannot perform
- * cross-index queries. Column-level attributes are global to the Index.
+ * You cannot perform cross-index queries. Column-level attributes are global to the Index.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
@@ -62,7 +61,7 @@ public class Index {
     }
 
     /**
-     * Creates a index with a name and options.
+     * Creates an index with a name and options.
      *
      * @param name    index name
      * @param options index options
@@ -84,7 +83,7 @@ public class Index {
     }
 
     /**
-     * Creates a frame with the specified name and defaults.
+     * Creates a frame object with the specified name and defaults.
      *
      * @param name frame name
      * @return a Frame object
@@ -157,7 +156,7 @@ public class Index {
     /**
      * Creates a Union query.
      * <p>
-     *     Union performs a logical OR on the results of each BITMAP_CALL query passed to it.
+     * Union performs a logical OR on the results of each BITMAP_CALL query passed to it.
      *
      * @param bitmaps 2 or more bitmaps to union
      * @return a PQL query
@@ -171,7 +170,7 @@ public class Index {
     /**
      * Creates an Intersect query.
      * <p>
-     *     Intersect performs a logical AND on the results of each BITMAP_CALL query passed to it.
+     * Intersect performs a logical AND on the results of each BITMAP_CALL query passed to it.
      *
      * @param bitmaps 2 or more bitmaps to intersect
      * @return a PQL query
@@ -186,8 +185,8 @@ public class Index {
     /**
      * Creates a Difference query.
      * <p>
-     *     Difference returns all of the bits from the first BITMAP_CALL argument
-     *     passed to it, without the bits from each subsequent BITMAP_CALL.
+     * Difference returns all of the bits from the first BITMAP_CALL argument
+     *   passed to it, without the bits from each subsequent BITMAP_CALL.
      *
      * @param bitmaps 2 or more bitmaps to differentiate
      * @return a PQL query
@@ -202,7 +201,7 @@ public class Index {
     /**
      * Creates a Count query.
      * <p>
-     *     Returns the number of set bits in the BITMAP_CALL passed in.
+     * Returns the number of set bits in the BITMAP_CALL passed in.
      *
      * @param bitmap the bitmap query
      * @return a PQL query
@@ -216,9 +215,9 @@ public class Index {
     /**
      * Creates a SetColumnAttrs query.
      * <p>
-     *     SetColumnAttrs associates arbitrary key/value pairs with a column in an index.
+     * SetColumnAttrs associates arbitrary key/value pairs with a column in an index.
      * <p>
-     *     Following object types are accepted:
+     * Following object types are accepted:
      *     <ul>
      *         <li>Long</li>
      *         <li>String</li>

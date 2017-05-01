@@ -89,7 +89,7 @@ public final class FrameOptions {
         }
 
         /**
-         * Enables inverse frames.
+         * Enables inverted frames.
          *
          * @param enabled Set to <code>true</code> to enable.
          * @return FrameOptions builder

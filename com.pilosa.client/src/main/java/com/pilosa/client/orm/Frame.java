@@ -205,6 +205,7 @@ public class Frame {
     }
 
     /**
+     * Creates a TopN query.
      * <p>
      *     Return the id and count of the top n bitmaps (by count of bits) in the frame.
      * <p>

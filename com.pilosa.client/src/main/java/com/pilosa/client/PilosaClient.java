@@ -69,7 +69,7 @@ import java.util.*;
  * <code>
  *     // Create a PilosaClient instance
  *     PilosaClient client = PilosaClient.defaultClient();
- *     // Crate an Index instance
+ *     // Create an Index instance
  *     Index index = Index.withName("repository");
  *     Frame stargazer = index.frame("stargazer");
  *     QueryResponse response = client.query(stargazer.bitmap(5));
@@ -151,7 +151,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Runs the given query against the server and enables columns in the response.
+     * Runs the given query against the server with the given options.
      *
      * @param query a PqlBaseQuery with its index is not null
      * @return Pilosa response
@@ -188,7 +188,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates an index if it does not exist.
+     * Creates an index on the server if it does not exist.
      *
      * @param index index object
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
@@ -202,7 +202,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a frame.
+     * Creates a frame on the server using the given Frame object.
      * @param frame frame object
      * @throws ValidationException if the passed index name or frame name is not valid
      * @throws FrameExistsException if there already is a frame with the given name
@@ -223,7 +223,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a frame if it does not exist.
+     * Creates a frame on the server if it does not exist.
      *
      * @param frame frame object
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
@@ -237,7 +237,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes the given index.
+     * Deletes the given index on the server.
      * @param index the index to delete
      * @throws PilosaException if the index does not exist
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
@@ -249,7 +249,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes the given frame.
+     * Deletes the given frame on the server.
      *
      * @param frame the frame to delete
      * @throws PilosaException if the frame does not exist

@@ -9,7 +9,11 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **v0.3.1** (2017-05-01): Initial version
+* **v0.3.2** (2017-05-02):
+    * Available on Maven Repository
+
+* **v0.3.1** (2017-05-01):
+    * Initial version
     * Supports Pilosa Server v0.3.1
 
 ## Requirements

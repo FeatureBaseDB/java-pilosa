@@ -5,7 +5,7 @@
 
 <img src="https://dc3kpxyuw05cb.cloudfront.net/img/ee.svg" style="float: right" align="right" height="301">
 
-Java client for Pilosa high performance index.
+Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 

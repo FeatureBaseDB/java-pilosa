@@ -40,10 +40,11 @@
 
     <groupId>com.pilosa</groupId>
     <artifactId>pilosa-client</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.2</version>
+    <packaging>jar</packaging>
 
-    <name>pilosa-client</name>
-    <description>Java client library for Pilosa high performance index</description>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java client for Pilosa high performance distributed bitmap index</description>
     <url>https://github.com/pilosa/java-pilosa</url>
     <inceptionYear>2017</inceptionYear>
 
@@ -54,11 +55,51 @@
 
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <name>The 3-Clause BSD License</name>
+            <url>https://opensource.org/licenses/BSD-3-Clause</url>
             <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>yuce</id>
+            <name>Yuce Tekol</name>
+            <email>yuce@pilosa.com</email>
+            <organization>Pilosa Corp.</organization>
+            <organizationUrl>https://www.pilosa.com</organizationUrl>
+        </developer>
+        <developer>
+            <id>cody</id>
+            <name>Cody Soyland</name>
+            <email>cody@pilosa.com</email>
+            <organization>Pilosa Corp.</organization>
+            <organizationUrl>https://www.pilosa.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/pilosa/java-pilosa/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:git://github.com/pilosa/java-pilosa.git</connection>
+        <developerConnection>scm:git:ssh://github.com:pilosa/java-pilosa.git</developerConnection>
+        <url>https://github.com/pilosa/java-pilosa/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -90,18 +131,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- documentation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
-                <configuration>
-                    <show>public</show>
-                    <excludePackageNames>com.pilosa.client.status</excludePackageNames>
-                    <sourceFileExcludes>com/pilosa/client/Internal.java</sourceFileExcludes>
-                </configuration>
             </plugin>
 
             <!-- unit tests -->
@@ -154,6 +183,7 @@
             </plugin>
 
             <!-- create a fat JAR -->
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -166,6 +196,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            -->
+
+            <!-- deploy -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -242,6 +286,67 @@
                 <skip.integration.tests>false</skip.integration.tests>
                 <skip.unit.tests>false</skip.unit.tests>
             </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- deploy sources -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- documentation -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <configuration>
+                            <show>public</show>
+                            <excludePackageNames>com.pilosa.client.status</excludePackageNames>
+                            <sourceFileExcludes>com/pilosa/client/Internal.java</sourceFileExcludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- sign -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.keyname}</keyname>
+                                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

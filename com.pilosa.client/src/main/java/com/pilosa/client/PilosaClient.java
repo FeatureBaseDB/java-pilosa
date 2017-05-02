@@ -215,11 +215,6 @@ public class PilosaClient implements AutoCloseable {
         String body = frame.getOptions().toString();
         httpPost.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPost, "Error while creating frame");
-
-        // set time quantum for the frame if one was assigned to it
-        if (frame.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
-            patchTimeQuantum(frame);
-        }
     }
 
     /**
@@ -516,17 +511,7 @@ public class PilosaClient implements AutoCloseable {
         String uri = String.format("%s/index/%s/time-quantum", this.getAddress(), index.getName());
         HttpPatch httpPatch = new HttpPatch(uri);
         String body = String.format("{\"timeQuantum\":\"%s\"}",
-                index.getOptions().getTimeQuantum().getStringValue());
-        httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
-        clientExecute(httpPatch, "Error while setting time quantum for the index");
-    }
-
-    private void patchTimeQuantum(Frame frame) {
-        String uri = String.format("%s/index/%s/frame/%s/time-quantum", this.getAddress(),
-                frame.getIndex().getName(), frame.getName());
-        HttpPatch httpPatch = new HttpPatch(uri);
-        String body = String.format("{\"timeQuantum\":\"%s\"}",
-                frame.getOptions().getTimeQuantum().getStringValue());
+                index.getOptions().getTimeQuantum().toString());
         httpPatch.setEntity(new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8)));
         clientExecute(httpPatch, "Error while setting time quantum for the index");
     }
@@ -620,7 +605,7 @@ class QueryRequest {
         Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveProfiles)
-                .setQuantum(this.timeQuantum.getStringValue());
+                .setQuantum(this.timeQuantum.toString());
         return builder.build();
     }
 }

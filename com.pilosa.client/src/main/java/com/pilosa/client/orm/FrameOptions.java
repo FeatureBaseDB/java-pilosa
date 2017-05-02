@@ -81,7 +81,7 @@ public final class FrameOptions {
          * @param timeQuantum See {@link TimeQuantum} for valid values.
          * @return FrameOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#time-quantum">Time Quantum</a>
-         * @see <a href="https://www.pilosa.com/docs/data-model/#view">View</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
          */
         public Builder setTimeQuantum(TimeQuantum timeQuantum) {
             this.timeQuantum = timeQuantum;
@@ -93,10 +93,35 @@ public final class FrameOptions {
          *
          * @param enabled Set to <code>true</code> to enable.
          * @return FrameOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#view">View</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
          */
         public Builder setInverseEnabled(boolean enabled) {
             this.inverseEnabled = enabled;
+            return this;
+        }
+
+
+        /**
+         * Sets the cache type for the frame.
+         *
+         * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
+         * @return FrameOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         */
+        public Builder setCacheType(CacheType cacheType) {
+            this.cacheType = cacheType;
+            return this;
+        }
+
+        /**
+         * Sets the cache size for the frame
+         *
+         * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
+         * @return FrameOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         */
+        public Builder setCacheSize(int cacheSize) {
+            this.cacheSize = cacheSize;
             return this;
         }
 
@@ -106,12 +131,16 @@ public final class FrameOptions {
          * @return FrameOptions object
          */
         public FrameOptions build() {
-            return new FrameOptions(this.rowLabel, this.timeQuantum, this.inverseEnabled);
+            return new FrameOptions(this.rowLabel, this.timeQuantum,
+                    this.inverseEnabled, this.cacheType, this.cacheSize);
         }
 
         private String rowLabel = "rowID";
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private boolean inverseEnabled = false;
+        private CacheType cacheType = CacheType.DEFAULT;
+        private int cacheSize = 0;
+
     }
 
     /**
@@ -147,21 +176,48 @@ public final class FrameOptions {
         return this.inverseEnabled;
     }
 
+    public CacheType getCacheType() {
+        return this.cacheType;
+    }
+
+    public int getCacheSize() {
+        return this.cacheSize;
+    }
+
     @Override
     public String toString() {
-        return String.format("{\"options\":{\"rowLabel\":\"%s\", \"inverseEnabled\": %s}}",
-                this.rowLabel,
-                this.inverseEnabled ? "true" : "false");
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\"options\": {");
+        builder.append(String.format("\"rowLabel\":\"%s\"", this.rowLabel));
+        if (this.inverseEnabled) {
+            builder.append(",\"inverseEnabled\":true");
+        }
+        if (!this.timeQuantum.equals(TimeQuantum.NONE)) {
+            builder.append(String.format(",\"timeQuantum\":\"%s\"", this.timeQuantum.toString()));
+        }
+        if (!this.cacheType.equals(CacheType.DEFAULT)) {
+            builder.append(String.format(",\"cacheType\":\"%s\"", this.cacheType.toString()));
+        }
+        if (this.cacheSize > 0) {
+            builder.append(String.format(",\"cacheSize\":%d", this.cacheSize));
+        }
+        builder.append("}}");
+        return builder.toString();
     }
 
     private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum,
-                         final boolean inverseEnabled) {
+                         final boolean inverseEnabled,
+                         final CacheType cacheType, final int cacheSize) {
         this.rowLabel = rowLabel;
         this.timeQuantum = timeQuantum;
         this.inverseEnabled = inverseEnabled;
+        this.cacheType = cacheType;
+        this.cacheSize = cacheSize;
     }
 
     private final String rowLabel;
     private final TimeQuantum timeQuantum;
     private final boolean inverseEnabled;
+    private final CacheType cacheType;
+    private final int cacheSize;
 }

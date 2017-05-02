@@ -48,24 +48,46 @@ public class FrameOptionsTest {
     public void testBuilder() {
         FrameOptions options = FrameOptions.builder()
                 .build();
-        compare(options, "rowID", TimeQuantum.NONE, false);
+        compare(options, "rowID", TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
                 .setRowLabel("the_row_label")
                 .build();
-        compare(options, "the_row_label", TimeQuantum.NONE, false);
+        compare(options, "the_row_label", TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
-        compare(options, "rowID", TimeQuantum.YEAR_MONTH_DAY_HOUR, false);
+        compare(options, "rowID", TimeQuantum.YEAR_MONTH_DAY_HOUR, false, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
                 .setRowLabel("someid")
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .setInverseEnabled(true)
                 .build();
-        compare(options, "someid", TimeQuantum.YEAR, true);
+        compare(options, "someid", TimeQuantum.YEAR, true, CacheType.DEFAULT, 0);
+
+        options = FrameOptions.builder()
+                .setRowLabel("someid")
+                .setTimeQuantum(TimeQuantum.YEAR)
+                .setInverseEnabled(true)
+                .setCacheType(CacheType.RANKED)
+                .setCacheSize(10000)
+                .build();
+        compare(options, "someid", TimeQuantum.YEAR, true, CacheType.RANKED, 10000);
+    }
+
+    @Test
+    public void testFrameOptionsToString() {
+        FrameOptions options = FrameOptions.builder()
+                .setRowLabel("stargazer_id")
+                .setTimeQuantum(TimeQuantum.DAY_HOUR)
+                .setInverseEnabled(true)
+                .setCacheType(CacheType.RANKED)
+                .setCacheSize(1000)
+                .build();
+        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000}}";
+        assertEquals(target, options.toString());
     }
 
     @Test(expected = PilosaException.class)
@@ -76,9 +98,12 @@ public class FrameOptionsTest {
     }
 
     private void compare(FrameOptions options, String targetRowLabel,
-                         TimeQuantum targetTimeQuantum, boolean targetInverseEnabled) {
+                         TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,
+                         CacheType targetCacheType, int targetCacheSize) {
         assertEquals(targetRowLabel, options.getRowLabel());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
         assertEquals(targetInverseEnabled, options.isInverseEnabled());
+        assertEquals(targetCacheType, options.getCacheType());
+        assertEquals(targetCacheSize, options.getCacheSize());
     }
 }

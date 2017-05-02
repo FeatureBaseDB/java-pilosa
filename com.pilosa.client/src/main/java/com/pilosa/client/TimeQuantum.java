@@ -88,12 +88,8 @@ public enum TimeQuantum {
         throw new ValidationException(String.format("Invalid time quantum string: %s", s));
     }
 
-    /**
-     * Converts a TimeQuantum object to the corresponding string
-     *
-     * @return string representation of a TimeQuantum object
-     */
-    public String getStringValue() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder(4);
         if ((this.value & Y) == Y) sb.append('Y');
         if ((this.value & M) == M) sb.append('M');

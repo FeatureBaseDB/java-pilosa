@@ -3,7 +3,7 @@
 <a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.3.1-blue.svg"></a>
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 
-<img src="https://dc3kpxyuw05cb.cloudfront.net/img/ee.svg" style="float: right" align="right" height="301">
+<img src="https://www.pilosa.com/img/ee.svg" style="float: right" align="right" height="301">
 
 Java client for Pilosa high performance distributed bitmap index.
 

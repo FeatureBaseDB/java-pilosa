@@ -47,13 +47,13 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 PilosaClient client = PilosaClient.defaultClient();
 
 // Create an Index object
-Index mydb = Index.withName("mydb");
+Index myindex = Index.withName("myindex");
 
 // Make sure the index exists on the server
-client.ensureIndex(mydb);
+client.ensureIndex(myindex);
 
 // Create a Frame object
-Frame myframe = mydb.frame("myframe");
+Frame myframe = myindex.frame("myframe");
 
 // Make sure the frame exists on the server
 client.ensureFrame(myframe);
@@ -75,9 +75,9 @@ if (result != null) {
 
 // You can batch queries to improve throughput
 QueryResponse response = client.query(
-    mydb.batchQuery(
+    myindex.batchQuery(
         myframe.bitmap(5),
-        myframe.bitmap(10),
+        myframe.bitmap(10)
     )    
 );
 for (Object result : response.getResults()) {

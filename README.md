@@ -2,6 +2,8 @@
 
 <a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.3.1-blue.svg"></a>
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
+<img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592000">
+
 
 <img src="https://www.pilosa.com/img/ee.svg" style="float: right" align="right" height="301">
 
@@ -34,18 +36,6 @@ Add the following dependency in your `pom.xml`:
     </dependency>
 </dependencies>
 ```
-
-This repository supports creating an uber JAR to drop in your projects. Follow the steps below to create it:
-
-```
-git clone https://github.com/pilosa/java-pilosa.git
-cd java-pilosa/com.pilosa.client
-make build
-```
-
-If you are on a platform which doesn't have `make` (e.g., Windows), you can view the `build` step of the `Makefile`.
-
-The uber JAR is created at `target/pilosa-client-X.X.X.jar`.
 
 ## Usage
 

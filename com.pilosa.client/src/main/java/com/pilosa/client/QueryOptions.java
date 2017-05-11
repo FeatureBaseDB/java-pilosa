@@ -102,7 +102,12 @@ public class QueryOptions {
 
     @SuppressWarnings("WeakerAccess")
     public boolean isColumns() {
-        return columns;
+        return this.columns;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public TimeQuantum getTimeQuantum() {
+        return this.timeQuantum;
     }
 
     /**

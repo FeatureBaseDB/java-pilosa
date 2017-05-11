@@ -74,8 +74,8 @@ public final class URI {
     /**
      * Creates a URI by specifying host and port but using the default scheme.
      *
-     * @param host is hostname or IP address of the Pilosa server
-     * @param port is port of the Pilosa server
+     * @param host is the hostname or IP address of the Pilosa server
+     * @param port is the port of the Pilosa server
      * @return a URI
      */
     @SuppressWarnings("WeakerAccess")

@@ -51,7 +51,7 @@ import java.util.Map;
  * You can think of a Frame as a table-like data partition within your Index.
  * Row-level attributes are namespaced at the Frame level.
  * <p>
- * Use {@link com.pilosa.client.orm.Index#frame(String)} method to create a <code>Frame</code> object.
+ * Do not create a Frame object directly. Instead, use {@link com.pilosa.client.orm.Index#frame(String)} method.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
@@ -136,7 +136,7 @@ public class Frame {
     /**
      * Creates a SetBit query.
      * <p>
-     *  SetBit, assigns a value of 1 to a bit in the binary matrix,
+     *  SetBit assigns a value of 1 to a bit in the binary matrix,
      *  thus associating the given row in the given frame with the given column.
      *
      * @param rowID    row ID
@@ -176,7 +176,7 @@ public class Frame {
     /**
      * Creates a ClearBit query.
      * <p>
-     *     ClearBit, assigns a value of 0 to a bit in the binary matrix,
+     *     ClearBit assigns a value of 0 to a bit in the binary matrix,
      *     thus disassociating the given row in the given frame from the given column.
      *
      * @param rowID    row ID
@@ -193,7 +193,7 @@ public class Frame {
     /**
      * Creates a TopN query.
      * <p>
-     *     Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * TopN return the id and count of the top n bitmaps (by count of bits) in the frame.
      *
      * @param n number of items to return
      * @return a PQL Bitmap query

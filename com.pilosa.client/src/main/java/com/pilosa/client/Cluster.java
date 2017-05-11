@@ -71,7 +71,7 @@ public final class Cluster {
     }
 
     /**
-     * Adds a host to the cluster.
+     * Adds a host to the cluster,
      *
      * @param uri Address of a Pilosa host
      */

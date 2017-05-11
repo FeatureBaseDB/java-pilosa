@@ -110,8 +110,8 @@ public class Index {
      *
      * @return batch query
      */
-    public BatchQuery batchQuery() {
-        return new BatchQuery(this);
+    public PqlBatchQuery batchQuery() {
+        return new PqlBatchQuery(this);
     }
 
     /**
@@ -127,18 +127,18 @@ public class Index {
      * @return batch query
      */
     @SuppressWarnings("WeakerAccess")
-    public BatchQuery batchQuery(int queryCount) {
-        return new BatchQuery(this, queryCount);
+    public PqlBatchQuery batchQuery(int queryCount) {
+        return new PqlBatchQuery(this, queryCount);
     }
 
     /**
      * Creates a batch query with the given queries
      *
      * @param queries the queries in the batch
-     * @return BatchQuery
+     * @return PqlBatchQuery
      */
-    public BatchQuery batchQuery(PqlQuery... queries) {
-        return new BatchQuery(this, queries);
+    public PqlBatchQuery batchQuery(PqlQuery... queries) {
+        return new PqlBatchQuery(this, queries);
     }
 
     /**
@@ -201,11 +201,10 @@ public class Index {
     /**
      * Creates a Count query.
      * <p>
-     * Returns the number of set bits in the BITMAP_CALL passed in.
+     * Count returns the number of set bits in the BITMAP_CALL passed in.
      *
      * @param bitmap the bitmap query
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 2
      * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */
     public PqlBaseQuery count(PqlBitmapQuery bitmap) {

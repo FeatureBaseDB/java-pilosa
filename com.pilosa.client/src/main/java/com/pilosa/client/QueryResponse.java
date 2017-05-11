@@ -41,6 +41,7 @@ import java.util.List;
 
 /**
  * Represents the response from a Pilosa query.
+ *
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class QueryResponse {

@@ -235,7 +235,7 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             Frame countFrame = this.index.frame("count-test");
             client.ensureFrame(countFrame);
-            BatchQuery qry = this.index.batchQuery();
+            PqlBatchQuery qry = this.index.batchQuery();
             qry.add(countFrame.setBit(10, 20));
             qry.add(countFrame.setBit(10, 21));
             qry.add(countFrame.setBit(15, 25));
@@ -393,7 +393,7 @@ public class PilosaClientIT {
             Frame frame = this.index.frame("importframe");
             client.ensureFrame(frame);
             client.importFrame(frame, iterator);
-            BatchQuery bq = index.batchQuery(
+            PqlBatchQuery bq = index.batchQuery(
                     frame.bitmap(2),
                     frame.bitmap(7),
                     frame.bitmap(10)

@@ -79,7 +79,7 @@ public class OrmTest {
 
     @Test
     public void batchTest() {
-        BatchQuery b = sampleIndex.batchQuery();
+        PqlBatchQuery b = sampleIndex.batchQuery();
         b.add(sampleFrame.bitmap(44));
         b.add(sampleFrame.bitmap(10101));
         assertEquals(
@@ -89,7 +89,7 @@ public class OrmTest {
 
     @Test
     public void batchWithCapacityTest() {
-        BatchQuery b = projectIndex.batchQuery(3);
+        PqlBatchQuery b = projectIndex.batchQuery(3);
         b.add(collabFrame.bitmap(2));
         b.add(collabFrame.setBit(20, 40));
         b.add(collabFrame.topN(2));
@@ -102,7 +102,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void batchAddFailsForDifferentDbsTest() {
-        BatchQuery b = projectIndex.batchQuery();
+        PqlBatchQuery b = projectIndex.batchQuery();
         b.add(sampleFrame.bitmap(1));
     }
 

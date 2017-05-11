@@ -43,12 +43,12 @@ import java.util.List;
  * Contains a batch of PQL queries.
  * <p>
  * Use <code>Index.batchQuery</code> method to create an instance.
- * This class is not thread-safe, do not update the same BatchQuery object in different threads.
+ * This class is not thread-safe, do not update the same PqlPqlBatchQuery object in different threads.
  * <p>
  *     Usage
  * <pre>
  * <code>
- *     Index repo = Index.withName("reposistory");
+ *     Index repo = Index.withName("repository");
  *     Frame stargazer = repo.frame("stargazer");
  *     PqlBatchQuery query = repo.batchQuery(
  *          stargazer.bitmap(5),
@@ -57,22 +57,22 @@ import java.util.List;
  * </code>
  * </pre>
  */
-public class BatchQuery implements PqlQuery {
+public class PqlBatchQuery implements PqlQuery {
     private Index index = null;
     private List<PqlQuery> queries = null;
 
     /**
-     * Creates a BatchQuery object with the given index.
+     * Creates a PqlBatchQuery object with the given index.
      *
      * @param index the index this batch query belongs to
      */
-    BatchQuery(Index index) {
+    PqlBatchQuery(Index index) {
         this.index = index;
         this.queries = new ArrayList<>();
     }
 
     /**
-     * Creates a BatchQuery object with the given index and query count.
+     * Creates a PqlBatchQuery object with the given index and query count.
      *
      * <p>
      *     If the number of queries in the batch is known beforehand, calling this constructor
@@ -83,17 +83,17 @@ public class BatchQuery implements PqlQuery {
      * @param index the index this batch query belongs to
      * @param queryCount number of queries expected in the batch
      */
-    BatchQuery(Index index, int queryCount) {
+    PqlBatchQuery(Index index, int queryCount) {
         this.index = index;
         this.queries = new ArrayList<>(queryCount);
     }
 
     /**
-     * Creates a BatchQuery object with the given index and queries
+     * Creates a PqlBatchQuery object with the given index and queries
      * @param index the index this batch query belongs to
      * @param queries queries in the batch
      */
-    BatchQuery(Index index, PqlQuery... queries) {
+    PqlBatchQuery(Index index, PqlQuery... queries) {
         this(index, queries.length);
         for (PqlQuery query : queries) {
             this.add(query);
@@ -114,7 +114,7 @@ public class BatchQuery implements PqlQuery {
      */
     public void add(PqlQuery query) {
         if (query.getIndex() != this.getIndex()) {
-            throw new PilosaException("Query index should be the same as BatchQuery index");
+            throw new PilosaException("Query index should be the same as PqlPqlBatchQuery index");
         }
         this.queries.add(query);
     }

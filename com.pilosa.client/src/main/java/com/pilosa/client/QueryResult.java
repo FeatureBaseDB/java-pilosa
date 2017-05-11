@@ -42,6 +42,7 @@ import java.util.List;
 
 /**
  * Represent one of the results in the response.
+ *
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class QueryResult {

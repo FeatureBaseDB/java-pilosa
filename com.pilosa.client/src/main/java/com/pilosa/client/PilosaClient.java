@@ -92,7 +92,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a client with the given address and options
+     * Creates a client with the given address and options.
      *
      * @param address of the Pilosa server
      * @return a PilosaClient
@@ -153,7 +153,7 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Runs the given query against the server with the given options.
      *
-     * @param query a PqlBaseQuery with its index is not null
+     * @param query a PqlQuery object with a non-null index
      * @return Pilosa response
      * @throws ValidationException if the given query's index is null
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
@@ -169,7 +169,6 @@ public class PilosaClient implements AutoCloseable {
      * Creates an index on the server using the given Index object.
      *
      * @param index index object
-     * @throws ValidationException if the passed index name is not valid
      * @throws IndexExistsException if there already is a index with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
@@ -204,7 +203,6 @@ public class PilosaClient implements AutoCloseable {
     /**
      * Creates a frame on the server using the given Frame object.
      * @param frame frame object
-     * @throws ValidationException if the passed index name or frame name is not valid
      * @throws FrameExistsException if there already is a frame with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
      */

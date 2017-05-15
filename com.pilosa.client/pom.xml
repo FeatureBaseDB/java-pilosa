@@ -225,6 +225,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/Internal.*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <!-- send coverage to coveralls.io -->

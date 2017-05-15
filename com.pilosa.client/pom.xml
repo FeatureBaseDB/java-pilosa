@@ -227,7 +227,7 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>**/Internal.*</exclude>
+                        <exclude>**/*Internal*.*</exclude>
                     </excludes>
                 </configuration>
             </plugin>

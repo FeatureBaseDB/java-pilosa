@@ -1,9 +1,11 @@
 # Java Client for Pilosa
 
 <a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.3.1-blue.svg"></a>
-<a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592000"></a>
+<a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
+<a href="https://coveralls.io/github/pilosa/java-pilosa?branch=master"><img src="https://coveralls.io/repos/github/pilosa/java-pilosa/badge.svg?branch=master" /></a>
 <a href="http://javadoc.io/doc/com.pilosa/pilosa-client"><img src="http://javadoc.io/badge/com.pilosa/pilosa-client.svg" alt="Javadocs"></a>
+
 <img src="https://www.pilosa.com/img/ee.svg" style="float: right" align="right" height="301">
 
 Java client for Pilosa high performance distributed bitmap index.
@@ -11,7 +13,7 @@ Java client for Pilosa high performance distributed bitmap index.
 ## Change Log
 
 * **v0.3.3** (2017-05-12):
-    * *Breaking Change*: Renamed `BatchQuery` renamed to `PqlBatchQuery`.
+    * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.
 
 * **v0.3.2** (2017-05-02):
     * Available on Maven Repository.

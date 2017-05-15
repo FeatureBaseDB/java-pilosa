@@ -13,7 +13,7 @@ Java client for Pilosa high performance distributed bitmap index.
 ## Change Log
 
 * **v0.3.3** (2017-05-12):
-    * *Breaking Change*: Renamed `BatchQuery` renamed to `PqlBatchQuery`.
+    * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.
 
 * **v0.3.2** (2017-05-02):
     * Available on Maven Repository.

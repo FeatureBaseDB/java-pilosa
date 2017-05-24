@@ -40,9 +40,9 @@ import java.util.regex.Pattern;
 
 public final class Validator {
     // See: https://github.com/pilosa/pilosa/issues/280
-    private final static Pattern INDEX_NAME = Pattern.compile("^[a-z0-9_-]+$");
-    private final static Pattern FRAME_NAME = Pattern.compile("^[a-z0-9][.a-z0-9_-]*$");
-    private final static Pattern LABEL = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
+    private final static Pattern INDEX_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
+    private final static Pattern FRAME_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
+    private final static Pattern LABEL = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_-]*$");
     private final static int MAX_INDEX_NAME = 64;
     private final static int MAX_FRAME_NAME = 64;
     private final static int MAX_LABEL = 64;

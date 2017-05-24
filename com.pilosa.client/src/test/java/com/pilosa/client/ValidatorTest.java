@@ -45,27 +45,27 @@ import static org.junit.Assert.fail;
 @Category(UnitTest.class)
 public class ValidatorTest {
     private final static String[] validIndexNames = new String[]{
-            "a", "ab", "ab1", "1", "_", "-", "b-c", "d_e",
+            "a", "ab", "ab1", "b-c", "d_e",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidIndexNames = new String[]{
             "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1", "1", "_", "-",
     };
     private final static String[] validFrameNames = new String[]{
-            "a", "ab", "ab1", "b-c", "d_e", "d.e", "1",
+            "a", "ab", "ab1", "b-c", "d_e",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidFrameNames = new String[]{
-            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce", "_", "-", ".data",
+            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce", "_", "-", ".data", "d.e", "1",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
     private final static String[] validLabels = new String[]{
-            "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB",
+            "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB", "b-c",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     };
     private final static String[] invalidLabels = new String[]{
-            "", "1", "_", "-", "b-c", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
+            "", "1", "_", "-", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
 

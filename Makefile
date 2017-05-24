@@ -18,3 +18,7 @@ test:
 
 test-all:
 	mvn -f com.pilosa.client/pom.xml test failsafe:integration-test
+
+cover:
+	mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report
+	@echo See ./com.pilosa.client/target/site/jacoco/index.html for the coverage report

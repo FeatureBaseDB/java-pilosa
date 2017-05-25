@@ -15,6 +15,7 @@ Java client for Pilosa high performance distributed bitmap index.
 * **v0.3.3** (2017-05-12):
     * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.
     * Updated the accepted values for index, frame names and labels to match with the Pilosa server.
+    * `Union` queries accept 0 or more arguments. `Union`, `Intersect` and `Difference` queries accept 1 or more arguments.
 
 * **v0.3.2** (2017-05-02):
     * Available on Maven Repository.

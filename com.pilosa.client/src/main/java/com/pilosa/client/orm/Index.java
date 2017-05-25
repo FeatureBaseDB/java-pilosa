@@ -174,11 +174,14 @@ public class Index {
      *
      * @param bitmaps 2 or more bitmaps to intersect
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @throws IllegalArgumentException if the number of bitmaps is less than 1
      * @see <a href="https://www.pilosa.com/docs/query-language/#intersect">Intersect Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery intersect(PqlBitmapQuery... bitmaps) {
+        if (bitmaps.length < 1) {
+            throw new IllegalArgumentException("Intersect operation requires at least 1 bitmap");
+        }
         return bitmapOperation("Intersect", bitmaps);
     }
 
@@ -190,11 +193,14 @@ public class Index {
      *
      * @param bitmaps 2 or more bitmaps to differentiate
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @throws IllegalArgumentException if the number of bitmaps is less than 1
      * @see <a href="https://www.pilosa.com/docs/query-language/#difference">Difference Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery difference(PqlBitmapQuery... bitmaps) {
+        if (bitmaps.length < 1) {
+            throw new IllegalArgumentException("Difference operation requires at least 1 bitmap");
+        }
         return bitmapOperation("Difference", bitmaps);
     }
 
@@ -244,8 +250,8 @@ public class Index {
     }
 
     private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery... bitmaps) {
-        if (bitmaps.length < 2) {
-            throw new IllegalArgumentException(String.format("%s operation requires at least 2 bitmaps", name));
+        if (bitmaps.length == 0) {
+            return pqlBitmapQuery(String.format("%s()", name));
         }
         StringBuilder builder = new StringBuilder(bitmaps.length - 1);
         builder.append(bitmaps[0].serialize());

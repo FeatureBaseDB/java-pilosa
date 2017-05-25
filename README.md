@@ -167,9 +167,9 @@ Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details
 
 Index:
 
-* `PqlQuery union(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
-* `PqlQuery intersect(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
-* `PqlQuery difference(PqlBitmapQuery bitmapQuery1, PqlBitmapQuery bitmapQuery2, ...)`
+* `PqlQuery union(PqlBitmapQueries...)`
+* `PqlQuery intersect(PqlBitmapQueries...)`
+* `PqlQuery difference(PqlBitmapQueries...)`
 * `PqlQuery count(PqlBitmapQuery bitmap)`
 * `PqlQuery setColumnAttrs(long id, Map<String, Object> attributes)`
 

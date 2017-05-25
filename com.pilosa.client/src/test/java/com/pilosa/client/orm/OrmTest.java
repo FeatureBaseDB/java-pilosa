@@ -193,6 +193,18 @@ public class OrmTest {
     }
 
     @Test
+    public void union0Test() {
+        PqlBitmapQuery q = sampleIndex.union();
+        assertEquals("Union()", q.serialize());
+    }
+
+    @Test
+    public void union1Test() {
+        PqlBitmapQuery q = sampleIndex.union(sampleFrame.bitmap(10));
+        assertEquals("Union(Bitmap(rowID=10, frame='sample-frame'))", q.serialize());
+    }
+
+    @Test
     public void intersectTest() {
         PqlBitmapQuery b1 = sampleFrame.bitmap(10);
         PqlBitmapQuery b2 = sampleFrame.bitmap(20);

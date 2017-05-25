@@ -54,8 +54,8 @@ public class IndexTest {
     @Test
     public void checkUnionArgumentCountEnforced()
             throws NoSuchMethodException, IllegalAccessException {
-        assertEquals(true, checkArguments("union", 0));
-        assertEquals(true, checkArguments("union", 1));
+        assertEquals(false, checkArguments("union", 0));
+        assertEquals(false, checkArguments("union", 1));
         assertEquals(false, checkArguments("union", 2));
     }
 
@@ -63,7 +63,7 @@ public class IndexTest {
     public void checkIntersectArgumentCountEnforced()
             throws NoSuchMethodException, IllegalAccessException {
         assertEquals(true, checkArguments("intersect", 0));
-        assertEquals(true, checkArguments("intersect", 1));
+        assertEquals(false, checkArguments("intersect", 1));
         assertEquals(false, checkArguments("intersect", 2));
     }
 
@@ -71,7 +71,7 @@ public class IndexTest {
     public void checkDifferenceArgumentCountEnforced()
             throws NoSuchMethodException, IllegalAccessException {
         assertEquals(true, checkArguments("difference", 0));
-        assertEquals(true, checkArguments("difference", 1));
+        assertEquals(false, checkArguments("difference", 1));
         assertEquals(false, checkArguments("difference", 2));
     }
 

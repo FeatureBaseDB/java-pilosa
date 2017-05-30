@@ -148,7 +148,7 @@ PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(
 PqlQuery query = repository.union(bitmapQuery1, bitmapQuery2);
 ```
 
-In order to increase througput, you may want to batch queries sent to the Pilosa server. The `index.batchQuery` method is used for that purpose:
+In order to increase throughput, you may want to batch queries sent to the Pilosa server. The `index.batchQuery` method is used for that purpose:
 
 ```java
 PqlQuery query = repository.batchQuery(
@@ -319,7 +319,7 @@ if (column != null) {
 }
 
 // iterate over all columns
-for (OlumnItem column : response.getColumns()) {
+for (ColumnItem column : response.getColumns()) {
     // act on the column
 }
 ```

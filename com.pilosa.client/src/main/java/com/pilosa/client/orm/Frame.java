@@ -337,8 +337,6 @@ public class Frame {
      * <p>
      * Similar to Bitmap, but only returns bits which were set with timestamps
      * between the given start and end timestamps.
-     * <p>
-     * This variant sets inverse=true
      *
      * @param columnID bitmap ID
      * @param start start timestamp

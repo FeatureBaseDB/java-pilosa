@@ -193,23 +193,38 @@ public class Frame {
     /**
      * Creates a TopN query.
      * <p>
-     * TopN return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * TopN returns the id and count of the top n bitmaps (by count of bits) in the frame.
      *
      * @param n number of items to return
      * @return a PQL Bitmap query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     public PqlBitmapQuery topN(long n) {
-        String s = String.format("TopN(frame='%s', n=%d)", this.name, n);
+        String s = String.format("TopN(frame='%s', n=%d, inverse=false)", this.name, n);
         return this.index.pqlBitmapQuery(s);
     }
 
     /**
      * Creates a TopN query.
      * <p>
-     *     Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * TopN returns the id and count of the top n bitmaps (by count of bits) in the frame.
+     * This variant sets inverse=true
+     *
+     * @param n number of items to return
+     * @return a PQL Bitmap query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
+     */
+    public PqlBitmapQuery inverseTopN(long n) {
+        String s = String.format("TopN(frame='%s', n=%d, inverse=true)", this.name, n);
+        return this.index.pqlBitmapQuery(s);
+    }
+
+    /**
+     * Creates a TopN query.
      * <p>
-     *     This variant supports customizing the bitmap query.
+     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * <p>
+     * This variant supports customizing the bitmap query.
      *
      * @param n      number of items to return
      * @param bitmap the bitmap query
@@ -218,7 +233,26 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
-        String s = String.format("TopN(%s, frame='%s', n=%d)",
+        String s = String.format("TopN(%s, frame='%s', n=%d, inverse=false)",
+                bitmap.serialize(), this.name, n);
+        return this.index.pqlBitmapQuery(s);
+    }
+
+    /**
+     * Creates a TopN query.
+     * <p>
+     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * <p>
+     * This variant supports customizing the bitmap query and sets inverse=true
+     *
+     * @param n      number of items to return
+     * @param bitmap the bitmap query
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap) {
+        String s = String.format("TopN(%s, frame='%s', n=%d, inverse=true)",
                 bitmap.serialize(), this.name, n);
         return this.index.pqlBitmapQuery(s);
     }
@@ -240,12 +274,39 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
+        return _topN(n, bitmap, false, field, values);
+    }
+
+    /**
+     * Creates a TopN query.
+     * <p>
+     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * The field and filters arguments work together to only return Bitmaps
+     * which have the attribute specified by field with one of the values specified
+     * in filters.
+     * <p>
+     * This variant supports customizing the bitmap query and sets inverse=true
+     *
+     * @param n      number of items to return
+     * @param bitmap the bitmap query
+     * @param field  field name
+     * @param values filter values to be matched against the field
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
+        return _topN(n, bitmap, true, field, values);
+    }
+
+    private PqlBitmapQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object... values) {
         // TOOD: make field use its own validator
         Validator.ensureValidLabel(field);
         try {
             String valuesString = this.mapper.writeValueAsString(values);
-            String s = String.format("TopN(%s, frame='%s', n=%d, field='%s', %s)",
-                    bitmap.serialize(), this.name, n, field, valuesString);
+            String inverseString = inverse ? "true" : "false";
+            String s = String.format("TopN(%s, frame='%s', n=%d, inverse=%s, field='%s', %s)",
+                    bitmap.serialize(), this.name, n, inverseString, field, valuesString);
             return this.index.pqlBitmapQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
@@ -266,7 +327,28 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s', inverse=false)",
+                this.rowLabel, rowID, this.name, fmtDate.format(start),
+                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
+    }
+
+    /**
+     * Creates a Range query.
+     * <p>
+     * Similar to Bitmap, but only returns bits which were set with timestamps
+     * between the given start and end timestamps.
+     * <p>
+     * This variant sets inverse=true
+     *
+     * @param rowID bitmap ID
+     * @param start start timestamp
+     * @param end   end timestamp
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBitmapQuery inverseRange(long rowID, Date start, Date end) {
+        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s', inverse=true)",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }

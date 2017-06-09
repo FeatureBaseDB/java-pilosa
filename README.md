@@ -1,7 +1,7 @@
 # Java Client for Pilosa
 
-<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.3.2-blue.svg"></a>
-<a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592000"></a>
+<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.4.0-blue.svg"></a>
+<a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592"></a>
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 <a href="https://coveralls.io/github/pilosa/java-pilosa?branch=master"><img src="https://coveralls.io/repos/github/pilosa/java-pilosa/badge.svg?branch=master" /></a>
 <a href="http://javadoc.io/doc/com.pilosa/pilosa-client"><img src="http://javadoc.io/badge/com.pilosa/pilosa-client.svg" alt="Javadocs"></a>
@@ -12,10 +12,13 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **v0.3.3** (2017-05-12):
+* **v0.4.0** (2017-06-09):
+    * Supports Pilosa Server v0.4.0.
     * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.
     * Updated the accepted values for index, frame names and labels to match with the Pilosa server.
     * `Union` queries accept 0 or more arguments. `Intersect` and `Difference` queries accept 1 or more arguments.
+    * Added `inverse TopN` and `inverse Range` calls.
+    * Inverse enabled status of frames is not checked on the client side.
 
 * **v0.3.2** (2017-05-02):
     * Available on Maven Repository.

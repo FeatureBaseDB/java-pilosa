@@ -319,6 +319,29 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void testTopN() throws IOException, InterruptedException {
+        try (PilosaClient client = getClient()) {
+            client.ensureFrame(this.frame);
+            Frame frame = this.index.frame("topn_test");
+            client.query(this.index.batchQuery(
+                    frame.setBit(10, 5),
+                    frame.setBit(10, 10),
+                    frame.setBit(10, 15),
+                    frame.setBit(20, 5),
+                    frame.setBit(30, 5)
+            ));
+            // XXX: The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
+            Thread.sleep(10000);
+            QueryResponse response = client.query(frame.topN(2));
+            List<CountResultItem> items = response.getResult().getCountItems();
+            assertEquals(2, items.size());
+            CountResultItem item = items.get(0);
+            assertEquals(10, item.getID());
+            assertEquals(3, item.getCount());
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void queryFailsWithError() throws IOException {
         try (PilosaClient client = getClient()) {

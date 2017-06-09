@@ -327,7 +327,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s', inverse=false)",
+        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 this.rowLabel, rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -340,16 +340,16 @@ public class Frame {
      * <p>
      * This variant sets inverse=true
      *
-     * @param rowID bitmap ID
+     * @param columnID bitmap ID
      * @param start start timestamp
      * @param end   end timestamp
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery inverseRange(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s', inverse=true)",
-                this.rowLabel, rowID, this.name, fmtDate.format(start),
+    public PqlBitmapQuery inverseRange(long columnID, Date start, Date end) {
+        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
+                this.columnLabel, columnID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 

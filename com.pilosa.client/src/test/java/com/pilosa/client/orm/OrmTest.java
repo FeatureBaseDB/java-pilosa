@@ -306,11 +306,11 @@ public class OrmTest {
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
         PqlBaseQuery q = collabFrame.range(10, start.getTime(), end.getTime());
         assertEquals(
-                "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04', inverse=false)",
+                "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
         q = collabFrame.inverseRange(10, start.getTime(), end.getTime());
         assertEquals(
-                "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04', inverse=true)",
+                "Range(user=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
     }
 

@@ -96,7 +96,7 @@ public class OrmTest {
         assertEquals(
                 "Bitmap(project=2, frame='collaboration')" +
                         "SetBit(project=20, frame='collaboration', user=40)" +
-                        "TopN(frame='collaboration', n=2)",
+                        "TopN(frame='collaboration', n=2, inverse=false)",
                 b.serialize());
     }
 
@@ -263,18 +263,32 @@ public class OrmTest {
     public void topNTest() {
         PqlQuery q1 = sampleFrame.topN(27);
         assertEquals(
-                "TopN(frame='sample-frame', n=27)",
+                "TopN(frame='sample-frame', n=27, inverse=false)",
+                q1.serialize());
+
+        q1 = sampleFrame.inverseTopN(27);
+        assertEquals(
+                "TopN(frame='sample-frame', n=27, inverse=true)",
                 q1.serialize());
 
         PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
-                "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10)",
+                "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10, inverse=false)",
+                q2.serialize());
+
+        q2 = sampleFrame.inverseTopN(10, collabFrame.bitmap(3));
+        assertEquals(
+                "TopN(Bitmap(project=3, frame='collaboration'), frame='sample-frame', n=10, inverse=true)",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
-
         assertEquals(
-                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, field='category', [80,81])",
+                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=false, field='category', [80,81])",
+                q3.serialize());
+
+        q3 = sampleFrame.inverseTopN(12, collabFrame.bitmap(7), "category", 80, 81);
+        assertEquals(
+                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=true, field='category', [80,81])",
                 q3.serialize());
     }
 
@@ -293,6 +307,10 @@ public class OrmTest {
         PqlBaseQuery q = collabFrame.range(10, start.getTime(), end.getTime());
         assertEquals(
                 "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                q.serialize());
+        q = collabFrame.inverseRange(10, start.getTime(), end.getTime());
+        assertEquals(
+                "Range(user=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
     }
 

@@ -41,7 +41,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>0.3.2</version>
+        <version>0.4.0</version>
     </dependency>
 </dependencies>
 ```

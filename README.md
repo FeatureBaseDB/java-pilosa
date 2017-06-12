@@ -179,12 +179,17 @@ Index:
 Frame:
 
 * `PqlBitmapQuery bitmap(long rowID)`
+* `PqlBitmapQuery inverseBitmap(long columnID)`
 * `PqlQuery setBit(long rowID, long columnID)`
 * `PqlQuery clearBit(long rowID, long columnID)`
 * `PqlBitmapQuery topN(long n)`
+* `PqlBitmapQuery inverseTopN(long n)`
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap)`
+* `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap)`
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
+* `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
 * `PqlBitmapQuery range(long rowID, Date start, Date end)`
+* `PqlBitmapQuery inverseRange(long columnID, Date start, Date end)`
 * `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
 
 ### Pilosa URI

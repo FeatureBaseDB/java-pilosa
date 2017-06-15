@@ -22,3 +22,6 @@ test-all:
 cover:
 	mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report
 	@echo See ./com.pilosa.client/target/site/jacoco/index.html for the coverage report
+
+release:
+	mvn -f com.pilosa.client/pom.xml clean deploy -P release

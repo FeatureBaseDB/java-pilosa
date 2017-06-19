@@ -456,7 +456,7 @@ public class PilosaClient implements AutoCloseable {
 
     List<FragmentNode> fetchFrameNodes(String indexName, long slice) {
         String addr = this.getAddress();
-        String uri = String.format("%s/fragment/nodes?db=%s&slice=%d", addr, indexName, slice);
+        String uri = String.format("%s/fragment/nodes?index=%s&slice=%d", addr, indexName, slice);
         HttpGet httpGet = new HttpGet(uri);
         try {
             CloseableHttpResponse response = clientExecute(httpGet, "Error while fetching fragment nodes",

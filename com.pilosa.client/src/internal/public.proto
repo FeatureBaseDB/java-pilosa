@@ -16,8 +16,8 @@ message Pair {
 }
 
 message Bit {
-    uint64 RowID = 1;
-    uint64 ColumnID = 2;
+	uint64 RowID = 1;
+	uint64 ColumnID = 2;
 	int64 Timestamp = 3;
 }
 
@@ -30,7 +30,7 @@ message Attr {
 	string Key = 1;
 	uint64 Type = 2;
 	string StringValue = 3;
-    int64 IntValue = 4;
+	int64 IntValue = 4;
 	bool BoolValue = 5;
 	double FloatValue = 6;
 }
@@ -40,17 +40,17 @@ message AttrMap {
 }
 
 message QueryRequest {
-    string Query = 1;
-    repeated uint64 Slices = 2;
-    bool ColumnAttrs = 3;
-    string Quantum = 4;
-    bool Remote = 5;
+	string Query = 1;
+	repeated uint64 Slices = 2;
+	bool ColumnAttrs = 3;
+	string Quantum = 4;
+	bool Remote = 5;
 }
 
 message QueryResponse {
 	string Err = 1;
 	repeated QueryResult Results = 2;
-    repeated ColumnAttrSet ColumnAttrSets = 3;
+	repeated ColumnAttrSet ColumnAttrSets = 3;
 }
 
 message QueryResult {
@@ -61,10 +61,10 @@ message QueryResult {
 }
 
 message ImportRequest {
-	string DB = 1;
+	string Index = 1;
 	string Frame = 2;
 	uint64 Slice = 3;
-    repeated uint64 RowIDs = 4;
-    repeated uint64 ColumnIDs = 5;
+	repeated uint64 RowIDs = 4;
+	repeated uint64 ColumnIDs = 5;
 	repeated int64 Timestamps = 6;
 }

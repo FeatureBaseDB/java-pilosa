@@ -496,7 +496,7 @@ public class PilosaClient implements AutoCloseable {
             timestamps.add(bit.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
-                .setDB(indexName)
+                .setIndex(indexName)
                 .setFrame(frameName)
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)

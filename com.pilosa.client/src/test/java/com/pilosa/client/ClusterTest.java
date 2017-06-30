@@ -59,6 +59,8 @@ public class ClusterTest {
         target.add(URI.address("http://localhost:3000"));
         Cluster c = Cluster.defaultCluster();
         c.addHost(URI.address("http://localhost:3000"));
+        // adding the same host again...
+        c.addHost(URI.address("http://localhost:3000"));
         assertEquals(target, c.getHosts());
 
         target = new ArrayList<>(2);
@@ -84,11 +86,26 @@ public class ClusterTest {
         URI addr = c.getHost();
         assertEquals(target1, addr);
         addr = c.getHost();
-        assertEquals(target2, addr);
+        assertEquals(target1, addr);
         c.getHost();
         c.removeHost(URI.address("db1.pilosa.com"));
         addr = c.getHost();
         assertEquals(target2, addr);
+    }
+
+    @Test
+    public void testClusterReset() {
+        Cluster c = Cluster.withHost(URI.address("db1.pilosa.com"), URI.address("db2.pilosa.com"));
+        List<URI> target1 = new ArrayList<>(2);
+        target1.add(URI.address("db1.pilosa.com"));
+        target1.add(URI.address("db2.pilosa.com"));
+        assertEquals(target1, c.getHosts());
+        c.removeHost(URI.address("db1.pilosa.com"));
+        c.removeHost(URI.address("db2.pilosa.com"));
+        List<URI> target2 = new ArrayList<>();
+        assertEquals(target2, c.getHosts());
+        c.reset();
+        assertEquals(target1, c.getHosts());
     }
 
     @Test(expected = PilosaException.class)

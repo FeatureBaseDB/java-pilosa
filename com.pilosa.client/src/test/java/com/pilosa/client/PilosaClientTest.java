@@ -98,4 +98,10 @@ public class PilosaClientTest {
         assertEquals(true, frameInfo.isInverseEnabled());
         assertEquals(TimeQuantum.YEAR_MONTH_DAY, frameInfo.getTimeQuantum());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidMethodTest() {
+        PilosaClient client = PilosaClient.defaultClient();
+        client.makeRequest("INVALID", "/foo", null);
+    }
 }

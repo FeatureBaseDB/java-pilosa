@@ -367,7 +367,7 @@ public class PilosaClient implements AutoCloseable {
             connect();
         }
         CloseableHttpResponse response = null;
-        // try at most 10 non-failed hosts; protect against broken cluster.removeHost
+        // try at most MAX_HOSTS non-failed hosts; protect against broken cluster.removeHost
         for (int i = 0; i < MAX_HOSTS; i++) {
             HttpRequestBase request = makeRequest(method, path, data);
             logger.debug("Request: {} {}", request.getMethod(), request.getURI());
@@ -419,7 +419,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data) {
+    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data) {
         HttpRequestBase request;
         String uri = this.getAddress() + path;
         switch (method) {

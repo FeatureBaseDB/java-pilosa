@@ -59,6 +59,8 @@ public class ClusterTest {
         target.add(URI.address("http://localhost:3000"));
         Cluster c = Cluster.defaultCluster();
         c.addHost(URI.address("http://localhost:3000"));
+        // adding the same host again...
+        c.addHost(URI.address("http://localhost:3000"));
         assertEquals(target, c.getHosts());
 
         target = new ArrayList<>(2);

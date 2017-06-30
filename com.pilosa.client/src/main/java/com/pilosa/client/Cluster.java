@@ -71,52 +71,75 @@ public final class Cluster {
     }
 
     /**
-     * Adds a host to the cluster,
+     * Makes a host available.
      *
      * @param uri Address of a Pilosa host
      */
     @SuppressWarnings("WeakerAccess")
     public synchronized void addHost(URI uri) {
-        this.hosts.add(uri);
+        int index = this.hosts.indexOf(uri);
+        if (index >= 0) {
+            this.okList.set(index, true);
+        } else {
+            this.hosts.add(uri);
+            this.okList.add(true);
+        }
     }
 
     /**
-     * Removes the host with the given URI from the cluster.
+     * Makes a host unavailable.
      *
      * @param uri of the host to be removed
      */
     @SuppressWarnings("WeakerAccess")
     public synchronized void removeHost(URI uri) {
-        this.hosts.remove(uri);
+        int index = this.hosts.indexOf(uri);
+        if (index >= 0) {
+            this.okList.set(index, false);
+        }
     }
 
     /**
-     * Returns the next host in the cluster.
+     * Returns the first available host in the cluster.
      *
-     * @return next host
+     * @return host
      */
     @SuppressWarnings("WeakerAccess")
     public synchronized URI getHost() {
-        if (this.hosts.size() == 0) {
+        int index = this.okList.indexOf(true);
+        if (index < 0) {
             throw new PilosaException("There are no available hosts");
         }
-        URI nextHost = this.hosts.get(this.nextIndex % this.hosts.size());
-        this.nextIndex = (this.nextIndex + 1) % this.hosts.size();
-        return nextHost;
+        return this.hosts.get(index);
     }
 
     /**
-     * Returns all hosts in the cluster.
+     * Returns available hosts in the cluster.
      *
-     * @return all hosts
+     * @return available hosts
      */
     List<URI> getHosts() {
-        return this.hosts;
+        List<URI> hosts = new ArrayList<>();
+        for (int i = 0; i < this.okList.size(); i++) {
+            if (this.okList.get(i)) {
+                hosts.add(this.hosts.get(i));
+            }
+        }
+        return hosts;
+    }
+
+    /**
+     * Reset host blacklist
+     */
+    void reset() {
+        for (int i = 0; i < this.okList.size(); i++) {
+            this.okList.set(i, true);
+        }
     }
 
     private Cluster() {
     }
 
     private List<URI> hosts = new ArrayList<>();
-    private int nextIndex = 0;
+    private List<Boolean> okList = new ArrayList<>();
 }

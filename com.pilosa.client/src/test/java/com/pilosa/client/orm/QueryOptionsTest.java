@@ -35,7 +35,6 @@
 package com.pilosa.client.orm;
 
 import com.pilosa.client.QueryOptions;
-import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,9 +47,7 @@ public class QueryOptionsTest {
     public void testCreateQueryOptions() {
         QueryOptions options = QueryOptions.builder()
                 .setColumns(true)
-                .setTimeQuantum(TimeQuantum.DAY_HOUR)
                 .build();
         assertEquals(true, options.isColumns());
-        assertEquals(TimeQuantum.DAY_HOUR, options.getTimeQuantum());
     }
 }

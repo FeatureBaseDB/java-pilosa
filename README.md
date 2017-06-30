@@ -12,6 +12,9 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
+* **Next**:
+    * *Breaking Change*: Removed `timeQuantum` query option.
+
 * **v0.4.0** (2017-06-09):
     * Supports Pilosa Server v0.4.0.
     * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.

@@ -74,11 +74,11 @@ public class PilosaClientIT {
     public void setUp() throws IOException {
         this.index = Index.withName(getRandomIndexName());
         try (PilosaClient client = getClient()) {
-//            client.createIndex(this.index);
-//            client.createFrame(this.index.frame("another-frame"));
-//            client.createFrame(this.index.frame("test"));
-//            client.createFrame(this.index.frame("count-test"));
-//            client.createFrame(this.index.frame("topn_test"));
+            client.createIndex(this.index);
+            client.createFrame(this.index.frame("another-frame"));
+            client.createFrame(this.index.frame("test"));
+            client.createFrame(this.index.frame("count-test"));
+            client.createFrame(this.index.frame("topn_test"));
 
             IndexOptions indexOptions = IndexOptions.builder()
                     .setColumnLabel("user")

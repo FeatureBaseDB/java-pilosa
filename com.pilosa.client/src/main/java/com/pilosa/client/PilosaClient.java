@@ -371,9 +371,9 @@ public class PilosaClient implements AutoCloseable {
         for (int i = 0; i < MAX_HOSTS; i++) {
             HttpRequestBase request = makeRequest(method, path, data);
             logger.debug("Request: {} {}", request.getMethod(), request.getURI());
-            System.out.println(String.format("Request: %s %s", request.getMethod(), request.getURI()));
             try {
                 response = client.execute(request);
+                break;
             } catch (IOException ex) {
                 this.cluster.removeHost(this.currentAddress);
                 logger.warn("Removed {} from the cluster due to {}", this.currentAddress, ex);

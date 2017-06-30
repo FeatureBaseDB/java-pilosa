@@ -108,6 +108,7 @@ public final class Cluster {
     public synchronized URI getHost() {
         int index = this.okList.indexOf(true);
         if (index < 0) {
+            reset();
             throw new PilosaException("There are no available hosts");
         }
         return this.hosts.get(index);
@@ -128,9 +129,6 @@ public final class Cluster {
         return hosts;
     }
 
-    /**
-     * Reset host blacklist
-     */
     void reset() {
         for (int i = 0; i < this.okList.size(); i++) {
             this.okList.set(i, true);

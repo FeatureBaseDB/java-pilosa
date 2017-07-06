@@ -108,7 +108,7 @@ public class IndexOptionsTest {
                 .setColumnLabel("COLID")
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH)
                 .build();
-        String target = "{\"options\":{\"columnLabel\":\"COLID\", \"time_quantum\":\"YM\"}}";
+        String target = "{\"options\":{\"columnLabel\":\"COLID\", \"timeQuantum\":\"YM\"}}";
         assertEquals(target, options.toString());
     }
 

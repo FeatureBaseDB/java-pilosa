@@ -102,6 +102,16 @@ public class IndexOptionsTest {
         assertEquals(options1.hashCode(), options2.hashCode());
     }
 
+    @Test
+    public void testIndexOptionsToString() {
+        IndexOptions options = IndexOptions.builder()
+                .setColumnLabel("COLID")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        String target = "{\"options\":{\"columnLabel\":\"COLID\", \"time_quantum\":\"YM\"}}";
+        assertEquals(target, options.toString());
+    }
+
     private void compare(IndexOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {
         assertEquals(targetColumnLabel, options.getColumnLabel());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());

@@ -129,8 +129,8 @@ public final class IndexOptions {
 
     @Override
     public String toString() {
-        return String.format("{\"options\":{\"columnLabel\":\"%s\"}}",
-                this.columnLabel);
+        return String.format("{\"options\":{\"columnLabel\":\"%s\", \"time_quantum\":\"%s\"}}",
+                this.columnLabel, this.timeQuantum);
     }
 
     @Override

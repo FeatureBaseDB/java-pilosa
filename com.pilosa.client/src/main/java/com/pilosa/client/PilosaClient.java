@@ -41,6 +41,10 @@ import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
+import com.pilosa.client.orm.Schema;
+import com.pilosa.client.status.FrameInfo;
+import com.pilosa.client.status.IndexInfo;
+import com.pilosa.client.status.NodeInfo;
 import com.pilosa.client.status.StatusInfo;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -328,6 +332,66 @@ public class PilosaClient implements AutoCloseable {
             }
         } catch (IOException ex) {
             throw new PilosaException("Error while reading response", ex);
+        }
+    }
+
+    /**
+     * Returns the indexes and frames on the server.
+     *
+     * @return server-side schema
+     */
+    public Schema readSchema() {
+        Schema result = Schema.defaultSchema();
+        StatusInfo status = readStatus();
+        for (NodeInfo nodeInfo : status.getNodes()) {
+            for (IndexInfo indexInfo : nodeInfo.getIndexes()) {
+                Index index = result.index(indexInfo.getName(), indexInfo.getOptions());
+                for (FrameInfo frameInfo : indexInfo.getFrames()) {
+                    index.frame(frameInfo.getName(), frameInfo.getOptions());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Updates a schema with the indexes and frames on the server and
+     * creates the indexes and frames in the schema on the server side.
+     * <p>
+     * This function does not delete indexes and the frames on the server side nor in the schema.
+     * </p>
+     *
+     * @param schema local schema to be synced
+     */
+    public void syncSchema(Schema schema) {
+        Schema serverSchema = readSchema();
+
+        // find out local - remote schema
+        Schema diffSchema = schema.diff(serverSchema);
+        // create the indexes and frames which doesn't exist on the server side
+        for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
+            Index index = indexEntry.getValue();
+            if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
+                ensureIndex(index);
+            }
+            for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {
+                this.ensureFrame(frameEntry.getValue());
+            }
+        }
+
+        // find out remote - local schema
+        diffSchema = serverSchema.diff(schema);
+        for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
+            String indexName = indexEntry.getKey();
+            Index index = indexEntry.getValue();
+            if (!schema.getIndexes().containsKey(indexName)) {
+                schema.index(index);
+            } else {
+                Index localIndex = schema.getIndexes().get(indexName);
+                for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {
+                    localIndex.frame(frameEntry.getValue());
+                }
+            }
         }
     }
 

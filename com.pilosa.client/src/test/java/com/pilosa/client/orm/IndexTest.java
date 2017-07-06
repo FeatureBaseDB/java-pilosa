@@ -34,8 +34,10 @@
 
 package com.pilosa.client.orm;
 
+import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.ValidationException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,9 +45,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @Category(UnitTest.class)
 public class IndexTest {
+    @Before
+    public void setUp() {
+        this.schema = Schema.defaultSchema();
+    }
+
     @Test(expected = ValidationException.class)
     public void checkValidatorWasCalledTest() {
         Index.withName("a:b");
@@ -75,6 +83,34 @@ public class IndexTest {
         assertEquals(false, checkArguments("difference", 2));
     }
 
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = this.schema.index("foo").equals("foo");
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        Index index = this.schema.index("some-index");
+        assertEquals(index, index);
+    }
+
+    @Test
+    public void testHashCode() {
+        IndexOptions options1 = IndexOptions.builder()
+                .setColumnLabel("col")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        IndexOptions options2 = IndexOptions.builder()
+                .setColumnLabel("col")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        Index index1 = this.schema.index("foo", options1);
+        Index index2 = Index.withName("foo", options2);
+        assertEquals(index1.hashCode(), index2.hashCode());
+    }
+
     private boolean checkArguments(String methodName, int count)
             throws NoSuchMethodException, IllegalAccessException {
         Index index = Index.withName("my-index");
@@ -97,4 +133,6 @@ public class IndexTest {
         }
         return false;
     }
+
+    private Schema schema;
 }

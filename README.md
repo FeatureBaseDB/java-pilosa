@@ -14,7 +14,14 @@ Java client for Pilosa high performance distributed bitmap index.
 
 * **Next**:
     * *Breaking Change*: Removed `timeQuantum` query option.
-
+    * Failover for connection errors.    
+    * More logging.
+    * Uses slf4j instead of log4j for logging.
+    * Introduced schemas. No need to re-define already existing indexes and frames.
+    * * *Breaking Change*: Removed `timeQuantum` query option.
+    * **Deprecation** `Index.withName` constructor. Use `schema.index` instead.
+    * **Deprecation** `client.createIndex`, `client.createFrame`, `client.ensureIndex`, `client.ensureFrame`. Use schemas and `client.syncSchema` instead.
+    
 * **v0.4.0** (2017-06-09):
     * Supports Pilosa Server v0.4.0.
     * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.
@@ -59,17 +66,17 @@ Assuming [Pilosa](https://github.com/pilosa/pilosa) server is running at `localh
 // Create the default client
 PilosaClient client = PilosaClient.defaultClient();
 
-// Create an Index object
-Index myindex = Index.withName("myindex");
+// Retrieve the schema
+Schema schema = client.readSchema();
 
-// Make sure the index exists on the server
-client.ensureIndex(myindex);
+// Create an Index object
+Index myindex = schema.index("myindex");
 
 // Create a Frame object
 Frame myframe = myindex.frame("myframe");
 
-// Make sure the frame exists on the server
-client.ensureFrame(myframe);
+// make sure the index and frame exists on the server
+client.syncSchema(schema);
 
 // Send a SetBit query. PilosaException is thrown if execution of the query fails.
 client.query(myframe.setBit(5, 42));
@@ -104,13 +111,14 @@ for (Object result : response.getResults()) {
 
 *Index* and *frame*s are the main data models of Pilosa. You can check the [Pilosa documentation](https://www.pilosa.com/docs) for more detail about the data model.
 
-`Index.withName` class method is used to create an index object. Note that this does not create a index on the server; the index object simply defines the schema.
+`Schema.index` method is used to create an index object. Note that this does not create a index on the server; the index object simply defines the schema.
 
 ```java
-Index repository = Index.withName("repository");
+Schema schema = Schema.defaultSchema();
+Index repository = schema.index("repository");
 ```
 
-Indexes support changing the column label and time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Index.withName`:
+Indexes support changing the column label and time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Schema.index`:
 
 ```java
 IndexOptions options = IndexOptions.builder()
@@ -118,7 +126,7 @@ IndexOptions options = IndexOptions.builder()
     .setTimeQuantum(TimeQuantum.YEAR_MONTH)
     .build();
 
-Index repository = Index.withName("repository", options);
+Index repository = schema.index("repository", options);
 ```
 
 Frames are created with a call to `Index.frame` method:
@@ -274,14 +282,9 @@ Once you create a client, you can create indexes, frames and start sending queri
 Here is how you would create a index and frame:
 
 ```java
-// materialize repository index instance initialized before
-client.createIndex(repository);
-
-// materialize stargazer frame instance initialized before
-client.createFrame(stargazer);
+// materialize repository index and stargazer frame instances initialized before
+client.syncSchema(schema);
 ```
-
-If the index or frame exists on the server, you will receive a `PilosaException`. You can use `ensureIndex` and `ensureFrame` methods to ignore existing indexes and frames.
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 

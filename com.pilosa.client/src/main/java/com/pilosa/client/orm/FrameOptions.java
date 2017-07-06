@@ -36,6 +36,7 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.Validator;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Contains options to customize {@link Frame} objects and frame queries.
@@ -203,6 +204,33 @@ public final class FrameOptions {
         }
         builder.append("}}");
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FrameOptions)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        FrameOptions rhs = (FrameOptions) obj;
+        return rhs.rowLabel.equals(this.rowLabel) &&
+                rhs.timeQuantum.equals(this.timeQuantum) &&
+                rhs.inverseEnabled == this.inverseEnabled &&
+                rhs.cacheType.equals(this.cacheType) &&
+                rhs.cacheSize == this.cacheSize;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.rowLabel)
+                .append(this.timeQuantum)
+                .append(this.inverseEnabled)
+                .append(this.cacheType)
+                .append(this.cacheSize)
+                .toHashCode();
     }
 
     private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum,

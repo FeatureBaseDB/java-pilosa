@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.ValidationException;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -373,6 +374,27 @@ public class Frame {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
         return this.index.pqlQuery(String.format("SetRowAttrs(%s=%d, frame='%s', %s)",
                 this.rowLabel, rowID, this.name, attributesString));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Frame)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        Frame rhs = (Frame) obj;
+        return rhs.index.getName().equals(this.index.getName()) &&
+                rhs.options.equals(this.options);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.index.getName())
+                .append(this.options)
+                .toHashCode();
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

@@ -65,6 +65,7 @@ import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
+    private Schema schema;
     private Index colIndex;
     private Index index;
     private Frame frame;
@@ -72,7 +73,8 @@ public class PilosaClientIT {
 
     @Before
     public void setUp() throws IOException {
-        this.index = Index.withName(getRandomIndexName());
+        this.schema = Schema.defaultSchema();
+        this.index = schema.index(getRandomIndexName());
         try (PilosaClient client = getClient()) {
             client.createIndex(this.index);
             client.createFrame(this.index.frame("another-frame"));
@@ -83,7 +85,7 @@ public class PilosaClientIT {
             IndexOptions indexOptions = IndexOptions.builder()
                     .setColumnLabel("user")
                     .build();
-            this.colIndex = Index.withName(this.index.getName() + "-opts", indexOptions);
+            this.colIndex = schema.index(this.index.getName() + "-opts", indexOptions);
             client.createIndex(this.colIndex);
 
             FrameOptions frameOptions = FrameOptions.builder()
@@ -124,7 +126,7 @@ public class PilosaClientIT {
                 StatusInfo status = client.readStatus();
                 IndexInfo info = findIndexInfo(status, index);
                 assertNotNull(info);
-                assertEquals(TimeQuantum.YEAR, info.getTimeQuantum());
+                assertEquals(TimeQuantum.YEAR, info.getOptions().getTimeQuantum());
             } finally {
                 client.deleteIndex(index);
             }
@@ -142,7 +144,7 @@ public class PilosaClientIT {
             StatusInfo status = client.readStatus();
             FrameInfo info = findFrameInfo(status, frame);
             assertNotNull(info);
-            assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getTimeQuantum());
+            assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
         }
     }
 
@@ -428,6 +430,39 @@ public class PilosaClientIT {
             for (int i = 0; i < results.size(); i++) {
                 BitmapResult br = results.get(i).getBitmap();
                 assertEquals(target.get(i), br.getBits().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void getSchemaTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            Schema schema = client.readSchema();
+            assertTrue(schema.getIndexes().size() > 0);
+        }
+    }
+
+    @Test
+    public void syncSchemaTest() throws IOException {
+        Index remoteIndex = Index.withName("remote-index-1");
+        Frame remoteFrame = remoteIndex.frame("remote-frame-1");
+        Schema schema1 = Schema.defaultSchema();
+        Index index11 = schema1.index("diff-index1");
+        index11.frame("frame1-1");
+        index11.frame("frame1-2");
+        Index index12 = schema1.index("diff-index2");
+        index12.frame("frame2-1");
+        schema1.index(remoteIndex.getName());
+
+        try (PilosaClient client = this.getClient()) {
+            client.ensureIndex(remoteIndex);
+            client.ensureFrame(remoteFrame);
+            client.syncSchema(schema1);
+        } finally {
+            try (PilosaClient client = this.getClient()) {
+                client.deleteIndex(remoteIndex);
+                client.deleteIndex(index11);
+                client.deleteIndex(index12);
             }
         }
     }

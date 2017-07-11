@@ -34,57 +34,75 @@
 
 package com.pilosa.client.orm;
 
-import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
-import com.pilosa.client.exceptions.ValidationException;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class FrameTest {
+public class SchemaTest {
+    @Test
+    public void diffTest() {
+        Schema schema1 = Schema.defaultSchema();
+        Index index11 = schema1.index("diff-index1");
+        index11.frame("frame1-1");
+        index11.frame("frame1-2");
+        Index index12 = schema1.index("diff-index2");
+        index12.frame("frame2-1");
 
-    @Before
-    public void setUp() {
-        Schema schema = Schema.defaultSchema();
-        this.index = schema.index("test-index");
+        Schema schema2 = Schema.defaultSchema();
+        Index index21 = schema2.index("diff-index1");
+        index21.frame("another-frame");
+
+        Schema targetDiff12 = Schema.defaultSchema();
+        Index targetIndex1 = targetDiff12.index("diff-index1");
+        targetIndex1.frame("frame1-1");
+        targetIndex1.frame("frame1-2");
+        Index targetIndex2 = targetDiff12.index("diff-index2");
+        targetIndex2.frame("frame2-1");
+
+        Schema diff12 = schema1.diff(schema2);
+        assertEquals(targetDiff12, diff12);
     }
 
-    @Test(expected = ValidationException.class)
-    public void checkValidatorWasCalledTest() {
-        Frame frame = this.index.frame("a:b");
+    @Test
+    public void addGetIndex() {
+        Schema schema1 = Schema.defaultSchema();
+        Index index1 = schema1.index("foo");
+        Index index2 = schema1.index("foo");
+        assertTrue(index1 == index2);
+    }
+
+    @Test
+    public void indexCopy() {
+        Schema schema1 = Schema.defaultSchema();
+        Index index1 = schema1.index("foo");
+        index1.frame("bar");
+        Index index2 = schema1.index(index1);
+        assertEquals(index1, index2);
     }
 
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = this.index.frame("foo").equals("foo");
+        boolean e = Schema.defaultSchema().equals("foo");
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        Frame frame = this.index.frame("some-frame");
-        assertEquals(frame, frame);
+        Schema schema = Schema.defaultSchema();
+        schema.index("foo");
+        assertEquals(schema, schema);
     }
 
     @Test
     public void testHashCode() {
-        FrameOptions options1 = FrameOptions.builder()
-                .setRowLabel("row")
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .build();
-        FrameOptions options2 = FrameOptions.builder()
-                .setRowLabel("row")
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .build();
-        Frame frame1 = this.index.frame("frame1", options1);
-        Frame frame2 = this.index.frame("frame2", options2);
-        assertEquals(frame1.hashCode(), frame2.hashCode());
+        Schema schema1 = Schema.defaultSchema();
+        schema1.index("foo");
+        Schema schema2 = Schema.defaultSchema();
+        schema2.index("foo");
+        assertEquals(schema1.hashCode(), schema2.hashCode());
     }
-
-    private Index index;
 }

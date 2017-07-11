@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @Category(UnitTest.class)
 public class IndexOptionsTest {
@@ -72,6 +73,43 @@ public class IndexOptionsTest {
         IndexOptions.builder()
                 .setColumnLabel("#Justa an invalid label!")
                 .build();
+    }
+
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        IndexOptions options = IndexOptions.builder().build();
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = options.equals("foo");
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        IndexOptions options = IndexOptions.builder().build();
+        assertEquals(options, options);
+    }
+
+    @Test
+    public void testHashCode() {
+        IndexOptions options1 = IndexOptions.builder()
+                .setColumnLabel("col")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        IndexOptions options2 = IndexOptions.builder()
+                .setColumnLabel("col")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        assertEquals(options1.hashCode(), options2.hashCode());
+    }
+
+    @Test
+    public void testIndexOptionsToString() {
+        IndexOptions options = IndexOptions.builder()
+                .setColumnLabel("COLID")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
+                .build();
+        String target = "{\"options\":{\"columnLabel\":\"COLID\", \"timeQuantum\":\"YM\"}}";
+        assertEquals(target, options.toString());
     }
 
     private void compare(IndexOptions options, String targetColumnLabel, TimeQuantum targetTimeQuantum) {

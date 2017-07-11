@@ -36,12 +36,17 @@ package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.orm.IndexOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class IndexInfo {
     IndexInfo() {
+    }
+
+    public IndexOptions getOptions() {
+        return this.meta.getOptions();
     }
 
     @JsonProperty("Name")
@@ -51,14 +56,6 @@ public final class IndexInfo {
 
     void setName(String name) {
         this.name = name;
-    }
-
-    public String getColumnLabel() {
-        return this.meta.getColumnLabel();
-    }
-
-    public TimeQuantum getTimeQuantum() {
-        return this.meta.getTimeQuantum();
     }
 
     @JsonProperty("Frames")
@@ -81,20 +78,19 @@ public final class IndexInfo {
 }
 
 final class IndexMeta {
-    @JsonProperty("ColumnLabel")
-    String getColumnLabel() {
-        return this.columnLabel;
+    IndexOptions getOptions() {
+        return IndexOptions.builder()
+                .setColumnLabel(this.columnLabel)
+                .setTimeQuantum(this.timeQuantum)
+                .build();
     }
 
+    @JsonProperty("ColumnLabel")
     void setColumnLabel(String columnLabel) {
         this.columnLabel = columnLabel;
     }
 
     @JsonProperty("TimeQuantum")
-    TimeQuantum getTimeQuantum() {
-        return this.timeQuantum;
-    }
-
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);
     }
@@ -102,4 +98,3 @@ final class IndexMeta {
     private String columnLabel;
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
 }
-

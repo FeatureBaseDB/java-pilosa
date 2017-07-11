@@ -36,8 +36,13 @@ package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.orm.CacheType;
+import com.pilosa.client.orm.FrameOptions;
 
 public final class FrameInfo {
+    public FrameOptions getOptions() {
+        return this.meta.getOptions();
+    }
 
     @JsonProperty("Name")
     public String getName() {
@@ -46,18 +51,6 @@ public final class FrameInfo {
 
     void setName(String name) {
         this.name = name;
-    }
-
-    public String getRowLabel() {
-        return this.meta.getRowLabel();
-    }
-
-    public TimeQuantum getTimeQuantum() {
-        return this.meta.getTimeQuantum();
-    }
-
-    public boolean isInverseEnabled() {
-        return this.meta.isInverseEnabled();
     }
 
     @JsonProperty("Meta")
@@ -70,8 +63,14 @@ public final class FrameInfo {
 }
 
 final class FrameMeta {
-    String getRowLabel() {
-        return this.rowLabel;
+    FrameOptions getOptions() {
+        return FrameOptions.builder()
+                .setRowLabel(this.rowLabel)
+                .setInverseEnabled(this.inverseEnabled)
+                .setTimeQuantum(this.timeQuantum)
+                .setCacheType(this.cacheType)
+                .setCacheSize(this.cacheSize)
+                .build();
     }
 
     @JsonProperty("RowLabel")
@@ -79,17 +78,9 @@ final class FrameMeta {
         this.rowLabel = rowLabel;
     }
 
-    TimeQuantum getTimeQuantum() {
-        return this.timeQuantum;
-    }
-
     @JsonProperty("TimeQuantum")
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);
-    }
-
-    boolean isInverseEnabled() {
-        return this.inverseEnabled;
     }
 
     @JsonProperty("InverseEnabled")
@@ -97,7 +88,19 @@ final class FrameMeta {
         this.inverseEnabled = inverseEnabled;
     }
 
+    @JsonProperty("CacheType")
+    void setCacheType(String s) {
+        this.cacheType = CacheType.fromString(s);
+    }
+
+    @JsonProperty("CacheSize")
+    void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
+
     private String rowLabel;
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean inverseEnabled = false;
+    private CacheType cacheType = CacheType.DEFAULT;
+    private int cacheSize = 0;
 }

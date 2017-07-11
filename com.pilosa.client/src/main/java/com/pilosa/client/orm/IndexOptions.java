@@ -36,6 +36,7 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.Validator;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Contains options to customize {@link Index} objects and column queries.
@@ -128,8 +129,29 @@ public final class IndexOptions {
 
     @Override
     public String toString() {
-        return String.format("{\"options\":{\"columnLabel\":\"%s\"}}",
-                this.columnLabel);
+        return String.format("{\"options\":{\"columnLabel\":\"%s\", \"timeQuantum\":\"%s\"}}",
+                this.columnLabel, this.timeQuantum);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IndexOptions)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        IndexOptions rhs = (IndexOptions) obj;
+        return rhs.columnLabel.equals(this.columnLabel) &&
+                rhs.timeQuantum.equals(this.timeQuantum);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.columnLabel)
+                .append(this.timeQuantum)
+                .toHashCode();
     }
 
     private IndexOptions(final String columnLabel, final TimeQuantum timeQuantum) {

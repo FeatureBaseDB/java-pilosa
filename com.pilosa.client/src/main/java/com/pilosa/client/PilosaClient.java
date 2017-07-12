@@ -164,7 +164,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isColumns());
+        request.setRetrieveColumns(options.isColumns());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -636,7 +636,7 @@ class QueryRequest {
     private Index index;
     private String query = "";
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
-    private boolean retrieveProfiles = false;
+    private boolean retrieveColumns = false;
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -668,14 +668,14 @@ class QueryRequest {
         this.timeQuantum = timeQuantum;
     }
 
-    void setRetrieveProfiles(boolean ok) {
-        this.retrieveProfiles = ok;
+    void setRetrieveColumns(boolean ok) {
+        this.retrieveColumns = ok;
     }
 
     Internal.QueryRequest toProtobuf() {
         Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
-                .setColumnAttrs(this.retrieveProfiles)
+                .setColumnAttrs(this.retrieveColumns)
                 .setQuantum(this.timeQuantum.toString());
         return builder.build();
     }

@@ -57,6 +57,16 @@ public final class NodeInfo {
         this.indexes = indexes;
     }
 
+    @JsonProperty("State")
+    void setState(String state) {
+        this.state = state;
+    }
+
+    public boolean isUp() {
+        return this.state.equals("UP");
+    }
+
     private String host;
     private List<IndexInfo> indexes;
+    private String state;
 }

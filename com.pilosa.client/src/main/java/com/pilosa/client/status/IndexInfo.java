@@ -72,9 +72,19 @@ public final class IndexInfo {
         this.meta = meta;
     }
 
+    @JsonProperty("Slices")
+    public List<Long> getSlices() {
+        return this.slices;
+    }
+
+    void setSlices(List<Long> slices) {
+        this.slices = slices;
+    }
+
     private String name;
     private List<FrameInfo> frames = new ArrayList<>();
     private IndexMeta meta;
+    private List<Long> slices = new ArrayList<>();
 }
 
 final class IndexMeta {

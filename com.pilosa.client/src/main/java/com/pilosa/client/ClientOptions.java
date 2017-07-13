@@ -113,12 +113,24 @@ public final class ClientOptions {
         }
 
         /**
+         * Sets the interval for service daemon invoke.
+         *
+         * @param interval milliseconds. Set to 0 to disable the service daemon.
+         * @return ClientOptions builder object
+         */
+        public Builder setServiceInterval(long interval) {
+            this.serviceInterval = interval;
+            return this;
+        }
+
+        /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
          */
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
-                    this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize);
+                    this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
+                    this.serviceInterval);
         }
 
         private int socketTimeout = 300000;
@@ -126,6 +138,7 @@ public final class ClientOptions {
         private int retryCount = 3;
         private int connectionPoolSizePerRoute = 10;
         private int connectionPoolTotalSize = 100;
+        private long serviceInterval = 0;
     }
 
     /**
@@ -156,13 +169,19 @@ public final class ClientOptions {
         return connectionPoolTotalSize;
     }
 
+    public long getServiceInterval() {
+        return this.serviceInterval;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
-                          final int connectionPoolSizePerRoute, final int connectionPoolTotalSize) {
+                          final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
+                          final long serviceInterval) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
+        this.serviceInterval = serviceInterval;
     }
 
     private final int socketTimeout; // milliseconds
@@ -170,4 +189,5 @@ public final class ClientOptions {
     private final int retryCount;
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
+    private final long serviceInterval; // milliseconds
 }

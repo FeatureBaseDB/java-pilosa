@@ -138,6 +138,10 @@ public class PilosaClient implements AutoCloseable {
     public void close() throws IOException {
         if (this.client != null) {
             this.client.close();
+            if (this.serviceDaemon != null) {
+                this.serviceDaemon.halt();
+                this.serviceDaemon = null;
+            }
             this.client = null;
         }
     }
@@ -311,6 +315,10 @@ public class PilosaClient implements AutoCloseable {
      * @throws PilosaException if the status cannot be read
      */
     public StatusInfo readStatus() {
+        return this.serviceDaemon.getStatusInfo();
+    }
+
+    StatusInfo forceReadStatus() {
         String path = "/status";
         CloseableHttpResponse response = null;
         try {
@@ -620,6 +628,7 @@ public class PilosaClient implements AutoCloseable {
     private PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
+        this.serviceDaemon = ServiceDaemon.launch(this, this.options.getServiceInterval());
     }
 
     private static final String HTTP = "http";
@@ -630,6 +639,7 @@ public class PilosaClient implements AutoCloseable {
     private CloseableHttpClient client = null;
     private Comparator<Bit> bitComparator = new BitComparator();
     private ClientOptions options;
+    private ServiceDaemon serviceDaemon = null;
 }
 
 class QueryRequest {
@@ -637,6 +647,7 @@ class QueryRequest {
     private String query = "";
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean retrieveColumns = false;
+    private List<Long> slices = new ArrayList<>();
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -672,12 +683,17 @@ class QueryRequest {
         this.retrieveColumns = ok;
     }
 
+    void setSlices(List<Long> slices) {
+        this.slices = slices;
+    }
+
     Internal.QueryRequest toProtobuf() {
-        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
+        return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveColumns)
-                .setQuantum(this.timeQuantum.toString());
-        return builder.build();
+                .setQuantum(this.timeQuantum.toString())
+                .addAllSlices(this.slices)
+                .build();
     }
 }
 
@@ -730,4 +746,90 @@ final class StatusMessage {
 
     private StatusInfo status;
     private final static ObjectMapper mapper;
+}
+
+final class ServiceDaemon extends Thread {
+    static ServiceDaemon launch(PilosaClient client, final long interval) {
+        ServiceDaemon daemon = new ServiceDaemon(client, interval);
+        daemon.setDaemon(true);
+        if (interval > 0) {
+            daemon.start();
+        }
+
+        return daemon;
+    }
+
+    @Override
+    public void run() {
+        while (!this.stopped) {
+            try {
+                updateStatusInfo();
+                Thread.sleep(this.interval);
+            } catch (Exception ex) {
+                this.stopped = true;
+            }
+        }
+    }
+
+    boolean isStopped() {
+        return this.stopped;
+    }
+
+    StatusInfo getStatusInfo() {
+        if (this.stopped || this.statusInfo == null) {
+            this.updateStatusInfo();
+        }
+        return this.statusInfo;
+    }
+
+    void halt() {
+        this.stopped = true;
+    }
+
+    URI getHostForIndexSlice(Index index, long slice) {
+        return this.hostsForIndexSlice.get(String.format("%s+%d", index.getName(), slice));
+    }
+
+    List<Long> getSlicesForIndex(Index index) {
+        List<Long> result = this.slicesForIndex.get(index.getName());
+        if (result == null) {
+            return new ArrayList<>(0);
+        }
+        return result;
+    }
+
+    private void updateStatusInfo() {
+        this.statusInfo = this.client.forceReadStatus();
+        this.extractHostsForIndexSlice();
+    }
+
+    private ServiceDaemon(final PilosaClient client, final long interval) {
+        super();
+        this.client = client;
+        this.interval = interval;
+        this.stopped = interval <= 0;
+    }
+
+    private void extractHostsForIndexSlice() {
+        this.hostsForIndexSlice.clear();
+        this.slicesForIndex.clear();
+        for (NodeInfo nodeInfo : this.statusInfo.getNodes()) {
+            if (nodeInfo.isUp()) {
+                for (IndexInfo indexInfo : nodeInfo.getIndexes()) {
+                    this.slicesForIndex.put(indexInfo.getName(), indexInfo.getSlices());
+                    for (Long slice : indexInfo.getSlices()) {
+                        String key = String.format("%s+%d", indexInfo.getName(), slice);
+                        this.hostsForIndexSlice.put(key, URI.address(nodeInfo.getHost()));
+                    }
+                }
+            }
+        }
+    }
+
+    private final PilosaClient client;
+    private final long interval;
+    private StatusInfo statusInfo = null;
+    private boolean stopped = false;
+    private Map<String, URI> hostsForIndexSlice = new HashMap<>();
+    private Map<String, List<Long>> slicesForIndex = new HashMap<>();
 }

@@ -120,7 +120,11 @@ public class PilosaClientIT {
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .build();
         Index index = Index.withName("index-with-timequantum", options);
-        try (PilosaClient client = getClient()) {
+        ClientOptions clientOptions = ClientOptions.builder()
+                .setServiceInterval(0)
+                .build();
+        // turning off the service daemon to force read status
+        try (PilosaClient client = getClient(clientOptions)) {
             client.ensureIndex(index);
             try {
                 StatusInfo status = client.readStatus();
@@ -139,7 +143,11 @@ public class PilosaClientIT {
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Frame frame = this.index.frame("frame-with-timequantum", options);
-        try (PilosaClient client = getClient()) {
+        ClientOptions clientOptions = ClientOptions.builder()
+                .setServiceInterval(0)
+                .build();
+        // turning off the service daemon to force read status
+        try (PilosaClient client = getClient(clientOptions)) {
             client.ensureFrame(frame);
             StatusInfo status = client.readStatus();
             FrameInfo info = findFrameInfo(status, frame);
@@ -601,14 +609,22 @@ public class PilosaClientIT {
     public void failOverTest() {
         Cluster c = Cluster.defaultCluster();
         for (int i = 0; i < 20; i++) {
-            c.addHost(URI.address(String.format("n%d.nonexistent.net:5000", i)));
+            c.addHost(URI.address(String.format("n%d.nonexistent:5000", i)));
         }
-        PilosaClient client = PilosaClient.withCluster(c);
+        ClientOptions options = ClientOptions.builder()
+                .setConnectTimeout(10)
+                .build();
+        PilosaClient client = PilosaClient.withCluster(c, options);
         client.readStatus();
     }
 
     private PilosaClient getClient() {
-        return PilosaClient.withAddress(SERVER_ADDRESS);
+        return getClient(ClientOptions.builder().build());
+    }
+
+    private PilosaClient getClient(ClientOptions options) {
+        Cluster cluster = Cluster.withHost(URI.address(SERVER_ADDRESS));
+        return PilosaClient.withCluster(cluster, options);
     }
 
     private static int counter = 0;

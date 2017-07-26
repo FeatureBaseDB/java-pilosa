@@ -34,39 +34,24 @@
 
 package com.pilosa.client.orm;
 
+import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.ValidationException;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public enum CacheType {
-    DEFAULT(""),
-    LRU("lru"),
-    RANKED("ranked");
+import static org.junit.Assert.assertEquals;
 
-    CacheType(String value) {
-        this.value = value;
+@Category(UnitTest.class)
+public class CacheTypeTest {
+    @Test
+    public void fromStringTest() {
+        assertEquals(CacheType.DEFAULT, CacheType.fromString(""));
+        assertEquals(CacheType.LRU, CacheType.fromString("lru"));
+        assertEquals(CacheType.RANKED, CacheType.fromString("ranked"));
     }
 
-    @Override
-    public String toString() {
-        return this.value;
+    @Test(expected = ValidationException.class)
+    public void fromStringFailsTest() {
+        CacheType.fromString("foo");
     }
-
-    /**
-     * Converts a string to the corresponding CacheType.
-     *
-     * @param s the string to be converted
-     * @return a CacheType object
-     */
-    public static CacheType fromString(String s) {
-        switch (s) {
-            case "":
-                return CacheType.DEFAULT;
-            case "lru":
-                return CacheType.LRU;
-            case "ranked":
-                return CacheType.RANKED;
-        }
-        throw new ValidationException(String.format("Invalid cache type string: %s", s));
-    }
-
-    private final String value;
 }

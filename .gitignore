@@ -3,3 +3,4 @@ com.pilosa.client.iml
 .idea
 dependency-reduced-pom.xml
 target/
+com.pilosa.client/pilosa-client.iml

@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @Category(UnitTest.class)
 public class FrameOptionsTest {
@@ -96,6 +97,40 @@ public class FrameOptionsTest {
                 .setRowLabel("#Just an invalid label!")
                 .build();
     }
+
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        FrameOptions options = FrameOptions.builder().build();
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = options.equals("foo");
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        FrameOptions options = FrameOptions.builder().build();
+        assertEquals(options, options);
+    }
+
+    @Test
+    public void testHashCode() {
+        FrameOptions options1 = FrameOptions.builder()
+                .setRowLabel("row")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .setInverseEnabled(true)
+                .setCacheType(CacheType.RANKED)
+                .setCacheSize(1000)
+                .build();
+        FrameOptions options2 = FrameOptions.builder()
+                .setRowLabel("row")
+                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .setInverseEnabled(true)
+                .setCacheType(CacheType.RANKED)
+                .setCacheSize(1000)
+                .build();
+        assertEquals(options1.hashCode(), options2.hashCode());
+    }
+
 
     private void compare(FrameOptions options, String targetRowLabel,
                          TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,

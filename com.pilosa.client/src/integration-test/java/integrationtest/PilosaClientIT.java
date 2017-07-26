@@ -65,6 +65,7 @@ import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class PilosaClientIT {
+    private Schema schema;
     private Index colIndex;
     private Index index;
     private Frame frame;
@@ -72,7 +73,8 @@ public class PilosaClientIT {
 
     @Before
     public void setUp() throws IOException {
-        this.index = Index.withName(getRandomIndexName());
+        this.schema = Schema.defaultSchema();
+        this.index = schema.index(getRandomIndexName());
         try (PilosaClient client = getClient()) {
             client.createIndex(this.index);
             client.createFrame(this.index.frame("another-frame"));
@@ -83,7 +85,7 @@ public class PilosaClientIT {
             IndexOptions indexOptions = IndexOptions.builder()
                     .setColumnLabel("user")
                     .build();
-            this.colIndex = Index.withName(this.index.getName() + "-opts", indexOptions);
+            this.colIndex = schema.index(this.index.getName() + "-opts", indexOptions);
             client.createIndex(this.colIndex);
 
             FrameOptions frameOptions = FrameOptions.builder()
@@ -124,7 +126,7 @@ public class PilosaClientIT {
                 StatusInfo status = client.readStatus();
                 IndexInfo info = findIndexInfo(status, index);
                 assertNotNull(info);
-                assertEquals(TimeQuantum.YEAR, info.getTimeQuantum());
+                assertEquals(TimeQuantum.YEAR, info.getOptions().getTimeQuantum());
             } finally {
                 client.deleteIndex(index);
             }
@@ -142,7 +144,7 @@ public class PilosaClientIT {
             StatusInfo status = client.readStatus();
             FrameInfo info = findFrameInfo(status, frame);
             assertNotNull(info);
-            assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getTimeQuantum());
+            assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
         }
     }
 
@@ -432,6 +434,39 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void getSchemaTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            Schema schema = client.readSchema();
+            assertTrue(schema.getIndexes().size() > 0);
+        }
+    }
+
+    @Test
+    public void syncSchemaTest() throws IOException {
+        Index remoteIndex = Index.withName("remote-index-1");
+        Frame remoteFrame = remoteIndex.frame("remote-frame-1");
+        Schema schema1 = Schema.defaultSchema();
+        Index index11 = schema1.index("diff-index1");
+        index11.frame("frame1-1");
+        index11.frame("frame1-2");
+        Index index12 = schema1.index("diff-index2");
+        index12.frame("frame2-1");
+        schema1.index(remoteIndex.getName());
+
+        try (PilosaClient client = this.getClient()) {
+            client.ensureIndex(remoteIndex);
+            client.ensureFrame(remoteFrame);
+            client.syncSchema(schema1);
+        } finally {
+            try (PilosaClient client = this.getClient()) {
+                client.deleteIndex(remoteIndex);
+                client.deleteIndex(index11);
+                client.deleteIndex(index12);
+            }
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
@@ -448,7 +483,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void importFail200() throws IOException {
+    public void importFail200Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
@@ -463,7 +498,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void queryFail404() throws IOException {
+    public void queryFail404Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/404");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
@@ -477,7 +512,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void fail304EmptyResponse() throws IOException {
+    public void fail304EmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/index/foo", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
@@ -491,7 +526,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failQueryEmptyResponse() throws IOException {
+    public void failQueryEmptyResponseTest() throws IOException {
         String path = String.format("/index/%s/query", this.frame.getIndex().getName());
         HttpServer server = runContent0HttpServer(path, 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
@@ -506,7 +541,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failFetchFrameNodesEmptyResponse() throws IOException {
+    public void failFetchFrameNodesEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/fragment/nodes", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
@@ -521,7 +556,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failStatusEmptyResponse() throws IOException {
+    public void failStatusEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/status", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
@@ -535,7 +570,7 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failStatus200() throws IOException {
+    public void failStatus200Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/status");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
@@ -548,6 +583,29 @@ public class PilosaClientIT {
         }
     }
 
+    @Test(expected = PilosaException.class)
+    public void failStatus400IOError() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer400("/status");
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.readStatus();
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failOverTest() {
+        Cluster c = Cluster.defaultCluster();
+        for (int i = 0; i < 20; i++) {
+            c.addHost(URI.address(String.format("n%d.nonexistent.net:5000", i)));
+        }
+        PilosaClient client = PilosaClient.withCluster(c);
+        client.readStatus();
+    }
 
     private PilosaClient getClient() {
         return PilosaClient.withAddress(SERVER_ADDRESS);
@@ -587,6 +645,20 @@ public class PilosaClientIT {
         return null;
     }
 
+    private HttpServer runContentSizeLyingHttpServer400(String path) {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext(path, new ContentSizeLyingHandler(400));
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
     private HttpServer runContent0HttpServer(String path, int statusCode) {
         final int port = 15999;
         try {
@@ -613,12 +685,23 @@ public class PilosaClientIT {
     }
 
     static class ContentSizeLyingHandler implements HttpHandler {
+        ContentSizeLyingHandler() {
+            this(200);
+        }
+
+        ContentSizeLyingHandler(int statusCode) {
+            super();
+            this.statusCode = statusCode;
+        }
+
         @Override
         public void handle(HttpExchange r) throws IOException {
-            r.sendResponseHeaders(200, 42);
+            r.sendResponseHeaders(statusCode, 42);
             OutputStream os = r.getResponseBody();
             os.close();
         }
+
+        private int statusCode;
     }
 
     static class Content0Handler implements HttpHandler {

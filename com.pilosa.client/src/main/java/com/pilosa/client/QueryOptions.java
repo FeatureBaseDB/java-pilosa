@@ -68,27 +68,15 @@ public class QueryOptions {
         }
 
         /**
-         * Sets the time quantum for this query.
-         *
-         * @param quantum See {@link TimeQuantum} for valid values.
-         * @return QueryOptions builder
-         */
-        public Builder setTimeQuantum(TimeQuantum quantum) {
-            this.timeQuantum = quantum;
-            return this;
-        }
-
-        /**
          * Creates the QueryOptions object.
          *
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns, this.timeQuantum);
+            return new QueryOptions(this.columns);
         }
 
         private boolean columns = false;
-        private TimeQuantum timeQuantum = TimeQuantum.NONE;
     }
 
     /**
@@ -105,11 +93,6 @@ public class QueryOptions {
         return this.columns;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public TimeQuantum getTimeQuantum() {
-        return this.timeQuantum;
-    }
-
     /**
      * Creates a QueryOptions.Builder object.
      * @return a Builder object
@@ -118,11 +101,9 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns, TimeQuantum timeQuantum) {
+    private QueryOptions(boolean columns) {
         this.columns = columns;
-        this.timeQuantum = timeQuantum;
     }
 
     private final boolean columns;
-    private final TimeQuantum timeQuantum;
 }

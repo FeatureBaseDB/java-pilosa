@@ -37,7 +37,9 @@ package com.pilosa.client.orm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.ValidationException;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -83,18 +85,18 @@ public class Index {
     }
 
     /**
-     * Creates a frame object with the specified name and defaults.
+     * Returns a frame object with the specified name and defaults.
      *
      * @param name frame name
      * @return a Frame object
      * @throws ValidationException if the passed frame name is not valid
      */
     public Frame frame(String name) {
-        return Frame.create(this, name, FrameOptions.withDefaults());
+        return this.frame(name, FrameOptions.withDefaults());
     }
 
     /**
-     * Creates a frame with the specified name and options.
+     * Returns a frame with the specified name and options.
      *
      * @param name    frame name
      * @param options frame options
@@ -102,7 +104,22 @@ public class Index {
      * @throws ValidationException if the passed frame name is not valid
      */
     public Frame frame(String name, FrameOptions options) {
-        return Frame.create(this, name, options);
+        if (this.frames.containsKey(name)) {
+            return this.frames.get(name);
+        }
+        Frame frame = Frame.create(this, name, options);
+        this.frames.put(name, frame);
+        return frame;
+    }
+
+    /**
+     * Copies other frame to this index and returns the new frame
+     *
+     * @param other frame
+     * @return copied frame
+     */
+    public Frame frame(Frame other) {
+        return frame(other.getName(), other.getOptions());
     }
 
     /**
@@ -241,12 +258,48 @@ public class Index {
                 this.options.getColumnLabel(), id, attributesString));
     }
 
+    public Map<String, Frame> getFrames() {
+        return this.frames;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Index)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        Index rhs = (Index) obj;
+        return rhs.name.equals(this.name) &&
+                rhs.options.equals(this.options) &&
+                rhs.frames.equals(this.frames);
+    }
+
+    @Override
+    public int hashCode() {
+        // note that we don't include frames in the hash
+        return new HashCodeBuilder(31, 47)
+                .append(this.name)
+                .append(this.options)
+                .toHashCode();
+    }
+
     PqlBaseQuery pqlQuery(String query) {
         return new PqlBaseQuery(query, this);
     }
 
     PqlBitmapQuery pqlBitmapQuery(String query) {
         return new PqlBitmapQuery(query, this);
+    }
+
+    Index(Index index) {
+        // we don't copy index options, since IndexOptions has no mutating methods
+        this(index.name, index.options);
+        for (Map.Entry<String, Frame> entry : index.frames.entrySet()) {
+            // we don't copy frame options, since FrameOptions has no mutating methods
+            this.frame(entry.getKey(), entry.getValue().getOptions());
+        }
     }
 
     private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery... bitmaps) {
@@ -270,4 +323,5 @@ public class Index {
     private String name;
     private IndexOptions options;
     private ObjectMapper mapper = new ObjectMapper();
+    private Map<String, Frame> frames = new HashMap<>();
 }

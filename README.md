@@ -18,6 +18,7 @@ Java client for Pilosa high performance distributed bitmap index.
     * More logging.
     * Uses slf4j instead of log4j for logging.
     * Introduced schemas. No need to re-define already existing indexes and frames.
+    * *make* commands are supported on Windows.
     * * *Breaking Change*: Removed `timeQuantum` query option.
     * **Deprecation** `Index.withName` constructor. Use `schema.index` instead.
     * **Deprecation** `client.createIndex`, `client.createFrame`, `client.ensureIndex`, `client.ensureFrame`. Use schemas and `client.syncSchema` instead.
@@ -363,8 +364,6 @@ Please check our [Contributor's Guidelines](https://github.com/pilosa/pilosa/CON
 3. Make sure all tests pass (use `make test-all`) and be sure that the tests cover all statements in your code (we aim for 100% test coverage).
 4. Commit your code to a feature branch and send a pull request to the `master` branch of our repo.
 
-The sections below assume your platform has `make`. Otherwise you can view the corresponding steps of the `Makefile`.
-
 ### Running tests
 
 You can run unit tests with:
@@ -375,6 +374,11 @@ make test
 And both unit and integration tests with:
 ```
 make test-all
+```
+
+Check the test coverage:
+```
+make cover
 ```
 
 ### Generating protobuf classes

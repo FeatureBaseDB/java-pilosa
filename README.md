@@ -356,22 +356,21 @@ long count = response.getCount();
 
 ## Importing Data
 
-If you have large amounts of data, it is more efficient to import it to Pilosa instead of several `SetBit` queries.
- 
-This library supports importing bits in the CSV (comma separated values) format:
+If you have large amounts of data, it is more efficient to import it into Pilosa instead of using multiple SetBit queries. This library supports importing bits into an existing frame.
+
+Before starting the import, create an instance of a struct which implements `BitIterator` interface and pass it to the `client.importFrame` method. This library ships with the `CsvFileBitIterator` class which supports importing bits in the CSV (comma separated values) format:
+
+
 ```
 ROW_ID,COLUMN_ID
 ```
 
-Optionally, a timestamp with GMT time zone can be added:
+Optionally, a timestamp can be added. Note that Pilosa is not time zone aware:
 ```
 ROW_ID,COLUMN_ID,TIMESTAMP
 ```
 
-Note that, each line corresponds to a single bit and the lines end with a new line (`\n` or `\r\n`).
-The target index and frame must have been created before hand.
-
-We only ship `CsvFileBitIterator` which reads bits from a CSV (comma separated value) stream but you can create your own bit iterator by implementing `BitIterator`.
+Note that each line corresponds to a single bit and ends with a new line (`\n` or `\r\n`).
 
 ```java
 String data = "1,10,683793200\n" +
@@ -381,12 +380,12 @@ InputStream stream = new ByteArrayInputStream(data.getBytes("UTF-8"));
 CsvFileBitIterator iterator = CsvFileBitIterator.fromStream(stream);
 ```
 
-You can use `CsvFilteBiterator.fromPath` to read the bits in a file:
+You can use the `CsvFilteBiterator.fromPath` method to read the bits in a file:
 ```java
 CsvFileBitIterator iterator = CsvFileBitIterator.fromPath("/tmp/sample.csv");
 ```
 
-After creating the iterator, use `PilosaClient.importFrame` method to start importing:
+After creating the iterator, use the `PilosaClient.importFrame` method to start importing:
 ```java
 try {
     client.importFrame(frame, iterator);

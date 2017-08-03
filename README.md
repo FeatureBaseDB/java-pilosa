@@ -1,6 +1,6 @@
 # Java Client for Pilosa
 
-<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.4.0-blue.svg"></a>
+<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.5.0-blue.svg"></a>
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592"></a>
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 <a href="https://coveralls.io/github/pilosa/java-pilosa?branch=master"><img src="https://coveralls.io/repos/github/pilosa/java-pilosa/badge.svg?branch=master" /></a>
@@ -12,7 +12,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **Next**:
+* **v0.5.0** (2017-08-03):
     * Failover for connection errors.    
     * More logging.
     * Uses slf4j instead of log4j for logging.

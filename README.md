@@ -12,7 +12,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **Next**:
+* **v0.5.0** (2017-08-03):
     * Failover for connection errors.    
     * More logging.
     * Uses slf4j instead of log4j for logging.

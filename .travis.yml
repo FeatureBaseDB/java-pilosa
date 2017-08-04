@@ -8,7 +8,7 @@ group: deprecated-2017Q2
 services:
   - docker
 before_install:
-  - docker run -d -p 10101:10101 pilosa/pilosa:v0.4.0
+  - docker run -d -p 10101:10101 pilosa/pilosa:v0.5.0
 script:
   - mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report coveralls:report
 

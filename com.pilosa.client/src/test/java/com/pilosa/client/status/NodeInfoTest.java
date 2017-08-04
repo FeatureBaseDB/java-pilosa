@@ -34,30 +34,21 @@
 
 package com.pilosa.client.status;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pilosa.client.UnitTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class NodeInfo {
-    @JsonProperty("Host")
-    public String getHost() {
-        return this.host;
-    }
+import static org.junit.Assert.assertEquals;
 
-    void setHost(String host) {
-        this.host = host;
+@Category(UnitTest.class)
+public class NodeInfoTest {
+    @Test
+    public void testNodeInfoReturnsEmptyIndexesArrayIfNotSet() {
+        NodeInfo nodeInfo = new NodeInfo();
+        List<IndexInfo> target = new ArrayList<>();
+        assertEquals(target, nodeInfo.getIndexes());
     }
-
-    @JsonProperty("Indexes")
-    public List<IndexInfo> getIndexes() {
-        return this.indexes;
-    }
-
-    void setIndexes(List<IndexInfo> indexes) {
-        this.indexes = indexes;
-    }
-
-    private String host;
-    private List<IndexInfo> indexes = new ArrayList<>();
 }

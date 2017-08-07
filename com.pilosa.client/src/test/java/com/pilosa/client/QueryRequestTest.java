@@ -53,7 +53,7 @@ public class QueryRequestTest {
         QueryRequest qr = QueryRequest.withIndex(Index.withName("somedb"));
         qr.setQuery("Range(id=1, frame='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')");
         qr.setTimeQuantum(TimeQuantum.YEAR_MONTH);
-        qr.setRetrieveProfiles(true);
+        qr.setRetrieveColumns(true);
         Internal.QueryRequest request = qr.toProtobuf();
         assertEquals("Range(id=1, frame='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')", request.getQuery());
         assertEquals("YM", request.getQuantum());

@@ -36,6 +36,9 @@ package com.pilosa.client;
 
 import com.pilosa.client.orm.PqlQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Contains options to customize {@link PilosaClient#query(PqlQuery, QueryOptions)}.
  * <p>
@@ -68,15 +71,41 @@ public class QueryOptions {
         }
 
         /**
+         * Enables streaming data.
+         *
+         * @param streaming set to <code>true</code> to stream data
+         * @return QueryOptions builder
+         */
+        public Builder setStreaming(boolean streaming) {
+            this.streaming = streaming;
+            return this;
+        }
+
+        /**
+         * Set slices to query.
+         *
+         * @param slices If set, only these slices will be queried
+         * @return QueryOptions builder
+         */
+        public Builder setSlices(long... slices) {
+            for (long slice : slices) {
+                this.slices.add(slice);
+            }
+            return this;
+        }
+
+        /**
          * Creates the QueryOptions object.
          *
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns);
+            return new QueryOptions(this.columns, this.streaming, this.slices);
         }
 
         private boolean columns = false;
+        private boolean streaming = false;
+        private List<Long> slices = new ArrayList<>();
     }
 
     /**
@@ -93,6 +122,14 @@ public class QueryOptions {
         return this.columns;
     }
 
+    public boolean isStreaming() {
+        return this.streaming;
+    }
+
+    public List<Long> getSlices() {
+        return this.slices;
+    }
+
     /**
      * Creates a QueryOptions.Builder object.
      * @return a Builder object
@@ -101,9 +138,13 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns) {
+    private QueryOptions(boolean columns, boolean streaming, List<Long> slices) {
         this.columns = columns;
+        this.streaming = streaming;
+        this.slices = slices;
     }
 
     private final boolean columns;
+    private final boolean streaming;
+    private final List<Long> slices;
 }

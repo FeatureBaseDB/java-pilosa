@@ -12,7 +12,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **Next**
+* **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
     * Fixes reading schemas with no indexes. 
 
@@ -55,7 +55,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>0.5.0</version>
+        <version>0.5.1</version>
     </dependency>
 </dependencies>
 ```

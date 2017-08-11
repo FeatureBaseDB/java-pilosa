@@ -443,6 +443,16 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void getEmptySchemaTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            client.deleteIndex(this.index);
+            client.deleteIndex(this.colIndex);
+            Schema schema = client.readSchema();
+            assertTrue(schema.getIndexes().size() == 0);
+        }
+    }
+
+    @Test
     public void syncSchemaTest() throws IOException {
         Index remoteIndex = Index.withName("remote-index-1");
         Frame remoteFrame = remoteIndex.frame("remote-frame-1");

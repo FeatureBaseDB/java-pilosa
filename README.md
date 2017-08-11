@@ -12,6 +12,10 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
+* **Next**
+    * Fixes `filters` parameter of the `TopN` parameter.
+    * Fixes reading schemas with no indexes. 
+
 * **v0.5.0** (2017-08-03):
     * Failover for connection errors.    
     * More logging.

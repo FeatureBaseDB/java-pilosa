@@ -234,9 +234,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
-        String s = String.format("TopN(%s, frame='%s', n=%d, inverse=false)",
-                bitmap.serialize(), this.name, n);
-        return this.index.pqlBitmapQuery(s);
+        return this._topN(n, bitmap, false, null, null);
     }
 
     /**
@@ -253,9 +251,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap) {
-        String s = String.format("TopN(%s, frame='%s', n=%d, inverse=true)",
-                bitmap.serialize(), this.name, n);
-        return this.index.pqlBitmapQuery(s);
+        return this._topN(n, bitmap, true, null, null);
     }
 
     /**
@@ -300,14 +296,20 @@ public class Frame {
         return _topN(n, bitmap, true, field, values);
     }
 
-    private PqlBitmapQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object... values) {
+    private PqlBitmapQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object[] values) {
         // TOOD: make field use its own validator
-        Validator.ensureValidLabel(field);
+        String fieldString = "";
+        if (field != null) {
+            Validator.ensureValidLabel(field);
+            fieldString = String.format(", field='%s'", field);
+        }
+
         try {
-            String valuesString = this.mapper.writeValueAsString(values);
+            String valuesString = (values == null || values.length == 0) ? "" : String.format(", filters=%s", this.mapper.writeValueAsString(values));
             String inverseString = inverse ? "true" : "false";
-            String s = String.format("TopN(%s, frame='%s', n=%d, inverse=%s, field='%s', %s)",
-                    bitmap.serialize(), this.name, n, inverseString, field, valuesString);
+            String bitmapString = (bitmap == null) ? "" : String.format("%s, ", bitmap.serialize());
+            String s = String.format("TopN(%sframe='%s', n=%d, inverse=%s%s%s)",
+                    bitmapString, this.name, n, inverseString, fieldString, valuesString);
             return this.index.pqlBitmapQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);

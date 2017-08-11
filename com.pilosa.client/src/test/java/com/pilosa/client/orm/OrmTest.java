@@ -283,13 +283,18 @@ public class OrmTest {
 
         PqlBaseQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
         assertEquals(
-                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=false, field='category', [80,81])",
+                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=false, field='category', filters=[80,81])",
                 q3.serialize());
 
         q3 = sampleFrame.inverseTopN(12, collabFrame.bitmap(7), "category", 80, 81);
         assertEquals(
-                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=true, field='category', [80,81])",
+                "TopN(Bitmap(project=7, frame='collaboration'), frame='sample-frame', n=12, inverse=true, field='category', filters=[80,81])",
                 q3.serialize());
+
+        PqlBaseQuery q4 = sampleFrame.topN(5, null);
+        assertEquals(
+                "TopN(frame='sample-frame', n=5, inverse=false)",
+                q4.serialize());
     }
 
     @Test(expected = PilosaException.class)

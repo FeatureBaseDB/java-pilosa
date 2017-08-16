@@ -108,4 +108,11 @@ public class PilosaClientTest {
         PilosaClient client = PilosaClient.defaultClient();
         client.makeRequest("INVALID", "/foo", null);
     }
+
+    @Test
+    public void fragmentNodeSetInternalHost() {
+        // Added this test just for coverage. FragmentNode.setInternalHost is not used on the client-side.
+        FragmentNode node = new FragmentNode();
+        node.setInternalHost("foo");
+    }
 }

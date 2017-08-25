@@ -127,4 +127,13 @@ public class PqlBatchQuery implements PqlQuery {
         }
         return builder.toString();
     }
+
+    /**
+     * Returns the number of queries in this batch.
+     *
+     * @return number of queries.
+     */
+    public int size() {
+        return this.queries.size();
+    }
 }

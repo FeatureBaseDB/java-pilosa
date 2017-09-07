@@ -42,4 +42,8 @@ public class ValidationException extends PilosaException {
     public ValidationException(String message) {
         super(message);
     }
+
+    public ValidationException(String message, Exception ex) {
+        super(message, ex);
+    }
 }

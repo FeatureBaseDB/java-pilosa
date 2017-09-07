@@ -34,15 +34,36 @@
 
 package com.pilosa.client.orm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.Validator;
-import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-class RangeField {
+import java.util.HashMap;
+import java.util.Map;
+
+public class RangeField {
+    public static RangeField intField(String name, long min, long max) {
+        Validator.ensureValidLabel(name);
+        if (max <= min) {
+            throw new ValidationException("Max should be greater than min for int fields");
+        }
+        Map<String, Object> properties = new HashMap<>(4);
+        properties.put("name", name);
+        properties.put("type", "int");
+        properties.put("min", min);
+        properties.put("max", max);
+        return new RangeField(properties);
+    }
+
     @Override
     public String toString() {
-        return String.format("{\"name\":\"%s\",\"type\":\"%s\",\"min\":%d,\"max\":%d}",
-                this.name, this.type, this.min, this.max);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this.properties);
+        } catch (Exception ex) {
+            throw new ValidationException("Field properties weren't converted to JSON", ex);
+        }
     }
 
     @Override
@@ -54,35 +75,19 @@ class RangeField {
             return true;
         }
         RangeField rhs = (RangeField) obj;
-        return rhs.name.equals(this.name) &&
-                rhs.type.equals(this.type) &&
-                rhs.min == this.min &&
-                rhs.max == this.max;
+        return rhs.properties.equals(this.properties);
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.name)
-                .append(this.type)
-                .append(this.min)
-                .append(this.max)
+                .append(this.properties)
                 .toHashCode();
     }
 
-    RangeField(final String name, final String type, final long min, final long max) {
-        Validator.ensureValidLabel(name);
-        if (max <= min) {
-            throw new PilosaException("`max` should be greater than `min` for frame option field: " + name);
-        }
-        this.name = name;
-        this.type = type;
-        this.min = min;
-        this.max = max;
+    RangeField(Map<String, Object> properties) {
+        this.properties = properties;
     }
 
-    private final String name;
-    private final String type;
-    private final long min;
-    private final long max;
+    private final Map<String, Object> properties;
 }

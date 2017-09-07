@@ -39,6 +39,9 @@ import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.orm.CacheType;
 import com.pilosa.client.orm.FrameOptions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class FrameInfo {
     public FrameOptions getOptions() {
         return this.meta.getOptions();
@@ -103,4 +106,5 @@ final class FrameMeta {
     private boolean inverseEnabled = false;
     private CacheType cacheType = CacheType.DEFAULT;
     private int cacheSize = 0;
+    private Map<String, Object> fields = new HashMap<>();
 }

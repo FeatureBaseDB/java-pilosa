@@ -140,7 +140,7 @@ public final class FrameOptions {
          * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
          */
         public Builder addIntField(String name, long min, long max) {
-            this.fields.put(name, new RangeField(name, "int", min, max));
+            this.fields.put(name, RangeField.intField(name, min, max));
             return this;
         }
 
@@ -203,6 +203,10 @@ public final class FrameOptions {
 
     public int getCacheSize() {
         return this.cacheSize;
+    }
+
+    public boolean isRangeEnabled() {
+        return this.fields.size() > 0;
     }
 
     @Override

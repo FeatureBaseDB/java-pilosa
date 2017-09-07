@@ -36,8 +36,12 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +49,7 @@ import static org.junit.Assert.*;
 public class RangeFieldTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
-        RangeField field = new RangeField("foo", "int", 10, 20);
+        RangeField field = RangeField.intField("foo", 10, 20);
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = field.equals("foo");
         assertFalse(e);
@@ -53,26 +57,42 @@ public class RangeFieldTest {
 
     @Test
     public void testEqualsSameObject() {
-        RangeField field = new RangeField("foo", "int", -10, 1000);
+        RangeField field = RangeField.intField("foo", -10, 1000);
         assertEquals(field, field);
     }
 
     @Test
     public void testEquals() {
-        RangeField field1 = new RangeField("bar", "int", -10, 1000);
-        RangeField field2 = new RangeField("bar", "int", -10, 1000);
+        RangeField field1 = RangeField.intField("bar", -10, 1000);
+        RangeField field2 = RangeField.intField("bar", -10, 1000);
         assertTrue(field1.equals(field2));
     }
 
     @Test
     public void testHashCode() {
-        RangeField field1 = new RangeField("foo", "int", -10, 1000);
-        RangeField field2 = new RangeField("foo", "int", -10, 1000);
+        RangeField field1 = RangeField.intField("foo", -10, 1000);
+        RangeField field2 = RangeField.intField("foo", -10, 1000);
         assertEquals(field1.hashCode(), field2.hashCode());
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidProperties() {
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put("invalid", new ThrowsException());
+        RangeField field = new RangeField(properties);
+        String f = field.toString();
+        System.out.println(f);
     }
 
     @Test(expected = PilosaException.class)
     public void testMaxGreaterThanMin() {
-        new RangeField("foo", "int", 10, 9);
+        RangeField.intField("foo", 10, 9);
+    }
+}
+
+class ThrowsException {
+    @Override
+    public String toString() {
+        throw new RuntimeException("mock");
     }
 }

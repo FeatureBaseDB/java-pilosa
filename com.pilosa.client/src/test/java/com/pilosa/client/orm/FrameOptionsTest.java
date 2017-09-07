@@ -40,8 +40,7 @@ import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class FrameOptionsTest {
@@ -89,7 +88,7 @@ public class FrameOptionsTest {
                 .addIntField("foo", 10, 100)
                 .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"type\":\"int\",\"min\":-1,\"max\":1},{\"name\":\"foo\",\"type\":\"int\",\"min\":10,\"max\":100}]}}";
+        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
         assertEquals(target, options.toString());
     }
 
@@ -135,6 +134,15 @@ public class FrameOptionsTest {
         assertEquals(options1.hashCode(), options2.hashCode());
     }
 
+    @Test
+    public void testIsRangeEnabled() {
+        FrameOptions options = FrameOptions.withDefaults();
+        assertFalse(options.isRangeEnabled());
+        options = FrameOptions.builder()
+                .addIntField("baz", 10, 100)
+                .build();
+        assertTrue(options.isRangeEnabled());
+    }
 
     private void compare(FrameOptions options, String targetRowLabel,
                          TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,

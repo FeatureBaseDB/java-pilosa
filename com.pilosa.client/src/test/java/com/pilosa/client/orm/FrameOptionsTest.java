@@ -86,8 +86,10 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 100)
+                .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000}}";
+        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"type\":\"int\",\"min\":-1,\"max\":1},{\"name\":\"foo\",\"type\":\"int\",\"min\":10,\"max\":100}]}}";
         assertEquals(target, options.toString());
     }
 
@@ -120,6 +122,7 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 1000)
                 .build();
         FrameOptions options2 = FrameOptions.builder()
                 .setRowLabel("row")
@@ -127,6 +130,7 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 1000)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
     }

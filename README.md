@@ -12,6 +12,9 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
+* **Next**:
+    * Added support for creating range encoded frames.
+
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
     * Fixes reading schemas with no indexes. 

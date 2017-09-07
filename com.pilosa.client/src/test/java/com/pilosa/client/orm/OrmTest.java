@@ -251,6 +251,16 @@ public class OrmTest {
     }
 
     @Test
+    public void xorTest() {
+        PqlBitmapQuery b1 = sampleFrame.bitmap(10);
+        PqlBitmapQuery b2 = sampleFrame.bitmap(20);
+        PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
+        assertEquals(
+                "Xor(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                q1.serialize());
+    }
+
+    @Test
     public void countTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
         PqlQuery q = projectIndex.count(b);
@@ -295,6 +305,24 @@ public class OrmTest {
         assertEquals(
                 "TopN(frame='sample-frame', n=5, inverse=false)",
                 q4.serialize());
+    }
+
+    @Test
+    public void averageTest() {
+        PqlQuery q1 = sampleFrame.average("foo");
+        assertEquals(
+                "Average(frame='sample-frame', field='foo')",
+                q1.serialize()
+        );
+    }
+
+    @Test
+    public void sumTest() {
+        PqlQuery q1 = sampleFrame.sum("foo");
+        assertEquals(
+                "Sum(frame='sample-frame', field='foo')",
+                q1.serialize()
+        );
     }
 
     @Test(expected = PilosaException.class)

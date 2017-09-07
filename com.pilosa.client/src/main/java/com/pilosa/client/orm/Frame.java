@@ -378,6 +378,34 @@ public class Frame {
                 this.rowLabel, rowID, this.name, attributesString));
     }
 
+    /**
+     * Creates an Average query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param field The field to calculate the average for.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#average">Average Query</a>
+     */
+    public PqlBaseQuery average(String field) {
+        return rangeQuery("Average", field);
+    }
+
+    /**
+     * Creates a Sum query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param field The field to calculate the sum for.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum(String field) {
+        return rangeQuery("Sum", field);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Frame)) {
@@ -397,6 +425,10 @@ public class Frame {
                 .append(this.index.getName())
                 .append(this.options)
                 .toHashCode();
+    }
+
+    private PqlBaseQuery rangeQuery(String call, String field) {
+        return this.index.pqlQuery(String.format("%s(frame='%s', field='%s')", call, this.name, field));
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

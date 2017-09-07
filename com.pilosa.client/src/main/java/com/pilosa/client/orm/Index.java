@@ -208,7 +208,7 @@ public class Index {
      * Difference returns all of the bits from the first BITMAP_CALL argument
      *   passed to it, without the bits from each subsequent BITMAP_CALL.
      *
-     * @param bitmaps 2 or more bitmaps to differentiate
+     * @param bitmaps 1 or more bitmaps to differentiate
      * @return a PQL query
      * @throws IllegalArgumentException if the number of bitmaps is less than 1
      * @see <a href="https://www.pilosa.com/docs/query-language/#difference">Difference Query</a>
@@ -219,6 +219,21 @@ public class Index {
             throw new IllegalArgumentException("Difference operation requires at least 1 bitmap");
         }
         return bitmapOperation("Difference", bitmaps);
+    }
+
+    /**
+     * Creates an Xor query.
+     *
+     * @param bitmaps 2 or more bitmaps to xor
+     * @return a PQL query
+     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @see <a href="https://www.pilosa.com/docs/query-language/#xor">Xor Query</a>
+     */
+    public PqlBitmapQuery xor(PqlBitmapQuery... bitmaps) {
+        if (bitmaps.length < 2) {
+            throw new IllegalArgumentException("Difference operation requires at least 2 bitmaps");
+        }
+        return bitmapOperation("Xor", bitmaps);
     }
 
     /**

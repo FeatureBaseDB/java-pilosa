@@ -14,6 +14,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 * **Next**:
     * Added support for creating range encoded frames.
+    * Added `Average`, `Sum` and `Xor` calls.
 
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
@@ -191,6 +192,7 @@ Index:
 * `PqlQuery union(PqlBitmapQueries...)`
 * `PqlQuery intersect(PqlBitmapQueries...)`
 * `PqlQuery difference(PqlBitmapQueries...)`
+* `PqlQuery xor(PqlBitmapQueries...)`
 * `PqlQuery count(PqlBitmapQuery bitmap)`
 * `PqlQuery setColumnAttrs(long id, Map<String, Object> attributes)`
 
@@ -209,6 +211,8 @@ Frame:
 * `PqlBitmapQuery range(long rowID, Date start, Date end)`
 * `PqlBitmapQuery inverseRange(long columnID, Date start, Date end)`
 * `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
+* `PqlBaseQuery average(String field)`
+* `PqlBaseQuery sum(String field)`
 
 ### Pilosa URI
 

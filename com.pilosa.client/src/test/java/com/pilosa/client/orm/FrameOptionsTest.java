@@ -40,6 +40,10 @@ import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -89,7 +93,7 @@ public class FrameOptionsTest {
                 .addIntField("bar", -1, 1)
                 .build();
         String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
-        assertEquals(target.hashCode(), options.toString().hashCode());
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
     @Test(expected = PilosaException.class)
@@ -152,5 +156,15 @@ public class FrameOptionsTest {
         assertEquals(targetInverseEnabled, options.isInverseEnabled());
         assertEquals(targetCacheType, options.getCacheType());
         assertEquals(targetCacheSize, options.getCacheSize());
+    }
+
+    private Object[] stringToSortedChars(String s) {
+        List<Character> characterList = new ArrayList<Character>();
+        for (char c : s.toCharArray()) {
+            characterList.add(c);
+        }
+        Object[] arr = characterList.toArray();
+        Arrays.sort(arr);
+        return arr;
     }
 }

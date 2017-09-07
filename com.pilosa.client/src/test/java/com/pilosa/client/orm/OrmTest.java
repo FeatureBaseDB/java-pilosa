@@ -309,18 +309,20 @@ public class OrmTest {
 
     @Test
     public void averageTest() {
-        PqlQuery q1 = sampleFrame.average("foo");
+        PqlBitmapQuery b = collabFrame.bitmap(42);
+        PqlQuery q1 = sampleFrame.average(b, "foo");
         assertEquals(
-                "Average(frame='sample-frame', field='foo')",
+                "Average(frame='sample-frame', Bitmap(project=42, frame='collaboration'), field='foo')",
                 q1.serialize()
         );
     }
 
     @Test
     public void sumTest() {
-        PqlQuery q1 = sampleFrame.sum("foo");
+        PqlBitmapQuery b = collabFrame.bitmap(42);
+        PqlQuery q1 = sampleFrame.sum(b, "foo");
         assertEquals(
-                "Sum(frame='sample-frame', field='foo')",
+                "Sum(frame='sample-frame', Bitmap(project=42, frame='collaboration'), field='foo')",
                 q1.serialize()
         );
     }

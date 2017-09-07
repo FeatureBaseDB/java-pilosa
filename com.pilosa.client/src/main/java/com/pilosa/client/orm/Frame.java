@@ -384,12 +384,13 @@ public class Frame {
      * The frame for this query should have fields set.
      * </p>
      *
+     * @param bitmap The bitmap query to use.
      * @param field The field to calculate the average for.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#average">Average Query</a>
      */
-    public PqlBaseQuery average(String field) {
-        return rangeQuery("Average", field);
+    public PqlBaseQuery average(PqlBitmapQuery bitmap, String field) {
+        return rangeQuery("Average", bitmap, field);
     }
 
     /**
@@ -398,12 +399,13 @@ public class Frame {
      * The frame for this query should have fields set.
      * </p>
      *
+     * @param bitmap The bitmap query to use.
      * @param field The field to calculate the sum for.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
-    public PqlBaseQuery sum(String field) {
-        return rangeQuery("Sum", field);
+    public PqlBaseQuery sum(PqlBitmapQuery bitmap, String field) {
+        return rangeQuery("Sum", bitmap, field);
     }
 
     @Override
@@ -427,8 +429,8 @@ public class Frame {
                 .toHashCode();
     }
 
-    private PqlBaseQuery rangeQuery(String call, String field) {
-        return this.index.pqlQuery(String.format("%s(frame='%s', field='%s')", call, this.name, field));
+    private PqlBaseQuery rangeQuery(String call, PqlBitmapQuery bitmap, String field) {
+        return this.index.pqlQuery(String.format("%s(frame='%s', %s, field='%s')", call, this.name, bitmap.serialize(), field));
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

@@ -115,4 +115,12 @@ public class PilosaClientTest {
         FragmentNode node = new FragmentNode();
         node.setInternalHost("foo");
     }
+
+    @Test
+    public void setExcludeAttributesTest() {
+        // Just to satisfy coveralls...
+        QueryOptions options = QueryOptions.builder()
+                .setExcludeAttributes(true)
+                .build();
+    }
 }

@@ -164,7 +164,9 @@ public class PilosaClient implements AutoCloseable {
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isColumns());
+        request.setRetrieveColumnAttributes(options.isColumns());
+        request.setExcludeAttributes(options.isExcludeAttributes());
+        request.setExcludeBits(options.isExcludeBits());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -635,7 +637,9 @@ public class PilosaClient implements AutoCloseable {
 class QueryRequest {
     private Index index;
     private String query = "";
-    private boolean retrieveProfiles = false;
+    private boolean retrieveColumnAttributes = false;
+    private boolean excludeBits = false;
+    private boolean excludeAttributes = false;
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -663,15 +667,25 @@ class QueryRequest {
         this.query = query;
     }
 
-    void setRetrieveProfiles(boolean ok) {
-        this.retrieveProfiles = ok;
+    void setRetrieveColumnAttributes(boolean ok) {
+        this.retrieveColumnAttributes = ok;
+    }
+
+    public void setExcludeBits(boolean excludeBits) {
+        this.excludeBits = excludeBits;
+    }
+
+    public void setExcludeAttributes(boolean excludeAttributes) {
+        this.excludeAttributes = excludeAttributes;
     }
 
     Internal.QueryRequest toProtobuf() {
-        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
+        return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
-                .setColumnAttrs(this.retrieveProfiles);
-        return builder.build();
+                .setColumnAttrs(this.retrieveColumnAttributes)
+                .setExcludeBits(this.excludeBits)
+                .setExcludeAttrs(this.excludeAttributes)
+                .build();
     }
 }
 

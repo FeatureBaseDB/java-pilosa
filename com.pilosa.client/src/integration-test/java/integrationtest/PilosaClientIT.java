@@ -498,6 +498,38 @@ public class PilosaClientIT {
 
     }
 
+    @Test
+    public void excludeAttrsBitsTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            Map<String, Object> attrs = new HashMap<>(1);
+            attrs.put("foo", "bar");
+            client.query(colIndex.batchQuery(
+                    frame.setBit(1, 100),
+                    frame.setRowAttrs(1, attrs)
+            ));
+
+            QueryResponse response;
+            QueryOptions options;
+
+            // test exclude bits.
+            options = QueryOptions.builder()
+                    .setExcludeBits(true)
+                    .build();
+            response = client.query(frame.bitmap(1), options);
+            assertEquals(0, response.getResult().getBitmap().getBits().size());
+            assertEquals(1, response.getResult().getBitmap().getAttributes().size());
+
+            // test exclude attributes.
+            options = QueryOptions.builder()
+                    .setExcludeAttributes(true)
+                    .build();
+            response = client.query(frame.bitmap(1), options);
+            assertEquals(1, response.getResult().getBitmap().getBits().size());
+            assertEquals(0, response.getResult().getBitmap().getAttributes().size());
+
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();

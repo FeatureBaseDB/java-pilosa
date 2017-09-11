@@ -15,6 +15,7 @@ Java client for Pilosa high performance distributed bitmap index.
 * **Next**:
     * Added support for creating range encoded frames.
     * Added `SumReduce` and `Xor` calls.
+    * Added support for excluding bits or attributes from bitmap calls. In order to exclude bits, call `setExcludeBits(true)` in your `QueryOptions.Builder`. In order to exclude attributes, call `setExcludeAttributes(true)`.
 
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
@@ -211,8 +212,8 @@ Frame:
 * `PqlBitmapQuery range(long rowID, Date start, Date end)`
 * `PqlBitmapQuery inverseRange(long columnID, Date start, Date end)`
 * `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
-* `PqlBaseQuery average(String field)`
-* `PqlBaseQuery sum(String field)`
+* `PqlBaseQuery sumReduce(String field)`
+* `PqlBaseQuery setFieldValue(long columnID, String field, long value)`
 
 ### Pilosa URI
 

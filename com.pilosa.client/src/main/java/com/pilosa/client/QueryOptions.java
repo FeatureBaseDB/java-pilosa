@@ -68,15 +68,39 @@ public class QueryOptions {
         }
 
         /**
+         * Disables returing bits from bitmap queries.
+         *
+         * @param exclude set to <code>true</code> for excluding (not returning) bits
+         * @return QueryOptions builder
+         */
+        public Builder setExcludeBits(boolean exclude) {
+            this.excludeBits = exclude;
+            return this;
+        }
+
+        /**
+         * Disables returing attributes from bitmap queries.
+         *
+         * @param exclude set to <code>true</code> for excluding (not returning) attributes
+         * @return QueryOptions builder
+         */
+        public Builder setExcludeAttributes(boolean exclude) {
+            this.excludeAttributes = exclude;
+            return this;
+        }
+
+        /**
          * Creates the QueryOptions object.
          *
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns);
+            return new QueryOptions(this.columns, this.excludeBits, this.excludeAttributes);
         }
 
         private boolean columns = false;
+        private boolean excludeBits;
+        private boolean excludeAttributes;
     }
 
     /**
@@ -93,6 +117,14 @@ public class QueryOptions {
         return this.columns;
     }
 
+    public boolean isExcludeBits() {
+        return this.excludeBits;
+    }
+
+    public boolean isExcludeAttributes() {
+        return this.excludeAttributes;
+    }
+
     /**
      * Creates a QueryOptions.Builder object.
      * @return a Builder object
@@ -101,9 +133,13 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns) {
+    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes) {
         this.columns = columns;
+        this.excludeBits = excludeBits;
+        this.excludeAttributes = excludeAttributes;
     }
 
     private final boolean columns;
+    private final boolean excludeBits;
+    private final boolean excludeAttributes;
 }

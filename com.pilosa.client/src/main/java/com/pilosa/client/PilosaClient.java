@@ -635,7 +635,6 @@ public class PilosaClient implements AutoCloseable {
 class QueryRequest {
     private Index index;
     private String query = "";
-    private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean retrieveProfiles = false;
 
     private QueryRequest(Index index) {
@@ -664,10 +663,6 @@ class QueryRequest {
         this.query = query;
     }
 
-    void setTimeQuantum(TimeQuantum timeQuantum) {
-        this.timeQuantum = timeQuantum;
-    }
-
     void setRetrieveProfiles(boolean ok) {
         this.retrieveProfiles = ok;
     }
@@ -675,8 +670,7 @@ class QueryRequest {
     Internal.QueryRequest toProtobuf() {
         Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
-                .setColumnAttrs(this.retrieveProfiles)
-                .setQuantum(this.timeQuantum.toString());
+                .setColumnAttrs(this.retrieveProfiles);
         return builder.build();
     }
 }

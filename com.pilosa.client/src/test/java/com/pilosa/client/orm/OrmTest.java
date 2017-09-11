@@ -308,21 +308,11 @@ public class OrmTest {
     }
 
     @Test
-    public void averageTest() {
+    public void sumReduceTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q1 = sampleFrame.average(b, "foo");
+        PqlQuery q1 = sampleFrame.sumReduce(b, "foo");
         assertEquals(
-                "Average(frame='sample-frame', Bitmap(project=42, frame='collaboration'), field='foo')",
-                q1.serialize()
-        );
-    }
-
-    @Test
-    public void sumTest() {
-        PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q1 = sampleFrame.sum(b, "foo");
-        assertEquals(
-                "Sum(frame='sample-frame', Bitmap(project=42, frame='collaboration'), field='foo')",
+                "SumReduce(Bitmap(project=42, frame='collaboration'), frame='sample-frame', field='foo')",
                 q1.serialize()
         );
     }
@@ -380,7 +370,7 @@ public class OrmTest {
     }
 
     @Test(expected = PilosaException.class)
-    public void setProfileAttrsInvalidValuesTest() {
+    public void setColumnAttrsInvalidValuesTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
@@ -391,5 +381,13 @@ public class OrmTest {
     public void inverseBitmapFailsIfNotEnabledTest() {
         Frame frame = this.sampleIndex.frame("inverse-not-enabled");
         frame.inverseBitmap(5);
+    }
+
+    @Test
+    public void setFieldValueTest() {
+        PqlQuery q = collabFrame.setFieldValue(50, "foo", 15);
+        assertEquals(
+                "SetFieldValue(frame='collaboration', user=50, foo=15)",
+                q.serialize());
     }
 }

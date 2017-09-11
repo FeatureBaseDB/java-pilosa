@@ -477,6 +477,27 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void rangeFrameTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            FrameOptions options = FrameOptions.builder()
+                    .addIntField("foo", 10, 20)
+                    .build();
+            Frame frame = this.index.frame("rangeframe", options);
+            client.ensureFrame(frame);
+            client.query(this.index.batchQuery(
+                    frame.setBit(1, 10),
+                    frame.setBit(1, 100),
+                    frame.setFieldValue(10, "foo", 11),
+                    frame.setFieldValue(100, "foo", 15)
+            ));
+            QueryResponse response = client.query(frame.sumReduce(frame.bitmap(1), "foo"));
+            assertEquals(26, response.getResult().getSum());
+            assertEquals(2, response.getResult().getCount());
+        }
+
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();

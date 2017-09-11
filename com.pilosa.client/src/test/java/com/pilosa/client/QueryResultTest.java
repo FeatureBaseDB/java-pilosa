@@ -49,8 +49,8 @@ public class QueryResultTest {
 
     @Test
     public void testEquals() {
-        QueryResult q1 = new QueryResult(null, null, 1);
-        QueryResult q2 = new QueryResult(null, null, 1);
+        QueryResult q1 = new QueryResult(null, null, 1, 10);
+        QueryResult q2 = new QueryResult(null, null, 1, 10);
         assertEquals(q1, q1);
         assertEquals(q1, q2);
         assertFalse(q1.equals(new QueryResponse()));
@@ -58,8 +58,8 @@ public class QueryResultTest {
 
     @Test
     public void testHashCode() {
-        QueryResult q1 = new QueryResult(null, null, 1);
-        QueryResult q2 = new QueryResult(null, null, 1);
+        QueryResult q1 = new QueryResult(null, null, 1, 10);
+        QueryResult q2 = new QueryResult(null, null, 1, 10);
         assertEquals(q1.hashCode(), q2.hashCode());
     }
 }

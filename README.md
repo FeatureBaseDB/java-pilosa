@@ -14,7 +14,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 * **Next**:
     * Added support for creating range encoded frames.
-    * Added `Average`, `Sum` and `Xor` calls.
+    * Added `SumReduce` and `Xor` calls.
 
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.

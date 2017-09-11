@@ -62,4 +62,10 @@ public class QueryResultTest {
         QueryResult q2 = new QueryResult(null, null, 1, 10);
         assertEquals(q1.hashCode(), q2.hashCode());
     }
+
+    @Test
+    public void testGetSum() {
+        QueryResult q1 = new QueryResult(null, null, 1, 10);
+        assertEquals(10, q1.getSum());
+    }
 }

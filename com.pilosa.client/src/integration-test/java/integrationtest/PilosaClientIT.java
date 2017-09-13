@@ -491,7 +491,7 @@ public class PilosaClientIT {
                     frame.setFieldValue(10, "foo", 11),
                     frame.setFieldValue(100, "foo", 15)
             ));
-            QueryResponse response = client.query(frame.sumReduce(frame.bitmap(1), "foo"));
+            QueryResponse response = client.query(frame.sum(frame.bitmap(1), "foo"));
             assertEquals(26, response.getResult().getSum());
             assertEquals(2, response.getResult().getCount());
         }

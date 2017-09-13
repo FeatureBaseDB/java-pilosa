@@ -400,12 +400,12 @@ public class Frame {
      * </p>
      *
      * @param bitmap The bitmap query to use.
-     * @param field The field to calculate the sumReduce for.
+     * @param field The field to calculate the sum for.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
-    public PqlBaseQuery sumReduce(PqlBitmapQuery bitmap, String field) {
-        return rangeQuery("SumReduce", bitmap, field);
+    public PqlBaseQuery sum(PqlBitmapQuery bitmap, String field) {
+        return rangeQuery("Sum", bitmap, field);
     }
 
     @Override

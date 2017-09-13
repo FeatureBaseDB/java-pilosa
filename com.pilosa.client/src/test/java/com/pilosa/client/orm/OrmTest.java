@@ -310,9 +310,9 @@ public class OrmTest {
     @Test
     public void sumReduceTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q1 = sampleFrame.sumReduce(b, "foo");
+        PqlQuery q1 = sampleFrame.sum(b, "foo");
         assertEquals(
-                "SumReduce(Bitmap(project=42, frame='collaboration'), frame='sample-frame', field='foo')",
+                "Sum(Bitmap(project=42, frame='collaboration'), frame='sample-frame', field='foo')",
                 q1.serialize()
         );
     }

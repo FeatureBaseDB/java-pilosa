@@ -14,7 +14,7 @@ Java client for Pilosa high performance distributed bitmap index.
 
 * **Next**:
     * Added support for creating range encoded frames.
-    * Added `Sum` and `Xor` calls.
+    * Added `SetFieldValue`, `Sum` and `Xor` calls.
     * Added support for excluding bits or attributes from bitmap calls. In order to exclude bits, call `setExcludeBits(true)` in your `QueryOptions.Builder`. In order to exclude attributes, call `setExcludeAttributes(true)`.
 
 * **v0.5.1** (2017-08-11):

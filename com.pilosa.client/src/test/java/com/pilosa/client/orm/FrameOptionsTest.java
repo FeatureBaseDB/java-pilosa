@@ -40,8 +40,11 @@ import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class FrameOptionsTest {
@@ -86,9 +89,11 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 100)
+                .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000}}";
-        assertEquals(target, options.toString());
+        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
     @Test(expected = PilosaException.class)
@@ -120,6 +125,7 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 1000)
                 .build();
         FrameOptions options2 = FrameOptions.builder()
                 .setRowLabel("row")
@@ -127,10 +133,20 @@ public class FrameOptionsTest {
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
+                .addIntField("foo", 10, 1000)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
     }
 
+    @Test
+    public void testIsRangeEnabled() {
+        FrameOptions options = FrameOptions.withDefaults();
+        assertFalse(options.isRangeEnabled());
+        options = FrameOptions.builder()
+                .addIntField("baz", 10, 100)
+                .build();
+        assertTrue(options.isRangeEnabled());
+    }
 
     private void compare(FrameOptions options, String targetRowLabel,
                          TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,
@@ -140,5 +156,15 @@ public class FrameOptionsTest {
         assertEquals(targetInverseEnabled, options.isInverseEnabled());
         assertEquals(targetCacheType, options.getCacheType());
         assertEquals(targetCacheSize, options.getCacheSize());
+    }
+
+    private Object[] stringToSortedChars(String s) {
+        List<Character> characterList = new ArrayList<Character>();
+        for (char c : s.toCharArray()) {
+            characterList.add(c);
+        }
+        Object[] arr = characterList.toArray();
+        Arrays.sort(arr);
+        return arr;
     }
 }

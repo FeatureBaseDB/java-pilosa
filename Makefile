@@ -17,7 +17,7 @@ test:
 	mvn -f com.pilosa.client/pom.xml test
 
 test-all:
-	mvn -f com.pilosa.client/pom.xml test failsafe:integration-test
+	mvn -f com.pilosa.client/pom.xml test && mvn -f com.pilosa.client/pom.xml failsafe:integration-test
 
 cover:
 	mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report

@@ -84,6 +84,14 @@ public class IndexTest {
     }
 
     @Test
+    public void checkXorArgumentCountEnforced()
+            throws NoSuchMethodException, IllegalAccessException {
+        assertEquals(true, checkArguments("xor", 0));
+        assertEquals(true, checkArguments("xor", 1));
+        assertEquals(false, checkArguments("xor", 2));
+    }
+
+    @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = this.schema.index("foo").equals("foo");

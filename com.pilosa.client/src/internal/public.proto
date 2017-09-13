@@ -15,6 +15,11 @@ message Pair {
 	uint64 Count = 2;
 }
 
+message SumCount {
+    int64 Sum = 1;
+    int64 Count = 2;
+}
+
 message Bit {
 	uint64 RowID = 1;
 	uint64 ColumnID = 2;
@@ -43,8 +48,9 @@ message QueryRequest {
 	string Query = 1;
 	repeated uint64 Slices = 2;
 	bool ColumnAttrs = 3;
-	string Quantum = 4;
 	bool Remote = 5;
+    bool ExcludeAttrs = 6;
+    bool ExcludeBits = 7;
 }
 
 message QueryResponse {
@@ -57,6 +63,7 @@ message QueryResult {
 	Bitmap Bitmap = 1;
 	uint64 N = 2;
 	repeated Pair Pairs = 3;
+    SumCount SumCount = 5;
 	bool Changed = 4;
 }
 

@@ -164,7 +164,9 @@ public class PilosaClient implements AutoCloseable {
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveProfiles(options.isColumns());
+        request.setRetrieveColumnAttributes(options.isColumns());
+        request.setExcludeAttributes(options.isExcludeAttributes());
+        request.setExcludeBits(options.isExcludeBits());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -635,8 +637,9 @@ public class PilosaClient implements AutoCloseable {
 class QueryRequest {
     private Index index;
     private String query = "";
-    private TimeQuantum timeQuantum = TimeQuantum.NONE;
-    private boolean retrieveProfiles = false;
+    private boolean retrieveColumnAttributes = false;
+    private boolean excludeBits = false;
+    private boolean excludeAttributes = false;
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -664,20 +667,25 @@ class QueryRequest {
         this.query = query;
     }
 
-    void setTimeQuantum(TimeQuantum timeQuantum) {
-        this.timeQuantum = timeQuantum;
+    void setRetrieveColumnAttributes(boolean ok) {
+        this.retrieveColumnAttributes = ok;
     }
 
-    void setRetrieveProfiles(boolean ok) {
-        this.retrieveProfiles = ok;
+    public void setExcludeBits(boolean excludeBits) {
+        this.excludeBits = excludeBits;
+    }
+
+    public void setExcludeAttributes(boolean excludeAttributes) {
+        this.excludeAttributes = excludeAttributes;
     }
 
     Internal.QueryRequest toProtobuf() {
-        Internal.QueryRequest.Builder builder = Internal.QueryRequest.newBuilder()
+        return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
-                .setColumnAttrs(this.retrieveProfiles)
-                .setQuantum(this.timeQuantum.toString());
-        return builder.build();
+                .setColumnAttrs(this.retrieveColumnAttributes)
+                .setExcludeBits(this.excludeBits)
+                .setExcludeAttrs(this.excludeAttributes)
+                .build();
     }
 }
 

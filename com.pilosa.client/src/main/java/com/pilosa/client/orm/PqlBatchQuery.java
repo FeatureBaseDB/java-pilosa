@@ -43,7 +43,7 @@ import java.util.List;
  * Contains a batch of PQL queries.
  * <p>
  * Use <code>Index.batchQuery</code> method to create an instance.
- * This class is not thread-safe, do not update the same PqlPqlBatchQuery object in different threads.
+ * This class is not thread-safe, do not update the same PqlBatchQuery object in different threads.
  * <p>
  *     Usage
  * <pre>
@@ -114,7 +114,7 @@ public class PqlBatchQuery implements PqlQuery {
      */
     public void add(PqlQuery query) {
         if (query.getIndex() != this.getIndex()) {
-            throw new PilosaException("Query index should be the same as PqlPqlBatchQuery index");
+            throw new PilosaException("Query index should be the same as PqlBatchQuery index");
         }
         this.queries.add(query);
     }

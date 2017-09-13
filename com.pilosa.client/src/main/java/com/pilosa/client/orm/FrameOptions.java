@@ -38,6 +38,10 @@ import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.Validator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Contains options to customize {@link Frame} objects and frame queries.
  * <p>
@@ -127,13 +131,28 @@ public final class FrameOptions {
         }
 
         /**
+         * Adds an integer field to the frame options
+         *
+         * @param name Name of the field.
+         * @param min  Minimum value this field can represent.
+         * @param max  Maximum value this field can represent.
+         * @return FrameOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         */
+        public Builder addIntField(String name, long min, long max) {
+            this.fields.put(name, RangeField.intField(name, min, max));
+            return this;
+        }
+
+        /**
          * Creates the FrameOptions object.
          *
          * @return FrameOptions object
          */
         public FrameOptions build() {
             return new FrameOptions(this.rowLabel, this.timeQuantum,
-                    this.inverseEnabled, this.cacheType, this.cacheSize);
+                    this.inverseEnabled, this.cacheType, this.cacheSize,
+                    this.fields);
         }
 
         private String rowLabel = "rowID";
@@ -141,6 +160,7 @@ public final class FrameOptions {
         private boolean inverseEnabled = false;
         private CacheType cacheType = CacheType.DEFAULT;
         private int cacheSize = 0;
+        private Map<String, RangeField> fields = new HashMap<>();
 
     }
 
@@ -185,6 +205,10 @@ public final class FrameOptions {
         return this.cacheSize;
     }
 
+    public boolean isRangeEnabled() {
+        return this.fields.size() > 0;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -201,6 +225,19 @@ public final class FrameOptions {
         }
         if (this.cacheSize > 0) {
             builder.append(String.format(",\"cacheSize\":%d", this.cacheSize));
+        }
+        if (this.fields.size() > 0) {
+            builder.append(",\"rangeEnabled\":true");
+            builder.append(",\"fields\":[");
+            Iterator<Map.Entry<String, RangeField>> iter = this.fields.entrySet().iterator();
+            Map.Entry<String, RangeField> entry = iter.next();
+            builder.append(entry.getValue());
+            while (iter.hasNext()) {
+                entry = iter.next();
+                builder.append(",");
+                builder.append(entry.getValue());
+            }
+            builder.append("]");
         }
         builder.append("}}");
         return builder.toString();
@@ -219,7 +256,8 @@ public final class FrameOptions {
                 rhs.timeQuantum.equals(this.timeQuantum) &&
                 rhs.inverseEnabled == this.inverseEnabled &&
                 rhs.cacheType.equals(this.cacheType) &&
-                rhs.cacheSize == this.cacheSize;
+                rhs.cacheSize == this.cacheSize &&
+                rhs.fields.equals(this.fields);
     }
 
     @Override
@@ -230,17 +268,20 @@ public final class FrameOptions {
                 .append(this.inverseEnabled)
                 .append(this.cacheType)
                 .append(this.cacheSize)
+                .append(this.fields)
                 .toHashCode();
     }
 
     private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum,
                          final boolean inverseEnabled,
-                         final CacheType cacheType, final int cacheSize) {
+                         final CacheType cacheType, final int cacheSize,
+                         final Map<String, RangeField> fields) {
         this.rowLabel = rowLabel;
         this.timeQuantum = timeQuantum;
         this.inverseEnabled = inverseEnabled;
         this.cacheType = cacheType;
         this.cacheSize = cacheSize;
+        this.fields = (fields != null) ? fields : new HashMap<String, RangeField>();
     }
 
     private final String rowLabel;
@@ -248,4 +289,5 @@ public final class FrameOptions {
     private final boolean inverseEnabled;
     private final CacheType cacheType;
     private final int cacheSize;
+    private final Map<String, RangeField> fields;
 }

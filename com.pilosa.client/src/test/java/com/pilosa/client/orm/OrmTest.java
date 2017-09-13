@@ -251,6 +251,16 @@ public class OrmTest {
     }
 
     @Test
+    public void xorTest() {
+        PqlBitmapQuery b1 = sampleFrame.bitmap(10);
+        PqlBitmapQuery b2 = sampleFrame.bitmap(20);
+        PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
+        assertEquals(
+                "Xor(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                q1.serialize());
+    }
+
+    @Test
     public void countTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
         PqlQuery q = projectIndex.count(b);
@@ -295,6 +305,16 @@ public class OrmTest {
         assertEquals(
                 "TopN(frame='sample-frame', n=5, inverse=false)",
                 q4.serialize());
+    }
+
+    @Test
+    public void sumReduceTest() {
+        PqlBitmapQuery b = collabFrame.bitmap(42);
+        PqlQuery q1 = sampleFrame.sum(b, "foo");
+        assertEquals(
+                "Sum(Bitmap(project=42, frame='collaboration'), frame='sample-frame', field='foo')",
+                q1.serialize()
+        );
     }
 
     @Test(expected = PilosaException.class)
@@ -350,7 +370,7 @@ public class OrmTest {
     }
 
     @Test(expected = PilosaException.class)
-    public void setProfileAttrsInvalidValuesTest() {
+    public void setColumnAttrsInvalidValuesTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
@@ -361,5 +381,13 @@ public class OrmTest {
     public void inverseBitmapFailsIfNotEnabledTest() {
         Frame frame = this.sampleIndex.frame("inverse-not-enabled");
         frame.inverseBitmap(5);
+    }
+
+    @Test
+    public void setFieldValueTest() {
+        PqlQuery q = collabFrame.setFieldValue(50, "foo", 15);
+        assertEquals(
+                "SetFieldValue(frame='collaboration', user=50, foo=15)",
+                q.serialize());
     }
 }

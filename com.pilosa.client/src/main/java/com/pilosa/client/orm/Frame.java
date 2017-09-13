@@ -378,6 +378,36 @@ public class Frame {
                 this.rowLabel, rowID, this.name, attributesString));
     }
 
+    /**
+     * Creates a SetFieldValue query.
+     *
+     * @param columnID column ID
+     * @param field    the field to set
+     * @param value    the value to assign to the field
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
+     */
+    public PqlBaseQuery setFieldValue(long columnID, String field, long value) {
+        String qry = String.format("SetFieldValue(frame='%s', %s=%d, %s=%d)",
+                this.name, this.columnLabel, columnID, field, value);
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
+     * Creates a SumReduce query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @param field The field to calculate the sum for.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum(PqlBitmapQuery bitmap, String field) {
+        return rangeQuery("Sum", bitmap, field);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Frame)) {
@@ -397,6 +427,10 @@ public class Frame {
                 .append(this.index.getName())
                 .append(this.options)
                 .toHashCode();
+    }
+
+    private PqlBaseQuery rangeQuery(String call, PqlBitmapQuery bitmap, String field) {
+        return this.index.pqlQuery(String.format("%s(%s, frame='%s', field='%s')", call, bitmap.serialize(), this.name, field));
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

@@ -32,40 +32,67 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
+import com.pilosa.client.UnitTest;
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class QueryResultTest {
+public class RangeFieldTest {
     @Test
-    public void testCreateDefaultConstructor() {
-        new QueryResult();
+    public void testEqualsFailsWithOtherObject() {
+        RangeField field = RangeField.intField("foo", 10, 20);
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = field.equals("foo");
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        RangeField field = RangeField.intField("foo", -10, 1000);
+        assertEquals(field, field);
     }
 
     @Test
     public void testEquals() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1, q1);
-        assertEquals(q1, q2);
-        assertFalse(q1.equals(new QueryResponse()));
+        RangeField field1 = RangeField.intField("bar", -10, 1000);
+        RangeField field2 = RangeField.intField("bar", -10, 1000);
+        assertTrue(field1.equals(field2));
     }
 
     @Test
     public void testHashCode() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1.hashCode(), q2.hashCode());
+        RangeField field1 = RangeField.intField("foo", -10, 1000);
+        RangeField field2 = RangeField.intField("foo", -10, 1000);
+        assertEquals(field1.hashCode(), field2.hashCode());
     }
 
-    @Test
-    public void testGetSum() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        assertEquals(10, q1.getSum());
+    @Test(expected = ValidationException.class)
+    public void testInvalidProperties() {
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put("invalid", new ThrowsException());
+        RangeField field = new RangeField(properties);
+        String f = field.toString();
+        System.out.println(f);
+    }
+
+    @Test(expected = PilosaException.class)
+    public void testMaxGreaterThanMin() {
+        RangeField.intField("foo", 10, 9);
+    }
+}
+
+class ThrowsException {
+    @Override
+    public String toString() {
+        throw new RuntimeException("mock");
     }
 }

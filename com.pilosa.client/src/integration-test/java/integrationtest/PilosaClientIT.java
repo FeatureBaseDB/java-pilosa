@@ -477,6 +477,59 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void rangeFrameTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            FrameOptions options = FrameOptions.builder()
+                    .addIntField("foo", 10, 20)
+                    .build();
+            Frame frame = this.index.frame("rangeframe", options);
+            client.ensureFrame(frame);
+            client.query(this.index.batchQuery(
+                    frame.setBit(1, 10),
+                    frame.setBit(1, 100),
+                    frame.setFieldValue(10, "foo", 11),
+                    frame.setFieldValue(100, "foo", 15)
+            ));
+            QueryResponse response = client.query(frame.sum(frame.bitmap(1), "foo"));
+            assertEquals(26, response.getResult().getSum());
+            assertEquals(2, response.getResult().getCount());
+        }
+
+    }
+
+    @Test
+    public void excludeAttrsBitsTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            Map<String, Object> attrs = new HashMap<>(1);
+            attrs.put("foo", "bar");
+            client.query(colIndex.batchQuery(
+                    frame.setBit(1, 100),
+                    frame.setRowAttrs(1, attrs)
+            ));
+
+            QueryResponse response;
+            QueryOptions options;
+
+            // test exclude bits.
+            options = QueryOptions.builder()
+                    .setExcludeBits(true)
+                    .build();
+            response = client.query(frame.bitmap(1), options);
+            assertEquals(0, response.getResult().getBitmap().getBits().size());
+            assertEquals(1, response.getResult().getBitmap().getAttributes().size());
+
+            // test exclude attributes.
+            options = QueryOptions.builder()
+                    .setExcludeAttributes(true)
+                    .build();
+            response = client.query(frame.bitmap(1), options);
+            assertEquals(1, response.getResult().getBitmap().getBits().size());
+            assertEquals(0, response.getResult().getBitmap().getAttributes().size());
+
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();

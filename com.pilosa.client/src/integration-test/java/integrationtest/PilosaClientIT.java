@@ -115,6 +115,19 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void responseDefaultsTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            QueryResponse response = client.query(this.frame.topN(5));
+            assertNotNull(response.getResult().getBitmap());
+            assertNotNull(response.getResult().getCountItems());
+            response = client.query(this.frame.bitmap(99999));
+            assertNotNull(response.getResult().getBitmap());
+            assertNotNull(response.getResult().getCountItems());
+        }
+
+    }
+
+    @Test
     public void createIndexWithTimeQuantumTest() throws IOException {
         IndexOptions options = IndexOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)

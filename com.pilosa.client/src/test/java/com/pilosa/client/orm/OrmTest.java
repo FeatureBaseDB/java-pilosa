@@ -308,7 +308,7 @@ public class OrmTest {
     }
 
     @Test
-    public void sumReduceTest() {
+    public void sumTest() {
         PqlBitmapQuery b = collabFrame.bitmap(42);
         PqlQuery q1 = sampleFrame.sum(b, "foo");
         assertEquals(

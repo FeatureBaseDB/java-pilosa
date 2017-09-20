@@ -34,9 +34,14 @@
 
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -53,8 +58,22 @@ import java.util.Scanner;
 public class CsvFileBitIterator implements BitIterator {
     private Scanner scanner = null;
     private Bit nextBit = null;
+    private SimpleDateFormat timestampFormat = null;
 
-    private CsvFileBitIterator() {
+    private CsvFileBitIterator(SimpleDateFormat timestampFormat) {
+        this.timestampFormat = timestampFormat;
+    }
+
+    private long parseTimestamp(final String s) {
+        if (this.timestampFormat == null) {
+            return Long.parseLong(s);
+        }
+        try {
+            Date date = this.timestampFormat.parse(s);
+            return date.getTime() / 1000;
+        } catch (ParseException ex) {
+            throw new PilosaException("Error parsing timestamp:", ex);
+        }
     }
 
     /**
@@ -69,6 +88,18 @@ public class CsvFileBitIterator implements BitIterator {
     }
 
     /**
+     * Creates a bit iterator from the CSV file at the given path.
+     *
+     * @param path            of the CSV file
+     * @param timestampFormat timestamp format to be used for CSV lines if they have the timestamp field
+     * @return bit iterator
+     * @throws FileNotFoundException if the path does not exist
+     */
+    public static CsvFileBitIterator fromPath(String path, SimpleDateFormat timestampFormat) throws FileNotFoundException {
+        return fromStream(new FileInputStream(path), timestampFormat);
+    }
+
+    /**
      * Creates a bit iterator from an input stream.
      *
      * @param stream CSV stream
@@ -76,7 +107,19 @@ public class CsvFileBitIterator implements BitIterator {
      */
     @SuppressWarnings("WeakerAccess")
     public static CsvFileBitIterator fromStream(InputStream stream) {
-        CsvFileBitIterator iterator = new CsvFileBitIterator();
+        return fromStream(stream, null);
+    }
+
+    /**
+     * Creates a bit iterator from an input stream.
+     *
+     * @param stream          CSV stream
+     * @param timestampFormat timestamp format to be used for CSV lines if they have the timestamp field
+     * @return bit iterator
+     */
+    @SuppressWarnings("WeakerAccess")
+    public static CsvFileBitIterator fromStream(InputStream stream, SimpleDateFormat timestampFormat) {
+        CsvFileBitIterator iterator = new CsvFileBitIterator(timestampFormat);
         iterator.scanner = new Scanner(stream);
         return iterator;
     }
@@ -94,7 +137,7 @@ public class CsvFileBitIterator implements BitIterator {
                 long columnID = Long.parseLong(fields[1]);
                 long timestamp = 0;
                 if (fields.length > 2) {
-                    timestamp = Long.parseLong(fields[2]);
+                    timestamp = parseTimestamp(fields[2]);
                 }
                 this.nextBit = Bit.create(rowID, columnID, timestamp);
                 return true;

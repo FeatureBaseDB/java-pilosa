@@ -37,11 +37,13 @@ package integrationtest;
 import com.pilosa.client.Bit;
 import com.pilosa.client.CsvFileBitIterator;
 import com.pilosa.client.IntegrationTest;
+import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,18 +64,58 @@ public class CsvFileBitIteratorIT {
         while (iterator.hasNext()) {
             bits.add(iterator.next());
         }
-        List<List<Long>> targetValues = Arrays.asList(
-                Arrays.asList(1L, 10L, 683793200L),
-                Arrays.asList(5L, 20L, 683793300L),
-                Arrays.asList(3L, 41L, 683793385L));
-        List<Bit> target = new ArrayList<>(3);
-        for (List<Long> item : targetValues)
-            target.add(Bit.create(item.get(0), item.get(1), item.get(2)));
+        List<Bit> target = getTargetRows();
         assertEquals(3, bits.size());
         assertEquals(target, bits);
 
         // to get %100 test coverage
         assertFalse(iterator.hasNext());
         iterator.remove();
+    }
+
+    @Test
+    public void readFromCsvWithCustomTimestampTest() throws FileNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL uri = loader.getResource("sample2.csv");
+        if (uri == null) {
+            fail("sample2.csv not found");
+        }
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
+        List<Bit> bits = new ArrayList<>(3);
+        while (iterator.hasNext()) {
+            bits.add(iterator.next());
+        }
+        List<Bit> target = getTargetRows();
+        assertEquals(3, bits.size());
+        assertEquals(target, bits);
+    }
+
+    @Test(expected = PilosaException.class)
+    public void readFromCsvWithCustomTimestampFailTest() throws FileNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL uri = loader.getResource("sample2.csv");
+        if (uri == null) {
+            fail("sample2.csv not found");
+        }
+        // timestamp format that doesn't match sample2.csv
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'TX'hh:mm");
+        CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
+        List<Bit> bits = new ArrayList<>(3);
+        while (iterator.hasNext()) {
+            bits.add(iterator.next());
+        }
+    }
+
+    private List<Bit> getTargetRows() {
+        List<List<Long>> targetValues = Arrays.asList(
+                Arrays.asList(1L, 10L, 683793200L),
+                Arrays.asList(5L, 20L, 683793300L),
+                Arrays.asList(3L, 41L, 683793385L));
+        List<Bit> target = new ArrayList<>(3);
+        for (List<Long> item : targetValues) {
+            target.add(Bit.create(item.get(0), item.get(1), item.get(2)));
+        }
+        return target;
     }
 }

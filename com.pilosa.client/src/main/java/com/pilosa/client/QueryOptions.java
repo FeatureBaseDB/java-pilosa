@@ -68,7 +68,7 @@ public class QueryOptions {
         }
 
         /**
-         * Disables returing bits from bitmap queries.
+         * Disables returning bits from bitmap queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) bits
          * @return QueryOptions builder
@@ -79,7 +79,7 @@ public class QueryOptions {
         }
 
         /**
-         * Disables returing attributes from bitmap queries.
+         * Disables returning attributes from bitmap queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) attributes
          * @return QueryOptions builder

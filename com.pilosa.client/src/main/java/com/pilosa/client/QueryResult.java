@@ -66,9 +66,11 @@ public final class QueryResult {
         for (Internal.Pair pair : q.getPairsList()) {
             items.add(CountResultItem.fromInternal(pair));
         }
-        BitmapResult bitmapResult = null;
+        BitmapResult bitmapResult;
         if (q.hasBitmap()) {
             bitmapResult = BitmapResult.fromInternal(q.getBitmap());
+        } else {
+            bitmapResult = BitmapResult.defaultBitmapResult();
         }
         Internal.SumCount sumCount = q.getSumCount();
         long count = (q.getN() > 0) ? q.getN() : sumCount.getCount();

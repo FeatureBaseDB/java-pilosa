@@ -37,6 +37,8 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +61,13 @@ public final class BitmapResult {
 
     static BitmapResult fromInternal(Internal.Bitmap b) {
         return new BitmapResult(Util.protobufAttrsToMap(b.getAttrsList()), b.getBitsList());
+    }
+
+    static BitmapResult defaultBitmapResult() {
+        BitmapResult result = new BitmapResult();
+        result.attributes = new HashMap<>();
+        result.bits = new ArrayList<>();
+        return result;
     }
 
     /**

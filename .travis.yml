@@ -5,10 +5,11 @@ jdk:
     - oraclejdk8
 sudo: required
 group: deprecated-2017Q2
-services:
-  - docker
 before_install:
-  - docker run -d -p 10101:10101 pilosa/pilosa:v0.6.0
+  - sudo apt-get update
+  - sudo apt-get install awscli
+  - aws s3 --no-sign-request cp s3://build.pilosa.com/pilosa-master-linux-amd64.tar.gz pilosa.tar.gz && tar xf pilosa.tar.gz
+  - ./pilosa-master-linux-amd64/pilosa server &
 script:
   - mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report coveralls:report
 

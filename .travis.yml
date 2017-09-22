@@ -4,7 +4,6 @@ jdk:
     - oraclejdk7
     - oraclejdk8
 sudo: required
-group: deprecated-2017Q2
 before_install:
   - sudo apt-get update
   - sudo apt-get install awscli

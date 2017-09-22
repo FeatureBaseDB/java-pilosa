@@ -6,7 +6,8 @@ jdk:
 sudo: required
 before_install:
   - sudo apt-get update
-  - sudo apt-get install awscli
+  - sudo apt-get install python-pip
+  - sudo pip install awscli
   - aws s3 --no-sign-request cp s3://build.pilosa.com/pilosa-master-linux-amd64.tar.gz pilosa.tar.gz && tar xf pilosa.tar.gz
   - ./pilosa-master-linux-amd64/pilosa server &
 script:

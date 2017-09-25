@@ -16,11 +16,12 @@ Java client for Pilosa high performance distributed bitmap index.
     * Added support for creating range encoded frames.
     * Added `SetFieldValue`, `Sum` and `Xor` calls.
     * Added support for excluding bits or attributes from bitmap calls. In order to exclude bits, call `setExcludeBits(true)` in your `QueryOptions.Builder`. In order to exclude attributes, call `setExcludeAttributes(true)`.
-    * Customizable CSV time stamp format. 
-
+    * Customizable CSV time stamp format.
+    * **Deprecation** Row and column labels are deprecated, and will be removed in a future release of this library. Do not use `IndexOptions.Builder.setColumnLabel` and `FrameOptions.Builder.setRowLabel` methods for new code. See: https://github.com/pilosa/pilosa/issues/752 for more info.
+    
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
-    * Fixes reading schemas with no indexes. 
+    * Fixes reading schemas with no indexes.
 
 * **v0.5.0** (2017-08-03):
     * Failover for connection errors.    
@@ -128,11 +129,10 @@ Schema schema = Schema.defaultSchema();
 Index repository = schema.index("repository");
 ```
 
-Indexes support changing the column label and time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Schema.index`:
+Indexes support changing the time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Schema.index`:
 
 ```java
 IndexOptions options = IndexOptions.builder()
-    .setColumnLabel("repo_id")
     .setTimeQuantum(TimeQuantum.YEAR_MONTH)
     .build();
 
@@ -149,7 +149,7 @@ Similar to index objects, you can pass custom options to frames:
 
 ```java
 FrameOptions stargazerOptions = FrameOptions.builder()
-    .setRowLabel("stargazer_id")
+    .setInverseEnabled(true)
     .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
     .build();
 
@@ -163,7 +163,7 @@ Once you have indexes and frame objects created, you can create queries for them
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
 ```java
-PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(frame='stargazer', stargazer_id=1)
+PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(frame='stargazer', row=1)
 ```
 
 `Union` queries work on columns; use the index object to create them:
@@ -184,7 +184,7 @@ PqlQuery query = repository.batchQuery(
 The recommended way of creating query objects is, using dedicated methods attached to index and frame objects. But sometimes it would be desirable to send raw queries to Pilosa. You can use `index.rawQuery` method for that. Note that, query string is not validated before sending to the server:
 
 ```java
-PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', stargazer_id=5)");
+PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', row=5)");
 ```
 
 Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:

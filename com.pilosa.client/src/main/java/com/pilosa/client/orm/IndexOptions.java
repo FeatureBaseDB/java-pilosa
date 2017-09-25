@@ -46,7 +46,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * <pre>
  *  <code>
  *     IndexOptions options = IndexOptions.builder()
- *         .setColumnLabel("col-id")
+ *         .setInverseEnabled(true)
  *         .setTimeQuantum(TimeQuantum.YEAR)
  *         .build();
  *  </code>
@@ -67,7 +67,9 @@ public final class IndexOptions {
          * @param columnLabel a valid column label. See {@link Validator#ensureValidLabel(String)} for constraints on labels.
          * @return IndexOptions builder
          * @throws com.pilosa.client.exceptions.ValidationException if the column label is invalid.
+         * @deprecated Column labels are deprecated and will be removed in a future release.
          */
+        @Deprecated
         public Builder setColumnLabel(String columnLabel) {
             Validator.ensureValidLabel(columnLabel);
             this.columnLabel = columnLabel;
@@ -119,6 +121,7 @@ public final class IndexOptions {
     }
 
     @SuppressWarnings("WeakerAccess")
+    @Deprecated
     public String getColumnLabel() {
         return this.columnLabel;
     }

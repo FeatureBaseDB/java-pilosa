@@ -50,7 +50,7 @@ import java.util.Map;
  * <pre>
  *  <code>
  *     FrameOptions options = FrameOptions.builder()
- *         .setRowLabel("row-id")
+ *         .setInverseEnabled(true)
  *         .setTimeQuantum(TimeQuantum.YEAR)
  *         .build();
  *  </code>
@@ -70,7 +70,9 @@ public final class FrameOptions {
          * @param rowLabel a valid row label. See {@link Validator#ensureValidLabel(String)} for constraints on labels.
          * @return FrameOptions builder
          * @throws com.pilosa.client.exceptions.ValidationException if the row label is invalid.
+         * @deprecated Row labels are deprecated and will be removed in a future release.
          */
+        @Deprecated
         public Builder setRowLabel(String rowLabel) {
             Validator.ensureValidLabel(rowLabel);
             this.rowLabel = rowLabel;
@@ -175,6 +177,7 @@ public final class FrameOptions {
     }
 
     @SuppressWarnings("WeakerAccess")
+    @Deprecated
     public String getRowLabel() {
         return this.rowLabel;
     }

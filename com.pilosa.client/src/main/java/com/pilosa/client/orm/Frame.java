@@ -44,6 +44,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -64,6 +65,7 @@ public class Frame {
         this.options = options;
         this.columnLabel = index.getOptions().getColumnLabel();
         this.rowLabel = options.getRowLabel();
+        this.fields = new HashMap<>();
     }
 
     /**
@@ -379,33 +381,18 @@ public class Frame {
     }
 
     /**
-     * Creates a SetFieldValue query.
-     *
-     * @param columnID column ID
-     * @param field    the field to set
-     * @param value    the value to assign to the field
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
+     * Returns a RangeField object with the given name
+     * @param name field name
+     * @return RangeField object
      */
-    public PqlBaseQuery setFieldValue(long columnID, String field, long value) {
-        String qry = String.format("SetFieldValue(frame='%s', %s=%d, %s=%d)",
-                this.name, this.columnLabel, columnID, field, value);
-        return this.index.pqlQuery(qry);
-    }
-
-    /**
-     * Creates a SumReduce query.
-     * <p>
-     * The frame for this query should have fields set.
-     * </p>
-     *
-     * @param bitmap The bitmap query to use.
-     * @param field The field to calculate the sum for.
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
-     */
-    public PqlBaseQuery sum(PqlBitmapQuery bitmap, String field) {
-        return rangeQuery("Sum", bitmap, field);
+    public RangeField field(String name) {
+        RangeField field = this.fields.get(name);
+        if (field == null) {
+            Validator.ensureValidLabel(name);
+            field = new RangeField(this, name);
+            this.fields.put(name, field);
+        }
+        return field;
     }
 
     @Override
@@ -429,10 +416,6 @@ public class Frame {
                 .toHashCode();
     }
 
-    private PqlBaseQuery rangeQuery(String call, PqlBitmapQuery bitmap, String field) {
-        return this.index.pqlQuery(String.format("%s(%s, frame='%s', field='%s')", call, bitmap.serialize(), this.name, field));
-    }
-
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
     private final static DateFormat fmtTime = new SimpleDateFormat("HH:mm");
     private String name;
@@ -440,5 +423,6 @@ public class Frame {
     private FrameOptions options;
     private String rowLabel;
     private String columnLabel;
+    private Map<String, RangeField> fields;
     private ObjectMapper mapper = new ObjectMapper();
 }

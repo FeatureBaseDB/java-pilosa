@@ -501,14 +501,17 @@ public class PilosaClientIT {
             client.query(this.index.batchQuery(
                     frame.setBit(1, 10),
                     frame.setBit(1, 100),
-                    frame.setFieldValue(10, "foo", 11),
-                    frame.setFieldValue(100, "foo", 15)
+                    frame.field("foo").setValue(10, 11),
+                    frame.field("foo").setValue(100, 15)
             ));
-            QueryResponse response = client.query(frame.sum(frame.bitmap(1), "foo"));
+            QueryResponse response = client.query(frame.field("foo").sum(frame.bitmap(1)));
             assertEquals(26, response.getResult().getSum());
             assertEquals(2, response.getResult().getCount());
-        }
 
+            response = client.query(frame.field("foo").lessThan(15));
+            assertEquals(1, response.getResults().size());
+            assertEquals(10, (long) response.getResult().getBitmap().getBits().get(0));
+        }
     }
 
     @Test

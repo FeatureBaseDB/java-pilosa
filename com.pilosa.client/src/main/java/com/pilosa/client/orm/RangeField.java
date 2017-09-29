@@ -34,36 +34,90 @@
 
 package com.pilosa.client.orm;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.Validator;
-import com.pilosa.client.exceptions.ValidationException;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RangeField {
-    public static RangeField intField(String name, long min, long max) {
-        Validator.ensureValidLabel(name);
-        if (max <= min) {
-            throw new ValidationException("Max should be greater than min for int fields");
-        }
-        Map<String, Object> properties = new HashMap<>(4);
-        properties.put("name", name);
-        properties.put("type", "int");
-        properties.put("min", min);
-        properties.put("max", max);
-        return new RangeField(properties);
+    /**
+     * Creates a Range query with less than (<) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery lessThan(long n) {
+        return binaryOperation("<", n);
     }
 
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this.properties);
-        } catch (Exception ex) {
-            throw new ValidationException("Field properties weren't converted to JSON", ex);
-        }
+    /**
+     * Creates a Range query with less than or equal (<=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery lessThanOrEqual(long n) {
+        return binaryOperation("<=", n);
+    }
+
+    /**
+     * Creates a Range query with greater than (>) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery greaterThan(long n) {
+        return binaryOperation(">", n);
+    }
+
+    /**
+     * Creates a Range query with greater than or equal (>=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery greaterThanOrEqual(long n) {
+        return binaryOperation(">=", n);
+    }
+
+    /**
+     * Creates a Range query with between (><) condition.
+     *
+     * @param a Closed range start
+     * @param b Closed range end
+     * @return a PQL query
+     */
+    public PqlBitmapQuery between(long a, long b) {
+        String qry = String.format("Range(frame='%s', %s >< [%d,%d])",
+                frame.getName(), this.name, a, b);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    /**
+     * Creates a Sum query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum(PqlBitmapQuery bitmap) {
+        String qry = String.format("Sum(%s, frame='%s', field='%s')",
+                bitmap.serialize(), frame.getName(), name);
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
+     * Creates a SetFieldValue query.
+     *
+     * @param columnID column ID
+     * @param value    the value to assign to the field
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
+     */
+    public PqlBaseQuery setValue(long columnID, long value) {
+        String qry = String.format("SetFieldValue(frame='%s', %s=%d, %s=%d)",
+                frame.getName(), this.index.getOptions().getColumnLabel(), columnID, name, value);
+        return this.index.pqlQuery(qry);
     }
 
     @Override
@@ -75,19 +129,30 @@ public class RangeField {
             return true;
         }
         RangeField rhs = (RangeField) obj;
-        return rhs.properties.equals(this.properties);
+        return rhs.name.equals(this.name);
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.properties)
+                .append(this.name)
                 .toHashCode();
     }
 
-    RangeField(Map<String, Object> properties) {
-        this.properties = properties;
+
+    RangeField(Frame frame, String name) {
+        this.index = frame.getIndex();
+        this.frame = frame;
+        this.name = name;
     }
 
-    private final Map<String, Object> properties;
+    private PqlBitmapQuery binaryOperation(String op, long n) {
+        String qry = String.format("Range(frame='%s', %s %s %d)",
+                frame.getName(), this.name, op, n);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    private Index index;
+    private Frame frame;
+    private String name;
 }

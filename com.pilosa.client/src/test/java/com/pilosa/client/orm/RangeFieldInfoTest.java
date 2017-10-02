@@ -35,17 +35,21 @@
 package com.pilosa.client.orm;
 
 import com.pilosa.client.UnitTest;
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class RangeFieldTest {
-
+public class RangeFieldInfoTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
-        RangeField field = frame.field("myfield");
+        RangeFieldInfo field = RangeFieldInfo.intField("foo", 10, 20);
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = field.equals("foo");
         assertFalse(e);
@@ -53,29 +57,42 @@ public class RangeFieldTest {
 
     @Test
     public void testEqualsSameObject() {
-        RangeField field = frame.field("myfield");
+        RangeFieldInfo field = RangeFieldInfo.intField("foo", -10, 1000);
         assertEquals(field, field);
     }
 
     @Test
     public void testEquals() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = new RangeField(frame, "myfield");
+        RangeFieldInfo field1 = RangeFieldInfo.intField("bar", -10, 1000);
+        RangeFieldInfo field2 = RangeFieldInfo.intField("bar", -10, 1000);
         assertTrue(field1.equals(field2));
     }
 
     @Test
     public void testHashCode() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = frame.field("myfield");
+        RangeFieldInfo field1 = RangeFieldInfo.intField("foo", -10, 1000);
+        RangeFieldInfo field2 = RangeFieldInfo.intField("foo", -10, 1000);
         assertEquals(field1.hashCode(), field2.hashCode());
     }
 
-    static {
-        Schema schema = Schema.defaultSchema();
-        Index index = schema.index("myindex");
-        frame = index.frame("myframe");
+    @Test(expected = ValidationException.class)
+    public void testInvalidProperties() {
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put("invalid", new ThrowsException());
+        RangeFieldInfo field = new RangeFieldInfo(properties);
+        String f = field.toString();
+        System.out.println(f);
     }
 
-    private static Frame frame;
+    @Test(expected = PilosaException.class)
+    public void testMaxGreaterThanMin() {
+        RangeFieldInfo.intField("foo", 10, 9);
+    }
+}
+
+class ThrowsException {
+    @Override
+    public String toString() {
+        throw new RuntimeException("mock");
+    }
 }

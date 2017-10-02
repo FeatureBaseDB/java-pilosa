@@ -36,6 +36,7 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -307,16 +308,6 @@ public class OrmTest {
                 q4.serialize());
     }
 
-    @Test
-    public void sumTest() {
-        PqlBitmapQuery b = collabFrame.bitmap(42);
-        PqlQuery q1 = sampleFrame.sum(b, "foo");
-        assertEquals(
-                "Sum(Bitmap(project=42, frame='collaboration'), frame='sample-frame', field='foo')",
-                q1.serialize()
-        );
-    }
-
     @Test(expected = PilosaException.class)
     public void topNInvalidValuesTest() {
         sampleFrame.topN(5, sampleFrame.bitmap(2), "category", 80, new Object());
@@ -384,10 +375,67 @@ public class OrmTest {
     }
 
     @Test
-    public void setFieldValueTest() {
-        PqlQuery q = collabFrame.setFieldValue(50, "foo", 15);
+    public void fieldLessThanTest() {
+        PqlQuery q = sampleFrame.field("foo").lessThan(10);
         assertEquals(
-                "SetFieldValue(frame='collaboration', user=50, foo=15)",
+                "Range(frame='sample-frame', foo < 10)",
                 q.serialize());
+    }
+
+    @Test
+    public void fieldLessThanOrEqualTest() {
+        PqlQuery q = sampleFrame.field("foo").lessThanOrEqual(10);
+        assertEquals(
+                "Range(frame='sample-frame', foo <= 10)",
+                q.serialize());
+
+    }
+
+    @Test
+    public void fieldGreaterThanTest() {
+        PqlQuery q = sampleFrame.field("foo").greaterThan(10);
+        assertEquals(
+                "Range(frame='sample-frame', foo > 10)",
+                q.serialize());
+
+    }
+
+    @Test
+    public void fieldGreaterThanOrEqualTest() {
+        PqlQuery q = sampleFrame.field("foo").greaterThanOrEqual(10);
+        assertEquals(
+                "Range(frame='sample-frame', foo >= 10)",
+                q.serialize());
+
+    }
+
+    @Test
+    public void fieldBetweenTest() {
+        PqlQuery q = sampleFrame.field("foo").between(10, 20);
+        assertEquals(
+                "Range(frame='sample-frame', foo >< [10,20])",
+                q.serialize());
+
+    }
+
+    @Test
+    public void fieldSumTest() {
+        PqlQuery q = sampleFrame.field("foo").sum(sampleFrame.bitmap(10));
+        assertEquals(
+                "Sum(Bitmap(rowID=10, frame='sample-frame'), frame='sample-frame', field='foo')",
+                q.serialize());
+    }
+
+    @Test
+    public void fieldSetValueTest() {
+        PqlQuery q = sampleFrame.field("foo").setValue(10, 20);
+        assertEquals(
+                "SetFieldValue(frame='sample-frame', columnID=10, foo=20)",
+                q.serialize());
+    }
+
+    @Test(expected = ValidationException.class)
+    public void invalidFieldTest() {
+        sampleFrame.field("??foo");
     }
 }

@@ -12,6 +12,7 @@ before_install:
   - tar xf apache-maven-3.5.0-bin.tar.gz
   - export M2_HOME=$PWD/apache-maven-3.5.0
   - export PATH=$M2_HOME/bin:$PATH
+  - echo "MAVEN_OPTS='-XX:MaxPermSize=192m'" > ~/.mavenrc
 script:
   - mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report coveralls:report
 

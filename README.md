@@ -18,6 +18,7 @@ Java client for Pilosa high performance distributed bitmap index.
     * Added range field operations.    
     * Added support for excluding bits or attributes from bitmap calls. In order to exclude bits, call `setExcludeBits(true)` in your `QueryOptions.Builder`. In order to exclude attributes, call `setExcludeAttributes(true)`.
     * Customizable CSV time stamp format.
+    * `HTTPS connections are supported.
     * **Deprecation** Row and column labels are deprecated, and will be removed in a future release of this library. Do not use `IndexOptions.Builder.setColumnLabel` and `FrameOptions.Builder.setRowLabel` methods for new code. See: https://github.com/pilosa/pilosa/issues/752 for more info.
     
 * **v0.5.1** (2017-08-11):

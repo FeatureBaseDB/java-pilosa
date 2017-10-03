@@ -46,14 +46,22 @@ import com.pilosa.client.status.StatusInfo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -687,7 +695,22 @@ public class PilosaClientIT {
     }
 
     private PilosaClient getClient() {
-        return PilosaClient.withAddress(SERVER_ADDRESS);
+        SSLContext sslContext;
+        try {
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    return true;
+                }
+            }).build();
+        } catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException ex) {
+            sslContext = null;
+        }
+        ClientOptions.Builder optionsBuilder = ClientOptions.builder();
+        if (sslContext != null) {
+            optionsBuilder.setSslContext(sslContext);
+        }
+        Cluster cluster = Cluster.withHost(URI.address(SERVER_ADDRESS));
+        return PilosaClient.withCluster(cluster, optionsBuilder.build());
     }
 
     private static int counter = 0;

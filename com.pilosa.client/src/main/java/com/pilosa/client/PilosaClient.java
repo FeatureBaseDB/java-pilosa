@@ -49,6 +49,11 @@ import com.pilosa.client.status.StatusInfo;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -57,6 +62,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.HostnameVerifier;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -400,15 +406,27 @@ public class PilosaClient implements AutoCloseable {
     private String getAddress() {
         this.currentAddress = this.cluster.getHost();
         String scheme = this.currentAddress.getScheme();
-        if (!scheme.equals(HTTP)) {
+        if (!scheme.equals(HTTP) && !scheme.equals(HTTPS)) {
             throw new PilosaException("Unknown scheme: " + scheme);
         }
-        logger.info("Current host set: {}", this.currentAddress);
+        logger.debug("Current host set: {}", this.currentAddress);
         return this.currentAddress.getNormalized();
     }
 
+    private Registry<ConnectionSocketFactory> getRegistry() {
+
+        HostnameVerifier verifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                this.options.getSslContext(),
+                new String[]{"TLSv1.2"}, null, verifier);
+        return RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslConnectionSocketFactory)
+                .build();
+    }
+
     private void connect() {
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(getRegistry());
         cm.setDefaultMaxPerRoute(this.options.getConnectionPoolSizePerRoute());
         cm.setMaxTotal(this.options.getConnectionPoolTotalSize());
         RequestConfig requestConfig = RequestConfig.custom()
@@ -625,6 +643,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private static final String HTTP = "http";
+    private static final String HTTPS = "https";
     private static final int MAX_HOSTS = 10;
     private static final Logger logger = LoggerFactory.getLogger("pilosa");
     private Cluster cluster;

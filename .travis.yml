@@ -2,7 +2,6 @@ language: java
 jdk:
     - openjdk7
     - oraclejdk8
-    - oraclejdk9
 sudo: required
 before_install:
   - wget https://s3.amazonaws.com/build.pilosa.com/pilosa-master-linux-amd64.tar.gz && tar xf pilosa-master-linux-amd64.tar.gz

@@ -558,7 +558,8 @@ public class PilosaClient implements AutoCloseable {
         Collections.sort(bits, bitComparator);
         List<FragmentNode> nodes = fetchFrameNodes(indexName, slice);
         for (FragmentNode node : nodes) {
-            PilosaClient client = PilosaClient.withURI(node.toURI());
+            Cluster cluster = Cluster.withHost(node.toURI());
+            PilosaClient client = PilosaClient.withCluster(cluster, this.options);
             Internal.ImportRequest importRequest = bitsToImportRequest(indexName, frameName, slice, bits);
             client.importNode(importRequest);
         }
@@ -714,6 +715,10 @@ class FragmentNode {
         this.host = host;
     }
 
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
     @SuppressWarnings("unused")
     public void setInternalHost(String host) {
         // internal host is used for internode communication
@@ -721,10 +726,11 @@ class FragmentNode {
     }
 
     URI toURI() {
-        return URI.address(this.host);
+        return URI.address(String.format("%s://%s", this.scheme, this.host));
     }
 
     private String host;
+    private String scheme;
 }
 
 class BitComparator implements Comparator<Bit> {

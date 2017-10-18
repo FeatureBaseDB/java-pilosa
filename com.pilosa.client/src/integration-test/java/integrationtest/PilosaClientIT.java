@@ -778,7 +778,7 @@ public class PilosaClientIT {
     static class FragmentNodesHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange r) throws IOException {
-            String response = "[{\"host\":\"localhost:15999\"}]";
+            String response = "[{\"scheme\":\"http\", \"host\":\"localhost:15999\"}]";
             r.sendResponseHeaders(200, response.length());
             try (OutputStream os = r.getResponseBody()) {
                 os.write(response.getBytes());

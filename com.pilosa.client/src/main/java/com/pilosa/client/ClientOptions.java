@@ -34,6 +34,10 @@
 
 package com.pilosa.client;
 
+import org.apache.http.ssl.SSLContexts;
+
+import javax.net.ssl.SSLContext;
+
 /**
  * Contains options to customize {@link PilosaClient}.
  * <p>
@@ -112,13 +116,19 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setSslContext(SSLContext sslContext) {
+            this.sslContext = sslContext;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
          */
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
-                    this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize);
+                    this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
+                    this.sslContext);
         }
 
         private int socketTimeout = 300000;
@@ -126,6 +136,7 @@ public final class ClientOptions {
         private int retryCount = 3;
         private int connectionPoolSizePerRoute = 10;
         private int connectionPoolTotalSize = 100;
+        private SSLContext sslContext = SSLContexts.createDefault();
     }
 
     /**
@@ -156,13 +167,19 @@ public final class ClientOptions {
         return connectionPoolTotalSize;
     }
 
+    public SSLContext getSslContext() {
+        return this.sslContext;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
-                          final int connectionPoolSizePerRoute, final int connectionPoolTotalSize) {
+                          final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
+                          final SSLContext sslContext) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
+        this.sslContext = sslContext;
     }
 
     private final int socketTimeout; // milliseconds
@@ -170,4 +187,5 @@ public final class ClientOptions {
     private final int retryCount;
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
+    private final SSLContext sslContext;
 }

@@ -3,10 +3,13 @@ jdk:
     - openjdk7
     - oraclejdk8
 sudo: required
-group: deprecated-2017Q2
 before_install:
   - wget https://s3.amazonaws.com/build.pilosa.com/pilosa-master-linux-amd64.tar.gz && tar xf pilosa-master-linux-amd64.tar.gz
   - ./pilosa-master-linux-amd64/pilosa server &
+  - wget http://www-us.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz
+  - tar xf apache-maven-3.5.0-bin.tar.gz
+  - export M2_HOME=$PWD/apache-maven-3.5.0
+  - export PATH=$M2_HOME/bin:$PATH
 script:
   - mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report coveralls:report
 

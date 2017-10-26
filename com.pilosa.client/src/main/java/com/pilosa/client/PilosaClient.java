@@ -68,6 +68,7 @@ import javax.net.ssl.HostnameVerifier;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -433,18 +434,22 @@ public class PilosaClient implements AutoCloseable {
         return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE);
     }
 
-    private String getAddress() {
-        this.currentAddress = this.cluster.getHost();
-        String scheme = this.currentAddress.getScheme();
-        if (!scheme.equals(HTTP) && !scheme.equals(HTTPS)) {
-            throw new PilosaException("Unknown scheme: " + scheme);
-        }
-        logger.debug("Current host set: {}", this.currentAddress);
-        return this.currentAddress.getNormalized();
+    protected PilosaClient(Cluster cluster, ClientOptions options) {
+        this.cluster = cluster;
+        this.options = options;
     }
 
-    private Registry<ConnectionSocketFactory> getRegistry() {
+    protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {
+        // find the constructor with the correct arguments
+        try {
+            Constructor constructor = this.getClass().getDeclaredConstructor(Cluster.class, ClientOptions.class);
+            return (PilosaClient) constructor.newInstance(cluster, options);
+        } catch (Exception e) {
+            throw new RuntimeException("This PilosaClient descendant does not have the correct constructor");
+        }
+    }
 
+    protected Registry<ConnectionSocketFactory> getRegistry() {
         HostnameVerifier verifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
                 this.options.getSslContext(),
@@ -453,6 +458,16 @@ public class PilosaClient implements AutoCloseable {
                 .register("http", PlainConnectionSocketFactory.getSocketFactory())
                 .register("https", sslConnectionSocketFactory)
                 .build();
+    }
+
+    private String getAddress() {
+        this.currentAddress = this.cluster.getHost();
+        String scheme = this.currentAddress.getScheme();
+        if (!scheme.equals(HTTP) && !scheme.equals(HTTPS)) {
+            throw new PilosaException("Unknown scheme: " + scheme);
+        }
+        logger.debug("Current host set: {}", this.currentAddress);
+        return this.currentAddress.getNormalized();
     }
 
     private void connect() {
@@ -586,7 +601,7 @@ public class PilosaClient implements AutoCloseable {
         List<FragmentNode> nodes = fetchFrameNodes(indexName, slice);
         for (FragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
-            PilosaClient client = PilosaClient.withCluster(cluster, this.options);
+            PilosaClient client = this.newClientInstance(cluster, this.options);
             Internal.ImportRequest importRequest = bitsToImportRequest(indexName, frameName, slice, bits);
             client.importNode(importRequest);
         }
@@ -662,11 +677,6 @@ public class PilosaClient implements AutoCloseable {
         RAW_RESPONSE,
         ERROR_CHECKED_RESPONSE,
         NO_RESPONSE,
-    }
-
-    private PilosaClient(Cluster cluster, ClientOptions options) {
-        this.cluster = cluster;
-        this.options = options;
     }
 
     static {

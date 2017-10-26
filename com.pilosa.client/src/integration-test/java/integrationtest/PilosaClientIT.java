@@ -77,7 +77,6 @@ public class PilosaClientIT {
     private Index colIndex;
     private Index index;
     private Frame frame;
-    private final static String SERVER_ADDRESS = ":10101";
 
     @Before
     public void setUp() throws IOException {
@@ -554,6 +553,13 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void httpRequestTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            client.httpRequest("GET", "/status");
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
@@ -695,6 +701,10 @@ public class PilosaClientIT {
     }
 
     private PilosaClient getClient() {
+        String bindAddress = System.getenv("PILOSA_BIND");
+        if (bindAddress == null) {
+            bindAddress = "http://:10101";
+        }
         SSLContext sslContext;
         try {
             sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
@@ -709,7 +719,7 @@ public class PilosaClientIT {
         if (sslContext != null) {
             optionsBuilder.setSslContext(sslContext);
         }
-        Cluster cluster = Cluster.withHost(URI.address(SERVER_ADDRESS));
+        Cluster cluster = Cluster.withHost(URI.address(bindAddress));
         return PilosaClient.withCluster(cluster, optionsBuilder.build());
     }
 

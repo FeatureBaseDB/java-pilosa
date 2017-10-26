@@ -46,6 +46,7 @@ import com.pilosa.client.status.FrameInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.NodeInfo;
 import com.pilosa.client.status.StatusInfo;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
@@ -58,6 +59,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,7 +191,7 @@ public class PilosaClient implements AutoCloseable {
         String path = String.format("/index/%s", index.getName());
         String body = index.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, "Error while creating index");
+        clientExecute("POST", path, data, protobufHeaders, "Error while creating index");
         // set time quantum for the index if one was assigned to it
         if (index.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
             patchTimeQuantum(index);
@@ -220,7 +222,7 @@ public class PilosaClient implements AutoCloseable {
         String path = String.format("/index/%s/frame/%s", frame.getIndex().getName(), frame.getName());
         String body = frame.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, "Error while creating frame");
+        clientExecute("POST", path, data, protobufHeaders, "Error while creating frame");
     }
 
     /**
@@ -245,7 +247,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public void deleteIndex(Index index) {
         String path = String.format("/index/%s", index.getName());
-        clientExecute("DELETE", path, null, "Error while deleting index");
+        clientExecute("DELETE", path, null, null, "Error while deleting index");
     }
 
     /**
@@ -257,7 +259,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public void deleteFrame(Frame frame) {
         String path = String.format("/index/%s/frame/%s", frame.getIndex().getName(), frame.getName());
-        clientExecute("DELETE", path, null, "Error while deleting frame");
+        clientExecute("DELETE", path, null, null, "Error while deleting frame");
     }
 
     /**
@@ -323,7 +325,7 @@ public class PilosaClient implements AutoCloseable {
         CloseableHttpResponse response = null;
         try {
             try {
-                response = clientExecute("GET", path, null, "Error while reading status",
+                response = clientExecute("GET", path, null, null, "Error while reading status",
                         ReturnClientResponse.ERROR_CHECKED_RESPONSE);
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
@@ -403,6 +405,34 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
+    /**
+     * Sends an HTTP request to the Pilosa server.
+     *
+     * @param method HTTP request method (GET, POST, PATCH, DELETE, ...)
+     * @param path   HTTP request path.
+     * @return the response to this request.
+     */
+    public CloseableHttpResponse httpRequest(final String method, final String path) {
+        return httpRequest(method, path, null, null);
+    }
+
+    /**
+     * Sends an HTTP request to the Pilosa server.
+     * <p>
+     * <b>NOTE</b>: This function is experimental and may be removed in later revisions.
+     * </p>
+     *
+     * @param method  HTTP request method (GET, POST, PATCH, DELETE, ...)
+     * @param path    HTTP request path.
+     * @param data    HTTP request body.
+     * @param headers HTTP request headers.
+     * @return the response to this request.
+     */
+    public CloseableHttpResponse httpRequest(final String method, final String path, final ByteArrayEntity data,
+                                             Header[] headers) {
+        return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE);
+    }
+
     private String getAddress() {
         this.currentAddress = this.cluster.getHost();
         String scheme = this.currentAddress.getScheme();
@@ -441,19 +471,19 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private void clientExecute(final String method, final String path, final ByteArrayEntity data,
-                               String errorMessage) {
-        clientExecute(method, path, data, errorMessage, ReturnClientResponse.NO_RESPONSE);
+                               Header[] headers, String errorMessage) {
+        clientExecute(method, path, data, headers, errorMessage, ReturnClientResponse.NO_RESPONSE);
     }
 
     private CloseableHttpResponse clientExecute(final String method, final String path, final ByteArrayEntity data,
-                                                String errorMessage, ReturnClientResponse returnResponse) {
+                                                Header[] headers, String errorMessage, ReturnClientResponse returnResponse) {
         if (this.client == null) {
             connect();
         }
         CloseableHttpResponse response = null;
         // try at most MAX_HOSTS non-failed hosts; protect against broken cluster.removeHost
         for (int i = 0; i < MAX_HOSTS; i++) {
-            HttpRequestBase request = makeRequest(method, path, data);
+            HttpRequestBase request = makeRequest(method, path, data, headers);
             logger.debug("Request: {} {}", request.getMethod(), request.getURI());
             try {
                 response = client.execute(request);
@@ -503,7 +533,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data) {
+    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers) {
         HttpRequestBase request;
         String uri = this.getAddress() + path;
         switch (method) {
@@ -519,15 +549,12 @@ public class PilosaClient implements AutoCloseable {
                 break;
             case "POST":
                 request = new HttpPost(uri);
-                if (data != null) {
-                    request.setHeader("Content-Type", "application/x-protobuf");
-                    request.setHeader("Accept", "application/x-protobuf");
-                    ((HttpPost) request).setEntity(data);
-                }
+                ((HttpPost) request).setEntity(data);
                 break;
             default:
                 throw new IllegalArgumentException(String.format("%s is not a valid HTTP method", method));
         }
+        request.setHeaders(headers);
         return request;
     }
 
@@ -536,7 +563,7 @@ public class PilosaClient implements AutoCloseable {
         Internal.QueryRequest qr = request.toProtobuf();
         ByteArrayEntity body = new ByteArrayEntity(qr.toByteArray());
         try {
-            CloseableHttpResponse response = clientExecute("POST", path, body, "Error while posting query",
+            CloseableHttpResponse response = clientExecute("POST", path, body, protobufHeaders, "Error while posting query",
                     ReturnClientResponse.RAW_RESPONSE);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
@@ -568,7 +595,7 @@ public class PilosaClient implements AutoCloseable {
     List<FragmentNode> fetchFrameNodes(String indexName, long slice) {
         String path = String.format("/fragment/nodes?index=%s&slice=%d", indexName, slice);
         try {
-            CloseableHttpResponse response = clientExecute("GET", path, null, "Error while fetching fragment nodes",
+            CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
@@ -585,9 +612,8 @@ public class PilosaClient implements AutoCloseable {
     }
 
     void importNode(Internal.ImportRequest importRequest) {
-        String path = "/import";
         ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
-        clientExecute("POST", path, body, "Error while importing");
+        clientExecute("POST", "/import", body, protobufHeaders, "Error while importing");
     }
 
     private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
@@ -615,7 +641,7 @@ public class PilosaClient implements AutoCloseable {
         String body = String.format("{\"timeQuantum\":\"%s\"}",
                 index.getOptions().getTimeQuantum().toString());
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("PATCH", path, data, "Error while setting time quantum for the index");
+        clientExecute("PATCH", path, data, protobufHeaders, "Error while setting time quantum for the index");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -643,9 +669,17 @@ public class PilosaClient implements AutoCloseable {
         this.options = options;
     }
 
+    static {
+        protobufHeaders = new Header[]{
+                new BasicHeader("Content-Type", "application/x-protobuf"),
+                new BasicHeader("Accept", "application/x-protobuf")
+        };
+    }
+
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final int MAX_HOSTS = 10;
+    private static final Header[] protobufHeaders;
     private static final Logger logger = LoggerFactory.getLogger("pilosa");
     private Cluster cluster;
     private URI currentAddress;

@@ -345,8 +345,8 @@ public class PilosaClientIT {
                     frame.setBit(20, 5),
                     frame.setBit(30, 5)
             ));
-            // XXX: The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
-            Thread.sleep(10000);
+            // The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
+            client.httpRequest("POST", "/recalculate-caches");
             QueryResponse response = client.query(frame.topN(2));
             List<CountResultItem> items = response.getResult().getCountItems();
             assertEquals(2, items.size());

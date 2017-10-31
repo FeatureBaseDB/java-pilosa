@@ -34,8 +34,13 @@
 
 package com.pilosa.client;
 
+import org.apache.http.ssl.SSLContextBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import javax.net.ssl.SSLContext;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,18 +57,21 @@ public class ClientOptionsTest {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreate() throws KeyManagementException, NoSuchAlgorithmException {
+        SSLContext sslContext = new SSLContextBuilder().build();
         ClientOptions options = ClientOptions.builder()
                 .setConnectionPoolSizePerRoute(2)
                 .setConnectionPoolTotalSize(50)
                 .setConnectTimeout(100)
                 .setSocketTimeout(1000)
                 .setRetryCount(5)
+                .setSslContext(sslContext)
                 .build();
         assertEquals(2, options.getConnectionPoolSizePerRoute());
         assertEquals(50, options.getConnectionPoolTotalSize());
         assertEquals(100, options.getConnectTimeout());
         assertEquals(1000, options.getSocketTimeout());
         assertEquals(5, options.getRetryCount());
+        assertEquals(sslContext, options.getSslContext());
     }
 }

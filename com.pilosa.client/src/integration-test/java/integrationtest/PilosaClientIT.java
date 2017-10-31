@@ -46,22 +46,14 @@ import com.pilosa.client.status.StatusInfo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -77,7 +69,6 @@ public class PilosaClientIT {
     private Index colIndex;
     private Index index;
     private Frame frame;
-    private final static String SERVER_ADDRESS = ":10101";
 
     @Before
     public void setUp() throws IOException {
@@ -354,8 +345,8 @@ public class PilosaClientIT {
                     frame.setBit(20, 5),
                     frame.setBit(30, 5)
             ));
-            // XXX: The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
-            Thread.sleep(10000);
+            // The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
+            client.httpRequest("POST", "/recalculate-caches");
             QueryResponse response = client.query(frame.topN(2));
             List<CountResultItem> items = response.getResult().getCountItems();
             assertEquals(2, items.size());
@@ -554,6 +545,13 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void httpRequestTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            client.httpRequest("GET", "/status");
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
@@ -694,23 +692,17 @@ public class PilosaClientIT {
         client.readStatus();
     }
 
-    private PilosaClient getClient() {
-        SSLContext sslContext;
-        try {
-            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                    return true;
-                }
-            }).build();
-        } catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException ex) {
-            sslContext = null;
+    @Test(expected = RuntimeException.class)
+    public void invalidPilosaClientFails() throws IOException {
+        Cluster cluster = Cluster.withHost(URI.address(getBindAddress()));
+        ClientOptions options = ClientOptions.builder().build();
+        try (PilosaClient client = new InvalidPilosaClient(cluster, options)) {
+            StaticBitIterator iterator = new StaticBitIterator();
+            Frame frame = this.index.frame("importframe");
+//            client.ensureFrame(frame);
+            client.importFrame(frame, iterator);
         }
-        ClientOptions.Builder optionsBuilder = ClientOptions.builder();
-        if (sslContext != null) {
-            optionsBuilder.setSslContext(sslContext);
-        }
-        Cluster cluster = Cluster.withHost(URI.address(SERVER_ADDRESS));
-        return PilosaClient.withCluster(cluster, optionsBuilder.build());
+
     }
 
     private static int counter = 0;
@@ -845,6 +837,20 @@ public class PilosaClientIT {
         }
         return null;
     }
+
+    private PilosaClient getClient() {
+        String bindAddress = getBindAddress();
+        Cluster cluster = Cluster.withHost(URI.address(bindAddress));
+        return new InsecurePilosaClientIT(cluster, ClientOptions.builder().build());
+    }
+
+    private String getBindAddress() {
+        String bindAddress = System.getenv("PILOSA_BIND");
+        if (bindAddress == null) {
+            bindAddress = "http://:10101";
+        }
+        return bindAddress;
+    }
 }
 
 class StaticBitIterator implements BitIterator {
@@ -871,5 +877,11 @@ class StaticBitIterator implements BitIterator {
     @Override
     public void remove() {
         // We have this just to avoid compilation problems on JDK 7
+    }
+}
+
+class InvalidPilosaClient extends InsecurePilosaClientIT {
+    InvalidPilosaClient(Cluster cluster, ClientOptions options) {
+        super(cluster, options);
     }
 }

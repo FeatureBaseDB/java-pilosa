@@ -552,6 +552,29 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void slicesTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            final long sliceWidth = 1048576L;
+            client.query(colIndex.batchQuery(
+                    frame.setBit(1, 100),
+                    frame.setBit(1, sliceWidth),
+                    frame.setBit(1, sliceWidth*3)
+            ));
+
+            List<Long> slices = Arrays.asList(0L, 3L);
+            QueryOptions options = QueryOptions.builder()
+                    .setSlices(slices)
+                    .build();
+            QueryResponse response = client.query(frame.bitmap(1), options);
+
+            List<Long> bits = response.getResult().getBitmap().getBits();
+            assertEquals(2, bits.size());
+            assertEquals(100, (long) bits.get(0));
+            assertEquals(sliceWidth*3, (long) bits.get(1));
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();

@@ -38,6 +38,9 @@ import com.pilosa.client.exceptions.PilosaURIException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -64,6 +67,20 @@ public class URITest {
     public void testFullWithIPv4Host() {
         URI uri = URI.address("http+protobuf://192.168.1.26:3333");
         compare(uri, "http+protobuf", "192.168.1.26", 3333);
+    }
+
+    @Test
+    public void testFullWithIPv6Host() {
+        List<Object[]> addresses = Arrays.asList(
+                new Object[]{"[::1]", "http", "[::1]", 10101},
+                new Object[]{"[::1]:3333", "http", "[::1]", 3333},
+                new Object[]{"[fd42:4201:f86b:7e09:216:3eff:fefa:ed80]:3333", "http", "[fd42:4201:f86b:7e09:216:3eff:fefa:ed80]", 3333},
+                new Object[]{"https://[fd42:4201:f86b:7e09:216:3eff:fefa:ed80]:3333", "https", "[fd42:4201:f86b:7e09:216:3eff:fefa:ed80]", 3333}
+        );
+        for (Object[] tuple : addresses) {
+            URI uri = URI.address((String) tuple[0]);
+            compare(uri, (String) tuple[1], (String) tuple[2], (Integer) tuple[3]);
+        }
     }
 
     @Test
@@ -120,6 +137,11 @@ public class URITest {
     @Test(expected = PilosaURIException.class)
     public void testInvalidAddress4() {
         URI.address(":bar");
+    }
+
+    @Test(expected = PilosaURIException.class)
+    public void testInvalidAddress5() {
+        URI.address("fd42:4201:f86b:7e09:216:3eff:fefa:ed80");
     }
 
     @Test

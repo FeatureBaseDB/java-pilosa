@@ -193,5 +193,5 @@ public final class URI {
     private String host = "localhost";
     private int port = 10101;
     private boolean isIPv6 = false;
-    private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+)?(:([0-9]+))?$");
+    private final static Pattern uriPattern = Pattern.compile("^(([+a-z]+):\\/\\/)?([0-9a-z.-]+|\\[[:0-9a-fA-F]+\\])?(:([0-9]+))?$");
 }

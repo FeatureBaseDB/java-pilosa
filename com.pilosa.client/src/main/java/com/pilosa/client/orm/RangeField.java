@@ -78,6 +78,37 @@ public class RangeField {
     }
 
     /**
+     * Creates a Range query with equals (==) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery equals(long n) {
+        return binaryOperation("==", n);
+    }
+
+    /**
+     * Creates a Range query with not equal to (!=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery notEquals(long n) {
+        return binaryOperation("!=", n);
+    }
+
+    /**
+     * Creates a Range query with not null (!= null) condition.
+     *
+     * @return a PQL query
+     */
+    public PqlBitmapQuery notNull() {
+        String qry = String.format("Range(frame='%s', %s != null)",
+                frame.getName(), this.name);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    /**
      * Creates a Range query with between (><) condition.
      *
      * @param a Closed range start

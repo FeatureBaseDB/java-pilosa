@@ -46,12 +46,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * <pre>
  *  <code>
  *     IndexOptions options = IndexOptions.builder()
- *         .setInverseEnabled(true)
  *         .setTimeQuantum(TimeQuantum.YEAR)
  *         .build();
  *  </code>
  * </pre>
  *
+ * @deprecated Index options are deprecated.
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
@@ -81,6 +81,7 @@ public final class IndexOptions {
          *
          * @param timeQuantum See {@link TimeQuantum} for valid values.
          * @return IndexOptions builder.
+         * @deprecated Time quantum for indexes are deprecated and will be removed in a future release.
          * @see <a href="https://www.pilosa.com/docs/data-model/#time-quantum">Time Quantum</a>
          */
         public Builder setTimeQuantum(TimeQuantum timeQuantum) {
@@ -126,6 +127,7 @@ public final class IndexOptions {
         return this.columnLabel;
     }
 
+    @Deprecated
     public TimeQuantum getTimeQuantum() {
         return timeQuantum;
     }

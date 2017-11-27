@@ -410,6 +410,30 @@ public class OrmTest {
     }
 
     @Test
+    public void fieldEqualsTest() {
+        PqlQuery q = sampleFrame.field("foo").equals(10);
+        assertEquals(
+                "Range(frame='sample-frame', foo == 10)",
+                q.serialize());
+    }
+
+    @Test
+    public void fieldNotEqualsTest() {
+        PqlQuery q = sampleFrame.field("foo").notEquals(10);
+        assertEquals(
+                "Range(frame='sample-frame', foo != 10)",
+                q.serialize());
+    }
+
+    @Test
+    public void fieldNotNullTest() {
+        PqlQuery q = sampleFrame.field("foo").notNull();
+        assertEquals(
+                "Range(frame='sample-frame', foo != null)",
+                q.serialize());
+    }
+
+    @Test
     public void fieldBetweenTest() {
         PqlQuery q = sampleFrame.field("foo").between(10, 20);
         assertEquals(

@@ -68,6 +68,7 @@ public class Index {
      * @param name    index name
      * @param options index options
      * @return a Index object
+     * @deprecated Index options are deprecated and will be removed in a future release.
      * @throws ValidationException if the passed index name is not valid
      */
     public static Index withName(String name, IndexOptions options) {

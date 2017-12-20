@@ -198,6 +198,47 @@ The recommended way of creating query objects is, using dedicated methods attach
 PqlQuery query = repository.rawQuery("Bitmap(frame='stargazer', row=5)");
 ```
 
+This client supports [Range encoded fields](https://www.pilosa.com/docs/latest/query-language/#range-bsi). Read [Range Encoded Bitmaps](https://www.pilosa.com/blog/range-encoded-bitmaps/) blog post for more information about the BSI implementation of range encoding in Pilosa.
+
+In order to use range encoded fields, a frame should be created with one or more integer fields. Each field should have their minimums and maximums set. Here's how you would do that using this library:
+```java
+Index index = schema.index("animals")
+FrameOptions options = FrameOptions.builder()
+        .addIntField("captivity", 0, 956)
+        .build();
+Frame frame = index.frame("traits", options);
+PqlBatchQuery query = index.batchQuery();
+long data[] = {3, 392, 47, 956, 219, 14, 47, 504, 21, 0, 123, 318};
+for (int i = 0; i < data.length; i++) {
+    long column = i + 1
+    query.add(frame.field("captivity").setValue(column, data[x]));
+}
+client.query(query);
+```
+
+Let's write a range query:
+```java
+// Query for all animals with more than 100 specimens
+QueryResponse response = client.query(captivity.greaterThan(100))
+System.out.println(response.getResult().getBitmap().getBits());
+
+// Query for the total number of animals in captivity
+response = client.query(captivity.sum());
+System.out.println(response.getResult().getSum());
+```
+
+It's possible to pass a bitmap query to `sum`, so only columns where a row is set are filtered in:
+```java
+// Let's run a few setbit queries first
+client.query(index.batchQuery(
+        frame.setBit(42, 1),
+        frame.setBit(42, 6)))
+QueryResponse response = client.query(captivity.sum(frame.bitmap(42)));
+System.out.println(response.getResult().getSum());
+```
+
+See the *Field* functions further below for the list of functions that can be used with a `RangeField`.
+
 Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
 
 Index:
@@ -226,6 +267,20 @@ Frame:
 * `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
 * `PqlBaseQuery sum(String field)`
 * `PqlBaseQuery setFieldValue(long columnID, String field, long value)`
+
+Field:
+
+* `PqlBitmapQuery lessThan(long n)`
+* `PqlBitmapQuery lessThanOrEqual(long n)`
+* `PqlBitmapQuery greaterThan(long n)`
+* `PqlBitmapQuery greaterThanOrEqual(long n)`
+* `PqlBitmapQuery equals(long n)`
+* `PqlBitmapQuery notEquals(long n)`
+* `PqlBitmapQuery notNull()`
+* `PqlBitmapQuery between(long a, long b)`
+* `PqlBaseQuery sum()`
+* `PqlBaseQuery sum(PqlBitmapQuery bitmap)`
+* `PqlBaseQuery setValue(long columnID, long value)`
 
 ### Pilosa URI
 

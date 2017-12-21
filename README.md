@@ -508,9 +508,9 @@ class StaticBitIterator implements BitIterator {
 
 Make sure the Pilosa server runs on a TLS address. [How To Set Up a Secure Cluster](https://www.pilosa.com/docs/latest/tutorials/#how-to-set-up-a-secure-cluster) tutorial explains how to do that.
 
-In order to enable TLS support on the client side, scheme of the address should be `https` which should be explicitly specified, e.g.: `https://01.pilosa.local:10501`
+In order to enable TLS support on the client side, the scheme of the address should be explicity specified as https, e.g.: `https://01.pilosa.local:10501`
 
-This client library uses the [Apache HTTP Library](https://hc.apache.org). `ClientOptions` builder accepts an `javax.net.ssl.SSLContext` object, which is set to `org.apache.http.ssl.SSLContexts.createDefault()` by default. If the Pilosa server is using a certificate from a recognized authority, you can use the defaults. 
+This client library uses the [Apache HTTP Library](https://hc.apache.org). `ClientOptions` builder accepts a `javax.net.ssl.SSLContext` object, which is set to `org.apache.http.ssl.SSLContexts.createDefault()` by default. If the Pilosa server is using a certificate from a recognized authority, you can use the defaults. 
   
 If you are using a self signed certificate, you need to derive from `PilosaClient` and override the `getRegistry` method: 
 ```java

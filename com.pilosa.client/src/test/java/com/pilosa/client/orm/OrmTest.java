@@ -448,6 +448,11 @@ public class OrmTest {
         assertEquals(
                 "Sum(Bitmap(rowID=10, frame='sample-frame'), frame='sample-frame', field='foo')",
                 q.serialize());
+        q = sampleFrame.field("foo").sum();
+        assertEquals(
+                "Sum(frame='sample-frame', field='foo')",
+                q.serialize()
+        );
     }
 
     @Test

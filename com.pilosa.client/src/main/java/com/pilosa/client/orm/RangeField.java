@@ -127,6 +127,20 @@ public class RangeField {
      * The frame for this query should have fields set.
      * </p>
      *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum() {
+        String qry = String.format("Sum(frame='%s', field='%s')", frame.getName(), name);
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
+     * Creates a Sum query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
      * @param bitmap The bitmap query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>

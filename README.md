@@ -504,6 +504,56 @@ class StaticBitIterator implements BitIterator {
 }
 ```
 
+## SSL/TLS
+
+Make sure the Pilosa server runs on a TLS address. [How To Set Up a Secure Cluster](https://www.pilosa.com/docs/latest/tutorials/#how-to-set-up-a-secure-cluster) tutorial explains how to do that.
+
+In order to enable TLS support on the client side, scheme of the address should be `https` which should be explicitly specified, e.g.: `https://01.pilosa.local:10501`
+
+This client library uses the [Apache HTTP Library](https://hc.apache.org). `ClientOptions` builder accepts an `javax.net.ssl.SSLContext` object, which is set to `org.apache.http.ssl.SSLContexts.createDefault()` by default. If the Pilosa server is using a certificate from a recognized authority, you can use the defaults. 
+  
+If you are using a self signed certificate, you need to derive from `PilosaClient` and override the `getRegistry` method: 
+```java
+public class InsecurePilosaClient extends PilosaClient {
+
+    public InsecurePilosaClient(Cluster cluster, ClientOptions options) {
+        super(cluster, options);
+    }
+
+    @Override
+    protected Registry<ConnectionSocketFactory> getRegistry() {
+        HostnameVerifier verifier = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostName, SSLSession session) {
+                return true;
+            }
+        };
+
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                    return true;
+                }
+            }).build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            e.printStackTrace();
+        }
+        if (sslContext == null) {
+            throw new RuntimeException("SSL Context not created");
+        }
+
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                sslContext,
+                new String[]{"TLSv1.2"}, null, verifier);
+        return RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslConnectionSocketFactory)
+                .build();
+    }
+}
+```
+
 ## Contribution
 
 Please check our [Contributor's Guidelines](https://github.com/pilosa/pilosa/CONTRIBUTING.md).

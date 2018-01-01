@@ -116,13 +116,13 @@ if (result != null) {
 }
 
 // You can batch queries to improve throughput
-QueryResponse response = client.query(
+response = client.query(
     myindex.batchQuery(
         myframe.bitmap(5),
         myframe.bitmap(10)
     )    
 );
-for (Object result : response.getResults()) {
+for (Object r : response.getResults()) {
     // Act on the result
 }
 ```
@@ -140,23 +140,13 @@ Schema schema = Schema.defaultSchema();
 Index repository = schema.index("repository");
 ```
 
-Indexes support changing the time quantum. `IndexOptions` objects store that kind of data. In order to apply these custom options, pass an `IndexOptions` object as the second argument to `Schema.index`:
-
-```java
-IndexOptions options = IndexOptions.builder()
-    .setTimeQuantum(TimeQuantum.YEAR_MONTH)
-    .build();
-
-Index repository = schema.index("repository", options);
-```
-
 Frames are created with a call to `Index.frame` method:
 
 ```java
 Frame stargazer = repository.frame("stargazer");
 ```
 
-Similar to index objects, you can pass custom options to frames:
+You can pass custom options to frames:
 
 ```java
 FrameOptions stargazerOptions = FrameOptions.builder()
@@ -174,7 +164,7 @@ Once you have indexes and frame objects created, you can create queries for them
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
 ```java
-PqlQuery bitmapQuery = stargazer.bitmap(1, 100);  // corresponds to PQL: Bitmap(frame='stargazer', row=1)
+PqlQuery bitmapQuery = stargazer.bitmap(1);  // corresponds to PQL: Bitmap(frame='stargazer', row=1)
 ```
 
 `Union` queries work on columns; use the index object to create them:
@@ -187,8 +177,8 @@ In order to increase throughput, you may want to batch queries sent to the Pilos
 
 ```java
 PqlQuery query = repository.batchQuery(
-    stargazer.bitmap(1, 100),
-    repository.union(stargazer.bitmap(100, 200), stargazer.bitmap(5, 100))
+    stargazer.bitmap(1),
+    repository.union(stargazer.bitmap(100), stargazer.bitmap(5))
 );
 ```
 
@@ -202,16 +192,17 @@ This client supports [Range encoded fields](https://www.pilosa.com/docs/latest/q
 
 In order to use range encoded fields, a frame should be created with one or more integer fields. Each field should have their minimums and maximums set. Here's how you would do that using this library:
 ```java
-Index index = schema.index("animals")
+Index index = schema.index("animals");
 FrameOptions options = FrameOptions.builder()
         .addIntField("captivity", 0, 956)
         .build();
 Frame frame = index.frame("traits", options);
+client.syncSchema(schema);
 PqlBatchQuery query = index.batchQuery();
 long data[] = {3, 392, 47, 956, 219, 14, 47, 504, 21, 0, 123, 318};
 for (int i = 0; i < data.length; i++) {
-    long column = i + 1
-    query.add(frame.field("captivity").setValue(column, data[x]));
+    long column = i + 1;
+    query.add(frame.field("captivity").setValue(column, data[i]));
 }
 client.query(query);
 ```
@@ -219,7 +210,8 @@ client.query(query);
 Let's write a range query:
 ```java
 // Query for all animals with more than 100 specimens
-QueryResponse response = client.query(captivity.greaterThan(100))
+RangeField captivity = frame.field("captivity");
+QueryResponse response = client.query(captivity.greaterThan(100));
 System.out.println(response.getResult().getBitmap().getBits());
 
 // Query for the total number of animals in captivity
@@ -232,8 +224,8 @@ It's possible to pass a bitmap query to `sum`, so only columns where a row is se
 // Let's run a few setbit queries first
 client.query(index.batchQuery(
         frame.setBit(42, 1),
-        frame.setBit(42, 6)))
-QueryResponse response = client.query(captivity.sum(frame.bitmap(42)));
+        frame.setBit(42, 6)));
+response = client.query(captivity.sum(frame.bitmap(42)));
 System.out.println(response.getResult().getSum());
 ```
 
@@ -332,10 +324,10 @@ PilosaClient client = PilosaClient.withAddress("http://db1.pilosa.com:15000");
 If you are running a cluster of Pilosa servers, you can create a `Cluster` object that keeps addresses of those servers:
 
 ```java
-Cluster cluster = Cluster.withURI(
+Cluster cluster = Cluster.withHost(
     URI.address(":10101"),
     URI.address(":10110"),
-    URI.address(":10111"),
+    URI.address(":10111")
 );
 
 // Create a client with the cluster
@@ -361,7 +353,9 @@ Once you create a client, you can create indexes, frames and start sending queri
 Here is how you would create a index and frame:
 
 ```java
-// materialize repository index and stargazer frame instances initialized before
+Schema schema = client.readSchema();
+Index index = schema.index("index");
+Frame frame = index.frame("frame");
 client.syncSchema(schema);
 ```
 
@@ -397,7 +391,7 @@ if (result != null) {
 }
 
 // iterate over all results
-for (QueryResult result : response.getResults()) {
+for (QueryResult r : response.getResults()) {
     // act on the result
 }
 ```
@@ -424,13 +418,14 @@ for (ColumnItem column : response.getColumns()) {
 * `getCount` method to retrieve the number of rows per the given row ID returned from `count` queries.
 
 ```java
-BitmapResult bitmap = response.getBitmap();
+QueryResult result = response.getResult();
+BitmapResult bitmap = result.getBitmap();
 List<Long> bits = bitmap.getBits();
 Map<String, Object> attributes = bitmap.getAttributes();
 
-List<CountResultItem> countItems = response.getCountItems();
+List<CountResultItem> countItems = result.getCountItems();
 
-long count = response.getCount();
+long count = result.getCount();
 ```
 
 ## Importing Data

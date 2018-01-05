@@ -90,7 +90,6 @@ public class PilosaClientTest {
         FrameInfo frameInfo = indexInfo.getFrames().get(0);
         FrameOptions frameOptions = frameInfo.getOptions();
         assertEquals("mf10", frameInfo.getName());
-        assertEquals("id", frameOptions.getRowLabel());
         assertEquals(true, frameOptions.isInverseEnabled());
         assertEquals(TimeQuantum.YEAR_MONTH_DAY, frameOptions.getTimeQuantum());
     }

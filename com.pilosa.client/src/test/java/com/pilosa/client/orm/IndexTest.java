@@ -34,7 +34,6 @@
 
 package com.pilosa.client.orm;
 
-import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Before;
@@ -106,16 +105,8 @@ public class IndexTest {
 
     @Test
     public void testHashCode() {
-        IndexOptions options1 = IndexOptions.builder()
-                .setColumnLabel("col")
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
-                .build();
-        IndexOptions options2 = IndexOptions.builder()
-                .setColumnLabel("col")
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH)
-                .build();
-        Index index1 = this.schema.index("foo", options1);
-        Index index2 = Index.withName("foo", options2);
+        Index index1 = this.schema.index("foo");
+        Index index2 = Index.withName("foo");
         assertEquals(index1.hashCode(), index2.hashCode());
     }
 

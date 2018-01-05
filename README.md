@@ -17,6 +17,7 @@ Java client for Pilosa high performance distributed bitmap index.
     * **Removal** `TimeQuantum` for `IndexOptions`. Use `TimeQuantum` of individual `FrameOptions` instead.
     * **Removal** `IndexOptions` class is deprecated and will be removed in the future.
     * **Removal** `schema.Index(name, indexOptions)` method.
+    * **Removal** column labels and row labels.
 
 * **v0.8.0** (2017-11-16):
     * Added IPv6 support.

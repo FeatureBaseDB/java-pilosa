@@ -74,11 +74,9 @@ public class FrameTest {
     @Test
     public void testHashCode() {
         FrameOptions options1 = FrameOptions.builder()
-                .setRowLabel("row")
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         FrameOptions options2 = FrameOptions.builder()
-                .setRowLabel("row")
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Frame frame1 = this.index.frame("frame1", options1);

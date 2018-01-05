@@ -188,7 +188,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public void createIndex(Index index) {
         String path = String.format("/index/%s", index.getName());
-        String body = index.getOptions().toString();
+        String body = "";
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
         clientExecute("POST", path, data, protobufHeaders, "Error while creating index");
     }

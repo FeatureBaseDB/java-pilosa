@@ -65,7 +65,6 @@ public final class FrameInfo {
 final class FrameMeta {
     FrameOptions getOptions() {
         return FrameOptions.builder()
-                .setRowLabel(this.rowLabel)
                 .setInverseEnabled(this.inverseEnabled)
                 .setTimeQuantum(this.timeQuantum)
                 .setCacheType(this.cacheType)
@@ -75,7 +74,7 @@ final class FrameMeta {
 
     @JsonProperty("rowLabel")
     void setRowLabel(String rowLabel) {
-        this.rowLabel = rowLabel;
+        // pass
     }
 
     @JsonProperty("timeQuantum")
@@ -98,7 +97,6 @@ final class FrameMeta {
         this.cacheSize = cacheSize;
     }
 
-    private String rowLabel;
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean inverseEnabled = false;
     private CacheType cacheType = CacheType.DEFAULT;

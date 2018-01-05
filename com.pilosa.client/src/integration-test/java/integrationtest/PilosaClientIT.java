@@ -80,15 +80,10 @@ public class PilosaClientIT {
             client.createFrame(this.index.frame("count-test"));
             client.createFrame(this.index.frame("topn_test"));
 
-            IndexOptions indexOptions = IndexOptions.builder()
-                    .setColumnLabel("user")
-                    .build();
-            this.colIndex = schema.index(this.index.getName() + "-opts", indexOptions);
+            this.colIndex = schema.index(this.index.getName() + "-opts");
             client.createIndex(this.colIndex);
 
-            FrameOptions frameOptions = FrameOptions.builder()
-                    .setRowLabel("project")
-                    .build();
+            FrameOptions frameOptions = FrameOptions.withDefaults();
             this.frame = this.colIndex.frame("collab", frameOptions);
             client.createFrame(this.frame);
         }
@@ -187,22 +182,6 @@ public class PilosaClientIT {
         }
     }
 
-    @Test
-    public void createIndexWithColumnLabelFrameWithRowLabel() throws IOException {
-        IndexOptions dbOptions = IndexOptions.builder()
-                .setColumnLabel("cols")
-                .build();
-        final Index db = Index.withName("db-col-label-" + this.index.getName(), dbOptions);
-        FrameOptions frameOptions = FrameOptions.builder()
-                .setRowLabel("rowz")
-                .build();
-        try (PilosaClient client = getClient()) {
-            client.createIndex(db);
-            client.createFrame(db.frame("my-frame", frameOptions));
-            client.deleteIndex(db);
-        }
-    }
-
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
@@ -291,7 +270,6 @@ public class PilosaClientIT {
     public void queryInverseBitmapTest() throws IOException {
         try (PilosaClient client = getClient()) {
             FrameOptions options = FrameOptions.builder()
-                    .setRowLabel("row_label")
                     .setInverseEnabled(true)
                     .build();
             Frame f1 = this.colIndex.frame("f1-inversable", options);
@@ -679,11 +657,24 @@ public class PilosaClientIT {
         try (PilosaClient client = new InvalidPilosaClient(cluster, options)) {
             StaticBitIterator iterator = new StaticBitIterator();
             Frame frame = this.index.frame("importframe");
-//            client.ensureFrame(frame);
             client.importFrame(frame, iterator);
         }
-
     }
+
+    @Test(expected = PilosaException.class)
+    public void failUnknownErrorResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/schema", 504);
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.readServerSchema();
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
 
     private static int counter = 0;
 

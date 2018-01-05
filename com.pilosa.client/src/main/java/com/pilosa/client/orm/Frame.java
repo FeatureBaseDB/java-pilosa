@@ -63,8 +63,7 @@ public class Frame {
         this.index = index;
         this.name = name;
         this.options = options;
-        this.columnLabel = index.getOptions().getColumnLabel();
-        this.rowLabel = options.getRowLabel();
+        this.columnLabel = "columnID";
         this.fields = new HashMap<>();
     }
 
@@ -79,7 +78,6 @@ public class Frame {
      */
     static Frame create(Index index, String name, FrameOptions options) {
         Validator.ensureValidFrameName(name);
-        Validator.ensureValidLabel(options.getRowLabel());
         return new Frame(index, name, options);
     }
 
@@ -110,8 +108,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery bitmap(long rowID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(%s=%d, frame='%s')",
-                this.rowLabel, rowID, this.name));
+        return this.index.pqlBitmapQuery(String.format("Bitmap(rowID=%d, frame='%s')", rowID, this.name));
     }
 
     /**
@@ -148,8 +145,8 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery setBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("SetBit(%s=%d, frame='%s', %s=%d)",
-                this.rowLabel, rowID, name, this.columnLabel, columnID));
+        return this.index.pqlQuery(String.format("SetBit(rowID=%d, frame='%s', %s=%d)",
+                rowID, name, this.columnLabel, columnID));
     }
 
     /**
@@ -170,8 +167,8 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery setBit(long rowID, long columnID, Date timestamp) {
-        String qry = String.format("SetBit(%s=%d, frame='%s', %s=%d, timestamp='%sT%s')",
-                this.rowLabel, rowID, name, this.columnLabel, columnID,
+        String qry = String.format("SetBit(rowID=%d, frame='%s', %s=%d, timestamp='%sT%s')",
+                rowID, name, this.columnLabel, columnID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
     }
@@ -189,8 +186,8 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("ClearBit(%s=%d, frame='%s', %s=%d)",
-                this.rowLabel, rowID, name, this.columnLabel, columnID));
+        return this.index.pqlQuery(String.format("ClearBit(rowID=%d, frame='%s', %s=%d)",
+                rowID, name, this.columnLabel, columnID));
     }
 
     /**
@@ -332,8 +329,8 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(%s=%d, frame='%s', start='%sT%s', end='%sT%s')",
-                this.rowLabel, rowID, this.name, fmtDate.format(start),
+        return this.index.pqlBitmapQuery(String.format("Range(rowID=%d, frame='%s', start='%sT%s', end='%sT%s')",
+                rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 
@@ -376,8 +373,8 @@ public class Frame {
      */
     public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(%s=%d, frame='%s', %s)",
-                this.rowLabel, rowID, this.name, attributesString));
+        return this.index.pqlQuery(String.format("SetRowAttrs(rowID=%d, frame='%s', %s)",
+                rowID, this.name, attributesString));
     }
 
     /**
@@ -421,7 +418,6 @@ public class Frame {
     private String name;
     private Index index;
     private FrameOptions options;
-    private String rowLabel;
     private String columnLabel;
     private Map<String, RangeField> fields;
     private ObjectMapper mapper = new ObjectMapper();

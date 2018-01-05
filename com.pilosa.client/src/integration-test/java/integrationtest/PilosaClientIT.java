@@ -41,8 +41,7 @@ import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.*;
 import com.pilosa.client.status.FrameInfo;
 import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.NodeInfo;
-import com.pilosa.client.status.StatusInfo;
+import com.pilosa.client.status.SchemaInfo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -127,25 +126,6 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void createIndexWithTimeQuantumTest() throws IOException {
-        IndexOptions options = IndexOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR)
-                .build();
-        Index index = Index.withName("index-with-timequantum", options);
-        try (PilosaClient client = getClient()) {
-            client.ensureIndex(index);
-            try {
-                StatusInfo status = client.readStatus();
-                IndexInfo info = findIndexInfo(status, index);
-                assertNotNull(info);
-                assertEquals(TimeQuantum.YEAR, info.getOptions().getTimeQuantum());
-            } finally {
-                client.deleteIndex(index);
-            }
-        }
-    }
-
-    @Test
     public void createFrameWithTimeQuantumTest() throws IOException {
         FrameOptions options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
@@ -153,8 +133,8 @@ public class PilosaClientIT {
         Frame frame = this.index.frame("frame-with-timequantum", options);
         try (PilosaClient client = getClient()) {
             client.ensureFrame(frame);
-            StatusInfo status = client.readStatus();
-            FrameInfo info = findFrameInfo(status, frame);
+            SchemaInfo schema = client.readServerSchema();
+            FrameInfo info = findFrameInfo(schema, frame);
             assertNotNull(info);
             assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
         }
@@ -641,11 +621,11 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failStatusEmptyResponseTest() throws IOException {
-        HttpServer server = runContent0HttpServer("/status", 204);
+    public void failSchemaEmptyResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/schema", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.readStatus();
+                client.readServerSchema();
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -655,11 +635,11 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failStatus200Test() throws IOException {
-        HttpServer server = runContentSizeLyingHttpServer("/status");
+    public void failSchema200Test() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer("/schema");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.readStatus();
+                client.readServerSchema();
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -669,11 +649,11 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failStatus400IOError() throws IOException {
-        HttpServer server = runContentSizeLyingHttpServer400("/status");
+    public void failSchema400IOError() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer400("/schema");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.readStatus();
+                client.readServerSchema();
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -689,7 +669,7 @@ public class PilosaClientIT {
             c.addHost(URI.address(String.format("n%d.nonexistent.net:5000", i)));
         }
         PilosaClient client = PilosaClient.withCluster(c);
-        client.readStatus();
+        client.readServerSchema();
     }
 
     @Test(expected = RuntimeException.class)
@@ -813,12 +793,8 @@ public class PilosaClientIT {
         private int statusCode;
     }
 
-    private IndexInfo findIndexInfo(StatusInfo status, Index target) {
-        if (status.getNodes().size() == 0) {
-            return null;
-        }
-        NodeInfo node = status.getNodes().get(0);
-        for (IndexInfo index : node.getIndexes()) {
+    private IndexInfo findIndexInfo(SchemaInfo schema, Index target) {
+        for (IndexInfo index : schema.getIndexes()) {
             if (index.getName().equals(target.getName())) {
                 return index;
             }
@@ -826,8 +802,8 @@ public class PilosaClientIT {
         return null;
     }
 
-    private FrameInfo findFrameInfo(StatusInfo status, Frame target) {
-        IndexInfo index = findIndexInfo(status, target.getIndex());
+    private FrameInfo findFrameInfo(SchemaInfo schema, Frame target) {
+        IndexInfo index = findIndexInfo(schema, target.getIndex());
         if (index != null) {
             for (FrameInfo frame : index.getFrames()) {
                 if (frame.getName().equals(target.getName())) {

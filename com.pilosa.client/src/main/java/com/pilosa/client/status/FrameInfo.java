@@ -44,7 +44,7 @@ public final class FrameInfo {
         return this.meta.getOptions();
     }
 
-    @JsonProperty("Name")
+    @JsonProperty("name")
     public String getName() {
         return this.name;
     }
@@ -53,7 +53,7 @@ public final class FrameInfo {
         this.name = name;
     }
 
-    @JsonProperty("Meta")
+    @JsonProperty("options")
     void setMeta(FrameMeta meta) {
         this.meta = meta;
     }
@@ -73,27 +73,27 @@ final class FrameMeta {
                 .build();
     }
 
-    @JsonProperty("RowLabel")
+    @JsonProperty("rowLabel")
     void setRowLabel(String rowLabel) {
         this.rowLabel = rowLabel;
     }
 
-    @JsonProperty("TimeQuantum")
+    @JsonProperty("timeQuantum")
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);
     }
 
-    @JsonProperty("InverseEnabled")
+    @JsonProperty("inverseEnabled")
     void setInverseEnabled(boolean inverseEnabled) {
         this.inverseEnabled = inverseEnabled;
     }
 
-    @JsonProperty("CacheType")
+    @JsonProperty("cacheType")
     void setCacheType(String s) {
         this.cacheType = CacheType.fromString(s);
     }
 
-    @JsonProperty("CacheSize")
+    @JsonProperty("cacheSize")
     void setCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
     }

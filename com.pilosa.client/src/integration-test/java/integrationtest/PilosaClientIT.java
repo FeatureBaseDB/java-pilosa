@@ -562,9 +562,8 @@ public class PilosaClientIT {
                     frame.setBit(1, sliceWidth*3)
             ));
 
-            List<Long> slices = Arrays.asList(0L, 3L);
             QueryOptions options = QueryOptions.builder()
-                    .setSlices(slices)
+                    .setSlices(0L, 3L)
                     .build();
             QueryResponse response = client.query(frame.bitmap(1), options);
 

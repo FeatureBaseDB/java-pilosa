@@ -36,8 +36,6 @@ package com.pilosa.client;
 
 import com.pilosa.client.orm.PqlQuery;
 
-import java.util.*;
-
 /**
  * Contains options to customize {@link PilosaClient#query(PqlQuery, QueryOptions)}.
  * <p>
@@ -97,7 +95,7 @@ public class QueryOptions {
          * @param slices set to a list of slices to restrict query to.
          * @return QueryOptions builder
          */
-        public Builder setSlices(List<Long> slices) {
+        public Builder setSlices(Long... slices) {
             this.slices = slices;
             return this;
         }
@@ -114,7 +112,7 @@ public class QueryOptions {
         private boolean columns = false;
         private boolean excludeBits;
         private boolean excludeAttributes;
-        private List<Long> slices = new ArrayList<Long>();
+        private Long slices[] = {};
     }
 
     /**
@@ -139,7 +137,7 @@ public class QueryOptions {
         return this.excludeAttributes;
     }
 
-    public List<Long> getSlices() {
+    public Long[] getSlices() {
         return this.slices;
     }
 
@@ -151,7 +149,7 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes, List<Long> slices) {
+    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes, Long[] slices) {
         this.columns = columns;
         this.excludeBits = excludeBits;
         this.excludeAttributes = excludeAttributes;
@@ -161,5 +159,5 @@ public class QueryOptions {
     private final boolean columns;
     private final boolean excludeBits;
     private final boolean excludeAttributes;
-    private final List<Long> slices;
+    private final Long[] slices;
 }

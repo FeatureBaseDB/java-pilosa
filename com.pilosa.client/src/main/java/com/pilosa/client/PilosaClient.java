@@ -705,7 +705,7 @@ class QueryRequest {
     private boolean retrieveColumnAttributes = false;
     private boolean excludeBits = false;
     private boolean excludeAttributes = false;
-    private List<Long> slices = new ArrayList<Long>();
+    private Long[] slices = {};
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -745,7 +745,7 @@ class QueryRequest {
         this.excludeAttributes = excludeAttributes;
     }
 
-    public void setSlices(List<Long> slices) {
+    public void setSlices(Long... slices) {
         this.slices = slices;
     }
 
@@ -755,7 +755,7 @@ class QueryRequest {
                 .setColumnAttrs(this.retrieveColumnAttributes)
                 .setExcludeBits(this.excludeBits)
                 .setExcludeAttrs(this.excludeAttributes)
-                .addAllSlices(this.slices)
+                .addAllSlices(Arrays.asList(this.slices))
                 .build();
     }
 }

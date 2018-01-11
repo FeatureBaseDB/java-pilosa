@@ -670,7 +670,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private String makeUserAgent() {
-        return String.format("java-pilosa/%s;%s", Version.getVersion(), Version.getBuildTime());
+        return String.format("java-pilosa/%s java%s %s/%s", Version.getVersion(),
+                System.getProperty("java.version"),
+                System.getProperty("os.name").toLowerCase(),
+                System.getProperty("os.arch").toLowerCase());
     }
 
     private enum ReturnClientResponse {

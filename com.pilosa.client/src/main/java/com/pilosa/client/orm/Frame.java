@@ -128,11 +128,11 @@ public class Frame {
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
-    public PqlBaseQuery inverseBitmap(long columnID) {
+    public PqlBitmapQuery inverseBitmap(long columnID) {
         if (!this.options.isInverseEnabled()) {
             throw new PilosaException("Inverse bitmaps support was not enabled for this frame");
         }
-        return this.index.pqlQuery(String.format("Bitmap(%s=%d, frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(%s=%d, frame='%s')",
                 this.columnLabel, columnID, this.name));
     }
 
@@ -202,9 +202,9 @@ public class Frame {
      * @return a PQL Bitmap query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
-    public PqlBitmapQuery topN(long n) {
+    public PqlBaseQuery topN(long n) {
         String s = String.format("TopN(frame='%s', n=%d, inverse=false)", this.name, n);
-        return this.index.pqlBitmapQuery(s);
+        return this.index.pqlQuery(s);
     }
 
     /**
@@ -214,12 +214,12 @@ public class Frame {
      * This variant sets inverse=true
      *
      * @param n number of items to return
-     * @return a PQL Bitmap query
+     * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
-    public PqlBitmapQuery inverseTopN(long n) {
+    public PqlBaseQuery inverseTopN(long n) {
         String s = String.format("TopN(frame='%s', n=%d, inverse=true)", this.name, n);
-        return this.index.pqlBitmapQuery(s);
+        return this.index.pqlQuery(s);
     }
 
     /**
@@ -235,7 +235,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap) {
+    public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap) {
         return this._topN(n, bitmap, false, null, null);
     }
 
@@ -252,7 +252,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap) {
+    public PqlBaseQuery inverseTopN(long n, PqlBitmapQuery bitmap) {
         return this._topN(n, bitmap, true, null, null);
     }
 
@@ -272,7 +272,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
+    public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
         return _topN(n, bitmap, false, field, values);
     }
 
@@ -294,11 +294,11 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
+    public PqlBaseQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
         return _topN(n, bitmap, true, field, values);
     }
 
-    private PqlBitmapQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object[] values) {
+    private PqlBaseQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object[] values) {
         // TOOD: make field use its own validator
         String fieldString = "";
         if (field != null) {
@@ -312,7 +312,7 @@ public class Frame {
             String bitmapString = (bitmap == null) ? "" : String.format("%s, ", bitmap.serialize());
             String s = String.format("TopN(%sframe='%s', n=%d, inverse=%s%s%s)",
                     bitmapString, this.name, n, inverseString, fieldString, valuesString);
-            return this.index.pqlBitmapQuery(s);
+            return this.index.pqlQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }

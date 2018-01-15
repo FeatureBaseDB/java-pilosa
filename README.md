@@ -551,9 +551,9 @@ public class InsecurePilosaClient extends PilosaClient {
 
 ## Diagnostics
 
-This library sends client library version, Java runtime version and OS platform name (e.g., linux amd64) to the Pilosa server in the HTTP user agent header. This information allow us to understand our community better. Below is a sample user agent header:
+This library sends client library version in the HTTP user agent header. This information allow us to understand our community better. Below is a sample user agent header:
 ```
-User-Agent: java-pilosa/0.8.0-SNAPSHOT java1.8.0_151 linux/amd64
+User-Agent: java-pilosa/0.8.0-SNAPSHOT
 ```
 
 

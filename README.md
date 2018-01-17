@@ -549,14 +549,6 @@ public class InsecurePilosaClient extends PilosaClient {
 }
 ```
 
-## Diagnostics
-
-This library sends client library version in the HTTP user agent header. This information allow us to understand our community better. Below is a sample user agent header:
-```
-User-Agent: java-pilosa/0.8.0-SNAPSHOT
-```
-
-
 ## Contribution
 
 Please check our [Contributor's Guidelines](https://github.com/pilosa/pilosa/CONTRIBUTING.md).

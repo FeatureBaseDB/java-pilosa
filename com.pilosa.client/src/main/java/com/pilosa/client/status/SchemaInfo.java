@@ -34,21 +34,32 @@
 
 package com.pilosa.client.status;
 
-import com.pilosa.client.UnitTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
-@Category(UnitTest.class)
-public class NodeInfoTest {
-    @Test
-    public void testNodeInfoReturnsEmptyIndexesArrayIfNotSet() {
-        NodeInfo nodeInfo = new NodeInfo();
-        List<IndexInfo> target = new ArrayList<>();
-        assertEquals(target, nodeInfo.getIndexes());
+public final class SchemaInfo {
+    public static SchemaInfo fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, SchemaInfo.class);
     }
+
+    @JsonProperty("indexes")
+    public List<IndexInfo> getIndexes() {
+        return this.indexes;
+    }
+
+    void setIndexes(List<IndexInfo> indexes) {
+        if (indexes == null) {
+            this.indexes = new ArrayList<>();
+            return;
+        }
+        this.indexes = indexes;
+    }
+
+    private final static ObjectMapper mapper = new ObjectMapper();
+    private List<IndexInfo> indexes = new ArrayList<>();
 }

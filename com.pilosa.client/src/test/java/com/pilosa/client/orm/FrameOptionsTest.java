@@ -36,7 +36,6 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
-import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -52,39 +51,31 @@ public class FrameOptionsTest {
     public void testBuilder() {
         FrameOptions options = FrameOptions.builder()
                 .build();
-        compare(options, "rowID", TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
-
-        options = FrameOptions.builder()
-                .setRowLabel("the_row_label")
-                .build();
-        compare(options, "the_row_label", TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
+        compare(options, TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
-        compare(options, "rowID", TimeQuantum.YEAR_MONTH_DAY_HOUR, false, CacheType.DEFAULT, 0);
+        compare(options, TimeQuantum.YEAR_MONTH_DAY_HOUR, false, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
-                .setRowLabel("someid")
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .setInverseEnabled(true)
                 .build();
-        compare(options, "someid", TimeQuantum.YEAR, true, CacheType.DEFAULT, 0);
+        compare(options, TimeQuantum.YEAR, true, CacheType.DEFAULT, 0);
 
         options = FrameOptions.builder()
-                .setRowLabel("someid")
                 .setTimeQuantum(TimeQuantum.YEAR)
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(10000)
                 .build();
-        compare(options, "someid", TimeQuantum.YEAR, true, CacheType.RANKED, 10000);
+        compare(options, TimeQuantum.YEAR, true, CacheType.RANKED, 10000);
     }
 
     @Test
     public void testFrameOptionsToString() {
         FrameOptions options = FrameOptions.builder()
-                .setRowLabel("stargazer_id")
                 .setTimeQuantum(TimeQuantum.DAY_HOUR)
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
@@ -92,15 +83,8 @@ public class FrameOptionsTest {
                 .addIntField("foo", 10, 100)
                 .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"rowLabel\":\"stargazer_id\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
+        String target = "{\"options\": {\"rowLabel\":\"rowID\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
-    }
-
-    @Test(expected = PilosaException.class)
-    public void testInvalidRowLabel() {
-        FrameOptions.builder()
-                .setRowLabel("#Just an invalid label!")
-                .build();
     }
 
     @Test
@@ -120,7 +104,6 @@ public class FrameOptionsTest {
     @Test
     public void testHashCode() {
         FrameOptions options1 = FrameOptions.builder()
-                .setRowLabel("row")
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
@@ -128,7 +111,6 @@ public class FrameOptionsTest {
                 .addIntField("foo", 10, 1000)
                 .build();
         FrameOptions options2 = FrameOptions.builder()
-                .setRowLabel("row")
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
@@ -148,10 +130,9 @@ public class FrameOptionsTest {
         assertTrue(options.isRangeEnabled());
     }
 
-    private void compare(FrameOptions options, String targetRowLabel,
+    private void compare(FrameOptions options,
                          TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,
                          CacheType targetCacheType, int targetCacheSize) {
-        assertEquals(targetRowLabel, options.getRowLabel());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
         assertEquals(targetInverseEnabled, options.isInverseEnabled());
         assertEquals(targetCacheType, options.getCacheType());
@@ -159,7 +140,7 @@ public class FrameOptionsTest {
     }
 
     private Object[] stringToSortedChars(String s) {
-        List<Character> characterList = new ArrayList<Character>();
+        List<Character> characterList = new ArrayList<>();
         for (char c : s.toCharArray()) {
             characterList.add(c);
         }

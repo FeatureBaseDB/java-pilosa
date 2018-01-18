@@ -35,7 +35,6 @@
 package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Frame;
@@ -44,8 +43,7 @@ import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
 import com.pilosa.client.status.FrameInfo;
 import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.NodeInfo;
-import com.pilosa.client.status.StatusInfo;
+import com.pilosa.client.status.SchemaInfo;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -191,13 +189,9 @@ public class PilosaClient implements AutoCloseable {
      */
     public void createIndex(Index index) {
         String path = String.format("/index/%s", index.getName());
-        String body = index.getOptions().toString();
+        String body = "";
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
         clientExecute("POST", path, data, protobufHeaders, "Error while creating index");
-        // set time quantum for the index if one was assigned to it
-        if (index.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
-            patchTimeQuantum(index);
-        }
     }
 
     /**
@@ -317,23 +311,22 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Returns the status of the cluster and schema info.
+     * Returns the schema info.
      *
-     * @return StatusInfo object.
-     * @throws PilosaException if the status cannot be read
+     * @return SchemaInfo object.
+     * @throws PilosaException if the schema cannot be read
      */
-    public StatusInfo readStatus() {
-        String path = "/status";
+    public SchemaInfo readServerSchema() {
+        String path = "/schema";
         CloseableHttpResponse response = null;
         try {
             try {
-                response = clientExecute("GET", path, null, null, "Error while reading status",
+                response = clientExecute("GET", path, null, null, "Error while reading schema",
                         ReturnClientResponse.ERROR_CHECKED_RESPONSE);
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     try (InputStream src = entity.getContent()) {
-                        StatusMessage msg = StatusMessage.fromInputStream(src);
-                        return msg.getStatus();
+                        return SchemaInfo.fromInputStream(src);
                     }
                 }
                 throw new PilosaException("Server returned empty response");
@@ -354,13 +347,11 @@ public class PilosaClient implements AutoCloseable {
      */
     public Schema readSchema() {
         Schema result = Schema.defaultSchema();
-        StatusInfo status = readStatus();
-        for (NodeInfo nodeInfo : status.getNodes()) {
-            for (IndexInfo indexInfo : nodeInfo.getIndexes()) {
-                Index index = result.index(indexInfo.getName(), indexInfo.getOptions());
-                for (FrameInfo frameInfo : indexInfo.getFrames()) {
-                    index.frame(frameInfo.getName(), frameInfo.getOptions());
-                }
+        SchemaInfo schema = readServerSchema();
+        for (IndexInfo indexInfo : schema.getIndexes()) {
+            Index index = result.index(indexInfo.getName());
+            for (FrameInfo frameInfo : indexInfo.getFrames()) {
+                index.frame(frameInfo.getName(), frameInfo.getOptions());
             }
         }
         return result;
@@ -559,10 +550,6 @@ public class PilosaClient implements AutoCloseable {
             case "DELETE":
                 request = new HttpDelete(uri);
                 break;
-            case "PATCH":
-                request = new HttpPatch(uri);
-                ((HttpPatch) request).setEntity(data);
-                break;
             case "POST":
                 request = new HttpPost(uri);
                 ((HttpPost) request).setEntity(data);
@@ -650,14 +637,6 @@ public class PilosaClient implements AutoCloseable {
                 .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
-    }
-
-    private void patchTimeQuantum(Index index) {
-        String path = String.format("/index/%s/time-quantum", index.getName());
-        String body = String.format("{\"timeQuantum\":\"%s\"}",
-                index.getOptions().getTimeQuantum().toString());
-        ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("PATCH", path, data, protobufHeaders, "Error while setting time quantum for the index");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -761,27 +740,40 @@ class QueryRequest {
 }
 
 class FragmentNode {
-    @SuppressWarnings("unused")
-    public void setHost(String host) {
-        this.host = host;
+    public void setURI(FragmentNodeURI uri) {
+        this.uri = uri;
     }
 
+    URI toURI() {
+        return this.uri.toURI();
+    }
+
+    private FragmentNodeURI uri = new FragmentNodeURI();
+}
+
+class FragmentNodeURI {
+    @SuppressWarnings("unused")
     public void setScheme(String scheme) {
         this.scheme = scheme;
     }
 
     @SuppressWarnings("unused")
-    public void setInternalHost(String host) {
-        // internal host is used for internode communication
-        // just adding this no op so jackson doesn't complain... --YT
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    @SuppressWarnings("unused")
+    public void setPort(int port) {
+        this.port = port;
     }
 
     URI toURI() {
-        return URI.address(String.format("%s://%s", this.scheme, this.host));
+        return URI.address(String.format("%s://%s:%d", this.scheme, this.host, this.port));
     }
 
-    private String host;
     private String scheme;
+    private String host;
+    private int port;
 }
 
 class BitComparator implements Comparator<Bit> {
@@ -791,27 +783,4 @@ class BitComparator implements Comparator<Bit> {
         int prfCmp = Long.signum(bit.getColumnID() - other.getColumnID());
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
-}
-
-final class StatusMessage {
-
-    static StatusMessage fromInputStream(InputStream src) throws IOException {
-        return mapper.readValue(src, StatusMessage.class);
-    }
-
-    StatusInfo getStatus() {
-        return this.status;
-    }
-
-    void setStatus(StatusInfo status) {
-        this.status = status;
-    }
-
-    static {
-        mapper = new ObjectMapper();
-        StatusMessage.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    }
-
-    private StatusInfo status;
-    private final static ObjectMapper mapper;
 }

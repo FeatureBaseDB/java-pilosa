@@ -12,10 +12,10 @@ Java client for Pilosa high performance distributed bitmap index.
 
 ## Change Log
 
-* **Next**
+* **v0.8.1**
     * Added `equals`, `notEquals` and `notNull` field operations.
     * **Deprecation** `TimeQuantum` for `IndexOptions`. Use `TimeQuantum` of individual `FrameOptions` instead.
-    * **Deprecation** `IndexOptions` class is deprecated and will be removed in the future.
+    * **Deprecation** `IndexOptions` class is deprecated and will be removed in the next version.
     * **Deprecation** `schema.Index(name, indexOptions)` method.
 
 * **v0.8.0** (2017-11-16):
@@ -73,7 +73,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>0.8.0</version>
+        <version>0.8.1</version>
     </dependency>
 </dependencies>
 ```

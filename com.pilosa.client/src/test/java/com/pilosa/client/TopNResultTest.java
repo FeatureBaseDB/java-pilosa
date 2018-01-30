@@ -38,34 +38,29 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class CountResultItemTest {
+public class TopNResultTest {
     @Test
-    public void testCreateCountResult() {
-        CountResultItem result = createSampleResult();
-        assertEquals(45, result.getID());
-        assertEquals(12, result.getCount());
-    }
-
-    @Test
-    public void testCreateCountResultDefaultConstructor() {
-        new CountResultItem();
-    }
-
-
-    @Test
-    public void testCountResultToString() {
-        CountResultItem result = createSampleResult();
-        assertEquals("CountResultItem(key=45, count=12)", result.toString());
+    public void testCreateTopNResult() {
+        TopNResult result = createSampleResult();
+        CountResultItem[] items = result.getCountItems();
+        assertEquals(1, items.length);
+        assertEquals(QueryResultType.PAIRS, result.getType());
+        CountResultItem[] targetItems = new CountResultItem[1];
+        targetItems[0] = CountResultItem.create(5, 10);
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertArrayEquals(targetItems, result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
     @Test
     public void testEquals() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        TopNResult result1 = createSampleResult();
+        TopNResult result2 = createSampleResult();
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -73,24 +68,26 @@ public class CountResultItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = CountResultItem.create(1, 2).equals(0);
+        boolean e = (new TopNResult()).equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        CountResultItem result = createSampleResult();
+        TopNResult result = createSampleResult();
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        TopNResult result1 = createSampleResult();
+        TopNResult result2 = createSampleResult();
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    private CountResultItem createSampleResult() {
-        return CountResultItem.create(45, 12);
+    private TopNResult createSampleResult() {
+        CountResultItem[] items = new CountResultItem[1];
+        items[0] = CountResultItem.create(5, 10);
+        return TopNResult.create(items);
     }
 }

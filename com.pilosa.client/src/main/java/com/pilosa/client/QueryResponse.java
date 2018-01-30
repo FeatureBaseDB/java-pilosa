@@ -127,15 +127,7 @@ public final class QueryResponse {
         return !isError;
     }
 
-    private void parseProtobuf(InputStream src) throws IOException {
-        Internal.QueryResponse response = Internal.QueryResponse.parseFrom(src);
-        String errorMessage = response.getErr();
-        if (!errorMessage.equals("")) {
-            this.errorMessage = errorMessage;
-            this.isError = true;
-            return;
-        }
-
+    void parseQueryResponse(Internal.QueryResponse response) {
         List<QueryResult> results = new ArrayList<>(response.getResultsCount());
         for (Internal.QueryResult q : response.getResultsList()) {
             int type = q.getType();
@@ -169,5 +161,16 @@ public final class QueryResponse {
             columns.add(ColumnItem.fromInternal(column));
         }
         this.columns = columns;
+    }
+
+    private void parseProtobuf(InputStream src) throws IOException {
+        Internal.QueryResponse response = Internal.QueryResponse.parseFrom(src);
+        String errorMessage = response.getErr();
+        if (!errorMessage.equals("")) {
+            this.errorMessage = errorMessage;
+            this.isError = true;
+            return;
+        }
+        parseQueryResponse(response);
     }
 }

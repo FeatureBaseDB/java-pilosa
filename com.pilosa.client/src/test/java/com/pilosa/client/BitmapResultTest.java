@@ -43,8 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class BitmapResultTest {
@@ -59,15 +58,10 @@ public class BitmapResultTest {
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
         assertEquals(QueryResultType.BITMAP, result.getType());
-        assertEquals(TopNResult.defaultResult(), result.getCountItems());
+        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getSum());
         assertEquals(false, result.isChanged());
-    }
-
-    @Test
-    public void testCreateBitmapResultDefaultConstructor() {
-        new BitmapResult();
     }
 
     @Test

@@ -34,66 +34,51 @@
 
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public class BoolResult implements QueryResult {
-    @Override
-    public int getType() {
-        return QueryResultType.BOOL;
+import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.*;
+
+@Category(UnitTest.class)
+public class SumCountResultTest {
+    @Test
+    public void testCreateSumCountResult() {
+        SumCountResult result = SumCountResult.create(20, 10);
+        assertEquals(QueryResultType.SUM_COUNT, result.getType());
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(10, result.getCount());
+        assertEquals(20L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
-    @Override
-    public BitmapResult getBitmap() {
-        return BitmapResult.defaultResult();
+    @Test
+    public void testEquals() {
+        SumCountResult result1 = SumCountResult.create(33, 5);
+        SumCountResult result2 = SumCountResult.create(33, 5);
+        boolean e = result1.equals(result2);
+        assertTrue(e);
     }
 
-    @Override
-    public CountResultItem[] getCountItems() {
-        return TopNResult.defaultItems();
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = (new SumCountResult()).equals(0);
+        assertFalse(e);
     }
 
-    @Override
-    public long getCount() {
-        return 0;
+    @Test
+    public void testEqualsSameObject() {
+        SumCountResult result = SumCountResult.create(6, 3);
+        assertEquals(result, result);
     }
 
-    @Override
-    public long getSum() {
-        return 0;
+    @Test
+    public void testHashCode() {
+        SumCountResult result1 = SumCountResult.create(22, 7);
+        SumCountResult result2 = SumCountResult.create(22, 7);
+        assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    @Override
-    public boolean isChanged() {
-        return this.changed;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof BoolResult)) {
-            return false;
-        }
-        return this.changed == ((BoolResult) obj).changed;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.changed)
-                .toHashCode();
-    }
-
-    static BoolResult create(boolean changed) {
-        BoolResult result = new BoolResult();
-        result.changed = changed;
-        return result;
-    }
-
-    static BoolResult fromInternal(Internal.QueryResult q) {
-        return create(q.getChanged());
-    }
-
-    private boolean changed;
 }

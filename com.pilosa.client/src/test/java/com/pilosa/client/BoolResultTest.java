@@ -37,7 +37,8 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class BoolResultTest {
@@ -46,9 +47,38 @@ public class BoolResultTest {
         BoolResult result = BoolResult.create(true);
         assertEquals(QueryResultType.BOOL, result.getType());
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getSum());
         assertEquals(true, result.isChanged());
+    }
+
+    @Test
+    public void testEquals() {
+        BoolResult result1 = BoolResult.create(true);
+        BoolResult result2 = BoolResult.create(true);
+        boolean e = result1.equals(result2);
+        assertTrue(e);
+    }
+
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = (new BoolResult()).equals(0);
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        BoolResult result = new BoolResult();
+        assertEquals(result, result);
+    }
+
+    @Test
+    public void testHashCode() {
+        BoolResult result1 = BoolResult.create(false);
+        BoolResult result2 = BoolResult.create(false);
+        assertEquals(result1.hashCode(), result2.hashCode());
     }
 
 }

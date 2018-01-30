@@ -42,21 +42,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public final class CountResultItem {
-    private long id;
-    private long count;
-
-    CountResultItem() {
-    }
-
-    CountResultItem(long id, long count) {
-        this.id = id;
-        this.count = count;
-    }
-
-    static CountResultItem fromInternal(Internal.Pair pair) {
-        return new CountResultItem(pair.getID(), pair.getCount());
-    }
-
     /**
      * Returns the row ID.
      *
@@ -81,14 +66,6 @@ public final class CountResultItem {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.id)
-                .append(this.count)
-                .toHashCode();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -100,4 +77,25 @@ public final class CountResultItem {
         return this.id == rhs.id && this.count == rhs.count;
     }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.id)
+                .append(this.count)
+                .toHashCode();
+    }
+
+    static CountResultItem create(long id, long count) {
+        CountResultItem item = new CountResultItem();
+        item.id = id;
+        item.count = count;
+        return item;
+    }
+
+    static CountResultItem fromInternal(Internal.Pair pair) {
+        return CountResultItem.create(pair.getID(), pair.getCount());
+    }
+
+    private long id;
+    private long count;
 }

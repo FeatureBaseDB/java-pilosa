@@ -34,66 +34,51 @@
 
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public class BoolResult implements QueryResult {
-    @Override
-    public int getType() {
-        return QueryResultType.BOOL;
+import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.*;
+
+@Category(UnitTest.class)
+public class IntResultTest {
+    @Test
+    public void testCreateIntResult() {
+        IntResult result = IntResult.create(55);
+        assertEquals(QueryResultType.INT, result.getType());
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(55L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
-    @Override
-    public BitmapResult getBitmap() {
-        return BitmapResult.defaultResult();
+    @Test
+    public void testEquals() {
+        IntResult result1 = IntResult.create(33);
+        IntResult result2 = IntResult.create(33);
+        boolean e = result1.equals(result2);
+        assertTrue(e);
     }
 
-    @Override
-    public CountResultItem[] getCountItems() {
-        return TopNResult.defaultItems();
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = (new IntResult()).equals(0);
+        assertFalse(e);
     }
 
-    @Override
-    public long getCount() {
-        return 0;
+    @Test
+    public void testEqualsSameObject() {
+        IntResult result = IntResult.create(6);
+        assertEquals(result, result);
     }
 
-    @Override
-    public long getSum() {
-        return 0;
+    @Test
+    public void testHashCode() {
+        IntResult result1 = IntResult.create(22);
+        IntResult result2 = IntResult.create(22);
+        assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    @Override
-    public boolean isChanged() {
-        return this.changed;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof BoolResult)) {
-            return false;
-        }
-        return this.changed == ((BoolResult) obj).changed;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.changed)
-                .toHashCode();
-    }
-
-    static BoolResult create(boolean changed) {
-        BoolResult result = new BoolResult();
-        result.changed = changed;
-        return result;
-    }
-
-    static BoolResult fromInternal(Internal.QueryResult q) {
-        return create(q.getChanged());
-    }
-
-    private boolean changed;
 }

@@ -78,7 +78,7 @@ public final class BitmapResult implements QueryResult {
 
     @Override
     public CountResultItem[] getCountItems() {
-        return TopNResult.defaultResult();
+        return TopNResult.defaultItems();
     }
 
     @Override
@@ -102,14 +102,6 @@ public final class BitmapResult implements QueryResult {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.attributes)
-                .append(this.bits)
-                .toHashCode();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -122,6 +114,14 @@ public final class BitmapResult implements QueryResult {
                 .append(this.attributes, rhs.attributes)
                 .append(this.bits, rhs.bits)
                 .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.attributes)
+                .append(this.bits)
+                .toHashCode();
     }
 
     static BitmapResult create(Map<String, Object> attributes, List<Long> bits) {

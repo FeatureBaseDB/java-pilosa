@@ -47,7 +47,7 @@ public class NullResult implements QueryResult {
 
     @Override
     public CountResultItem[] getCountItems() {
-        return TopNResult.defaultResult();
+        return TopNResult.defaultItems();
     }
 
     @Override
@@ -71,6 +71,9 @@ public class NullResult implements QueryResult {
 
     static {
         defaultResult = new NullResult();
+    }
+
+    private NullResult() {
     }
 
     private static NullResult defaultResult;

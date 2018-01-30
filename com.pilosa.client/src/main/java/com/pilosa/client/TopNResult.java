@@ -91,6 +91,12 @@ public class TopNResult implements QueryResult {
                 .toHashCode();
     }
 
+    static TopNResult create(CountResultItem[] items) {
+        TopNResult result = new TopNResult();
+        result.items = items;
+        return result;
+    }
+
     static TopNResult fromInternal(Internal.QueryResult q) {
         List<Internal.Pair> listItems = q.getPairsList();
         final int itemCount = listItems.size();
@@ -98,15 +104,13 @@ public class TopNResult implements QueryResult {
         for (int i = 0; i < itemCount; i++) {
             items[i] = CountResultItem.fromInternal(listItems.get(i));
         }
-        TopNResult result = new TopNResult();
-        result.items = items;
-        return result;
+        return TopNResult.create(items);
     }
 
-    static CountResultItem[] defaultResult() {
-        return defaultResult;
+    static CountResultItem[] defaultItems() {
+        return defaultItems;
     }
 
-    private static CountResultItem[] defaultResult = new CountResultItem[0];
+    private static CountResultItem[] defaultItems = new CountResultItem[0];
     private CountResultItem[] items;
 }

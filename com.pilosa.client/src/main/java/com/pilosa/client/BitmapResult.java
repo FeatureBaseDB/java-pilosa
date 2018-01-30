@@ -47,29 +47,7 @@ import java.util.Map;
  *
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
-public final class BitmapResult {
-    private Map<String, Object> attributes;
-    private List<Long> bits;
-
-    BitmapResult() {
-    }
-
-    BitmapResult(Map<String, Object> attributes, List<Long> bits) {
-        this.attributes = attributes;
-        this.bits = bits;
-    }
-
-    static BitmapResult fromInternal(Internal.Bitmap b) {
-        return new BitmapResult(Util.protobufAttrsToMap(b.getAttrsList()), b.getBitsList());
-    }
-
-    static BitmapResult defaultBitmapResult() {
-        BitmapResult result = new BitmapResult();
-        result.attributes = new HashMap<>();
-        result.bits = new ArrayList<>();
-        return result;
-    }
-
+public final class BitmapResult implements QueryResult {
     /**
      * Returns the attributes of the reply.
      *
@@ -86,6 +64,36 @@ public final class BitmapResult {
      */
     public List<Long> getBits() {
         return this.bits;
+    }
+
+    @Override
+    public int getType() {
+        return QueryResultType.BITMAP;
+    }
+
+    @Override
+    public BitmapResult getBitmap() {
+        return this;
+    }
+
+    @Override
+    public CountResultItem[] getCountItems() {
+        return TopNResult.defaultResult();
+    }
+
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
     }
 
     @Override
@@ -115,4 +123,31 @@ public final class BitmapResult {
                 .append(this.bits, rhs.bits)
                 .isEquals();
     }
+
+    static BitmapResult create(Map<String, Object> attributes, List<Long> bits) {
+        BitmapResult result = new BitmapResult();
+        result.attributes = attributes;
+        result.bits = bits;
+        return result;
+    }
+
+    static BitmapResult fromInternal(Internal.QueryResult q) {
+        Internal.Bitmap b = q.getBitmap();
+        return create(Util.protobufAttrsToMap(b.getAttrsList()), b.getBitsList());
+    }
+
+    static BitmapResult defaultResult() {
+        return defaultResult;
+    }
+
+    static {
+        BitmapResult result = new BitmapResult();
+        result.attributes = new HashMap<>();
+        result.bits = new ArrayList<>();
+        defaultResult = result;
+    }
+
+    private static BitmapResult defaultResult;
+    private Map<String, Object> attributes;
+    private List<Long> bits;
 }

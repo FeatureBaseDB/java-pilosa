@@ -58,6 +58,11 @@ public class BitmapResultTest {
         assertEquals(2, bits.size());
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
+        assertEquals(QueryResultType.BITMAP, result.getType());
+        assertEquals(TopNResult.defaultResult(), result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
     @Test
@@ -83,7 +88,7 @@ public class BitmapResultTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new BitmapResult(null, null)).equals(0);
+        boolean e = BitmapResult.defaultResult().equals(0);
         assertFalse(e);
     }
 
@@ -106,6 +111,6 @@ public class BitmapResultTest {
         List<Long> bits = new ArrayList<>(2);
         bits.add(42L);
         bits.add(45L);
-        return new BitmapResult(attrs, bits);
+        return BitmapResult.create(attrs, bits);
     }
 }

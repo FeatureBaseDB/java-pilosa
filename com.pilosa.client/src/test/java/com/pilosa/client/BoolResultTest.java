@@ -34,16 +34,21 @@
 
 package com.pilosa.client;
 
-public interface QueryResult {
-    int getType();
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-    BitmapResult getBitmap();
+import static org.junit.Assert.assertEquals;
 
-    CountResultItem[] getCountItems();
+@Category(UnitTest.class)
+public class BoolResultTest {
+    @Test
+    public void testCreateBoolResult() {
+        BoolResult result = BoolResult.create(true);
+        assertEquals(QueryResultType.BOOL, result.getType());
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(true, result.isChanged());
+    }
 
-    long getCount();
-
-    long getSum();
-
-    boolean isChanged();
 }

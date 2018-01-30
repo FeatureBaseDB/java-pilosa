@@ -34,16 +34,42 @@
 
 package com.pilosa.client;
 
-public interface QueryResult {
-    int getType();
+public class IntResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.INT;
+    }
 
-    BitmapResult getBitmap();
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
 
-    CountResultItem[] getCountItems();
+    @Override
+    public CountResultItem[] getCountItems() {
+        return TopNResult.defaultResult();
+    }
 
-    long getCount();
+    @Override
+    public long getCount() {
+        return this.count;
+    }
 
-    long getSum();
+    @Override
+    public long getSum() {
+        return 0;
+    }
 
-    boolean isChanged();
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    static IntResult fromInternal(Internal.QueryResult q) {
+        IntResult result = new IntResult();
+        result.count = q.getN();
+        return result;
+    }
+
+    private long count;
 }

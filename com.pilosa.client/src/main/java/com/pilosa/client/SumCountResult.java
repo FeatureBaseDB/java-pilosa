@@ -37,6 +37,8 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 public class SumCountResult implements QueryResult {
     @Override
     public int getType() {
@@ -49,8 +51,8 @@ public class SumCountResult implements QueryResult {
     }
 
     @Override
-    public CountResultItem[] getCountItems() {
-        return new CountResultItem[0];
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
     }
 
     @Override

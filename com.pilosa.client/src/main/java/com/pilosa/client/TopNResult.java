@@ -37,6 +37,7 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopNResult implements QueryResult {
@@ -51,7 +52,7 @@ public class TopNResult implements QueryResult {
     }
 
     @Override
-    public CountResultItem[] getCountItems() {
+    public List<CountResultItem> getCountItems() {
         return this.items;
     }
 
@@ -91,26 +92,24 @@ public class TopNResult implements QueryResult {
                 .toHashCode();
     }
 
-    static TopNResult create(CountResultItem[] items) {
+    static TopNResult create(List<CountResultItem> items) {
         TopNResult result = new TopNResult();
         result.items = items;
         return result;
     }
 
     static TopNResult fromInternal(Internal.QueryResult q) {
-        List<Internal.Pair> listItems = q.getPairsList();
-        final int itemCount = listItems.size();
-        CountResultItem[] items = new CountResultItem[itemCount];
-        for (int i = 0; i < itemCount; i++) {
-            items[i] = CountResultItem.fromInternal(listItems.get(i));
+        List<CountResultItem> items = new ArrayList<>(q.getPairsCount());
+        for (Internal.Pair pair : q.getPairsList()) {
+            items.add(CountResultItem.fromInternal(pair));
         }
         return TopNResult.create(items);
     }
 
-    static CountResultItem[] defaultItems() {
+    static List<CountResultItem> defaultItems() {
         return defaultItems;
     }
 
-    private static CountResultItem[] defaultItems = new CountResultItem[0];
-    private CountResultItem[] items;
+    private static List<CountResultItem> defaultItems = new ArrayList<>(0);
+    private List<CountResultItem> items;
 }

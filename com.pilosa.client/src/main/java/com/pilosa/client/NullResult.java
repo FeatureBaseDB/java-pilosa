@@ -34,6 +34,8 @@
 
 package com.pilosa.client;
 
+import java.util.List;
+
 public class NullResult implements QueryResult {
     @Override
     public int getType() {
@@ -46,7 +48,7 @@ public class NullResult implements QueryResult {
     }
 
     @Override
-    public CountResultItem[] getCountItems() {
+    public List<CountResultItem> getCountItems() {
         return TopNResult.defaultItems();
     }
 

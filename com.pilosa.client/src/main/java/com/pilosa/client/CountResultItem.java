@@ -34,6 +34,7 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -52,6 +53,15 @@ public final class CountResultItem {
     }
 
     /**
+     * Returns the row key (Enterprise version)
+     *
+     * @return row key
+     */
+    public String getKey() {
+        return this.key;
+    }
+
+    /**
      * Returns the count of column IDs where this bitmap item is 1.
      *
      * @return count of column IDs where this bitmap item is 1
@@ -62,7 +72,12 @@ public final class CountResultItem {
 
     @Override
     public String toString() {
-        return String.format("CountResultItem(key=%d, count=%d)", this.id, this.count);
+        if (this.key.isEmpty()) {
+            return String.format("CountResultItem(id=%d, count=%d)",
+                    this.id, this.count);
+        }
+        return String.format("CountResultItem(key=\"%s\", count=%d)",
+                this.key, this.count);
     }
 
     @Override
@@ -74,28 +89,36 @@ public final class CountResultItem {
             return false;
         }
         CountResultItem rhs = (CountResultItem) obj;
-        return this.id == rhs.id && this.count == rhs.count;
+        return new EqualsBuilder()
+                .append(this.id, rhs.id)
+                .append(this.key, rhs.key)
+                .append(this.count, rhs.count)
+                .isEquals();
+
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
                 .append(this.id)
+                .append(key)
                 .append(this.count)
                 .toHashCode();
     }
 
-    static CountResultItem create(long id, long count) {
+    static CountResultItem create(long id, String key, long count) {
         CountResultItem item = new CountResultItem();
-        item.id = id;
+        item.id = (key.equals("") ? id : 0);
+        item.key = key;
         item.count = count;
         return item;
     }
 
     static CountResultItem fromInternal(Internal.Pair pair) {
-        return CountResultItem.create(pair.getID(), pair.getCount());
+        return CountResultItem.create(pair.getID(), pair.getKey(), pair.getCount());
     }
 
     private long id;
+    private String key;
     private long count;
 }

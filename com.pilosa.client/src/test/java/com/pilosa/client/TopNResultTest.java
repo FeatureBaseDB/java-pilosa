@@ -37,21 +37,25 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class TopNResultTest {
     @Test
     public void testCreateTopNResult() {
         TopNResult result = createSampleResult();
-        CountResultItem[] items = result.getCountItems();
-        assertEquals(1, items.length);
+        List<CountResultItem> items = result.getCountItems();
+        assertEquals(1, items.size());
         assertEquals(QueryResultType.PAIRS, result.getType());
-        CountResultItem[] targetItems = new CountResultItem[1];
-        targetItems[0] = CountResultItem.create(5, 10);
+        List<CountResultItem> targetItems = new ArrayList<>();
+        targetItems.add(CountResultItem.create(5, "", 10));
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
-        assertArrayEquals(targetItems, result.getCountItems());
+        assertEquals(targetItems, result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getSum());
         assertEquals(false, result.isChanged());
@@ -86,8 +90,8 @@ public class TopNResultTest {
     }
 
     private TopNResult createSampleResult() {
-        CountResultItem[] items = new CountResultItem[1];
-        items[0] = CountResultItem.create(5, 10);
+        List<CountResultItem> items = new ArrayList<>();
+        items.add(CountResultItem.create(5, "", 10));
         return TopNResult.create(items);
     }
 }

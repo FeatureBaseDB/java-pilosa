@@ -299,9 +299,9 @@ public class PilosaClientIT {
             Frame topnFrame = this.index.frame("topn_test");
             client.query(topnFrame.setBit(155, 551));
             QueryResponse response4 = client.query(topnFrame.topN(1));
-            CountResultItem[] items = response4.getResult().getCountItems();
-            assertEquals(1, items.length);
-            CountResultItem item = items[0];
+            List<CountResultItem> items = response4.getResult().getCountItems();
+            assertEquals(1, items.size());
+            CountResultItem item = items.get(0);
             assertEquals(155, item.getID());
             assertEquals(1, item.getCount());
         }
@@ -348,9 +348,9 @@ public class PilosaClientIT {
             // The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
             client.httpRequest("POST", "/recalculate-caches");
             QueryResponse response = client.query(frame.topN(2));
-            CountResultItem[] items = response.getResult().getCountItems();
-            assertEquals(2, items.length);
-            CountResultItem item = items[0];
+            List<CountResultItem> items = response.getResult().getCountItems();
+            assertEquals(2, items.size());
+            CountResultItem item = items.get(0);
             assertEquals(10, item.getID());
             assertEquals(3, item.getCount());
         }

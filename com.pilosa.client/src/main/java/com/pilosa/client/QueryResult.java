@@ -34,12 +34,14 @@
 
 package com.pilosa.client;
 
+import java.util.List;
+
 public interface QueryResult {
     int getType();
 
     BitmapResult getBitmap();
 
-    CountResultItem[] getCountItems();
+    List<CountResultItem> getCountItems();
 
     long getCount();
 

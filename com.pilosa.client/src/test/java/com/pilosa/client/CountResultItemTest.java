@@ -47,7 +47,16 @@ public class CountResultItemTest {
     public void testCreateCountResult() {
         CountResultItem result = createSampleResult();
         assertEquals(45, result.getID());
+        assertEquals("", result.getKey());
         assertEquals(12, result.getCount());
+    }
+
+    @Test
+    public void testCreateCountResultEnterprise() {
+        CountResultItem result = CountResultItem.create(55, "a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", 100);
+        assertEquals(0, result.getID());
+        assertEquals("a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", result.getKey());
+        assertEquals(100, result.getCount());
     }
 
     @Test
@@ -59,7 +68,10 @@ public class CountResultItemTest {
     @Test
     public void testCountResultToString() {
         CountResultItem result = createSampleResult();
-        assertEquals("CountResultItem(key=45, count=12)", result.toString());
+        assertEquals("CountResultItem(id=45, count=12)", result.toString());
+
+        result = CountResultItem.create(0, "foo", 100);
+        assertEquals("CountResultItem(key=\"foo\", count=100)", result.toString());
     }
 
     @Test
@@ -73,7 +85,7 @@ public class CountResultItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = CountResultItem.create(1, 2).equals(0);
+        boolean e = CountResultItem.create(1, "", 2).equals(0);
         assertFalse(e);
     }
 
@@ -91,6 +103,6 @@ public class CountResultItemTest {
     }
 
     private CountResultItem createSampleResult() {
-        return CountResultItem.create(45, 12);
+        return CountResultItem.create(45, "", 12);
     }
 }

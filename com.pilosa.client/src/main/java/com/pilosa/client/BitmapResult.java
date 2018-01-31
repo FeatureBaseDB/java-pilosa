@@ -66,6 +66,15 @@ public final class BitmapResult implements QueryResult {
         return this.bits;
     }
 
+    /**
+     * Returns the keys in the reply (Enterprise version)
+     *
+     * @return keys
+     */
+    public List<String> getKeys() {
+        return this.keys;
+    }
+
     @Override
     public int getType() {
         return QueryResultType.BITMAP;
@@ -77,7 +86,7 @@ public final class BitmapResult implements QueryResult {
     }
 
     @Override
-    public CountResultItem[] getCountItems() {
+    public List<CountResultItem> getCountItems() {
         return TopNResult.defaultItems();
     }
 
@@ -98,7 +107,8 @@ public final class BitmapResult implements QueryResult {
 
     @Override
     public String toString() {
-        return String.format("BitmapResult(attrs=%s, bits=%s)", this.attributes, this.bits);
+        return String.format("BitmapResult(attrs=%s, bits=%s, keys=%s)",
+                this.attributes, this.bits, this.keys);
     }
 
     @Override
@@ -113,6 +123,7 @@ public final class BitmapResult implements QueryResult {
         return new EqualsBuilder()
                 .append(this.attributes, rhs.attributes)
                 .append(this.bits, rhs.bits)
+                .append(this.keys, rhs.keys)
                 .isEquals();
     }
 
@@ -121,19 +132,23 @@ public final class BitmapResult implements QueryResult {
         return new HashCodeBuilder(31, 47)
                 .append(this.attributes)
                 .append(this.bits)
+                .append(this.keys)
                 .toHashCode();
     }
 
-    static BitmapResult create(Map<String, Object> attributes, List<Long> bits) {
+    static BitmapResult create(Map<String, Object> attributes, List<Long> bits, List<String> keys) {
         BitmapResult result = new BitmapResult();
-        result.attributes = attributes;
-        result.bits = bits;
+        result.attributes = (attributes == null) ? defaultAttributes : attributes;
+        result.bits = (bits == null) ? defaultBits : bits;
+        result.keys = (keys == null) ? defaultKeys : keys;
         return result;
     }
 
     static BitmapResult fromInternal(Internal.QueryResult q) {
         Internal.Bitmap b = q.getBitmap();
-        return create(Util.protobufAttrsToMap(b.getAttrsList()), b.getBitsList());
+        return create(Util.protobufAttrsToMap(b.getAttrsList()),
+                b.getBitsList(),
+                b.getKeysList());
     }
 
     static BitmapResult defaultResult() {
@@ -148,6 +163,11 @@ public final class BitmapResult implements QueryResult {
     }
 
     private static BitmapResult defaultResult;
+    private static Map<String, Object> defaultAttributes = new HashMap<>(0);
+    private static List<Long> defaultBits = new ArrayList<>(0);
+    private static List<String> defaultKeys = new ArrayList<>(0);
+
     private Map<String, Object> attributes;
     private List<Long> bits;
+    private List<String> keys;
 }

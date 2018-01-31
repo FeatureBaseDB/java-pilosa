@@ -36,6 +36,8 @@ package com.pilosa.client;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 public class BoolResult implements QueryResult {
     @Override
     public int getType() {
@@ -48,7 +50,7 @@ public class BoolResult implements QueryResult {
     }
 
     @Override
-    public CountResultItem[] getCountItems() {
+    public List<CountResultItem> getCountItems() {
         return TopNResult.defaultItems();
     }
 

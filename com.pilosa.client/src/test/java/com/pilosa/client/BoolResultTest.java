@@ -38,7 +38,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class BoolResultTest {
@@ -47,7 +48,7 @@ public class BoolResultTest {
         BoolResult result = BoolResult.create(true);
         assertEquals(QueryResultType.BOOL, result.getType());
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
-        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getSum());
         assertEquals(true, result.isChanged());

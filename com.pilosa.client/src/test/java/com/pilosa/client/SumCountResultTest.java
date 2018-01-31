@@ -38,7 +38,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class SumCountResultTest {
@@ -47,7 +48,7 @@ public class SumCountResultTest {
         SumCountResult result = SumCountResult.create(20, 10);
         assertEquals(QueryResultType.SUM_COUNT, result.getType());
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
-        assertArrayEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(10, result.getCount());
         assertEquals(20L, result.getSum());
         assertEquals(false, result.isChanged());

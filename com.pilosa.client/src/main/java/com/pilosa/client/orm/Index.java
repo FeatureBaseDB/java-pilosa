@@ -274,6 +274,30 @@ public class Index {
                 this.options.getColumnLabel(), id, attributesString));
     }
 
+    /**
+     * Creates a SetColumnAttrs query. (Enterprise version)
+     * <p>
+     * SetColumnAttrs associates arbitrary key/value pairs with a column in an index.
+     * <p>
+     * Following object types are accepted:
+     * <ul>
+     * <li>Long</li>
+     * <li>String</li>
+     * <li>Boolean</li>
+     * <li>Double</li>
+     * </ul>
+     *
+     * @param key        column key
+     * @param attributes column attributes
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
+     */
+    public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
+        String attributesString = Util.createAttributesString(this.mapper, attributes);
+        return pqlQuery(String.format("SetColumnAttrs(%s='%s', %s)",
+                this.options.getColumnLabel(), key, attributesString));
+    }
+
     public Map<String, Frame> getFrames() {
         return this.frames;
     }

@@ -174,6 +174,7 @@ public class PilosaClient implements AutoCloseable {
         request.setRetrieveColumnAttributes(options.isColumns());
         request.setExcludeAttributes(options.isExcludeAttributes());
         request.setExcludeBits(options.isExcludeBits());
+        request.setSlices(options.getSlices());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -602,7 +603,6 @@ public class PilosaClient implements AutoCloseable {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream src = response.getEntity().getContent()) {
-                    ObjectMapper mapper = new ObjectMapper();
                     return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
                     });
                 }
@@ -649,7 +649,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     private String makeUserAgent() {
-        return String.format("java-pilosa/%s;%s", Version.getVersion(), Version.getBuildTime());
+        return String.format("java-pilosa/%s", Version.getVersion());
     }
 
     private enum ReturnClientResponse {
@@ -659,12 +659,15 @@ public class PilosaClient implements AutoCloseable {
     }
 
     static {
+        mapper = new ObjectMapper();
+
         protobufHeaders = new Header[]{
                 new BasicHeader("Content-Type", "application/x-protobuf"),
                 new BasicHeader("Accept", "application/x-protobuf")
         };
     }
 
+    private static final ObjectMapper mapper;
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final int MAX_HOSTS = 10;
@@ -683,6 +686,7 @@ class QueryRequest {
     private boolean retrieveColumnAttributes = false;
     private boolean excludeBits = false;
     private boolean excludeAttributes = false;
+    private Long[] slices = {};
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -722,12 +726,17 @@ class QueryRequest {
         this.excludeAttributes = excludeAttributes;
     }
 
+    public void setSlices(Long... slices) {
+        this.slices = slices;
+    }
+
     Internal.QueryRequest toProtobuf() {
         return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveColumnAttributes)
                 .setExcludeBits(this.excludeBits)
                 .setExcludeAttrs(this.excludeAttributes)
+                .addAllSlices(Arrays.asList(this.slices))
                 .build();
     }
 }

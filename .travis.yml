@@ -6,8 +6,8 @@ sudo: required
 before_install:
   - openssl req -x509 -newkey rsa:4096 -keyout test.pilosa.local.key -out test.pilosa.local.crt -days 3650 -nodes -subj "/C=US/ST=Texas/L=Austin/O=Pilosa/OU=Com/CN=test.pilosa.local"
   - wget https://s3.amazonaws.com/build.pilosa.com/pilosa-master-linux-amd64.tar.gz && tar xf pilosa-master-linux-amd64.tar.gz
-  - ./pilosa-master-linux-amd64/pilosa server -d http_data &
-  - ./pilosa-master-linux-amd64/pilosa server -b https://:20101 -d https_data --tls.skip-verify --tls.certificate test.pilosa.local.crt --tls.key test.pilosa.local.key --cluster.type static &
+  - ./pilosa-master-linux-amd64/pilosa server --metric.diagnostics=false -d http_data &
+  - ./pilosa-master-linux-amd64/pilosa server --metric.diagnostics=false -b https://:20101 -d https_data --tls.skip-verify --tls.certificate test.pilosa.local.crt --tls.key test.pilosa.local.key --cluster.type static &
   - wget http://www-us.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
   - tar xf apache-maven-3.5.2-bin.tar.gz
   - export M2_HOME=$PWD/apache-maven-3.5.2

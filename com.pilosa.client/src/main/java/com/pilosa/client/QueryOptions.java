@@ -90,17 +90,29 @@ public class QueryOptions {
         }
 
         /**
+         * Restricts query to a subset of slices.
+         *
+         * @param slices set to a list of slices to restrict query to.
+         * @return QueryOptions builder
+         */
+        public Builder setSlices(Long... slices) {
+            this.slices = slices;
+            return this;
+        }
+
+        /**
          * Creates the QueryOptions object.
          *
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns, this.excludeBits, this.excludeAttributes);
+            return new QueryOptions(this.columns, this.excludeBits, this.excludeAttributes, this.slices);
         }
 
         private boolean columns = false;
         private boolean excludeBits;
         private boolean excludeAttributes;
+        private Long slices[] = {};
     }
 
     /**
@@ -125,6 +137,10 @@ public class QueryOptions {
         return this.excludeAttributes;
     }
 
+    public Long[] getSlices() {
+        return this.slices;
+    }
+
     /**
      * Creates a QueryOptions.Builder object.
      * @return a Builder object
@@ -133,13 +149,15 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes) {
+    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes, Long[] slices) {
         this.columns = columns;
         this.excludeBits = excludeBits;
         this.excludeAttributes = excludeAttributes;
+        this.slices = slices;
     }
 
     private final boolean columns;
     private final boolean excludeBits;
     private final boolean excludeAttributes;
+    private final Long[] slices;
 }

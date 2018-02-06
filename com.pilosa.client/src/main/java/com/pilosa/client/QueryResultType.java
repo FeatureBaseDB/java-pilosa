@@ -34,38 +34,15 @@
 
 package com.pilosa.client;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-@Category(UnitTest.class)
-public class QueryResultTest {
-    @Test
-    public void testCreateDefaultConstructor() {
-        new QueryResult();
+public class QueryResultType {
+    private QueryResultType() {
     }
 
-    @Test
-    public void testEquals() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1, q1);
-        assertEquals(q1, q2);
-        assertFalse(q1.equals(new QueryResponse()));
-    }
-
-    @Test
-    public void testHashCode() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1.hashCode(), q2.hashCode());
-    }
-
-    @Test
-    public void testGetSum() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        assertEquals(10, q1.getSum());
-    }
+    public final static int NIL = 0;
+    public final static int BITMAP = 1;
+    public final static int PAIRS = 2;
+    public final static int SUM_COUNT = 3;
+    public final static int INT = 4;
+    public final static int BOOL = 5;
 }

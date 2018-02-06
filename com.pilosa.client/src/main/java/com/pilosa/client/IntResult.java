@@ -34,18 +34,68 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public class IntResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.INT;
+    }
 
-    BitmapResult getBitmap();
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
 
-    List<CountResultItem> getCountItems();
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
 
-    long getCount();
+    @Override
+    public long getCount() {
+        return this.count;
+    }
 
-    long getSum();
+    @Override
+    public long getSum() {
+        return 0;
+    }
 
-    boolean isChanged();
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof IntResult)) {
+            return false;
+        }
+        return this.count == ((IntResult) obj).count;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.count)
+                .toHashCode();
+    }
+
+    static IntResult create(long count) {
+        IntResult result = new IntResult();
+        result.count = count;
+        return result;
+    }
+
+    static IntResult fromInternal(Internal.QueryResult q) {
+        return IntResult.create(q.getN());
+    }
+
+    private long count;
 }

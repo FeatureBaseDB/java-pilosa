@@ -666,7 +666,7 @@ public class PilosaClientIT {
     public void failOverTest() {
         Cluster c = Cluster.defaultCluster();
         for (int i = 0; i < 20; i++) {
-            c.addHost(URI.address(String.format("n%d.nonexistent.net:5000", i)));
+            c.addHost(URI.address(String.format("n%d.nonexistent-improbable.net:5000", i)));
         }
         PilosaClient client = PilosaClient.withCluster(c);
         client.readServerSchema();

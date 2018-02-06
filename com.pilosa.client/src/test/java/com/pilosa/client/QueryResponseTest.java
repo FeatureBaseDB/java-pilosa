@@ -34,6 +34,7 @@
 
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -54,5 +55,18 @@ public class QueryResponseTest {
         QueryResponse response = new QueryResponse();
         assertNull(response.getResult());
         assertNull(response.getColumns());
+    }
+
+    @Test(expected = PilosaException.class)
+    public void testUnknownType() {
+        Internal.QueryResult result = Internal.QueryResult.newBuilder()
+                .setType(999)
+                .build();
+        Internal.QueryResponse response = Internal.QueryResponse.newBuilder()
+                .addResults(result)
+                .build();
+        PilosaClient client = PilosaClient.defaultClient();
+        QueryResponse r = new QueryResponse();
+        r.parseQueryResponse(response);
     }
 }

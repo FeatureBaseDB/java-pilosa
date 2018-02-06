@@ -118,6 +118,10 @@ public class OrmTest {
         assertEquals(
                 "Bitmap(project=10, frame='collaboration')",
                 qry2.serialize());
+        PqlBaseQuery qry3 = sampleFrame.bitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        assertEquals(
+                "Bitmap(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame')",
+                qry3.serialize());
     }
 
     @Test
@@ -132,6 +136,10 @@ public class OrmTest {
                 "Bitmap(user=5, frame='f1-inversable')",
                 qry.serialize()
         );
+        PqlBaseQuery qry2 = f1.inverseBitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        assertEquals(
+                "Bitmap(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='f1-inversable')",
+                qry2.serialize());
     }
 
     @Test
@@ -145,6 +153,11 @@ public class OrmTest {
         assertEquals(
                 "SetBit(project=10, frame='collaboration', user=20)",
                 qry2.serialize());
+        PqlQuery qry3 = sampleFrame.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        assertEquals(
+                "SetBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', columnID='some_id')",
+                qry3.serialize());
+
     }
 
     @Test
@@ -155,6 +168,15 @@ public class OrmTest {
         assertEquals(
                 "SetBit(project=10, frame='collaboration', user=20, timestamp='2017-04-24T12:14')",
                 qry.serialize());
+        PqlQuery qry2 = collabFrame.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some", timestamp.getTime());
+        assertEquals(
+                "SetBit(project='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', user='some', timestamp='2017-04-24T12:14')",
+                qry2.serialize());
+        PqlQuery qry3 = sampleFrame.clearBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        assertEquals(
+                "ClearBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', columnID='some_id')",
+                qry3.serialize());
+
     }
 
     @Test
@@ -324,9 +346,19 @@ public class OrmTest {
         assertEquals(
                 "Range(project=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
+        q = sampleFrame.range("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
+        assertEquals(
+                "Range(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                q.serialize());
+
         q = collabFrame.inverseRange(10, start.getTime(), end.getTime());
         assertEquals(
                 "Range(user=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                q.serialize());
+
+        q = collabFrame.inverseRange("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
+        assertEquals(
+                "Range(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
     }
 
@@ -338,6 +370,10 @@ public class OrmTest {
         PqlQuery q = collabFrame.setRowAttrs(5, attrsMap);
         assertEquals(
                 "SetRowAttrs(project=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                q.serialize());
+        q = collabFrame.setRowAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
+        assertEquals(
+                "SetRowAttrs(project='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -358,6 +394,10 @@ public class OrmTest {
         assertEquals(
                 "SetColumnAttrs(user=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
+        q = projectIndex.setColumnAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
+        assertEquals(
+                "SetColumnAttrs(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                q.serialize());
     }
 
     @Test(expected = PilosaException.class)
@@ -366,12 +406,6 @@ public class OrmTest {
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());
         projectIndex.setColumnAttrs(5, attrsMap);
-    }
-
-    @Test(expected = PilosaException.class)
-    public void inverseBitmapFailsIfNotEnabledTest() {
-        Frame frame = this.sampleIndex.frame("inverse-not-enabled");
-        frame.inverseBitmap(5);
     }
 
     @Test

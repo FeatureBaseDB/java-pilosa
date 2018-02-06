@@ -36,16 +36,47 @@ package com.pilosa.client;
 
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public class NullResult implements QueryResult {
+    @Override
+    public int getType() {
+        return 0;
+    }
 
-    BitmapResult getBitmap();
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
 
-    List<CountResultItem> getCountItems();
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
 
-    long getCount();
+    @Override
+    public long getCount() {
+        return 0;
+    }
 
-    long getSum();
+    @Override
+    public long getSum() {
+        return 0;
+    }
 
-    boolean isChanged();
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    static NullResult defaultResult() {
+        return defaultResult;
+    }
+
+    static {
+        defaultResult = new NullResult();
+    }
+
+    private NullResult() {
+    }
+
+    private static NullResult defaultResult;
 }

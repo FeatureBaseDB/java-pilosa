@@ -132,7 +132,7 @@ public class OrmTest {
         );
         PqlBaseQuery qry2 = f1.inverseBitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Bitmap(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='f1-inversable')",
+                "Bitmap(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='f1-inversable')",
                 qry2.serialize());
     }
 
@@ -164,7 +164,7 @@ public class OrmTest {
                 qry.serialize());
         PqlQuery qry2 = collabFrame.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some", timestamp.getTime());
         assertEquals(
-                "SetBit(project='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', user='some', timestamp='2017-04-24T12:14')",
+                "SetBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', columnID='some', timestamp='2017-04-24T12:14')",
                 qry2.serialize());
         PqlQuery qry3 = sampleFrame.clearBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
@@ -352,7 +352,7 @@ public class OrmTest {
 
         q = collabFrame.inverseRange("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
         assertEquals(
-                "Range(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
     }
 
@@ -367,7 +367,7 @@ public class OrmTest {
                 q.serialize());
         q = collabFrame.setRowAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
-                "SetRowAttrs(project='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -390,7 +390,7 @@ public class OrmTest {
                 q.serialize());
         q = projectIndex.setColumnAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
-                "SetColumnAttrs(user='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 

@@ -275,8 +275,8 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(%s='%s', %s)",
-                this.options.getColumnLabel(), key, attributesString));
+        return pqlQuery(String.format("SetColumnAttrs(columnID='%s', %s)",
+                key, attributesString));
     }
 
     public Map<String, Frame> getFrames() {

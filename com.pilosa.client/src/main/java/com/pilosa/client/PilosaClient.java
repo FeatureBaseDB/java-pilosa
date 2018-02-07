@@ -35,6 +35,7 @@
 package com.pilosa.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.exceptions.*;
 import com.pilosa.client.orm.Frame;
@@ -659,7 +660,9 @@ public class PilosaClient implements AutoCloseable {
     }
 
     static {
-        mapper = new ObjectMapper();
+        ObjectMapper m = new ObjectMapper();
+        m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = m;
 
         protobufHeaders = new Header[]{
                 new BasicHeader("Content-Type", "application/x-protobuf"),

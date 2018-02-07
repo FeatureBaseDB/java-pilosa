@@ -34,6 +34,8 @@
 
 package com.pilosa.client;
 
+import com.pilosa.client.exceptions.PilosaException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -125,18 +127,32 @@ public final class QueryResponse {
         return !isError;
     }
 
-    private void parseProtobuf(InputStream src) throws IOException {
-        Internal.QueryResponse response = Internal.QueryResponse.parseFrom(src);
-        String errorMessage = response.getErr();
-        if (!errorMessage.equals("")) {
-            this.errorMessage = errorMessage;
-            this.isError = true;
-            return;
-        }
-
+    void parseQueryResponse(Internal.QueryResponse response) {
         List<QueryResult> results = new ArrayList<>(response.getResultsCount());
-        for (Internal.QueryResult result : response.getResultsList()) {
-            results.add(QueryResult.fromInternal(result));
+        for (Internal.QueryResult q : response.getResultsList()) {
+            int type = q.getType();
+            switch (type) {
+                case QueryResultType.BITMAP:
+                    results.add(BitmapResult.fromInternal(q));
+                    break;
+                case QueryResultType.BOOL:
+                    results.add(BoolResult.fromInternal(q));
+                    break;
+                case QueryResultType.INT:
+                    results.add(IntResult.fromInternal(q));
+                    break;
+                case QueryResultType.PAIRS:
+                    results.add(TopNResult.fromInternal(q));
+                    break;
+                case QueryResultType.SUM_COUNT:
+                    results.add(SumCountResult.fromInternal(q));
+                    break;
+                case QueryResultType.NIL:
+                    results.add(NullResult.defaultResult());
+                    break;
+                default:
+                    throw new PilosaException(String.format("Unknown type: %d", type));
+            }
         }
         this.results = results;
 
@@ -145,5 +161,16 @@ public final class QueryResponse {
             columns.add(ColumnItem.fromInternal(column));
         }
         this.columns = columns;
+    }
+
+    private void parseProtobuf(InputStream src) throws IOException {
+        Internal.QueryResponse response = Internal.QueryResponse.parseFrom(src);
+        String errorMessage = response.getErr();
+        if (!errorMessage.equals("")) {
+            this.errorMessage = errorMessage;
+            this.isError = true;
+            return;
+        }
+        parseQueryResponse(response);
     }
 }

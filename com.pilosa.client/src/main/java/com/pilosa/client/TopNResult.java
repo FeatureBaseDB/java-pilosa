@@ -37,47 +37,38 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-/**
- * Represents a result from {@link com.pilosa.client.orm.Frame#topN(long)} call.
- *
- * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
- */
-public final class CountResultItem {
-    /**
-     * Returns the row ID.
-     *
-     * @return row ID
-     */
-    public long getID() {
-        return this.id;
-    }
+import java.util.ArrayList;
+import java.util.List;
 
-    /**
-     * Returns the row key (Enterprise version)
-     *
-     * @return row key
-     */
-    public String getKey() {
-        return this.key;
-    }
-
-    /**
-     * Returns the count of column IDs where this bitmap item is 1.
-     *
-     * @return count of column IDs where this bitmap item is 1
-     */
-    public long getCount() {
-        return this.count;
+public class TopNResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.PAIRS;
     }
 
     @Override
-    public String toString() {
-        if (this.key.isEmpty()) {
-            return String.format("CountResultItem(id=%d, count=%d)",
-                    this.id, this.count);
-        }
-        return String.format("CountResultItem(key=\"%s\", count=%d)",
-                this.key, this.count);
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
+
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return this.items;
+    }
+
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
     }
 
     @Override
@@ -85,40 +76,40 @@ public final class CountResultItem {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CountResultItem)) {
+        if (!(obj instanceof TopNResult)) {
             return false;
         }
-        CountResultItem rhs = (CountResultItem) obj;
+        TopNResult rhs = (TopNResult) obj;
         return new EqualsBuilder()
-                .append(this.id, rhs.id)
-                .append(this.key, rhs.key)
-                .append(this.count, rhs.count)
+                .append(this.items, rhs.items)
                 .isEquals();
-
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.id)
-                .append(key)
-                .append(this.count)
+                .append(this.items)
                 .toHashCode();
     }
 
-    static CountResultItem create(long id, String key, long count) {
-        CountResultItem item = new CountResultItem();
-        item.id = (key.equals("") ? id : 0);
-        item.key = key;
-        item.count = count;
-        return item;
+    static TopNResult create(List<CountResultItem> items) {
+        TopNResult result = new TopNResult();
+        result.items = items;
+        return result;
     }
 
-    static CountResultItem fromInternal(Internal.Pair pair) {
-        return CountResultItem.create(pair.getID(), pair.getKey(), pair.getCount());
+    static TopNResult fromInternal(Internal.QueryResult q) {
+        List<CountResultItem> items = new ArrayList<>(q.getPairsCount());
+        for (Internal.Pair pair : q.getPairsList()) {
+            items.add(CountResultItem.fromInternal(pair));
+        }
+        return TopNResult.create(items);
     }
 
-    private long id;
-    private String key;
-    private long count;
+    static List<CountResultItem> defaultItems() {
+        return defaultItems;
+    }
+
+    private static List<CountResultItem> defaultItems = new ArrayList<>(0);
+    private List<CountResultItem> items;
 }

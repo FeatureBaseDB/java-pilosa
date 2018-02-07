@@ -32,20 +32,34 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.status;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public final class SchemaInfo {
+    public static SchemaInfo fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, SchemaInfo.class);
+    }
 
-    BitmapResult getBitmap();
+    @JsonProperty("indexes")
+    public List<IndexInfo> getIndexes() {
+        return this.indexes;
+    }
 
-    List<CountResultItem> getCountItems();
+    void setIndexes(List<IndexInfo> indexes) {
+        if (indexes == null) {
+            this.indexes = new ArrayList<>();
+            return;
+        }
+        this.indexes = indexes;
+    }
 
-    long getCount();
-
-    long getSum();
-
-    boolean isChanged();
+    private final static ObjectMapper mapper = new ObjectMapper();
+    private List<IndexInfo> indexes = new ArrayList<>();
 }

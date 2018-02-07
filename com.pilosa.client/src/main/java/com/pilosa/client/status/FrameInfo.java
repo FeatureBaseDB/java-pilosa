@@ -44,7 +44,7 @@ public final class FrameInfo {
         return this.meta.getOptions();
     }
 
-    @JsonProperty("Name")
+    @JsonProperty("name")
     public String getName() {
         return this.name;
     }
@@ -53,7 +53,7 @@ public final class FrameInfo {
         this.name = name;
     }
 
-    @JsonProperty("Meta")
+    @JsonProperty("options")
     void setMeta(FrameMeta meta) {
         this.meta = meta;
     }
@@ -65,7 +65,6 @@ public final class FrameInfo {
 final class FrameMeta {
     FrameOptions getOptions() {
         return FrameOptions.builder()
-                .setRowLabel(this.rowLabel)
                 .setInverseEnabled(this.inverseEnabled)
                 .setTimeQuantum(this.timeQuantum)
                 .setCacheType(this.cacheType)
@@ -73,32 +72,31 @@ final class FrameMeta {
                 .build();
     }
 
-    @JsonProperty("RowLabel")
+    @JsonProperty("rowLabel")
     void setRowLabel(String rowLabel) {
-        this.rowLabel = rowLabel;
+        // pass
     }
 
-    @JsonProperty("TimeQuantum")
+    @JsonProperty("timeQuantum")
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);
     }
 
-    @JsonProperty("InverseEnabled")
+    @JsonProperty("inverseEnabled")
     void setInverseEnabled(boolean inverseEnabled) {
         this.inverseEnabled = inverseEnabled;
     }
 
-    @JsonProperty("CacheType")
+    @JsonProperty("cacheType")
     void setCacheType(String s) {
         this.cacheType = CacheType.fromString(s);
     }
 
-    @JsonProperty("CacheSize")
+    @JsonProperty("cacheSize")
     void setCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
     }
 
-    private String rowLabel;
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private boolean inverseEnabled = false;
     private CacheType cacheType = CacheType.DEFAULT;

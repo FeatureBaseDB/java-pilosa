@@ -37,47 +37,37 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-/**
- * Represents a result from {@link com.pilosa.client.orm.Frame#topN(long)} call.
- *
- * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
- */
-public final class CountResultItem {
-    /**
-     * Returns the row ID.
-     *
-     * @return row ID
-     */
-    public long getID() {
-        return this.id;
+import java.util.List;
+
+public class SumCountResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.SUM_COUNT;
     }
 
-    /**
-     * Returns the row key (Enterprise version)
-     *
-     * @return row key
-     */
-    public String getKey() {
-        return this.key;
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
     }
 
-    /**
-     * Returns the count of column IDs where this bitmap item is 1.
-     *
-     * @return count of column IDs where this bitmap item is 1
-     */
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
+
+    @Override
     public long getCount() {
         return this.count;
     }
 
     @Override
-    public String toString() {
-        if (this.key.isEmpty()) {
-            return String.format("CountResultItem(id=%d, count=%d)",
-                    this.id, this.count);
-        }
-        return String.format("CountResultItem(key=\"%s\", count=%d)",
-                this.key, this.count);
+    public long getSum() {
+        return this.sum;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
     }
 
     @Override
@@ -85,40 +75,36 @@ public final class CountResultItem {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CountResultItem)) {
+        if (!(obj instanceof SumCountResult)) {
             return false;
         }
-        CountResultItem rhs = (CountResultItem) obj;
+        SumCountResult rhs = (SumCountResult) obj;
         return new EqualsBuilder()
-                .append(this.id, rhs.id)
-                .append(this.key, rhs.key)
+                .append(this.sum, rhs.sum)
                 .append(this.count, rhs.count)
                 .isEquals();
-
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.id)
-                .append(key)
+                .append(this.sum)
                 .append(this.count)
                 .toHashCode();
     }
 
-    static CountResultItem create(long id, String key, long count) {
-        CountResultItem item = new CountResultItem();
-        item.id = (key.equals("") ? id : 0);
-        item.key = key;
-        item.count = count;
-        return item;
+    static SumCountResult create(long sum, long count) {
+        SumCountResult result = new SumCountResult();
+        result.sum = sum;
+        result.count = count;
+        return result;
     }
 
-    static CountResultItem fromInternal(Internal.Pair pair) {
-        return CountResultItem.create(pair.getID(), pair.getKey(), pair.getCount());
+    static SumCountResult fromInternal(Internal.QueryResult q) {
+        Internal.SumCount obj = q.getSumCount();
+        return create(obj.getSum(), obj.getCount());
     }
 
-    private long id;
-    private String key;
+    private long sum;
     private long count;
 }

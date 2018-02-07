@@ -42,42 +42,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class CountResultItemTest {
+public class BoolResultTest {
     @Test
-    public void testCreateCountResult() {
-        CountResultItem result = createSampleResult();
-        assertEquals(45, result.getID());
-        assertEquals("", result.getKey());
-        assertEquals(12, result.getCount());
-    }
-
-    @Test
-    public void testCreateCountResultEnterprise() {
-        CountResultItem result = CountResultItem.create(55, "a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", 100);
-        assertEquals(0, result.getID());
-        assertEquals("a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", result.getKey());
-        assertEquals(100, result.getCount());
-    }
-
-    @Test
-    public void testCreateCountResultDefaultConstructor() {
-        new CountResultItem();
-    }
-
-
-    @Test
-    public void testCountResultToString() {
-        CountResultItem result = createSampleResult();
-        assertEquals("CountResultItem(id=45, count=12)", result.toString());
-
-        result = CountResultItem.create(0, "foo", 100);
-        assertEquals("CountResultItem(key=\"foo\", count=100)", result.toString());
+    public void testCreateBoolResult() {
+        BoolResult result = BoolResult.create(true);
+        assertEquals(QueryResultType.BOOL, result.getType());
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(true, result.isChanged());
     }
 
     @Test
     public void testEquals() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        BoolResult result1 = BoolResult.create(true);
+        BoolResult result2 = BoolResult.create(true);
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -85,24 +65,21 @@ public class CountResultItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = CountResultItem.create(1, "", 2).equals(0);
+        boolean e = (new BoolResult()).equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        CountResultItem result = createSampleResult();
+        BoolResult result = new BoolResult();
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        BoolResult result1 = BoolResult.create(false);
+        BoolResult result2 = BoolResult.create(false);
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    private CountResultItem createSampleResult() {
-        return CountResultItem.create(45, "", 12);
-    }
 }

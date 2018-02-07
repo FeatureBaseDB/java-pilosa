@@ -37,47 +37,34 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class CountResultItemTest {
+public class TopNResultTest {
     @Test
-    public void testCreateCountResult() {
-        CountResultItem result = createSampleResult();
-        assertEquals(45, result.getID());
-        assertEquals("", result.getKey());
-        assertEquals(12, result.getCount());
-    }
-
-    @Test
-    public void testCreateCountResultEnterprise() {
-        CountResultItem result = CountResultItem.create(55, "a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", 100);
-        assertEquals(0, result.getID());
-        assertEquals("a5c3c775-d7a9-4c1c-9adc-971e4fb9d04e", result.getKey());
-        assertEquals(100, result.getCount());
-    }
-
-    @Test
-    public void testCreateCountResultDefaultConstructor() {
-        new CountResultItem();
-    }
-
-
-    @Test
-    public void testCountResultToString() {
-        CountResultItem result = createSampleResult();
-        assertEquals("CountResultItem(id=45, count=12)", result.toString());
-
-        result = CountResultItem.create(0, "foo", 100);
-        assertEquals("CountResultItem(key=\"foo\", count=100)", result.toString());
+    public void testCreateTopNResult() {
+        TopNResult result = createSampleResult();
+        List<CountResultItem> items = result.getCountItems();
+        assertEquals(1, items.size());
+        assertEquals(QueryResultType.PAIRS, result.getType());
+        List<CountResultItem> targetItems = new ArrayList<>();
+        targetItems.add(CountResultItem.create(5, "", 10));
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(targetItems, result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
     @Test
     public void testEquals() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        TopNResult result1 = createSampleResult();
+        TopNResult result2 = createSampleResult();
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -85,24 +72,26 @@ public class CountResultItemTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = CountResultItem.create(1, "", 2).equals(0);
+        boolean e = (new TopNResult()).equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        CountResultItem result = createSampleResult();
+        TopNResult result = createSampleResult();
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        CountResultItem result1 = createSampleResult();
-        CountResultItem result2 = createSampleResult();
+        TopNResult result1 = createSampleResult();
+        TopNResult result2 = createSampleResult();
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    private CountResultItem createSampleResult() {
-        return CountResultItem.create(45, "", 12);
+    private TopNResult createSampleResult() {
+        List<CountResultItem> items = new ArrayList<>();
+        items.add(CountResultItem.create(5, "", 10));
+        return TopNResult.create(items);
     }
 }

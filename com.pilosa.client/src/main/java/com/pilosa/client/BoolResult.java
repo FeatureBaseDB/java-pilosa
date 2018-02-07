@@ -34,18 +34,68 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public class BoolResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.BOOL;
+    }
 
-    BitmapResult getBitmap();
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
 
-    List<CountResultItem> getCountItems();
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
 
-    long getCount();
+    @Override
+    public long getCount() {
+        return 0;
+    }
 
-    long getSum();
+    @Override
+    public long getSum() {
+        return 0;
+    }
 
-    boolean isChanged();
+    @Override
+    public boolean isChanged() {
+        return this.changed;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof BoolResult)) {
+            return false;
+        }
+        return this.changed == ((BoolResult) obj).changed;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.changed)
+                .toHashCode();
+    }
+
+    static BoolResult create(boolean changed) {
+        BoolResult result = new BoolResult();
+        result.changed = changed;
+        return result;
+    }
+
+    static BoolResult fromInternal(Internal.QueryResult q) {
+        return create(q.getChanged());
+    }
+
+    private boolean changed;
 }

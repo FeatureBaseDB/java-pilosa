@@ -32,32 +32,54 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import java.util.ArrayList;
-import java.util.List;
+import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public final class NodeInfo {
-    @JsonProperty("Host")
-    public String getHost() {
-        return this.host;
+@Category(UnitTest.class)
+public class IntResultTest {
+    @Test
+    public void testCreateIntResult() {
+        IntResult result = IntResult.create(55);
+        assertEquals(QueryResultType.INT, result.getType());
+        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(55L, result.getCount());
+        assertEquals(0L, result.getSum());
+        assertEquals(false, result.isChanged());
     }
 
-    void setHost(String host) {
-        this.host = host;
+    @Test
+    public void testEquals() {
+        IntResult result1 = IntResult.create(33);
+        IntResult result2 = IntResult.create(33);
+        boolean e = result1.equals(result2);
+        assertTrue(e);
     }
 
-    @JsonProperty("Indexes")
-    public List<IndexInfo> getIndexes() {
-        return this.indexes;
+    @Test
+    public void testEqualsFailsWithOtherObject() {
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = (new IntResult()).equals(0);
+        assertFalse(e);
     }
 
-    void setIndexes(List<IndexInfo> indexes) {
-        this.indexes = indexes;
+    @Test
+    public void testEqualsSameObject() {
+        IntResult result = IntResult.create(6);
+        assertEquals(result, result);
     }
 
-    private String host;
-    private List<IndexInfo> indexes = new ArrayList<>();
+    @Test
+    public void testHashCode() {
+        IntResult result1 = IntResult.create(22);
+        IntResult result2 = IntResult.create(22);
+        assertEquals(result1.hashCode(), result2.hashCode());
+    }
+
 }

@@ -32,23 +32,17 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client;
 
-import com.pilosa.client.UnitTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
-@Category(UnitTest.class)
-public class NodeInfoTest {
-    @Test
-    public void testNodeInfoReturnsEmptyIndexesArrayIfNotSet() {
-        NodeInfo nodeInfo = new NodeInfo();
-        List<IndexInfo> target = new ArrayList<>();
-        assertEquals(target, nodeInfo.getIndexes());
+public class QueryResultType {
+    private QueryResultType() {
     }
+
+    public final static int NIL = 0;
+    public final static int BITMAP = 1;
+    public final static int PAIRS = 2;
+    public final static int SUM_COUNT = 3;
+    public final static int INT = 4;
+    public final static int BOOL = 5;
 }

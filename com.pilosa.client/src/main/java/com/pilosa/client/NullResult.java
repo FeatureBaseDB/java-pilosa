@@ -32,22 +32,51 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.pilosa.client;
 
 import java.util.List;
 
-public final class StatusInfo {
-    @JsonProperty("Nodes")
-    public List<NodeInfo> getNodes() {
-        return this.nodes;
+public class NullResult implements QueryResult {
+    @Override
+    public int getType() {
+        return 0;
     }
 
-    void setNodes(List<NodeInfo> nodes) {
-        this.nodes = nodes;
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
     }
 
-    private List<NodeInfo> nodes;
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
+
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    static NullResult defaultResult() {
+        return defaultResult;
+    }
+
+    static {
+        defaultResult = new NullResult();
+    }
+
+    private NullResult() {
+    }
+
+    private static NullResult defaultResult;
 }
-

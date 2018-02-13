@@ -38,8 +38,6 @@ import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Category(UnitTest.class)
@@ -68,20 +66,19 @@ public class ValidatorTest {
             "", "1", "_", "-", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
     };
-
-    @Test
-    public void validIndexNameTest() {
-        for (String name : validIndexNames) {
-            assertTrue(Validator.validIndexName(name));
-        }
-    }
-
-    @Test
-    public void invalidIndexNameTest() {
-        for (String name : invalidIndexNames) {
-            assertFalse(Validator.validIndexName(name));
-        }
-    }
+    private final static String[] validKeys = new String[]{
+            "", "1", "ab", "ab1", "b-c", "d_e", "pilosa.com",
+            "bbf8d41c-7dba-40c4-94dc-94677b43bcf3",  // UUID
+            "{bbf8d41c-7dba-40c4-94dc-94677b43bcf3}",  // Windows GUID
+            "https%3A//www.pilosa.com/about/%23contact",  // escaped URL
+            "aHR0cHM6Ly93d3cucGlsb3NhLmNvbS9hYm91dC8jY29udGFjdA==",  // base64
+            "urn:isbn:1234567",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    };
+    private final static String[] invalidKeys = new String[]{
+            "\"", "'", "slice\\dice", "valid?no", "yüce", "*xyz", "with space", "<script>",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+    };
 
     @Test
     public void ensureValidIndexNameTest() {
@@ -98,14 +95,7 @@ public class ValidatorTest {
             } catch (ValidationException ex) {
                 continue;
             }
-            fail("Validation should have failed for: " + name);
-        }
-    }
-
-    @Test
-    public void invalidFrameNameTest() {
-        for (String name : invalidFrameNames) {
-            assertFalse(Validator.validFrameName(name));
+            fail("Index name validation should have failed for: " + name);
         }
     }
 
@@ -124,21 +114,7 @@ public class ValidatorTest {
             } catch (ValidationException ex) {
                 continue;
             }
-            fail("Validation should have failed for: " + name);
-        }
-    }
-
-    @Test
-    public void validLabelTest() {
-        for (String label : validLabels) {
-            assertTrue(Validator.validLabel(label));
-        }
-    }
-
-    @Test
-    public void invalidLabelTest() {
-        for (String label : invalidLabels) {
-            assertFalse(Validator.validLabel(label));
+            fail("Frame name validation should have failed for: " + name);
         }
     }
 
@@ -157,7 +133,26 @@ public class ValidatorTest {
             } catch (ValidationException ex) {
                 continue;
             }
-            fail("Validation should have failed for: " + label);
+            fail("Label validation should have failed for: " + label);
+        }
+    }
+
+    @Test
+    public void ensureValidKeyTest() {
+        for (String key : validKeys) {
+            Validator.ensureValidKey(key);
+        }
+    }
+
+    @Test
+    public void ensureValidKeyFailsTest() {
+        for (String key : invalidKeys) {
+            try {
+                Validator.ensureValidKey(key);
+            } catch (ValidationException ex) {
+                continue;
+            }
+            fail("Key validation should have failed for: " + key);
         }
     }
 

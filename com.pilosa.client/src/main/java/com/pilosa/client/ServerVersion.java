@@ -32,34 +32,49 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pilosa.client.exceptions.ValidationException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class SchemaInfo implements ISchemaInfo {
-    public static SchemaInfo fromInputStream(InputStream src) throws IOException {
-        return mapper.readValue(src, SchemaInfo.class);
+public class ServerVersion {
+    public static boolean isLegacy(String version) {
+        return isLegacy(version, PILOSA_MINIMUM_VERSION);
     }
 
-    @JsonProperty("indexes")
-    public List<IndexInfo> getIndexes() {
-        return this.indexes;
-    }
-
-    void setIndexes(List<IndexInfo> indexes) {
-        if (indexes == null) {
-            this.indexes = new ArrayList<>();
-            return;
+    static boolean isLegacy(String version, String serverVersion) {
+        Matcher matcher = VERSION.matcher(serverVersion);
+        if (!matcher.matches()) {
+            throw new ValidationException(String.format("Invalid server version: %s", serverVersion));
         }
-        this.indexes = indexes;
+        int[] sv = new int[matcher.groupCount()];
+        for (int i = 0; i < sv.length; i++) {
+            sv[i] = Integer.decode(matcher.group(i + 1));
+        }
+        matcher = VERSION.matcher(version);
+        if (!matcher.matches()) {
+            return true;
+        }
+        if (matcher.groupCount() < sv.length) {
+            throw new ValidationException(String.format("Invalid version: %s", version));
+        }
+        int[] v = new int[matcher.groupCount()];
+        for (int i = 0; i < v.length; i++) {
+            v[i] = Integer.decode(matcher.group(i + 1));
+        }
+        for (int i = 0; i < sv.length; i++) {
+            if (sv[i] < v[i]) {
+                break;
+            }
+            if (sv[i] > v[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private final static ObjectMapper mapper = new ObjectMapper();
-    private List<IndexInfo> indexes = new ArrayList<>();
+    private static final String PILOSA_MINIMUM_VERSION = "0.9.0";
+    private final static Pattern VERSION = Pattern.compile("(\\d+)\\.(\\d+).(\\d+).*");
 }

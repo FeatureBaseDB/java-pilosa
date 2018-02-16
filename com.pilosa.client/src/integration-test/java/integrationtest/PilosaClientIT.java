@@ -39,9 +39,6 @@ import com.pilosa.client.exceptions.FrameExistsException;
 import com.pilosa.client.exceptions.IndexExistsException;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.*;
-import com.pilosa.client.status.FrameInfo;
-import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.SchemaInfo;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -128,8 +125,9 @@ public class PilosaClientIT {
         Frame frame = this.index.frame("frame-with-timequantum", options);
         try (PilosaClient client = getClient()) {
             client.ensureFrame(frame);
-            SchemaInfo schema = client.readServerSchema();
-            FrameInfo info = findFrameInfo(schema, frame);
+            Schema schema = client.readSchema();
+//            SchemaInfo schema = client.readServerSchema();
+            Frame info = findFrame(schema, frame);
             assertNotNull(info);
             assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
         }
@@ -806,21 +804,21 @@ public class PilosaClientIT {
         private int statusCode;
     }
 
-    private IndexInfo findIndexInfo(SchemaInfo schema, Index target) {
-        for (IndexInfo index : schema.getIndexes()) {
-            if (index.getName().equals(target.getName())) {
-                return index;
+    private Index findIndex(Schema schema, Index target) {
+        for (Map.Entry<String, Index> entry : schema.getIndexes().entrySet()) {
+            if (entry.getKey().equals(target.getName())) {
+                return entry.getValue();
             }
         }
         return null;
     }
 
-    private FrameInfo findFrameInfo(SchemaInfo schema, Frame target) {
-        IndexInfo index = findIndexInfo(schema, target.getIndex());
+    private Frame findFrame(Schema schema, Frame target) {
+        Index index = findIndex(schema, target.getIndex());
         if (index != null) {
-            for (FrameInfo frame : index.getFrames()) {
-                if (frame.getName().equals(target.getName())) {
-                    return frame;
+            for (Map.Entry<String, Frame> entry : index.getFrames().entrySet()) {
+                if (entry.getKey().equals(target.getName())) {
+                    return entry.getValue();
                 }
             }
         }

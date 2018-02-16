@@ -42,46 +42,13 @@ import static org.junit.Assert.fail;
 
 @Category(UnitTest.class)
 public class ValidatorTest {
-    private final static String[] validIndexNames = new String[]{
-            "a", "ab", "ab1", "b-c", "d_e",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    };
-    private final static String[] invalidIndexNames = new String[]{
-            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1", "1", "_", "-",
-    };
-    private final static String[] validFrameNames = new String[]{
-            "a", "ab", "ab1", "b-c", "d_e",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    };
-    private final static String[] invalidFrameNames = new String[]{
-            "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce", "_", "-", ".data", "d.e", "1",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
-    };
-    private final static String[] validLabels = new String[]{
-            "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB", "b-c",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    };
-    private final static String[] invalidLabels = new String[]{
-            "", "1", "_", "-", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
-    };
-    private final static String[] validKeys = new String[]{
-            "", "1", "ab", "ab1", "b-c", "d_e", "pilosa.com",
-            "bbf8d41c-7dba-40c4-94dc-94677b43bcf3",  // UUID
-            "{bbf8d41c-7dba-40c4-94dc-94677b43bcf3}",  // Windows GUID
-            "https%3A//www.pilosa.com/about/%23contact",  // escaped URL
-            "aHR0cHM6Ly93d3cucGlsb3NhLmNvbS9hYm91dC8jY29udGFjdA==",  // base64
-            "urn:isbn:1234567",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    };
-    private final static String[] invalidKeys = new String[]{
-            "\"", "'", "slice\\dice", "valid?no", "yüce", "*xyz", "with space", "<script>",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
-    };
-
     @Test
     public void ensureValidIndexNameTest() {
+        String[] validIndexNames = new String[]{
+                "a", "ab", "ab1", "b-c", "d_e",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        };
+
         for (String name : validIndexNames) {
             Validator.ensureValidIndexName(name);
         }
@@ -89,6 +56,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidIndexNameFailsTest() {
+        String[] invalidIndexNames = new String[]{
+                "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1", "1", "_", "-",
+        };
         for (String name : invalidIndexNames) {
             try {
                 Validator.ensureValidIndexName(name);
@@ -101,6 +72,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidFrameNameTest() {
+        String[] validFrameNames = new String[]{
+                "a", "ab", "ab1", "b-c", "d_e",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        };
         for (String name : validFrameNames) {
             Validator.ensureValidFrameName(name);
         }
@@ -108,6 +83,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidFrameNameFailsTest() {
+        String[] invalidFrameNames = new String[]{
+                "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce", "_", "-", ".data", "d.e", "1",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+        };
         for (String name : invalidFrameNames) {
             try {
                 Validator.ensureValidFrameName(name);
@@ -120,6 +99,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidLabelTest() {
+        String[] validLabels = new String[]{
+                "a", "ab", "ab1", "d_e", "A", "Bc", "B1", "aB", "b-c",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        };
         for (String label : validLabels) {
             Validator.ensureValidLabel(label);
         }
@@ -127,6 +110,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidLabelFailsTest() {
+        String[] invalidLabels = new String[]{
+                "", "1", "_", "-", "'", "^", "/", "\\", "*", "a:b", "valid?no", "yüce",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+        };
         for (String label : invalidLabels) {
             try {
                 Validator.ensureValidLabel(label);
@@ -139,6 +126,15 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidKeyTest() {
+        String[] validKeys = new String[]{
+                "", "1", "ab", "ab1", "b-c", "d_e", "pilosa.com",
+                "bbf8d41c-7dba-40c4-94dc-94677b43bcf3",  // UUID
+                "{bbf8d41c-7dba-40c4-94dc-94677b43bcf3}",  // Windows GUID
+                "https%3A//www.pilosa.com/about/%23contact",  // escaped URL
+                "aHR0cHM6Ly93d3cucGlsb3NhLmNvbS9hYm91dC8jY29udGFjdA==",  // base64
+                "urn:isbn:1234567",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        };
         for (String key : validKeys) {
             Validator.ensureValidKey(key);
         }
@@ -146,6 +142,10 @@ public class ValidatorTest {
 
     @Test
     public void ensureValidKeyFailsTest() {
+        String[] invalidKeys = new String[]{
+                "\"", "'", "slice\\dice", "valid?no", "yüce", "*xyz", "with space", "<script>",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
+        };
         for (String key : invalidKeys) {
             try {
                 Validator.ensureValidKey(key);

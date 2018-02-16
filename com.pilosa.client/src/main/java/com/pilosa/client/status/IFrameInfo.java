@@ -34,32 +34,10 @@
 
 package com.pilosa.client.status;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pilosa.client.orm.FrameOptions;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+public interface IFrameInfo {
+    FrameOptions getOptions();
 
-public final class SchemaInfo implements ISchemaInfo {
-    public static SchemaInfo fromInputStream(InputStream src) throws IOException {
-        return mapper.readValue(src, SchemaInfo.class);
-    }
-
-    @JsonProperty("indexes")
-    public List<IndexInfo> getIndexes() {
-        return this.indexes;
-    }
-
-    void setIndexes(List<IndexInfo> indexes) {
-        if (indexes == null) {
-            this.indexes = new ArrayList<>();
-            return;
-        }
-        this.indexes = indexes;
-    }
-
-    private final static ObjectMapper mapper = new ObjectMapper();
-    private List<IndexInfo> indexes = new ArrayList<>();
+    String getName();
 }

@@ -36,7 +36,7 @@ package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.FrameOptions;
-import com.pilosa.client.status.FrameInfo;
+import com.pilosa.client.status.IFrameInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class PilosaClientTest {
         IndexInfo indexInfo = info.getIndexes().get(0);
         assertEquals("mi", indexInfo.getName());
         assertEquals(1, indexInfo.getFrames().size());
-        FrameInfo frameInfo = indexInfo.getFrames().get(0);
+        IFrameInfo frameInfo = indexInfo.getFrames().get(0);
         FrameOptions frameOptions = frameInfo.getOptions();
         assertEquals("mf10", frameInfo.getName());
         assertEquals(true, frameOptions.isInverseEnabled());

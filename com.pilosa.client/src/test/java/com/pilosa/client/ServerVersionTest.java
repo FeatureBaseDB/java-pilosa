@@ -32,34 +32,24 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public final class SchemaInfo implements ISchemaInfo {
-    public static SchemaInfo fromInputStream(InputStream src) throws IOException {
-        return mapper.readValue(src, SchemaInfo.class);
-    }
-
-    @JsonProperty("indexes")
-    public List<IndexInfo> getIndexes() {
-        return this.indexes;
-    }
-
-    void setIndexes(List<IndexInfo> indexes) {
-        if (indexes == null) {
-            this.indexes = new ArrayList<>();
-            return;
+@Category(UnitTest.class)
+public class ServerVersionTest {
+    @Test
+    public void legacyVersionTest() {
+        String[] versions = {
+                "0.6.9", "0.7.0", "0.8.1"
+        };
+        for (String version : versions) {
+            assertTrue(ServerVersion.isLegacy(version, "0.8.2"));
+            assertFalse(ServerVersion.isLegacy(version, "0.6.0-xyz"));
         }
-        this.indexes = indexes;
     }
-
-    private final static ObjectMapper mapper = new ObjectMapper();
-    private List<IndexInfo> indexes = new ArrayList<>();
 }

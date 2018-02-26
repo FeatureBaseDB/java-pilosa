@@ -126,10 +126,35 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             client.ensureFrame(frame);
             Schema schema = client.readSchema();
-//            SchemaInfo schema = client.readServerSchema();
             Frame info = findFrame(schema, frame);
             assertNotNull(info);
             assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
+        }
+    }
+
+    @Test
+    public void testSchema() throws IOException {
+        try (PilosaClient client = getClient()) {
+            Schema schema = client.readSchema();
+            assertTrue(schema.getIndexes().size() >= 1);
+            assertTrue(schema.getIndexes().entrySet().iterator().next().getValue().getFrames().size() >= 1);
+            FrameOptions frameOptions = FrameOptions.builder()
+                    .setCacheSize(9999)
+                    .setCacheType(CacheType.LRU)
+                    .setInverseEnabled(true)
+                    .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                    .build();
+            Frame frame = this.index.frame("schema-test-frame", frameOptions);
+            client.ensureFrame(frame);
+            schema = client.readSchema();
+            Frame f = schema.getIndexes().get(this.index.getName()).getFrames().get("schema-test-frame");
+            FrameOptions fo = f.getOptions();
+            assertEquals(9999, fo.getCacheSize());
+            assertEquals(CacheType.LRU, fo.getCacheType());
+            assertEquals(true, fo.isInverseEnabled());
+            assertEquals(TimeQuantum.YEAR_MONTH_DAY, fo.getTimeQuantum());
+
+
         }
     }
 
@@ -828,7 +853,12 @@ public class PilosaClientIT {
     private PilosaClient getClient() {
         String bindAddress = getBindAddress();
         Cluster cluster = Cluster.withHost(URI.address(bindAddress));
-        return new InsecurePilosaClientIT(cluster, ClientOptions.builder().build());
+        ClientOptions.Builder optionsBuilder = ClientOptions.builder();
+        if (isLegacyModeOff()) {
+            optionsBuilder.setLegacyMode(false);
+            optionsBuilder.setSkipVersionCheck(true);
+        }
+        return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
     }
 
     private String getBindAddress() {
@@ -837,6 +867,14 @@ public class PilosaClientIT {
             bindAddress = "http://:10101";
         }
         return bindAddress;
+    }
+
+    private boolean isLegacyModeOff() {
+        String legacyModeOffStr = System.getenv("LEGACY_MODE_OFF");
+        if (legacyModeOffStr == null) {
+            return false;
+        }
+        return legacyModeOffStr.equals("true");
     }
 }
 

@@ -121,7 +121,7 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder skipVersionCheck(boolean skip) {
+        public Builder setSkipVersionCheck(boolean skip) {
             this.skipVersionCheck = skip;
             return this;
         }

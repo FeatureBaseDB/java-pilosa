@@ -475,6 +475,8 @@ public class PilosaClient implements AutoCloseable {
     protected PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
+        this.versionChecked = options.isSkipVersionCheck();
+        this.legacyMode = options.isLegacyMode();
     }
 
     protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {

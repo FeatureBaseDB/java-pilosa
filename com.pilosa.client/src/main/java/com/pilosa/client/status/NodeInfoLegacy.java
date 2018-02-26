@@ -35,70 +35,29 @@
 package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pilosa.client.TimeQuantum;
-import com.pilosa.client.orm.CacheType;
-import com.pilosa.client.orm.FrameOptions;
 
-public class FrameInfo implements IFrameInfo {
-    public FrameOptions getOptions() {
-        return this.meta.getOptions();
+import java.util.ArrayList;
+import java.util.List;
+
+public final class NodeInfoLegacy {
+    @JsonProperty("Host")
+    public String getHost() {
+        return this.host;
     }
 
-    @JsonProperty("name")
-    public String getName() {
-        return this.name;
+    void setHost(String host) {
+        this.host = host;
     }
 
-    void setName(String name) {
-        this.name = name;
+    @JsonProperty("Indexes")
+    public List<IndexInfoLegacy> getIndexes() {
+        return this.indexes;
     }
 
-    @JsonProperty("options")
-    void setMeta(FrameMeta meta) {
-        this.meta = meta;
+    void setIndexes(List<IndexInfoLegacy> indexes) {
+        this.indexes = indexes;
     }
 
-    private String name;
-    private FrameMeta meta = new FrameMeta();
-}
-
-final class FrameMeta {
-    FrameOptions getOptions() {
-        return FrameOptions.builder()
-                .setInverseEnabled(this.inverseEnabled)
-                .setTimeQuantum(this.timeQuantum)
-                .setCacheType(this.cacheType)
-                .setCacheSize(this.cacheSize)
-                .build();
-    }
-
-    @JsonProperty("rowLabel")
-    void setRowLabel(String rowLabel) {
-        // pass
-    }
-
-    @JsonProperty("timeQuantum")
-    void setTimeQuantum(String s) {
-        this.timeQuantum = TimeQuantum.fromString(s);
-    }
-
-    @JsonProperty("inverseEnabled")
-    void setInverseEnabled(boolean inverseEnabled) {
-        this.inverseEnabled = inverseEnabled;
-    }
-
-    @JsonProperty("cacheType")
-    void setCacheType(String s) {
-        this.cacheType = CacheType.fromString(s);
-    }
-
-    @JsonProperty("cacheSize")
-    void setCacheSize(int cacheSize) {
-        this.cacheSize = cacheSize;
-    }
-
-    private TimeQuantum timeQuantum = TimeQuantum.NONE;
-    private boolean inverseEnabled = false;
-    private CacheType cacheType = CacheType.DEFAULT;
-    private int cacheSize = 0;
+    private String host;
+    private List<IndexInfoLegacy> indexes = new ArrayList<>();
 }

@@ -121,6 +121,16 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setSkipVersionCheck(boolean skip) {
+            this.skipVersionCheck = skip;
+            return this;
+        }
+
+        public Builder setLegacyMode(boolean enable) {
+            this.legacyMode = enable;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
@@ -128,7 +138,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext);
+                    this.sslContext, this.skipVersionCheck, this.legacyMode);
         }
 
         private int socketTimeout = 300000;
@@ -137,6 +147,8 @@ public final class ClientOptions {
         private int connectionPoolSizePerRoute = 10;
         private int connectionPoolTotalSize = 100;
         private SSLContext sslContext = SSLContexts.createDefault();
+        private boolean skipVersionCheck = false;
+        private boolean legacyMode = false;
     }
 
     /**
@@ -171,15 +183,25 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
+    public boolean isSkipVersionCheck() {
+        return this.skipVersionCheck;
+    }
+
+    public boolean isLegacyMode() {
+        return this.legacyMode;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext) {
+                          final SSLContext sslContext, final boolean skipVersionCheck, final boolean legacyMode) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
+        this.skipVersionCheck = skipVersionCheck;
+        this.legacyMode = legacyMode;
     }
 
     private final int socketTimeout; // milliseconds
@@ -188,4 +210,6 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
+    private final boolean legacyMode;
+    private final boolean skipVersionCheck;
 }

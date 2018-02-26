@@ -66,6 +66,8 @@ public class ClientOptionsTest {
                 .setSocketTimeout(1000)
                 .setRetryCount(5)
                 .setSslContext(sslContext)
+                .setSkipVersionCheck(true)
+                .setLegacyMode(true)
                 .build();
         assertEquals(2, options.getConnectionPoolSizePerRoute());
         assertEquals(50, options.getConnectionPoolTotalSize());
@@ -73,5 +75,7 @@ public class ClientOptionsTest {
         assertEquals(1000, options.getSocketTimeout());
         assertEquals(5, options.getRetryCount());
         assertEquals(sslContext, options.getSslContext());
+        assertEquals(true, options.isSkipVersionCheck());
+        assertEquals(true, options.isLegacyMode());
     }
 }

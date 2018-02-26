@@ -49,29 +49,17 @@ public class Schema {
     }
 
     /**
-     * Returns an index with a name using defaults.
+     * Returns an index with a name.
      *
-     * @param name index name
+     * @param name    index name
      * @return a Index object
      * @throws ValidationException if the passed index name is not valid
      */
     public Index index(String name) {
-        return this.index(name, IndexOptions.withDefaults());
-    }
-
-    /**
-     * Returns an index with a name and options.
-     *
-     * @param name    index name
-     * @param options index options
-     * @return a Index object
-     * @throws ValidationException if the passed index name is not valid
-     */
-    public Index index(String name, IndexOptions options) {
         if (this.indexes.containsKey(name)) {
             return this.indexes.get(name);
         }
-        Index index = Index.withName(name, options);
+        Index index = Index.withName(name);
         this.indexes.put(name, index);
         return index;
     }
@@ -83,7 +71,7 @@ public class Schema {
      * @return copied index
      */
     public Index index(Index other) {
-        Index index = this.index(other.getName(), other.getOptions());
+        Index index = this.index(other.getName());
         for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {
             Frame frame = frameEntry.getValue();
             index.frame(frame.getName(), frame.getOptions());
@@ -101,7 +89,7 @@ public class Schema {
                 result.indexes.put(indexName, new Index(indexEntry.getValue()));
             } else {
                 // the index exists in the other schema; check the frames
-                Index resultIndex = Index.withName(indexName, index.getOptions());
+                Index resultIndex = Index.withName(indexName);
                 Index otherIndex = other.indexes.get(indexName);
                 Map<String, Frame> otherIndexFrames = otherIndex.getFrames();
                 for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {

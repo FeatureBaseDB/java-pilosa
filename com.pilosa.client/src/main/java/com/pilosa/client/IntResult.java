@@ -34,38 +34,68 @@
 
 package com.pilosa.client;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import java.util.List;
 
-@Category(UnitTest.class)
-public class QueryResultTest {
-    @Test
-    public void testCreateDefaultConstructor() {
-        new QueryResult();
+public class IntResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.INT;
     }
 
-    @Test
-    public void testEquals() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1, q1);
-        assertEquals(q1, q2);
-        assertFalse(q1.equals(new QueryResponse()));
+    @Override
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
     }
 
-    @Test
-    public void testHashCode() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        QueryResult q2 = new QueryResult(null, null, 1, 10);
-        assertEquals(q1.hashCode(), q2.hashCode());
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
     }
 
-    @Test
-    public void testGetSum() {
-        QueryResult q1 = new QueryResult(null, null, 1, 10);
-        assertEquals(10, q1.getSum());
+    @Override
+    public long getCount() {
+        return this.count;
     }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof IntResult)) {
+            return false;
+        }
+        return this.count == ((IntResult) obj).count;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.count)
+                .toHashCode();
+    }
+
+    static IntResult create(long count) {
+        IntResult result = new IntResult();
+        result.count = count;
+        return result;
+    }
+
+    static IntResult fromInternal(Internal.QueryResult q) {
+        return IntResult.create(q.getN());
+    }
+
+    private long count;
 }

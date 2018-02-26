@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2017 Pilosa Corp.
  *
@@ -32,69 +33,21 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.status;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private Bit() {
+import java.util.List;
+
+public final class StatusInfoLegacy {
+    @JsonProperty("Nodes")
+    public List<NodeInfoLegacy> getNodes() {
+        return this.nodes;
     }
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
+    void setNodes(List<NodeInfoLegacy> nodes) {
+        this.nodes = nodes;
     }
 
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Bit)) {
-            return false;
-        }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.iBit.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
-    }
+    private List<NodeInfoLegacy> nodes;
 }

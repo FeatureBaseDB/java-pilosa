@@ -34,67 +34,68 @@
 
 package com.pilosa.client;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private Bit() {
-    }
+import java.util.List;
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
-    }
-
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
+public class BoolResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.BOOL;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
+
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
+
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return this.changed;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
-
-        if (!(o instanceof Bit)) {
+        if (!(obj instanceof BoolResult)) {
             return false;
         }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
+        return this.changed == ((BoolResult) obj).changed;
     }
 
     @Override
     public int hashCode() {
-        return this.iBit.hashCode();
+        return new HashCodeBuilder(31, 47)
+                .append(this.changed)
+                .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
+    static BoolResult create(boolean changed) {
+        BoolResult result = new BoolResult();
+        result.changed = changed;
+        return result;
     }
+
+    static BoolResult fromInternal(Internal.QueryResult q) {
+        return create(q.getChanged());
+    }
+
+    private boolean changed;
 }

@@ -34,67 +34,77 @@
 
 package com.pilosa.client;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private Bit() {
-    }
+import java.util.List;
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
-    }
-
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
+public class SumCountResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.SUM_COUNT;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
+
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
+
+    @Override
+    public long getCount() {
+        return this.count;
+    }
+
+    @Override
+    public long getSum() {
+        return this.sum;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
-
-        if (!(o instanceof Bit)) {
+        if (!(obj instanceof SumCountResult)) {
             return false;
         }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
+        SumCountResult rhs = (SumCountResult) obj;
+        return new EqualsBuilder()
+                .append(this.sum, rhs.sum)
+                .append(this.count, rhs.count)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return this.iBit.hashCode();
+        return new HashCodeBuilder(31, 47)
+                .append(this.sum)
+                .append(this.count)
+                .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
+    static SumCountResult create(long sum, long count) {
+        SumCountResult result = new SumCountResult();
+        result.sum = sum;
+        result.count = count;
+        return result;
     }
+
+    static SumCountResult fromInternal(Internal.QueryResult q) {
+        Internal.SumCount obj = q.getSumCount();
+        return create(obj.getSum(), obj.getCount());
+    }
+
+    private long sum;
+    private long count;
 }

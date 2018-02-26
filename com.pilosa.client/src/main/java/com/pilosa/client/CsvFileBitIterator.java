@@ -43,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 /**
  * Iterates over a CSV of bitmaps.
@@ -59,9 +60,14 @@ public class CsvFileBitIterator implements BitIterator {
     private Scanner scanner = null;
     private Bit nextBit = null;
     private SimpleDateFormat timestampFormat = null;
+    private final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 
     private CsvFileBitIterator(SimpleDateFormat timestampFormat) {
         this.timestampFormat = timestampFormat;
+        if (this.timestampFormat != null) {
+            this.timestampFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
+
     }
 
     private long parseTimestamp(final String s) {
@@ -122,6 +128,10 @@ public class CsvFileBitIterator implements BitIterator {
         CsvFileBitIterator iterator = new CsvFileBitIterator(timestampFormat);
         iterator.scanner = new Scanner(stream);
         return iterator;
+    }
+
+    public static SimpleDateFormat getDefaultTimestampFormat() {
+        return defaultTimestampFormat;
     }
 
     @Override

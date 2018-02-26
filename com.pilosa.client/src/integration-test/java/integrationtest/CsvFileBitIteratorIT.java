@@ -80,7 +80,7 @@ public class CsvFileBitIteratorIT {
         if (uri == null) {
             fail("sample2.csv not found");
         }
-        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        SimpleDateFormat timestampFormat = CsvFileBitIterator.getDefaultTimestampFormat();
         CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
         List<Bit> bits = new ArrayList<>(3);
         while (iterator.hasNext()) {

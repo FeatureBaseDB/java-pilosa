@@ -121,13 +121,14 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setSkipVersionCheck(boolean skip) {
-            this.skipVersionCheck = skip;
+        public Builder setSkipVersionCheck() {
+            this.skipVersionCheck = true;
             return this;
         }
 
         public Builder setLegacyMode(boolean enable) {
             this.legacyMode = enable;
+            this.skipVersionCheck = true;
             return this;
         }
 

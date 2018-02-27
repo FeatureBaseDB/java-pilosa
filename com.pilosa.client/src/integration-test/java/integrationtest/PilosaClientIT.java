@@ -856,7 +856,6 @@ public class PilosaClientIT {
         ClientOptions.Builder optionsBuilder = ClientOptions.builder();
         if (isLegacyModeOff()) {
             optionsBuilder.setLegacyMode(false);
-            optionsBuilder.setSkipVersionCheck(true);
         }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
     }
@@ -871,10 +870,7 @@ public class PilosaClientIT {
 
     private boolean isLegacyModeOff() {
         String legacyModeOffStr = System.getenv("LEGACY_MODE_OFF");
-        if (legacyModeOffStr == null) {
-            return false;
-        }
-        return legacyModeOffStr.equals("true");
+        return legacyModeOffStr != null && legacyModeOffStr.equals("true");
     }
 }
 

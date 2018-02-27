@@ -43,9 +43,11 @@ public final class Validator {
     private final static Pattern INDEX_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
     private final static Pattern FRAME_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
     private final static Pattern LABEL = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_-]*$");
+    private final static Pattern KEY = Pattern.compile("^[A-Za-z0-9_{}+/=.~%:-]*$");
     private final static int MAX_INDEX_NAME = 64;
     private final static int MAX_FRAME_NAME = 64;
     private final static int MAX_LABEL = 64;
+    private final static int MAX_KEY = 64;
 
     Validator() {}
 
@@ -91,6 +93,21 @@ public final class Validator {
     public static void ensureValidLabel(String label) {
         if (!validLabel(label)) {
             throw new ValidationException(String.format("Invalid label: %s", label));
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static boolean validKey(String key) {
+        //noinspection SimplifiableIfStatement
+        if (key.length() > MAX_KEY) {
+            return false;
+        }
+        return KEY.matcher(key).matches();
+    }
+
+    public static void ensureValidKey(String key) {
+        if (!validKey(key)) {
+            throw new ValidationException(String.format("Invalid key: %s", key));
         }
     }
 }

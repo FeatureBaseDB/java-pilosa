@@ -34,67 +34,22 @@
 
 package com.pilosa.client;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-    private Bit() {
-    }
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
-    }
-
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+@Category(UnitTest.class)
+public class ServerVersionTest {
+    @Test
+    public void legacyVersionTest() {
+        String[] versions = {
+                "0.6.9", "0.7.0", "0.8.1"
+        };
+        for (String version : versions) {
+            assertTrue(ServerVersion.isLegacy(version, "0.8.2"));
+            assertFalse(ServerVersion.isLegacy(version, "0.6.0-xyz"));
         }
-
-        if (!(o instanceof Bit)) {
-            return false;
-        }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.iBit.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
     }
 }

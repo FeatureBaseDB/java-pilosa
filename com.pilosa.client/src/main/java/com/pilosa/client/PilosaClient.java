@@ -42,10 +42,7 @@ import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
-import com.pilosa.client.status.FrameInfo;
-import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.NodeInfo;
-import com.pilosa.client.status.StatusInfo;
+import com.pilosa.client.status.*;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -191,13 +188,9 @@ public class PilosaClient implements AutoCloseable {
      */
     public void createIndex(Index index) {
         String path = String.format("/index/%s", index.getName());
-        String body = index.getOptions().toString();
+        String body = "";
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
         clientExecute("POST", path, data, protobufHeaders, "Error while creating index");
-        // set time quantum for the index if one was assigned to it
-        if (index.getOptions().getTimeQuantum() != TimeQuantum.NONE) {
-            patchTimeQuantum(index);
-        }
     }
 
     /**
@@ -317,12 +310,36 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Returns the status of the cluster and schema info.
+     * Returns the schema info.
      *
-     * @return StatusInfo object.
-     * @throws PilosaException if the status cannot be read
+     * @return SchemaInfo object.
+     * @throws PilosaException if the schema cannot be read
      */
-    public StatusInfo readStatus() {
+    public SchemaInfo readServerSchema() {
+        String path = "/schema";
+        CloseableHttpResponse response = null;
+        try {
+            try {
+                response = clientExecute("GET", path, null, null, "Error while reading schema",
+                        ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream src = entity.getContent()) {
+                        return SchemaInfo.fromInputStream(src);
+                    }
+                }
+                throw new PilosaException("Server returned empty response");
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
+        }
+    }
+
+    public StatusInfoLegacy readStatus() {
         String path = "/status";
         CloseableHttpResponse response = null;
         try {
@@ -352,15 +369,35 @@ public class PilosaClient implements AutoCloseable {
      *
      * @return server-side schema
      */
-    public Schema readSchema() {
+    public Schema readSchemaLegacy() {
         Schema result = Schema.defaultSchema();
-        StatusInfo status = readStatus();
-        for (NodeInfo nodeInfo : status.getNodes()) {
-            for (IndexInfo indexInfo : nodeInfo.getIndexes()) {
-                Index index = result.index(indexInfo.getName(), indexInfo.getOptions());
+        StatusInfoLegacy status = readStatus();
+        for (NodeInfoLegacy nodeInfo : status.getNodes()) {
+            for (IndexInfoLegacy indexInfo : nodeInfo.getIndexes()) {
+                Index index = result.index(indexInfo.getName());
                 for (FrameInfo frameInfo : indexInfo.getFrames()) {
                     index.frame(frameInfo.getName(), frameInfo.getOptions());
                 }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the indexes and frames on the server.
+     *
+     * @return server-side schema
+     */
+    public Schema readSchema() {
+        if (this.legacyMode) {
+            return readSchemaLegacy();
+        }
+        Schema result = Schema.defaultSchema();
+        SchemaInfo schema = readServerSchema();
+        for (IndexInfo indexInfo : schema.getIndexes()) {
+            Index index = result.index(indexInfo.getName());
+            for (IFrameInfo frameInfo : indexInfo.getFrames()) {
+                index.frame(frameInfo.getName(), frameInfo.getOptions());
             }
         }
         return result;
@@ -438,6 +475,8 @@ public class PilosaClient implements AutoCloseable {
     protected PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
+        this.versionChecked = options.isSkipVersionCheck();
+        this.legacyMode = options.isLegacyMode();
     }
 
     protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {
@@ -484,6 +523,9 @@ public class PilosaClient implements AutoCloseable {
                 .setDefaultRequestConfig(requestConfig)
                 .setUserAgent(makeUserAgent())
                 .build();
+        if (!this.versionChecked) {
+            this.legacyMode = isLegacy();
+        }
     }
 
     private void clientExecute(final String method, final String path, final ByteArrayEntity data,
@@ -559,10 +601,6 @@ public class PilosaClient implements AutoCloseable {
             case "DELETE":
                 request = new HttpDelete(uri);
                 break;
-            case "PATCH":
-                request = new HttpPatch(uri);
-                ((HttpPatch) request).setEntity(data);
-                break;
             case "POST":
                 request = new HttpPost(uri);
                 ((HttpPost) request).setEntity(data);
@@ -599,8 +637,8 @@ public class PilosaClient implements AutoCloseable {
 
     private void importBits(String indexName, String frameName, long slice, List<Bit> bits) {
         Collections.sort(bits, bitComparator);
-        List<FragmentNode> nodes = fetchFrameNodes(indexName, slice);
-        for (FragmentNode node : nodes) {
+        List<IFragmentNode> nodes = fetchFrameNodes(indexName, slice);
+        for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
             Internal.ImportRequest importRequest = bitsToImportRequest(indexName, frameName, slice, bits);
@@ -608,7 +646,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    List<FragmentNode> fetchFrameNodes(String indexName, long slice) {
+    List<IFragmentNode> fetchFrameNodes(String indexName, long slice) {
         String path = String.format("/fragment/nodes?index=%s&slice=%d", indexName, slice);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
@@ -616,8 +654,13 @@ public class PilosaClient implements AutoCloseable {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream src = response.getEntity().getContent()) {
-                    return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
-                    });
+                    if (this.legacyMode) {
+                        return mapper.readValue(src, new TypeReference<List<FragmentNodeLegacy>>() {
+                        });
+                    } else {
+                        return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
+                        });
+                    }
                 }
             }
             throw new PilosaException("Server returned empty response");
@@ -629,6 +672,28 @@ public class PilosaClient implements AutoCloseable {
     void importNode(Internal.ImportRequest importRequest) {
         ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
         clientExecute("POST", "/import", body, protobufHeaders, "Error while importing");
+    }
+
+    VersionInfo fetchServerVersion() {
+        try {
+            CloseableHttpResponse response = clientExecute("GET", "/version", null, null, "Error while fetching version",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (InputStream src = response.getEntity().getContent()) {
+                    return mapper.readValue(src, new TypeReference<VersionInfo>() {
+                    });
+                }
+            }
+            throw new PilosaException("Server returned empty response");
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
+        }
+    }
+
+    private boolean isLegacy() {
+        VersionInfo versionInfo = fetchServerVersion();
+        return ServerVersion.isLegacy(versionInfo.getVersion());
     }
 
     private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
@@ -649,14 +714,6 @@ public class PilosaClient implements AutoCloseable {
                 .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
-    }
-
-    private void patchTimeQuantum(Index index) {
-        String path = String.format("/index/%s/time-quantum", index.getName());
-        String body = String.format("{\"timeQuantum\":\"%s\"}",
-                index.getOptions().getTimeQuantum().toString());
-        ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("PATCH", path, data, protobufHeaders, "Error while setting time quantum for the index");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -680,7 +737,9 @@ public class PilosaClient implements AutoCloseable {
     }
 
     static {
-        mapper = new ObjectMapper();
+        ObjectMapper m = new ObjectMapper();
+        m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = m;
 
         protobufHeaders = new Header[]{
                 new BasicHeader("Content-Type", "application/x-protobuf"),
@@ -699,6 +758,8 @@ public class PilosaClient implements AutoCloseable {
     private CloseableHttpClient client = null;
     private Comparator<Bit> bitComparator = new BitComparator();
     private ClientOptions options;
+    private boolean versionChecked = false;
+    private boolean legacyMode = false;
 }
 
 class QueryRequest {
@@ -762,7 +823,48 @@ class QueryRequest {
     }
 }
 
-class FragmentNode {
+interface IFragmentNode {
+    URI toURI();
+}
+
+class FragmentNode implements IFragmentNode {
+    public void setURI(FragmentNodeURI uri) {
+        this.uri = uri;
+    }
+
+    public URI toURI() {
+        return this.uri.toURI();
+    }
+
+    private FragmentNodeURI uri = new FragmentNodeURI();
+}
+
+class FragmentNodeURI {
+    @SuppressWarnings("unused")
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    @SuppressWarnings("unused")
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    @SuppressWarnings("unused")
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    URI toURI() {
+        return URI.address(String.format("%s://%s:%d", this.scheme, this.host, this.port));
+    }
+
+    private String scheme;
+    private String host;
+    private int port;
+}
+
+class FragmentNodeLegacy implements IFragmentNode {
     @SuppressWarnings("unused")
     public void setHost(String host) {
         this.host = host;
@@ -778,7 +880,7 @@ class FragmentNode {
         // just adding this no op so jackson doesn't complain... --YT
     }
 
-    URI toURI() {
+    public URI toURI() {
         return URI.address(String.format("%s://%s", this.scheme, this.host));
     }
 
@@ -795,17 +897,29 @@ class BitComparator implements Comparator<Bit> {
     }
 }
 
+class VersionInfo {
+    public void SetVersion(String version) {
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    private String version;
+}
+
 final class StatusMessage {
 
     static StatusMessage fromInputStream(InputStream src) throws IOException {
         return mapper.readValue(src, StatusMessage.class);
     }
 
-    StatusInfo getStatus() {
+    StatusInfoLegacy getStatus() {
         return this.status;
     }
 
-    void setStatus(StatusInfo status) {
+    void setStatus(StatusInfoLegacy status) {
         this.status = status;
     }
 
@@ -814,6 +928,6 @@ final class StatusMessage {
         StatusMessage.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-    private StatusInfo status;
+    private StatusInfoLegacy status;
     private final static ObjectMapper mapper;
 }

@@ -34,67 +34,82 @@
 
 package com.pilosa.client;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private Bit() {
-    }
+import java.util.ArrayList;
+import java.util.List;
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
-    }
-
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
+public class TopNResult implements QueryResult {
+    @Override
+    public int getType() {
+        return QueryResultType.PAIRS;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public BitmapResult getBitmap() {
+        return BitmapResult.defaultResult();
+    }
+
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return this.items;
+    }
+
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getSum() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
-
-        if (!(o instanceof Bit)) {
+        if (!(obj instanceof TopNResult)) {
             return false;
         }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
+        TopNResult rhs = (TopNResult) obj;
+        return new EqualsBuilder()
+                .append(this.items, rhs.items)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return this.iBit.hashCode();
+        return new HashCodeBuilder(31, 47)
+                .append(this.items)
+                .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
+    static TopNResult create(List<CountResultItem> items) {
+        TopNResult result = new TopNResult();
+        result.items = items;
+        return result;
     }
+
+    static TopNResult fromInternal(Internal.QueryResult q) {
+        List<CountResultItem> items = new ArrayList<>(q.getPairsCount());
+        for (Internal.Pair pair : q.getPairsList()) {
+            items.add(CountResultItem.fromInternal(pair));
+        }
+        return TopNResult.create(items);
+    }
+
+    static List<CountResultItem> defaultItems() {
+        return defaultItems;
+    }
+
+    private static List<CountResultItem> defaultItems = new ArrayList<>(0);
+    private List<CountResultItem> items;
 }

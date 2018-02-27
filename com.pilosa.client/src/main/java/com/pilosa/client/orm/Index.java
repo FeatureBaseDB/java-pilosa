@@ -52,37 +52,19 @@ import java.util.Map;
  */
 public class Index {
     /**
-     * Create an index with a name using defaults.
+     * Creates an index with a name.
      *
-     * @param name index name
+     * @param name    index name
      * @return a Index object
      * @throws ValidationException if the passed index name is not valid
      */
     public static Index withName(String name) {
-        return Index.withName(name, IndexOptions.withDefaults());
-    }
-
-    /**
-     * Creates an index with a name and options.
-     *
-     * @param name    index name
-     * @param options index options
-     * @return a Index object
-     * @deprecated Index options are deprecated and will be removed in a future release.
-     * @throws ValidationException if the passed index name is not valid
-     */
-    public static Index withName(String name, IndexOptions options) {
         Validator.ensureValidIndexName(name);
-        Validator.ensureValidLabel(options.getColumnLabel());
-        return new Index(name, options);
+        return new Index(name);
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public IndexOptions getOptions() {
-        return this.options;
     }
 
     /**
@@ -270,8 +252,31 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(%s=%d, %s)",
-                this.options.getColumnLabel(), id, attributesString));
+        return pqlQuery(String.format("SetColumnAttrs(columnID=%d, %s)", id, attributesString));
+    }
+
+    /**
+     * Creates a SetColumnAttrs query. (Enterprise version)
+     * <p>
+     * SetColumnAttrs associates arbitrary key/value pairs with a column in an index.
+     * <p>
+     * Following object types are accepted:
+     * <ul>
+     * <li>Long</li>
+     * <li>String</li>
+     * <li>Boolean</li>
+     * <li>Double</li>
+     * </ul>
+     *
+     * @param key        column key
+     * @param attributes column attributes
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
+     */
+    public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
+        String attributesString = Util.createAttributesString(this.mapper, attributes);
+        return pqlQuery(String.format("SetColumnAttrs(columnID='%s', %s)",
+                key, attributesString));
     }
 
     public Map<String, Frame> getFrames() {
@@ -288,7 +293,6 @@ public class Index {
         }
         Index rhs = (Index) obj;
         return rhs.name.equals(this.name) &&
-                rhs.options.equals(this.options) &&
                 rhs.frames.equals(this.frames);
     }
 
@@ -297,7 +301,6 @@ public class Index {
         // note that we don't include frames in the hash
         return new HashCodeBuilder(31, 47)
                 .append(this.name)
-                .append(this.options)
                 .toHashCode();
     }
 
@@ -310,8 +313,7 @@ public class Index {
     }
 
     Index(Index index) {
-        // we don't copy index options, since IndexOptions has no mutating methods
-        this(index.name, index.options);
+        this(index.name);
         for (Map.Entry<String, Frame> entry : index.frames.entrySet()) {
             // we don't copy frame options, since FrameOptions has no mutating methods
             this.frame(entry.getKey(), entry.getValue().getOptions());
@@ -331,13 +333,11 @@ public class Index {
         return pqlBitmapQuery(String.format("%s(%s)", name, builder.toString()));
     }
 
-    private Index(String name, IndexOptions options) {
+    private Index(String name) {
         this.name = name;
-        this.options = options;
     }
 
     private String name;
-    private IndexOptions options;
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Frame> frames = new HashMap<>();
 }

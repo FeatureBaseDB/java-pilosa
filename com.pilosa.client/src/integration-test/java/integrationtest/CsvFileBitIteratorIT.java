@@ -80,7 +80,7 @@ public class CsvFileBitIteratorIT {
         if (uri == null) {
             fail("sample2.csv not found");
         }
-        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        SimpleDateFormat timestampFormat = CsvFileBitIterator.getDefaultTimestampFormat();
         CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
         List<Bit> bits = new ArrayList<>(3);
         while (iterator.hasNext()) {
@@ -109,9 +109,9 @@ public class CsvFileBitIteratorIT {
 
     private List<Bit> getTargetRows() {
         List<List<Long>> targetValues = Arrays.asList(
-                Arrays.asList(1L, 10L, 683793200L),
-                Arrays.asList(5L, 20L, 683793300L),
-                Arrays.asList(3L, 41L, 683793385L));
+                Arrays.asList(1L, 10L, 683804000L),
+                Arrays.asList(5L, 20L, 683804100L),
+                Arrays.asList(3L, 41L, 683804185L));
         List<Bit> target = new ArrayList<>(3);
         for (List<Long> item : targetValues) {
             target.add(Bit.create(item.get(0), item.get(1), item.get(2)));

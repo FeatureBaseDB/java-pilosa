@@ -35,7 +35,6 @@
 package com.pilosa.client.orm;
 
 import com.pilosa.client.TimeQuantum;
-import com.pilosa.client.Validator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.HashMap;
@@ -62,21 +61,6 @@ import java.util.Map;
 public final class FrameOptions {
     public static class Builder {
         private Builder() {
-        }
-
-        /**
-         * Sets the row label.
-         *
-         * @param rowLabel a valid row label. See {@link Validator#ensureValidLabel(String)} for constraints on labels.
-         * @return FrameOptions builder
-         * @throws com.pilosa.client.exceptions.ValidationException if the row label is invalid.
-         * @deprecated Row labels are deprecated and will be removed in a future release.
-         */
-        @Deprecated
-        public Builder setRowLabel(String rowLabel) {
-            Validator.ensureValidLabel(rowLabel);
-            this.rowLabel = rowLabel;
-            return this;
         }
 
         /**
@@ -152,12 +136,11 @@ public final class FrameOptions {
          * @return FrameOptions object
          */
         public FrameOptions build() {
-            return new FrameOptions(this.rowLabel, this.timeQuantum,
+            return new FrameOptions(this.timeQuantum,
                     this.inverseEnabled, this.cacheType, this.cacheSize,
                     this.fields);
         }
 
-        private String rowLabel = "rowID";
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private boolean inverseEnabled = false;
         private CacheType cacheType = CacheType.DEFAULT;
@@ -174,12 +157,6 @@ public final class FrameOptions {
     @SuppressWarnings("WeakerAccess")
     public static FrameOptions withDefaults() {
         return new Builder().build();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    @Deprecated
-    public String getRowLabel() {
-        return this.rowLabel;
     }
 
     /**
@@ -255,8 +232,7 @@ public final class FrameOptions {
             return true;
         }
         FrameOptions rhs = (FrameOptions) obj;
-        return rhs.rowLabel.equals(this.rowLabel) &&
-                rhs.timeQuantum.equals(this.timeQuantum) &&
+        return rhs.timeQuantum.equals(this.timeQuantum) &&
                 rhs.inverseEnabled == this.inverseEnabled &&
                 rhs.cacheType.equals(this.cacheType) &&
                 rhs.cacheSize == this.cacheSize &&
@@ -266,7 +242,6 @@ public final class FrameOptions {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.rowLabel)
                 .append(this.timeQuantum)
                 .append(this.inverseEnabled)
                 .append(this.cacheType)
@@ -275,11 +250,10 @@ public final class FrameOptions {
                 .toHashCode();
     }
 
-    private FrameOptions(final String rowLabel, final TimeQuantum timeQuantum,
+    private FrameOptions(final TimeQuantum timeQuantum,
                          final boolean inverseEnabled,
                          final CacheType cacheType, final int cacheSize,
                          final Map<String, RangeFieldInfo> fields) {
-        this.rowLabel = rowLabel;
         this.timeQuantum = timeQuantum;
         this.inverseEnabled = inverseEnabled;
         this.cacheType = cacheType;
@@ -287,7 +261,7 @@ public final class FrameOptions {
         this.fields = (fields != null) ? fields : new HashMap<String, RangeFieldInfo>();
     }
 
-    private final String rowLabel;
+    private final String rowLabel = "rowID";
     private final TimeQuantum timeQuantum;
     private final boolean inverseEnabled;
     private final CacheType cacheType;

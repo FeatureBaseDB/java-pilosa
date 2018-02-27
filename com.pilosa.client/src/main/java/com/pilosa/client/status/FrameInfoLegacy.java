@@ -39,12 +39,12 @@ import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.orm.CacheType;
 import com.pilosa.client.orm.FrameOptions;
 
-public class FrameInfo implements IFrameInfo {
+public final class FrameInfoLegacy extends FrameInfo {
     public FrameOptions getOptions() {
         return this.meta.getOptions();
     }
 
-    @JsonProperty("name")
+    @JsonProperty("Name")
     public String getName() {
         return this.name;
     }
@@ -53,16 +53,16 @@ public class FrameInfo implements IFrameInfo {
         this.name = name;
     }
 
-    @JsonProperty("options")
-    void setMeta(FrameMeta meta) {
+    @JsonProperty("Meta")
+    void setMeta(FrameMetaLegacy meta) {
         this.meta = meta;
     }
 
     private String name;
-    private FrameMeta meta = new FrameMeta();
+    private FrameMetaLegacy meta = new FrameMetaLegacy();
 }
 
-final class FrameMeta {
+final class FrameMetaLegacy {
     FrameOptions getOptions() {
         return FrameOptions.builder()
                 .setInverseEnabled(this.inverseEnabled)
@@ -72,27 +72,27 @@ final class FrameMeta {
                 .build();
     }
 
-    @JsonProperty("rowLabel")
+    @JsonProperty("RowLabel")
     void setRowLabel(String rowLabel) {
         // pass
     }
 
-    @JsonProperty("timeQuantum")
+    @JsonProperty("TimeQuantum")
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);
     }
 
-    @JsonProperty("inverseEnabled")
+    @JsonProperty("InverseEnabled")
     void setInverseEnabled(boolean inverseEnabled) {
         this.inverseEnabled = inverseEnabled;
     }
 
-    @JsonProperty("cacheType")
+    @JsonProperty("CacheType")
     void setCacheType(String s) {
         this.cacheType = CacheType.fromString(s);
     }
 
-    @JsonProperty("cacheSize")
+    @JsonProperty("CacheSize")
     void setCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
     }

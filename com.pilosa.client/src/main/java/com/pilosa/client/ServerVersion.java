@@ -34,67 +34,47 @@
 
 package com.pilosa.client;
 
-public class Bit {
-    private Internal.Bit iBit = null;
+import com.pilosa.client.exceptions.ValidationException;
 
-    private Bit() {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ServerVersion {
+    public static boolean isLegacy(String version) {
+        return isLegacy(version, PILOSA_MINIMUM_VERSION);
     }
 
-    public static Bit create(long rowID, long columnID) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .build();
-        return bit;
-    }
-
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.iBit = Internal.Bit.newBuilder()
-                .setRowID(rowID)
-                .setColumnID(columnID)
-                .setTimestamp(timestamp)
-                .build();
-        return bit;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getRowID() {
-        return this.iBit.getRowID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.iBit.getColumnID();
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getTimestamp() {
-        return this.iBit.getTimestamp();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    static boolean isLegacy(String version, String serverVersion) {
+        Matcher matcher = VERSION.matcher(serverVersion);
+        if (!matcher.matches()) {
+            throw new ValidationException(String.format("Invalid server version: %s", serverVersion));
+        }
+        int[] sv = new int[matcher.groupCount()];
+        for (int i = 0; i < sv.length; i++) {
+            sv[i] = Integer.decode(matcher.group(i + 1));
+        }
+        matcher = VERSION.matcher(version);
+        if (!matcher.matches()) {
             return true;
         }
-
-        if (!(o instanceof Bit)) {
-            return false;
+        if (matcher.groupCount() < sv.length) {
+            throw new ValidationException(String.format("Invalid version: %s", version));
         }
-
-        Bit bit = (Bit) o;
-        return this.iBit.equals(bit.iBit);
+        int[] v = new int[matcher.groupCount()];
+        for (int i = 0; i < v.length; i++) {
+            v[i] = Integer.decode(matcher.group(i + 1));
+        }
+        for (int i = 0; i < sv.length; i++) {
+            if (sv[i] < v[i]) {
+                break;
+            }
+            if (sv[i] > v[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    public int hashCode() {
-        return this.iBit.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
-    }
+    private static final String PILOSA_MINIMUM_VERSION = "0.9.0";
+    private final static Pattern VERSION = Pattern.compile("(\\d+)\\.(\\d+).(\\d+).*");
 }

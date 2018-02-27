@@ -1,0 +1,22 @@
+{
+  "indexes": [
+    {
+      "name": "mi",
+      "frames": [
+        {
+          "name": "mf10",
+          "options": {
+            "rowLabel": "id",
+            "inverseEnabled": true,
+            "cacheType": "lru",
+            "cacheSize": 50000,
+            "timeQuantum": "YMD"
+          }
+        }
+      ]
+    },
+    {
+      "name": "mix"
+    }
+  ]
+}

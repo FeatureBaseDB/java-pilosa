@@ -34,110 +34,18 @@
 
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represent one of the results in the response.
- *
- * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
- */
-public final class QueryResult {
-    private BitmapResult bitmapResult = null;
-    private List<CountResultItem> countItems = null;
-    private long count = 0L;
-    private long sum = 0L;
+public interface QueryResult {
+    int getType();
 
-    QueryResult() {
-    }
+    BitmapResult getBitmap();
 
-    QueryResult(BitmapResult bitmapResult, List<CountResultItem> countItems, long count, long sum) {
-        this.bitmapResult = bitmapResult;
-        this.countItems = countItems;
-        this.count = count;
-        this.sum = sum;
-    }
+    List<CountResultItem> getCountItems();
 
-    static QueryResult fromInternal(Internal.QueryResult q) {
-        List<CountResultItem> items = new ArrayList<>(q.getPairsCount());
-        for (Internal.Pair pair : q.getPairsList()) {
-            items.add(CountResultItem.fromInternal(pair));
-        }
-        BitmapResult bitmapResult;
-        if (q.hasBitmap()) {
-            bitmapResult = BitmapResult.fromInternal(q.getBitmap());
-        } else {
-            bitmapResult = BitmapResult.defaultBitmapResult();
-        }
-        Internal.SumCount sumCount = q.getSumCount();
-        long count = (q.getN() > 0) ? q.getN() : sumCount.getCount();
-        long sum = sumCount.getSum();
-        return new QueryResult(bitmapResult, items, count, sum);
-    }
+    long getCount();
 
-    /**
-     * Returns the bitmap result.
-     *
-     * @return bitmap result if it exists or <code>null</code>
-     */
-    public BitmapResult getBitmap() {
-        return this.bitmapResult;
-    }
+    long getSum();
 
-    /**
-     * Returns the count result items (from TopN query).
-     *
-     * @return count result items
-     */
-    public List<CountResultItem> getCountItems() {
-        return this.countItems;
-    }
-
-    /**
-     * Returns the result from Count query or SumCount query.
-     *
-     * @return number of columns for the bitmap in the query
-     */
-    public long getCount() {
-        return this.count;
-    }
-
-    /**
-     * Retusn the sum from SumCount query.
-     *
-     * @return the sum
-     */
-    public long getSum() {
-        return this.sum;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof QueryResult)) {
-            return false;
-        }
-        QueryResult rhs = (QueryResult) obj;
-        return new EqualsBuilder()
-                .append(bitmapResult, rhs.bitmapResult)
-                .append(countItems, rhs.countItems)
-                .append(count, rhs.count)
-                .append(sum, rhs.sum)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(bitmapResult)
-                .append(countItems)
-                .append(count)
-                .append(sum)
-                .toHashCode();
-    }
+    boolean isChanged();
 }

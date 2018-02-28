@@ -1,7 +1,6 @@
 # Java Client for Pilosa
 
-<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.8.0-blue.svg"></a>
-<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-v0.9.0-blue.svg"></a>
+<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-master-blue.svg"></a>
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592"></a>
 <a href="https://travis-ci.com/pilosa/java-pilosa"><img src="https://api.travis-ci.com/pilosa/java-pilosa.svg?token=vqssvEWV3KAhu8oVFx9s&branch=master"></a>
 <a href="https://coveralls.io/github/pilosa/java-pilosa?branch=master"><img src="https://coveralls.io/repos/github/pilosa/java-pilosa/badge.svg?branch=master" /></a>
@@ -14,9 +13,8 @@ Java client for Pilosa high performance distributed bitmap index.
 ## Change Log
 
 * **v0.8.2** (2018-02-28)
-    * Compatible with Pilosa 0.8.x and 0.9.x.
+    * Compatible with Pilosa master, **not compatible with Pilosa 0.8.x releases**.
     * Checks the server version for Pilosa server compatibility. You can call `clientOptions.setSkipVersionCheck()` to disable that.
-    * Supports string row and column IDs. This feature requires Pilosa Enterprise.  
 
 * **v0.8.1** (2018-01-18)
     * Added `equals`, `notEquals` and `notNull` field operations.
@@ -80,7 +78,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>0.8.2</version>
+        <version>0.8.1</version>
     </dependency>
 </dependencies>
 ```

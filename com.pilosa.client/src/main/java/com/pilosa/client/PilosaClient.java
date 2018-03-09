@@ -70,7 +70,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Pilosa HTTP client.
@@ -285,7 +284,7 @@ public class PilosaClient implements AutoCloseable {
      */
     @SuppressWarnings("WeakerAccess")
     public void importFrame(Frame frame, BitIterator iterator, int batchSize) {
-        BitImportManager manager = new BitImportManager(batchSize, batchSize, this.options.getImportThreadCount());
+        BitImportManager manager = new BitImportManager(batchSize, this.options.getImportThreadCount());
         manager.run(this, frame, iterator);
     }
 
@@ -618,6 +617,7 @@ public class PilosaClient implements AutoCloseable {
     //    private void importBits(String indexName, String frameName, long slice, List<Bit> bits) {
     void importBits(SliceBits sliceBits) {
         String indexName = sliceBits.getIndex().getName();
+
         List<IFragmentNode> nodes = fetchFrameNodes(indexName, sliceBits.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
@@ -916,49 +916,50 @@ final class StatusMessage {
 
 class BitImportManager {
     public void run(final PilosaClient client, final Frame frame, final BitIterator iterator) {
-        BlockingQueue<Bit> queue = new ArrayBlockingQueue<>(this.queueSize);
-        List<Thread> threads = new ArrayList<>(this.threadCount);
+        List<BitTube> tubes = new ArrayList<>(this.threadCount);
 
-        // Create the threads
         for (int i = 0; i < this.threadCount; i++) {
-            Runnable r = new BitImportWorker(client, frame, queue, this.batchSize);
-            Thread t = new Thread(r);
-            threads.add(t);
-            t.start();
+            BitTube tube = new BitTube(client, frame, this.batchSize);
+            tubes.add(tube);
+            tube.start();
         }
 
         // Push bits from the iterator
         while (iterator.hasNext()) {
-            Bit next = iterator.next();
+            Bit nextBit = iterator.next();
+            long slice = nextBit.columnID / SLICE_WIDTH;
             try {
-                queue.offer(next, 5, TimeUnit.SECONDS);
+                tubes.get((int) (slice % threadCount)).send(nextBit);
             } catch (InterruptedException e) {
                 throw new PilosaException("Timeout while offering a bit", e);
             }
         }
 
         // Signal the threads to stop
-        for (int i = 0; i < this.threadCount; i++) {
-            queue.offer(Bit.DEFAULT);
+        for (BitTube tube : tubes) {
+            try {
+                tube.sendEnd();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Wait for the threads to stop
-        for (Thread t : threads) {
+        for (BitTube t : tubes) {
             try {
-                t.join();
+                t.waitComplete();
             } catch (InterruptedException e) {
-                continue;
+                e.printStackTrace();
             }
         }
     }
 
-    BitImportManager(int queueSize, int batchSize, int threadCount) {
-        this.queueSize = queueSize;
+    BitImportManager(int batchSize, int threadCount) {
         this.batchSize = batchSize;
         this.threadCount = threadCount;
     }
 
-    private final int queueSize;
+    static final long SLICE_WIDTH = 1048576L;
     private final int batchSize;
     private final int threadCount;
 }
@@ -981,9 +982,9 @@ class BitImportWorker implements Runnable {
                     }
                     Bit bit = this.queue.take();
                     if (bit.isDefaultBit()) {
-                        Thread.currentThread().interrupt();
+                        throw new InterruptedException();
                     }
-                    long slice = bit.getColumnID() / SLICE_WIDTH;
+                    long slice = bit.getColumnID() / BitImportManager.SLICE_WIDTH;
                     SliceBits sliceBits = sliceGroup.get(slice);
                     if (sliceBits == null) {
                         sliceBits = SliceBits.create(this.frame, slice);
@@ -992,26 +993,62 @@ class BitImportWorker implements Runnable {
                     sliceBits.add(bit);
                 }
                 // batch is full, import
-                this.importBits();
+                this.importBits(false);
             } catch (InterruptedException e) {
                 break;
             }
         }
         // The thread is shutting down, import remaining bits in the batch
-        this.importBits();
+        this.importBits(true);
     }
 
-    private void importBits() {
+    private void importBits(boolean force) {
         for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
-            this.client.importBits(entry.getValue());
+            SliceBits sliceBits = entry.getValue();
+            int sliceCount = sliceBits.getBits().size();
+            if (sliceCount == 0) {
+                continue;
+            }
+            if (!force && sliceCount < this.batchSize / 2) {
+                // If the batch is not full-ish, don't bother to import... yet.
+                continue;
+            }
+            this.client.importBits(sliceBits);
+            sliceBits.clear();
         }
-        this.sliceGroup.clear();
     }
 
-    private static final long SLICE_WIDTH = 1048576L;
     private final PilosaClient client;
     private final Frame frame;
     private final BlockingQueue<Bit> queue;
     private final int batchSize;
     private Map<Long, SliceBits> sliceGroup = new HashMap<>();
+}
+
+class BitTube {
+    BitTube(final PilosaClient client, final Frame frame, final int batchSize) {
+        this.queue = new ArrayBlockingQueue<>(batchSize);
+        this.thread = new Thread(new BitImportWorker(client, frame, this.queue, batchSize));
+    }
+
+    void start() {
+        this.thread.start();
+    }
+
+    void send(Bit bit) throws InterruptedException {
+        this.queue.put(bit);
+    }
+
+    void sendEnd() throws InterruptedException {
+        send(Bit.DEFAULT);
+    }
+
+    void waitComplete() throws InterruptedException {
+        if (!this.thread.isInterrupted()) {
+            this.thread.join();
+        }
+    }
+
+    private final BlockingQueue<Bit> queue;
+    private final Thread thread;
 }

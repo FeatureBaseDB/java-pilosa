@@ -156,7 +156,7 @@ public final class ClientOptions {
         private SSLContext sslContext = SSLContexts.createDefault();
         private boolean skipVersionCheck = false;
         private boolean legacyMode = false;
-        private int importThreadCount = 1;
+        private int importThreadCount = Runtime.getRuntime().availableProcessors();
     }
 
     /**

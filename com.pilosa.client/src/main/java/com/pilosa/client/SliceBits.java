@@ -71,6 +71,10 @@ class SliceBits {
         this.bits.add(bit);
     }
 
+    public void clear() {
+        this.bits.clear();
+    }
+
     Internal.ImportRequest convertToImportRequest() {
         List<Long> bitmapIDs = new ArrayList<>(bits.size());
         List<Long> columnIDs = new ArrayList<>(bits.size());

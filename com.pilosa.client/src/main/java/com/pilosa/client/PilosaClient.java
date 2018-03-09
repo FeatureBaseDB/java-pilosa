@@ -68,6 +68,9 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Pilosa HTTP client.
@@ -282,31 +285,8 @@ public class PilosaClient implements AutoCloseable {
      */
     @SuppressWarnings("WeakerAccess")
     public void importFrame(Frame frame, BitIterator iterator, int batchSize) {
-        final long sliceWidth = 1048576L;
-        boolean canContinue = true;
-        while (canContinue) {
-            // The maximum ingestion speed is accomplished by sorting bits by row ID and then column ID
-            Map<Long, List<Bit>> bitGroup = new HashMap<>();
-            for (int i = 0; i < batchSize; i++) {
-                if (iterator.hasNext()) {
-                    Bit bit = iterator.next();
-                    long slice = bit.getColumnID() / sliceWidth;
-                    List<Bit> sliceList = bitGroup.get(slice);
-                    if (sliceList == null) {
-                        sliceList = new ArrayList<>(1);
-                        bitGroup.put(slice, sliceList);
-                    }
-                    sliceList.add(bit);
-
-                } else {
-                    canContinue = false;
-                    break;
-                }
-            }
-            for (Map.Entry<Long, List<Bit>> entry : bitGroup.entrySet()) {
-                importBits(frame.getIndex().getName(), frame.getName(), entry.getKey(), entry.getValue());
-            }
-        }
+        BitImportManager manager = new BitImportManager(batchSize, batchSize, this.options.getImportThreadCount());
+        manager.run(this, frame, iterator);
     }
 
     /**
@@ -635,13 +615,14 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private void importBits(String indexName, String frameName, long slice, List<Bit> bits) {
-        Collections.sort(bits, bitComparator);
-        List<IFragmentNode> nodes = fetchFrameNodes(indexName, slice);
+    //    private void importBits(String indexName, String frameName, long slice, List<Bit> bits) {
+    void importBits(SliceBits sliceBits) {
+        String indexName = sliceBits.getIndex().getName();
+        List<IFragmentNode> nodes = fetchFrameNodes(indexName, sliceBits.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
-            Internal.ImportRequest importRequest = bitsToImportRequest(indexName, frameName, slice, bits);
+            Internal.ImportRequest importRequest = sliceBits.convertToImportRequest();
             client.importNode(importRequest);
         }
     }
@@ -891,8 +872,9 @@ class FragmentNodeLegacy implements IFragmentNode {
 class BitComparator implements Comparator<Bit> {
     @Override
     public int compare(Bit bit, Bit other) {
-        int bitCmp = Long.signum(bit.getRowID() - other.getRowID());
-        int prfCmp = Long.signum(bit.getColumnID() - other.getColumnID());
+        // The maximum ingestion speed is accomplished by sorting bits by row ID and then column ID
+        int bitCmp = Long.signum(bit.rowID - other.rowID);
+        int prfCmp = Long.signum(bit.columnID - other.columnID);
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
 }
@@ -930,4 +912,106 @@ final class StatusMessage {
 
     private StatusInfoLegacy status;
     private final static ObjectMapper mapper;
+}
+
+class BitImportManager {
+    public void run(final PilosaClient client, final Frame frame, final BitIterator iterator) {
+        BlockingQueue<Bit> queue = new ArrayBlockingQueue<>(this.queueSize);
+        List<Thread> threads = new ArrayList<>(this.threadCount);
+
+        // Create the threads
+        for (int i = 0; i < this.threadCount; i++) {
+            Runnable r = new BitImportWorker(client, frame, queue, this.batchSize);
+            Thread t = new Thread(r);
+            threads.add(t);
+            t.start();
+        }
+
+        // Push bits from the iterator
+        while (iterator.hasNext()) {
+            Bit next = iterator.next();
+            try {
+                queue.offer(next, 5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new PilosaException("Timeout while offering a bit", e);
+            }
+        }
+
+        // Signal the threads to stop
+        for (int i = 0; i < this.threadCount; i++) {
+            queue.offer(Bit.DEFAULT);
+        }
+
+        // Wait for the threads to stop
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                continue;
+            }
+        }
+    }
+
+    BitImportManager(int queueSize, int batchSize, int threadCount) {
+        this.queueSize = queueSize;
+        this.batchSize = batchSize;
+        this.threadCount = threadCount;
+    }
+
+    private final int queueSize;
+    private final int batchSize;
+    private final int threadCount;
+}
+
+class BitImportWorker implements Runnable {
+    BitImportWorker(final PilosaClient client, final Frame frame, final BlockingQueue<Bit> queue, final int batchSize) {
+        this.client = client;
+        this.frame = frame;
+        this.queue = queue;
+        this.batchSize = batchSize;
+    }
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                for (int i = 0; i < this.batchSize; i++) {
+                    if (Thread.interrupted()) {
+                        throw new InterruptedException();
+                    }
+                    Bit bit = this.queue.take();
+                    if (bit.isDefaultBit()) {
+                        Thread.currentThread().interrupt();
+                    }
+                    long slice = bit.getColumnID() / SLICE_WIDTH;
+                    SliceBits sliceBits = sliceGroup.get(slice);
+                    if (sliceBits == null) {
+                        sliceBits = SliceBits.create(this.frame, slice);
+                        sliceGroup.put(slice, sliceBits);
+                    }
+                    sliceBits.add(bit);
+                }
+                // batch is full, import
+                this.importBits();
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        // The thread is shutting down, import remaining bits in the batch
+        this.importBits();
+    }
+
+    private void importBits() {
+        for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
+            this.client.importBits(entry.getValue());
+        }
+        this.sliceGroup.clear();
+    }
+
+    private static final long SLICE_WIDTH = 1048576L;
+    private final PilosaClient client;
+    private final Frame frame;
+    private final BlockingQueue<Bit> queue;
+    private final int batchSize;
+    private Map<Long, SliceBits> sliceGroup = new HashMap<>();
 }

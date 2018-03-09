@@ -136,31 +136,28 @@ public class CsvFileBitIterator implements BitIterator {
 
     @Override
     public boolean hasNext() {
-        if (this.scanner == null) {
-            return false;
-        }
-        if (this.scanner.hasNextLine()) {
-            String line = this.scanner.nextLine();
-            if (!line.isEmpty()) {
-                String[] fields = line.split(",");
-                long rowID = Long.parseLong(fields[0]);
-                long columnID = Long.parseLong(fields[1]);
-                long timestamp = 0;
-                if (fields.length > 2) {
-                    timestamp = parseTimestamp(fields[2]);
-                }
-                this.nextBit = Bit.create(rowID, columnID, timestamp);
-                return true;
-            }
-        }
-        scanner.close();
-        this.scanner = null;
-        return false;
+        return this.scanner != null && this.scanner.hasNextLine();
     }
 
     @Override
     public Bit next() {
-        return this.nextBit;
+        if (this.scanner == null) {
+            return null;
+        }
+        String line = this.scanner.nextLine();
+        if (line.isEmpty()) {
+            this.scanner.close();
+            this.scanner = null;
+            return null;
+        }
+        String[] fields = line.split(",");
+        long rowID = Long.parseLong(fields[0]);
+        long columnID = Long.parseLong(fields[1]);
+        if (fields.length > 2) {
+            long timestamp = parseTimestamp(fields[2]);
+            return Bit.create(rowID, columnID, timestamp);
+        }
+        return Bit.create(rowID, columnID);
     }
 
     @Override

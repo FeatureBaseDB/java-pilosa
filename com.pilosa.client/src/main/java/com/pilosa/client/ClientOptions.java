@@ -132,6 +132,11 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setImportThreadCount(int threadCount) {
+            this.importThreadCount = threadCount;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
@@ -139,7 +144,8 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.skipVersionCheck, this.legacyMode);
+                    this.sslContext, this.skipVersionCheck, this.legacyMode,
+                    this.importThreadCount);
         }
 
         private int socketTimeout = 300000;
@@ -150,6 +156,7 @@ public final class ClientOptions {
         private SSLContext sslContext = SSLContexts.createDefault();
         private boolean skipVersionCheck = false;
         private boolean legacyMode = false;
+        private int importThreadCount = 1;
     }
 
     /**
@@ -192,9 +199,14 @@ public final class ClientOptions {
         return this.legacyMode;
     }
 
+    public int getImportThreadCount() {
+        return this.importThreadCount;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final boolean skipVersionCheck, final boolean legacyMode) {
+                          final SSLContext sslContext, final boolean skipVersionCheck,
+                          final boolean legacyMode, final int importThreadCount) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
@@ -203,6 +215,7 @@ public final class ClientOptions {
         this.sslContext = sslContext;
         this.skipVersionCheck = skipVersionCheck;
         this.legacyMode = legacyMode;
+        this.importThreadCount = importThreadCount;
     }
 
     private final int socketTimeout; // milliseconds
@@ -213,4 +226,5 @@ public final class ClientOptions {
     private final SSLContext sslContext;
     private final boolean legacyMode;
     private final boolean skipVersionCheck;
+    private final int importThreadCount;
 }

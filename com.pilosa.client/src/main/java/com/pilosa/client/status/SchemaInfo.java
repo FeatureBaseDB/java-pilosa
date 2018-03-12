@@ -35,6 +35,7 @@
 package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -60,6 +61,12 @@ public final class SchemaInfo implements ISchemaInfo {
         this.indexes = indexes;
     }
 
-    private final static ObjectMapper mapper = new ObjectMapper();
+    static {
+        ObjectMapper m = new ObjectMapper();
+        m.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper = m;
+    }
+
+    private final static ObjectMapper mapper;
     private List<IndexInfo> indexes = new ArrayList<>();
 }

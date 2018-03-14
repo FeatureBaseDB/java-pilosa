@@ -137,6 +137,11 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setSliceWidth(long sliceWidth) {
+            this.sliceWidth = sliceWidth;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
@@ -145,7 +150,7 @@ public final class ClientOptions {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
                     this.sslContext, this.skipVersionCheck, this.legacyMode,
-                    this.importThreadCount);
+                    this.importThreadCount, this.sliceWidth);
         }
 
         private int socketTimeout = 300000;
@@ -157,6 +162,7 @@ public final class ClientOptions {
         private boolean skipVersionCheck = false;
         private boolean legacyMode = false;
         private int importThreadCount = Runtime.getRuntime().availableProcessors();
+        private long sliceWidth = 1048576L;
     }
 
     /**
@@ -203,10 +209,15 @@ public final class ClientOptions {
         return this.importThreadCount;
     }
 
+    public long getSliceWidth() {
+        return this.sliceWidth;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
                           final SSLContext sslContext, final boolean skipVersionCheck,
-                          final boolean legacyMode, final int importThreadCount) {
+                          final boolean legacyMode, final int importThreadCount,
+                          final long sliceWidth) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
@@ -216,6 +227,7 @@ public final class ClientOptions {
         this.skipVersionCheck = skipVersionCheck;
         this.legacyMode = legacyMode;
         this.importThreadCount = importThreadCount;
+        this.sliceWidth = sliceWidth;
     }
 
     private final int socketTimeout; // milliseconds
@@ -227,4 +239,5 @@ public final class ClientOptions {
     private final boolean legacyMode;
     private final boolean skipVersionCheck;
     private final int importThreadCount;
+    private final long sliceWidth;
 }

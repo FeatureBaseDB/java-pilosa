@@ -51,6 +51,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -68,21 +71,22 @@ public class PilosaClientIT {
 
     @Before
     public void setUp() throws IOException {
-        this.schema = Schema.defaultSchema();
-        this.index = schema.index(getRandomIndexName());
         try (PilosaClient client = getClient()) {
-            client.createIndex(this.index);
-            client.createFrame(this.index.frame("another-frame"));
-            client.createFrame(this.index.frame("test"));
-            client.createFrame(this.index.frame("count-test"));
-            client.createFrame(this.index.frame("topn_test"));
+            this.schema = client.readSchema();
+            this.index = schema.index(getRandomIndexName());
+//            client.createIndex(this.index);
+            this.index.frame("another-frame");
+            this.index.frame("test");
+            this.index.frame("count-test");
+            this.index.frame("topn_test");
 
             this.colIndex = schema.index(this.index.getName() + "-opts");
-            client.createIndex(this.colIndex);
+//            client.createIndex(this.colIndex);
 
             FrameOptions frameOptions = FrameOptions.withDefaults();
             this.frame = this.colIndex.frame("collab", frameOptions);
-            client.createFrame(this.frame);
+//            client.createFrame(this.frame);
+            client.syncSchema(this.schema);
         }
     }
 
@@ -428,6 +432,89 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importTest2() throws IOException {
+        class XBitIterator implements BitIterator {
+
+            XBitIterator(long maxID, long maxBits) {
+                this.maxID = maxID;
+                this.maxBits = maxBits;
+            }
+
+            public boolean hasNext() {
+                return this.maxBits > 0;
+            }
+
+            public Bit next() {
+                this.maxBits -= 1;
+//                long rowID = this.currentID;
+//                long columnID = this.currentID;
+                long rowID = (long) (Math.random() * this.maxID);
+                long columnID = (long) (Math.random() * this.maxID);
+                return Bit.create(rowID, columnID);
+            }
+
+            @Override
+            public void remove() {
+
+            }
+
+            private long maxID;
+            private long maxBits;
+        }
+
+        class ImportMonitor implements Runnable {
+            @Override
+            public void run() {
+                System.err.println("MONITOR STARTED");
+                while (true) {
+                    try {
+                        ImportStatusUpdate statusUpdate = this.statusQueue.take();
+                        this.totalImported += statusUpdate.getImportedCount();
+                        System.err.println(statusUpdate);
+                        System.err.println("TOTAL IMPORTED: " + this.totalImported);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+            }
+
+            public long getTotalImported() {
+                return this.totalImported;
+            }
+
+            ImportMonitor(final BlockingQueue<ImportStatusUpdate> statusQueue) {
+                this.statusQueue = statusQueue;
+            }
+
+            private final BlockingQueue<ImportStatusUpdate> statusQueue;
+            private long totalImported = 0;
+        }
+
+        try (PilosaClient client = this.getClient()) {
+            long maxID = 300_000_000;
+            long maxBits = 100_000;
+
+            BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1000);
+            ImportMonitor monitor = new ImportMonitor(statusQueue);
+            Thread monitorThread = new Thread(monitor);
+            monitorThread.setDaemon(true);
+            monitorThread.start();
+
+            BitIterator iterator = new XBitIterator(maxID, maxBits);
+
+            Frame frame = this.index.frame("importframe2");
+            client.ensureFrame(frame);
+
+            long tic = System.nanoTime();
+            client.importFrame(frame, iterator, 100000, statusQueue);
+            long tac = System.nanoTime();
+            long elapsedMs = TimeUnit.NANOSECONDS.toMillis(tac - tic);
+            monitorThread.interrupt();
+            System.err.println(String.format("Took %d ms to import %d bits", elapsedMs, monitor.getTotalImported()));
+        }
+    }
+
+    @Test
     public void getSchemaTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             Schema schema = client.readSchema();
@@ -570,19 +657,23 @@ public class PilosaClientIT {
         }
     }
 
-    @Test(expected = PilosaException.class)
+    @Test
     public void importFail200Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
                 client.importFrame(this.index.frame("importframe"), iterator);
+            } catch (PilosaException ex) {
+                // pass
+                return;
             } finally {
                 if (server != null) {
                     server.stop(0);
                 }
             }
         }
+        fail("Expected PilosaException to be thrown");
     }
 
     @Test(expected = PilosaException.class)
@@ -857,6 +948,10 @@ public class PilosaClientIT {
         if (isLegacyModeOff()) {
             optionsBuilder.setLegacyMode(false);
         }
+        long sliceWidth = getSliceWidth();
+        if (sliceWidth > 0) {
+            optionsBuilder.setSliceWidth(sliceWidth);
+        }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
     }
 
@@ -871,6 +966,11 @@ public class PilosaClientIT {
     private boolean isLegacyModeOff() {
         String legacyModeOffStr = System.getenv("LEGACY_MODE_OFF");
         return legacyModeOffStr != null && legacyModeOffStr.equals("true");
+    }
+
+    private long getSliceWidth() {
+        String sliceWidthStr = System.getenv("SLICE_WIDTH");
+        return (sliceWidthStr == null) ? 0 : Long.parseLong(sliceWidthStr);
     }
 }
 

@@ -619,7 +619,6 @@ public class PilosaClient implements AutoCloseable {
 
     void importBits(SliceBits sliceBits) {
         String indexName = sliceBits.getIndex().getName();
-
         List<IFragmentNode> nodes = fetchFrameNodes(indexName, sliceBits.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
@@ -630,6 +629,19 @@ public class PilosaClient implements AutoCloseable {
     }
 
     List<IFragmentNode> fetchFrameNodes(String indexName, long slice) {
+        String key = String.format("%s%d", indexName, slice);
+        List<IFragmentNode> nodes;
+
+        if (this.fragmentNodeCache == null) {
+            this.fragmentNodeCache = new HashMap<>();
+        } else {
+            // Try to load from the cache first
+            nodes = this.fragmentNodeCache.get(key);
+            if (nodes != null) {
+                return nodes;
+            }
+        }
+
         String path = String.format("/fragment/nodes?index=%s&slice=%d", indexName, slice);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
@@ -638,13 +650,16 @@ public class PilosaClient implements AutoCloseable {
             if (entity != null) {
                 try (InputStream src = response.getEntity().getContent()) {
                     if (this.legacyMode) {
-                        return mapper.readValue(src, new TypeReference<List<FragmentNodeLegacy>>() {
+                        nodes = mapper.readValue(src, new TypeReference<List<FragmentNodeLegacy>>() {
                         });
                     } else {
-                        return mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
+                        nodes = mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
                         });
                     }
                 }
+                // Cache the nodes
+                this.fragmentNodeCache.put(key, nodes);
+                return nodes;
             }
             throw new PilosaException("Server returned empty response");
         } catch (IOException ex) {
@@ -743,6 +758,7 @@ public class PilosaClient implements AutoCloseable {
     private ClientOptions options;
     private boolean versionChecked = false;
     private boolean legacyMode = false;
+    private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
 }
 
 class QueryRequest {

@@ -754,7 +754,6 @@ public class PilosaClient implements AutoCloseable {
     private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;
-    private Comparator<Bit> bitComparator = new BitComparator();
     private ClientOptions options;
     private boolean versionChecked = false;
     private boolean legacyMode = false;

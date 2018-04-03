@@ -36,9 +36,6 @@ package com.pilosa.client;
 
 
 public class QueryResultType {
-    private QueryResultType() {
-    }
-
     public final static int NIL = 0;
     public final static int BITMAP = 1;
     public final static int PAIRS = 2;

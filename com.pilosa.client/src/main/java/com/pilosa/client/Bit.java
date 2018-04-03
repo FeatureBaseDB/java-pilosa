@@ -92,9 +92,4 @@ public class Bit {
     public int hashCode() {
         return this.iBit.hashCode();
     }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s[%d]", this.iBit.getRowID(), this.iBit.getColumnID(), this.iBit.getTimestamp());
-    }
 }

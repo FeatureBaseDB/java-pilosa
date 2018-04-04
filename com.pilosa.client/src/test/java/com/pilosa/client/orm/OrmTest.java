@@ -61,15 +61,15 @@ public class OrmTest {
 
     @Test
     public void pqlQueryCreate() {
-        PqlBaseQuery pql = new PqlBaseQuery("Bitmap(frame='foo', rowID=10)");
-        assertEquals("Bitmap(frame='foo', rowID=10)", pql.serialize());
+        PqlBaseQuery pql = new PqlBaseQuery("Bitmap(frame='foo', row=10)");
+        assertEquals("Bitmap(frame='foo', row=10)", pql.serialize());
         assertEquals(null, pql.getIndex());
     }
 
     @Test
     public void pqlBitmapQueryCreate() {
-        PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(frame='foo', rowID=10)");
-        assertEquals("Bitmap(frame='foo', rowID=10)", pql.serialize());
+        PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(frame='foo', row=10)");
+        assertEquals("Bitmap(frame='foo', row=10)", pql.serialize());
         assertEquals(null, pql.getIndex());
     }
 
@@ -79,7 +79,7 @@ public class OrmTest {
         b.add(sampleFrame.bitmap(44));
         b.add(sampleFrame.bitmap(10101));
         assertEquals(
-                "Bitmap(rowID=44, frame='sample-frame')Bitmap(rowID=10101, frame='sample-frame')",
+                "Bitmap(row=44, frame='sample-frame')Bitmap(row=10101, frame='sample-frame')",
                 b.serialize());
     }
 
@@ -90,8 +90,8 @@ public class OrmTest {
         b.add(collabFrame.setBit(20, 40));
         b.add(collabFrame.topN(2));
         assertEquals(
-                "Bitmap(rowID=2, frame='collaboration')" +
-                        "SetBit(rowID=20, frame='collaboration', columnID=40)" +
+                "Bitmap(row=2, frame='collaboration')" +
+                        "SetBit(row=20, frame='collaboration', col=40)" +
                         "TopN(frame='collaboration', n=2, inverse=false)",
                 b.serialize());
     }
@@ -106,16 +106,16 @@ public class OrmTest {
     public void bitmapTest() {
         PqlBaseQuery qry1 = sampleFrame.bitmap(5);
         assertEquals(
-                "Bitmap(rowID=5, frame='sample-frame')",
+                "Bitmap(row=5, frame='sample-frame')",
                 qry1.serialize());
 
         PqlBaseQuery qry2 = collabFrame.bitmap(10);
         assertEquals(
-                "Bitmap(rowID=10, frame='collaboration')",
+                "Bitmap(row=10, frame='collaboration')",
                 qry2.serialize());
         PqlBaseQuery qry3 = sampleFrame.bitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Bitmap(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame')",
+                "Bitmap(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame')",
                 qry3.serialize());
     }
 
@@ -127,12 +127,12 @@ public class OrmTest {
         Frame f1 = this.projectIndex.frame("f1-inversable", options);
         PqlBaseQuery qry = f1.inverseBitmap(5);
         assertEquals(
-                "Bitmap(columnID=5, frame='f1-inversable')",
+                "Bitmap(col=5, frame='f1-inversable')",
                 qry.serialize()
         );
         PqlBaseQuery qry2 = f1.inverseBitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Bitmap(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='f1-inversable')",
+                "Bitmap(col='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='f1-inversable')",
                 qry2.serialize());
     }
 
@@ -140,16 +140,16 @@ public class OrmTest {
     public void setBitTest() {
         PqlQuery qry1 = sampleFrame.setBit(5, 10);
         assertEquals(
-                "SetBit(rowID=5, frame='sample-frame', columnID=10)",
+                "SetBit(row=5, frame='sample-frame', col=10)",
                 qry1.serialize());
 
         PqlQuery qry2 = collabFrame.setBit(10, 20);
         assertEquals(
-                "SetBit(rowID=10, frame='collaboration', columnID=20)",
+                "SetBit(row=10, frame='collaboration', col=20)",
                 qry2.serialize());
         PqlQuery qry3 = sampleFrame.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
-                "SetBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', columnID='some_id')",
+                "SetBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', col='some_id')",
                 qry3.serialize());
 
     }
@@ -160,15 +160,15 @@ public class OrmTest {
         timestamp.set(2017, Calendar.APRIL, 24, 12, 14);
         PqlQuery qry = collabFrame.setBit(10, 20, timestamp.getTime());
         assertEquals(
-                "SetBit(rowID=10, frame='collaboration', columnID=20, timestamp='2017-04-24T12:14')",
+                "SetBit(row=10, frame='collaboration', col=20, timestamp='2017-04-24T12:14')",
                 qry.serialize());
         PqlQuery qry2 = collabFrame.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some", timestamp.getTime());
         assertEquals(
-                "SetBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', columnID='some', timestamp='2017-04-24T12:14')",
+                "SetBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', col='some', timestamp='2017-04-24T12:14')",
                 qry2.serialize());
         PqlQuery qry3 = sampleFrame.clearBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
-                "ClearBit(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', columnID='some_id')",
+                "ClearBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', col='some_id')",
                 qry3.serialize());
 
     }
@@ -177,12 +177,12 @@ public class OrmTest {
     public void clearBitTest() {
         PqlQuery qry1 = sampleFrame.clearBit(5, 10);
         assertEquals(
-                "ClearBit(rowID=5, frame='sample-frame', columnID=10)",
+                "ClearBit(row=5, frame='sample-frame', col=10)",
                 qry1.serialize());
 
         PqlQuery qry2 = collabFrame.clearBit(10, 20);
         assertEquals(
-                "ClearBit(rowID=10, frame='collaboration', columnID=20)",
+                "ClearBit(row=10, frame='collaboration', col=20)",
                 qry2.serialize());
     }
 
@@ -195,17 +195,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
-                "Union(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                "Union(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.union(b1, b2, b3);
         assertEquals(
-                "Union(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'), Bitmap(rowID=42, frame='sample-frame'))",
+                "Union(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'), Bitmap(row=42, frame='sample-frame'))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.union(b1, b4);
         assertEquals(
-                "Union(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=2, frame='collaboration'))",
+                "Union(Bitmap(row=10, frame='sample-frame'), Bitmap(row=2, frame='collaboration'))",
                 q3.serialize());
     }
 
@@ -218,7 +218,7 @@ public class OrmTest {
     @Test
     public void union1Test() {
         PqlBitmapQuery q = sampleIndex.union(sampleFrame.bitmap(10));
-        assertEquals("Union(Bitmap(rowID=10, frame='sample-frame'))", q.serialize());
+        assertEquals("Union(Bitmap(row=10, frame='sample-frame'))", q.serialize());
     }
 
     @Test
@@ -230,17 +230,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
-                "Intersect(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                "Intersect(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.intersect(b1, b2, b3);
         assertEquals(
-                "Intersect(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'), Bitmap(rowID=42, frame='sample-frame'))",
+                "Intersect(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'), Bitmap(row=42, frame='sample-frame'))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.intersect(b1, b4);
         assertEquals(
-                "Intersect(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=2, frame='collaboration'))",
+                "Intersect(Bitmap(row=10, frame='sample-frame'), Bitmap(row=2, frame='collaboration'))",
                 q3.serialize());
     }
 
@@ -253,17 +253,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
-                "Difference(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                "Difference(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.difference(b1, b2, b3);
         assertEquals(
-                "Difference(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'), Bitmap(rowID=42, frame='sample-frame'))",
+                "Difference(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'), Bitmap(row=42, frame='sample-frame'))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.difference(b1, b4);
         assertEquals(
-                "Difference(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=2, frame='collaboration'))",
+                "Difference(Bitmap(row=10, frame='sample-frame'), Bitmap(row=2, frame='collaboration'))",
                 q3.serialize());
     }
 
@@ -273,7 +273,7 @@ public class OrmTest {
         PqlBitmapQuery b2 = sampleFrame.bitmap(20);
         PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
         assertEquals(
-                "Xor(Bitmap(rowID=10, frame='sample-frame'), Bitmap(rowID=20, frame='sample-frame'))",
+                "Xor(Bitmap(row=10, frame='sample-frame'), Bitmap(row=20, frame='sample-frame'))",
                 q1.serialize());
     }
 
@@ -282,7 +282,7 @@ public class OrmTest {
         PqlBitmapQuery b = collabFrame.bitmap(42);
         PqlQuery q = projectIndex.count(b);
         assertEquals(
-                "Count(Bitmap(rowID=42, frame='collaboration'))",
+                "Count(Bitmap(row=42, frame='collaboration'))",
                 q.serialize());
     }
 
@@ -300,22 +300,22 @@ public class OrmTest {
 
         PqlQuery q2 = sampleFrame.topN(10, collabFrame.bitmap(3));
         assertEquals(
-                "TopN(Bitmap(rowID=3, frame='collaboration'), frame='sample-frame', n=10, inverse=false)",
+                "TopN(Bitmap(row=3, frame='collaboration'), frame='sample-frame', n=10, inverse=false)",
                 q2.serialize());
 
         q2 = sampleFrame.inverseTopN(10, collabFrame.bitmap(3));
         assertEquals(
-                "TopN(Bitmap(rowID=3, frame='collaboration'), frame='sample-frame', n=10, inverse=true)",
+                "TopN(Bitmap(row=3, frame='collaboration'), frame='sample-frame', n=10, inverse=true)",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleFrame.topN(12, collabFrame.bitmap(7), "category", 80, 81);
         assertEquals(
-                "TopN(Bitmap(rowID=7, frame='collaboration'), frame='sample-frame', n=12, inverse=false, field='category', filters=[80,81])",
+                "TopN(Bitmap(row=7, frame='collaboration'), frame='sample-frame', n=12, inverse=false, field='category', filters=[80,81])",
                 q3.serialize());
 
         q3 = sampleFrame.inverseTopN(12, collabFrame.bitmap(7), "category", 80, 81);
         assertEquals(
-                "TopN(Bitmap(rowID=7, frame='collaboration'), frame='sample-frame', n=12, inverse=true, field='category', filters=[80,81])",
+                "TopN(Bitmap(row=7, frame='collaboration'), frame='sample-frame', n=12, inverse=true, field='category', filters=[80,81])",
                 q3.serialize());
 
         PqlBaseQuery q4 = sampleFrame.topN(5, null);
@@ -338,21 +338,21 @@ public class OrmTest {
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
         PqlBaseQuery q = collabFrame.range(10, start.getTime(), end.getTime());
         assertEquals(
-                "Range(rowID=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(row=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
         q = sampleFrame.range("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
         assertEquals(
-                "Range(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='sample-frame', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
 
         q = collabFrame.inverseRange(10, start.getTime(), end.getTime());
         assertEquals(
-                "Range(columnID=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(col=10, frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
 
         q = collabFrame.inverseRange("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
         assertEquals(
-                "Range(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(col='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
                 q.serialize());
     }
 
@@ -363,11 +363,11 @@ public class OrmTest {
         attrsMap.put("active", true);
         PqlQuery q = collabFrame.setRowAttrs(5, attrsMap);
         assertEquals(
-                "SetRowAttrs(rowID=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs(row=5, frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
         q = collabFrame.setRowAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
-                "SetRowAttrs(rowID='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', frame='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -386,11 +386,11 @@ public class OrmTest {
         attrsMap.put("happy", true);
         PqlQuery q = projectIndex.setColumnAttrs(5, attrsMap);
         assertEquals(
-                "SetColumnAttrs(columnID=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs(col=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
         q = projectIndex.setColumnAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
-                "SetColumnAttrs(columnID='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs(col='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -474,7 +474,7 @@ public class OrmTest {
     public void fieldSumTest() {
         PqlQuery q = sampleFrame.field("foo").sum(sampleFrame.bitmap(10));
         assertEquals(
-                "Sum(Bitmap(rowID=10, frame='sample-frame'), frame='sample-frame', field='foo')",
+                "Sum(Bitmap(row=10, frame='sample-frame'), frame='sample-frame', field='foo')",
                 q.serialize());
         q = sampleFrame.field("foo").sum();
         assertEquals(
@@ -487,7 +487,7 @@ public class OrmTest {
     public void fieldSetValueTest() {
         PqlQuery q = sampleFrame.field("foo").setValue(10, 20);
         assertEquals(
-                "SetFieldValue(frame='sample-frame', columnID=10, foo=20)",
+                "SetFieldValue(frame='sample-frame', col=10, foo=20)",
                 q.serialize());
     }
 

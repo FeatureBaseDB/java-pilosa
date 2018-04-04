@@ -72,11 +72,6 @@ final class FrameMeta {
                 .build();
     }
 
-    @JsonProperty("rowLabel")
-    void setRowLabel(String rowLabel) {
-        // pass
-    }
-
     @JsonProperty("timeQuantum")
     void setTimeQuantum(String s) {
         this.timeQuantum = TimeQuantum.fromString(s);

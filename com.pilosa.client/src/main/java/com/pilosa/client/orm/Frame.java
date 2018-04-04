@@ -107,7 +107,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery bitmap(long rowID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(rowID=%d, frame='%s')", rowID, this.name));
+        return this.index.pqlBitmapQuery(String.format("Bitmap(row=%d, frame='%s')", rowID, this.name));
     }
 
     /**
@@ -125,7 +125,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery bitmap(String rowKey) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(rowID='%s', frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(row='%s', frame='%s')",
                 rowKey, this.name));
     }
 
@@ -144,7 +144,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery inverseBitmap(long columnID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(columnID=%d, frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(col=%d, frame='%s')",
                 columnID, this.name));
     }
 
@@ -163,7 +163,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery inverseBitmap(String columnKey) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(columnID='%s', frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(col='%s', frame='%s')",
                 columnKey, this.name));
     }
 
@@ -179,7 +179,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery setBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("SetBit(rowID=%d, frame='%s', columnID=%d)",
+        return this.index.pqlQuery(String.format("SetBit(row=%d, frame='%s', col=%d)",
                 rowID, name, columnID));
     }
 
@@ -195,7 +195,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery setBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("SetBit(rowID='%s', frame='%s', columnID='%s')",
+        return this.index.pqlQuery(String.format("SetBit(row='%s', frame='%s', col='%s')",
                 rowKey, name, columnKey));
     }
 
@@ -217,7 +217,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery setBit(long rowID, long columnID, Date timestamp) {
-        String qry = String.format("SetBit(rowID=%d, frame='%s', columnID=%d, timestamp='%sT%s')",
+        String qry = String.format("SetBit(row=%d, frame='%s', col=%d, timestamp='%sT%s')",
                 rowID, name, columnID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
@@ -241,7 +241,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery setBit(String rowKey, String columnKey, Date timestamp) {
-        String qry = String.format("SetBit(rowID='%s', frame='%s', columnID='%s', timestamp='%sT%s')",
+        String qry = String.format("SetBit(row='%s', frame='%s', col='%s', timestamp='%sT%s')",
                 rowKey, name, columnKey,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
@@ -260,7 +260,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("ClearBit(rowID=%d, frame='%s', columnID=%d)",
+        return this.index.pqlQuery(String.format("ClearBit(row=%d, frame='%s', col=%d)",
                 rowID, name, columnID));
     }
 
@@ -277,7 +277,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("ClearBit(rowID='%s', frame='%s', columnID='%s')",
+        return this.index.pqlQuery(String.format("ClearBit(row='%s', frame='%s', col='%s')",
                 rowKey, name, columnKey));
     }
 
@@ -420,7 +420,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(rowID=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(row=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -439,7 +439,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(String rowKey, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(rowID='%s', frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(row='%s', frame='%s', start='%sT%s', end='%sT%s')",
                 rowKey, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -458,7 +458,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery inverseRange(long columnID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(columnID=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(col=%d, frame='%s', start='%sT%s', end='%sT%s')",
                 columnID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -477,7 +477,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery inverseRange(String columnKey, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(columnID='%s', frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(col='%s', frame='%s', start='%sT%s', end='%sT%s')",
                 columnKey, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -502,7 +502,7 @@ public class Frame {
      */
     public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(rowID=%d, frame='%s', %s)",
+        return this.index.pqlQuery(String.format("SetRowAttrs(row=%d, frame='%s', %s)",
                 rowID, this.name, attributesString));
     }
 
@@ -526,7 +526,7 @@ public class Frame {
      */
     public PqlBaseQuery setRowAttrs(String rowKey, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(rowID='%s', frame='%s', %s)",
+        return this.index.pqlQuery(String.format("SetRowAttrs(row='%s', frame='%s', %s)",
                 rowKey, this.name, attributesString));
     }
 

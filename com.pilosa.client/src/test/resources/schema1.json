@@ -6,7 +6,6 @@
         {
           "name": "mf10",
           "options": {
-            "rowLabel": "id",
             "inverseEnabled": true,
             "cacheType": "lru",
             "cacheSize": 50000,

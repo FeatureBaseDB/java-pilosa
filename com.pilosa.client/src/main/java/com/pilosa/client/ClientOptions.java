@@ -139,7 +139,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.skipVersionCheck, this.legacyMode);
+                    this.sslContext);
         }
 
         private int socketTimeout = 300000;
@@ -184,25 +184,15 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public boolean isSkipVersionCheck() {
-        return this.skipVersionCheck;
-    }
-
-    public boolean isLegacyMode() {
-        return this.legacyMode;
-    }
-
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final boolean skipVersionCheck, final boolean legacyMode) {
+                          final SSLContext sslContext) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.skipVersionCheck = skipVersionCheck;
-        this.legacyMode = legacyMode;
     }
 
     private final int socketTimeout; // milliseconds
@@ -211,6 +201,4 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final boolean legacyMode;
-    private final boolean skipVersionCheck;
 }

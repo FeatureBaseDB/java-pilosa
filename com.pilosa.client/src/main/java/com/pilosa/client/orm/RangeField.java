@@ -160,7 +160,7 @@ public class RangeField {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
      */
     public PqlBaseQuery setValue(long columnID, long value) {
-        String qry = String.format("SetFieldValue(frame='%s', columnID=%d, %s=%d)",
+        String qry = String.format("SetFieldValue(frame='%s', col=%d, %s=%d)",
                 frame.getName(), columnID, name, value);
         return this.index.pqlQuery(qry);
     }

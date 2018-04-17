@@ -75,7 +75,5 @@ public class ClientOptionsTest {
         assertEquals(1000, options.getSocketTimeout());
         assertEquals(5, options.getRetryCount());
         assertEquals(sslContext, options.getSslContext());
-        assertEquals(true, options.isSkipVersionCheck());
-        assertEquals(true, options.isLegacyMode());
     }
 }

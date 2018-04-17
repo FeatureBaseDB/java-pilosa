@@ -83,7 +83,7 @@ public class FrameOptionsTest {
                 .addIntField("foo", 10, 100)
                 .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"rowLabel\":\"rowID\",\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
+        String target = "{\"options\": {\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 

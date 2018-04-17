@@ -193,10 +193,7 @@ public final class FrameOptions {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\"options\": {");
-        builder.append(String.format("\"rowLabel\":\"%s\"", this.rowLabel));
-        if (this.inverseEnabled) {
-            builder.append(",\"inverseEnabled\":true");
-        }
+        builder.append(this.inverseEnabled ? "\"inverseEnabled\":true" : "\"inverseEnabled\":false");
         if (!this.timeQuantum.equals(TimeQuantum.NONE)) {
             builder.append(String.format(",\"timeQuantum\":\"%s\"", this.timeQuantum.toString()));
         }
@@ -261,7 +258,6 @@ public final class FrameOptions {
         this.fields = (fields != null) ? fields : new HashMap<String, RangeFieldInfo>();
     }
 
-    private final String rowLabel = "rowID";
     private final TimeQuantum timeQuantum;
     private final boolean inverseEnabled;
     private final CacheType cacheType;

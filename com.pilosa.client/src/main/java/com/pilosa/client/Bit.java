@@ -70,19 +70,6 @@ public class Bit {
         return this.defaultBit;
     }
 
-    public void setRowID(long rowID) {
-        this.rowID = rowID;
-    }
-
-    public void setColumnID(long columnID) {
-        this.columnID = columnID;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

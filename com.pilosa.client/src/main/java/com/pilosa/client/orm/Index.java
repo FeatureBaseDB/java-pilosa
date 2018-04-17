@@ -252,7 +252,7 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(columnID=%d, %s)", id, attributesString));
+        return pqlQuery(String.format("SetColumnAttrs(col=%d, %s)", id, attributesString));
     }
 
     /**
@@ -275,7 +275,7 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(columnID='%s', %s)",
+        return pqlQuery(String.format("SetColumnAttrs(col='%s', %s)",
                 key, attributesString));
     }
 

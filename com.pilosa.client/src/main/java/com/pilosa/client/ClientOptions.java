@@ -149,8 +149,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.skipVersionCheck, this.legacyMode,
-                    this.importThreadCount, this.sliceWidth);
+                    this.sslContext, this.importThreadCount, this.sliceWidth);
         }
 
         private int socketTimeout = 300000;
@@ -197,14 +196,6 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public boolean isSkipVersionCheck() {
-        return this.skipVersionCheck;
-    }
-
-    public boolean isLegacyMode() {
-        return this.legacyMode;
-    }
-
     public int getImportThreadCount() {
         return this.importThreadCount;
     }
@@ -215,8 +206,7 @@ public final class ClientOptions {
 
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final boolean skipVersionCheck,
-                          final boolean legacyMode, final int importThreadCount,
+                          final SSLContext sslContext, final int importThreadCount,
                           final long sliceWidth) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
@@ -224,8 +214,6 @@ public final class ClientOptions {
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.skipVersionCheck = skipVersionCheck;
-        this.legacyMode = legacyMode;
         this.importThreadCount = importThreadCount;
         this.sliceWidth = sliceWidth;
     }
@@ -236,8 +224,6 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final boolean legacyMode;
-    private final boolean skipVersionCheck;
     private final int importThreadCount;
     private final long sliceWidth;
 }

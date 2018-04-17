@@ -42,7 +42,9 @@ import com.pilosa.client.orm.Frame;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
-import com.pilosa.client.status.*;
+import com.pilosa.client.status.IFrameInfo;
+import com.pilosa.client.status.IndexInfo;
+import com.pilosa.client.status.SchemaInfo;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -321,59 +323,12 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    public StatusInfoLegacy readStatus() {
-        String path = "/status";
-        CloseableHttpResponse response = null;
-        try {
-            try {
-                response = clientExecute("GET", path, null, null, "Error while reading status",
-                        ReturnClientResponse.ERROR_CHECKED_RESPONSE);
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    try (InputStream src = entity.getContent()) {
-                        StatusMessage msg = StatusMessage.fromInputStream(src);
-                        return msg.getStatus();
-                    }
-                }
-                throw new PilosaException("Server returned empty response");
-            } finally {
-                if (response != null) {
-                    response.close();
-                }
-            }
-        } catch (IOException ex) {
-            throw new PilosaException("Error while reading response", ex);
-        }
-    }
-
-    /**
-     * Returns the indexes and frames on the server.
-     *
-     * @return server-side schema
-     */
-    public Schema readSchemaLegacy() {
-        Schema result = Schema.defaultSchema();
-        StatusInfoLegacy status = readStatus();
-        for (NodeInfoLegacy nodeInfo : status.getNodes()) {
-            for (IndexInfoLegacy indexInfo : nodeInfo.getIndexes()) {
-                Index index = result.index(indexInfo.getName());
-                for (FrameInfo frameInfo : indexInfo.getFrames()) {
-                    index.frame(frameInfo.getName(), frameInfo.getOptions());
-                }
-            }
-        }
-        return result;
-    }
-
     /**
      * Returns the indexes and frames on the server.
      *
      * @return server-side schema
      */
     public Schema readSchema() {
-        if (this.legacyMode) {
-            return readSchemaLegacy();
-        }
         Schema result = Schema.defaultSchema();
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
@@ -457,8 +412,6 @@ public class PilosaClient implements AutoCloseable {
     protected PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
-        this.versionChecked = options.isSkipVersionCheck();
-        this.legacyMode = options.isLegacyMode();
     }
 
     protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {
@@ -505,9 +458,6 @@ public class PilosaClient implements AutoCloseable {
                 .setDefaultRequestConfig(requestConfig)
                 .setUserAgent(makeUserAgent())
                 .build();
-        if (!this.versionChecked) {
-            this.legacyMode = isLegacy();
-        }
     }
 
     private void clientExecute(final String method, final String path, final ByteArrayEntity data,
@@ -649,13 +599,8 @@ public class PilosaClient implements AutoCloseable {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream src = response.getEntity().getContent()) {
-                    if (this.legacyMode) {
-                        nodes = mapper.readValue(src, new TypeReference<List<FragmentNodeLegacy>>() {
-                        });
-                    } else {
-                        nodes = mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
-                        });
-                    }
+                    nodes = mapper.readValue(src, new TypeReference<List<FragmentNode>>() {
+                    });
                 }
                 // Cache the nodes
                 this.fragmentNodeCache.put(key, nodes);
@@ -670,48 +615,6 @@ public class PilosaClient implements AutoCloseable {
     void importNode(Internal.ImportRequest importRequest) {
         ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
         clientExecute("POST", "/import", body, protobufHeaders, "Error while importing");
-    }
-
-    VersionInfo fetchServerVersion() {
-        try {
-            CloseableHttpResponse response = clientExecute("GET", "/version", null, null, "Error while fetching version",
-                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                try (InputStream src = response.getEntity().getContent()) {
-                    return mapper.readValue(src, new TypeReference<VersionInfo>() {
-                    });
-                }
-            }
-            throw new PilosaException("Server returned empty response");
-        } catch (IOException ex) {
-            throw new PilosaException("Error while reading response", ex);
-        }
-    }
-
-    private boolean isLegacy() {
-        VersionInfo versionInfo = fetchServerVersion();
-        return ServerVersion.isLegacy(versionInfo.getVersion());
-    }
-
-    private Internal.ImportRequest bitsToImportRequest(String indexName, String frameName, long slice,
-                                                       List<Bit> bits) {
-        List<Long> bitmapIDs = new ArrayList<>(bits.size());
-        List<Long> columnIDs = new ArrayList<>(bits.size());
-        List<Long> timestamps = new ArrayList<>(bits.size());
-        for (Bit bit : bits) {
-            bitmapIDs.add(bit.getRowID());
-            columnIDs.add(bit.getColumnID());
-            timestamps.add(bit.getTimestamp());
-        }
-        return Internal.ImportRequest.newBuilder()
-                .setIndex(indexName)
-                .setFrame(frameName)
-                .setSlice(slice)
-                .addAllRowIDs(bitmapIDs)
-                .addAllColumnIDs(columnIDs)
-                .addAllTimestamps(timestamps)
-                .build();
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -755,8 +658,6 @@ public class PilosaClient implements AutoCloseable {
     private URI currentAddress;
     private CloseableHttpClient client = null;
     private ClientOptions options;
-    private boolean versionChecked = false;
-    private boolean legacyMode = false;
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
 }
 
@@ -862,30 +763,6 @@ class FragmentNodeURI {
     private int port;
 }
 
-class FragmentNodeLegacy implements IFragmentNode {
-    @SuppressWarnings("unused")
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setScheme(String scheme) {
-        this.scheme = scheme;
-    }
-
-    @SuppressWarnings("unused")
-    public void setInternalHost(String host) {
-        // internal host is used for internode communication
-        // just adding this no op so jackson doesn't complain... --YT
-    }
-
-    public URI toURI() {
-        return URI.address(String.format("%s://%s", this.scheme, this.host));
-    }
-
-    private String host;
-    private String scheme;
-}
-
 class BitComparator implements Comparator<Bit> {
     @Override
     public int compare(Bit bit, Bit other) {
@@ -894,41 +771,6 @@ class BitComparator implements Comparator<Bit> {
         int prfCmp = Long.signum(bit.columnID - other.columnID);
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
-}
-
-class VersionInfo {
-    public void SetVersion(String version) {
-        this.version = version;
-    }
-
-    public String getVersion() {
-        return this.version;
-    }
-
-    private String version;
-}
-
-final class StatusMessage {
-
-    static StatusMessage fromInputStream(InputStream src) throws IOException {
-        return mapper.readValue(src, StatusMessage.class);
-    }
-
-    StatusInfoLegacy getStatus() {
-        return this.status;
-    }
-
-    void setStatus(StatusInfoLegacy status) {
-        this.status = status;
-    }
-
-    static {
-        mapper = new ObjectMapper();
-        StatusMessage.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    }
-
-    private StatusInfoLegacy status;
-    private final static ObjectMapper mapper;
 }
 
 class BitImportManager {

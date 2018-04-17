@@ -465,13 +465,13 @@ public class PilosaClientIT {
         class ImportMonitor implements Runnable {
             @Override
             public void run() {
-                System.err.println("MONITOR STARTED");
                 while (true) {
                     try {
                         ImportStatusUpdate statusUpdate = this.statusQueue.take();
                         this.totalImported += statusUpdate.getImportedCount();
-                        System.err.println(statusUpdate);
-                        System.err.println("TOTAL IMPORTED: " + this.totalImported);
+                        assertEquals(String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
+                                statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getSlice(), statusUpdate.getTimeMs()),
+                                statusUpdate.toString()); // for coverage
                     } catch (InterruptedException e) {
                         break;
                     }
@@ -510,7 +510,6 @@ public class PilosaClientIT {
             long tac = System.nanoTime();
             long elapsedMs = TimeUnit.NANOSECONDS.toMillis(tac - tic);
             monitorThread.interrupt();
-            System.err.println(String.format("Took %d ms to import %d bits", elapsedMs, monitor.getTotalImported()));
         }
     }
 

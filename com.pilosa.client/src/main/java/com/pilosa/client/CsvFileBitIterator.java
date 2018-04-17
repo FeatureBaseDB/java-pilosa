@@ -59,7 +59,7 @@ import java.util.TimeZone;
 public class CsvFileBitIterator implements BitIterator {
     private Scanner scanner = null;
     private Bit nextBit = null;
-    private SimpleDateFormat timestampFormat = null;
+    private SimpleDateFormat timestampFormat;
     private final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 
     private CsvFileBitIterator(SimpleDateFormat timestampFormat) {
@@ -153,11 +153,11 @@ public class CsvFileBitIterator implements BitIterator {
         String[] fields = line.split(",");
         long rowID = Long.parseLong(fields[0]);
         long columnID = Long.parseLong(fields[1]);
+        long timestamp = 0;
         if (fields.length > 2) {
-            long timestamp = parseTimestamp(fields[2]);
-            return Bit.create(rowID, columnID, timestamp);
+            timestamp = parseTimestamp(fields[2]);
         }
-        return Bit.create(rowID, columnID);
+        return Bit.create(rowID, columnID, timestamp);
     }
 
     @Override

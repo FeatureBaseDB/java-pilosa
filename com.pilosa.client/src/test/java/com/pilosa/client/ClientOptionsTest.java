@@ -68,6 +68,8 @@ public class ClientOptionsTest {
                 .setSslContext(sslContext)
                 .setSkipVersionCheck()
                 .setLegacyMode(true)
+                .setImportThreadCount(2)
+                .setSliceWidth(1024)
                 .build();
         assertEquals(2, options.getConnectionPoolSizePerRoute());
         assertEquals(50, options.getConnectionPoolTotalSize());
@@ -75,5 +77,7 @@ public class ClientOptionsTest {
         assertEquals(1000, options.getSocketTimeout());
         assertEquals(5, options.getRetryCount());
         assertEquals(sslContext, options.getSslContext());
+        assertEquals(2, options.getImportThreadCount());
+        assertEquals(1024, options.getSliceWidth());
     }
 }

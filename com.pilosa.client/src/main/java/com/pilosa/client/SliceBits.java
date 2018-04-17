@@ -51,10 +51,6 @@ class SliceBits {
         return this.frame.getIndex();
     }
 
-    public Frame getFrame() {
-        return this.frame;
-    }
-
     public long getSlice() {
         return this.slice;
     }

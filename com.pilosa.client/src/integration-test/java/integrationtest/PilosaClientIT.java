@@ -53,7 +53,6 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -446,8 +445,6 @@ public class PilosaClientIT {
 
             public Bit next() {
                 this.maxBits -= 1;
-//                long rowID = this.currentID;
-//                long columnID = this.currentID;
                 long rowID = (long) (Math.random() * this.maxID);
                 long columnID = (long) (Math.random() * this.maxID);
                 return Bit.create(rowID, columnID);
@@ -505,10 +502,13 @@ public class PilosaClientIT {
             Frame frame = this.index.frame("importframe2");
             client.ensureFrame(frame);
 
-            long tic = System.nanoTime();
-            client.importFrame(frame, iterator, 100000, statusQueue);
-            long tac = System.nanoTime();
-            long elapsedMs = TimeUnit.NANOSECONDS.toMillis(tac - tic);
+            ImportOptions options = ImportOptions.builder()
+                    .setBatchSize(100000)
+                    .setThreadCount(2)
+                    .setStrategy(ImportOptions.Strategy.TIMEOUT)
+                    .setTimeoutMs(5)
+                    .build();
+            client.importFrame(frame, iterator, options, statusQueue);
             monitorThread.interrupt();
         }
     }

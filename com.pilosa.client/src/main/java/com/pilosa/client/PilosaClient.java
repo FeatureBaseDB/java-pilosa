@@ -268,7 +268,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws PilosaException if the import cannot be completed
      */
     public void importFrame(Frame frame, BitIterator iterator) {
-        importFrame(frame, iterator, 100000);
+        importFrame(frame, iterator, ImportOptions.builder().build(), null);
     }
 
     /**
@@ -279,17 +279,13 @@ public class PilosaClient implements AutoCloseable {
      *
      * @param frame    specify the frame
      * @param iterator     specify the bit iterator
-     * @param batchSize    specify the number of bits to send in each import request
+     * @param options specify the import options
      * @throws PilosaException if the import cannot be completed
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Frame frame, BitIterator iterator, int batchSize) {
-        importFrame(frame, iterator, batchSize, null);
-    }
-
-    public void importFrame(Frame frame, BitIterator iterator, int batchSize, final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        BitImportManager manager = new BitImportManager(batchSize, this.options);
+    public void importFrame(Frame frame, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+        BitImportManager manager = new BitImportManager(options);
         manager.run(this, frame, iterator, statusQueue);
     }
 
@@ -775,15 +771,17 @@ class BitComparator implements Comparator<Bit> {
 
 class BitImportManager {
     public void run(final PilosaClient client, final Frame frame, final BitIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        final long sliceWidth = this.sliceWidth;
-        List<BlockingQueue<Bit>> queues = new ArrayList<>(this.threadCount);
-        List<Future> workers = new ArrayList<>(this.threadCount);
+        final long sliceWidth = this.options.getSliceWidth();
+        final int threadCount = this.options.getThreadCount();
+        final int batchSize = this.options.getBatchSize();
+        List<BlockingQueue<Bit>> queues = new ArrayList<>(threadCount);
+        List<Future> workers = new ArrayList<>(threadCount);
 
-        ExecutorService service = Executors.newFixedThreadPool(this.threadCount);
-        for (int i = 0; i < this.threadCount; i++) {
-            BlockingQueue<Bit> q = new LinkedBlockingDeque<>(this.batchSize);
+        ExecutorService service = Executors.newFixedThreadPool(threadCount);
+        for (int i = 0; i < threadCount; i++) {
+            BlockingQueue<Bit> q = new LinkedBlockingDeque<>(batchSize);
             queues.add(q);
-            Runnable worker = new BitImportWorker(client, frame, q, batchSize, sliceWidth, statusQueue);
+            Runnable worker = new BitImportWorker(client, frame, q, statusQueue, this.options);
             workers.add(service.submit(worker));
         }
 
@@ -821,92 +819,112 @@ class BitImportManager {
         }
     }
 
-    BitImportManager(int batchSize, ClientOptions clientOptions) {
-        this.batchSize = batchSize;
-        this.threadCount = clientOptions.getImportThreadCount();
-        this.sliceWidth = clientOptions.getSliceWidth();
+    BitImportManager(ImportOptions importOptions) {
+        this.options = importOptions;
     }
 
-    //    static final long SLICE_WIDTH = 1048576L;
-    private final long sliceWidth;
-    private final int batchSize;
-    private final int threadCount;
+    private final ImportOptions options;
 }
 
 class BitImportWorker implements Runnable {
-    BitImportWorker(final PilosaClient client, final Frame frame, final BlockingQueue<Bit> queue,
-                    final int batchSize, final long sliceWidth, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    BitImportWorker(final PilosaClient client,
+                    final Frame frame,
+                    final BlockingQueue<Bit> queue,
+                    final BlockingQueue<ImportStatusUpdate> statusQueue,
+                    final ImportOptions options) {
         this.client = client;
         this.frame = frame;
         this.queue = queue;
-        this.batchSize = batchSize;
-        this.sliceWidth = sliceWidth;
         this.statusQueue = statusQueue;
+        this.options = options;
     }
 
     @Override
     public void run() {
-        final long sliceWidth = this.sliceWidth;
+        final long sliceWidth = this.options.getSliceWidth();
+        final ImportOptions.Strategy strategy = this.options.getStrategy();
+        final long timeout = this.options.getTimeoutMs();
+        int batchCountDown = this.options.getBatchSize();
+        long tic = System.currentTimeMillis();
+
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                for (int i = 0; i < this.batchSize; i++) {
-                    if (Thread.interrupted()) {
-                        throw new InterruptedException();
-                    }
-                    Bit bit = this.queue.take();
-                    if (bit.isDefaultBit()) {
-                        throw new InterruptedException();
-                    }
-                    long slice = bit.getColumnID() / sliceWidth;
-                    SliceBits sliceBits = sliceGroup.get(slice);
-                    if (sliceBits == null) {
-                        sliceBits = SliceBits.create(this.frame, slice);
-                        sliceGroup.put(slice, sliceBits);
-                    }
-                    sliceBits.add(bit);
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
                 }
-                // batch is full, import
-                this.importBits(false);
+                Bit bit = this.queue.take();
+                if (bit.isDefaultBit()) {
+                    throw new InterruptedException();
+                }
+                long slice = bit.getColumnID() / sliceWidth;
+                SliceBits sliceBits = sliceGroup.get(slice);
+                if (sliceBits == null) {
+                    sliceBits = SliceBits.create(this.frame, slice);
+                    sliceGroup.put(slice, sliceBits);
+                }
+                sliceBits.add(bit);
+                batchCountDown -= 1;
+                if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
+                    for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
+                        sliceBits = entry.getValue();
+                        if (sliceBits.getBits().size() > 0) {
+                            importBits(entry.getValue());
+                        }
+                    }
+                    batchCountDown = this.options.getBatchSize();
+                    tic = System.currentTimeMillis();
+                } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
+                    importBits(sliceGroup.get(largestSlice()));
+                    batchCountDown = this.options.getBatchSize();
+                    tic = System.currentTimeMillis();
+                }
             } catch (InterruptedException e) {
                 break;
             }
         }
         // The thread is shutting down, import remaining bits in the batch
-        this.importBits(true);
+        for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
+            SliceBits sliceBits = entry.getValue();
+            if (sliceBits.getBits().size() > 0) {
+                importBits(entry.getValue());
+            }
+        }
     }
 
-    private void importBits(boolean force) {
+    private long largestSlice() {
+        long largestCount = 0;
+        long largestSlice = -1;
         for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
             SliceBits sliceBits = entry.getValue();
             int sliceBitCount = sliceBits.getBits().size();
-            if (sliceBitCount == 0) {
-                continue;
+            if (sliceBitCount > largestCount) {
+                largestCount = sliceBitCount;
+                largestSlice = entry.getKey();
             }
-            if (!force && sliceBitCount < this.batchSize / 2) {
-                // If the batch is not full-ish, don't bother to import... yet.
-                continue;
-            }
-            long tic = System.currentTimeMillis();
-            this.client.importBits(sliceBits);
-            if (this.statusQueue != null) {
-                long tac = System.currentTimeMillis();
-                ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
-                        sliceBits.getSlice(), sliceBitCount, tac - tic);
-                try {
-                    this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    // pass
-                }
-            }
-            sliceBits.clear();
         }
+        return largestSlice;
+    }
+
+    private void importBits(SliceBits sliceBits) {
+        long tic = System.currentTimeMillis();
+        this.client.importBits(sliceBits);
+        if (this.statusQueue != null) {
+            long tac = System.currentTimeMillis();
+            ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
+                    sliceBits.getSlice(), sliceBits.getBits().size(), tac - tic);
+            try {
+                this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                // pass
+            }
+        }
+        sliceBits.clear();
     }
 
     private final PilosaClient client;
     private final Frame frame;
     private final BlockingQueue<Bit> queue;
-    private final int batchSize;
-    private final long sliceWidth;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
+    private final ImportOptions options;
     private Map<Long, SliceBits> sliceGroup = new HashMap<>();
 }

@@ -520,15 +520,17 @@ public class PilosaClientIT {
             @Override
             public void run() {
                 BitIterator iterator = new XBitIterator(1_000, 1_000);
+                BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Frame frame = this.frame;
                 this.client.ensureFrame(frame);
 
                 ImportOptions options = ImportOptions.builder()
-                        .setBatchSize(1)
+                        .setStrategy(ImportOptions.Strategy.BATCH)
+                        .setBatchSize(500)
                         .setThreadCount(1)
                         .build();
-                this.client.importFrame(frame, iterator, options);
+                this.client.importFrame(frame, iterator, options, statusQueue);
             }
 
             PilosaClient client;
@@ -542,7 +544,7 @@ public class PilosaClientIT {
             importer.setDaemon(true);
             importer.start();
             try {
-                Thread.sleep(5);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 fail("interruption was not expected here");
             }

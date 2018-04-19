@@ -14,8 +14,8 @@ Java client for Pilosa high performance distributed bitmap index.
 
 * **Next**
     * Supports multi-threaded imports and import progress tracking.
-    * **Deprecation** `rangeEnabled` frame option. All frames have this option `true` on Pilosa 1.0.
-    * **Deprecation** `inverseEnabled` frame option. Inverse frames will be removed on Pilosa 1.0.
+    * **Deprecation** `inverseEnabled` frame option, `Frame.inverseBitmap`, `Frame.inverseTopN`, `Frame.inverseRange` methods. Inverse frames will be removed on Pilosa 1.0.
+    
 
 * **v0.8.2** (2018-02-28)
     * Compatible with Pilosa master, **not compatible with Pilosa 0.8.x releases**.

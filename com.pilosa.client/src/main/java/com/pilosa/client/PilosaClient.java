@@ -284,6 +284,25 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
+    public void importFrame(Frame frame, BitIterator iterator, ImportOptions options) {
+        BitImportManager manager = new BitImportManager(options);
+        manager.run(this, frame, iterator, null);
+    }
+
+    /**
+     * Imports bits to the given index and frame.
+     * <p>
+     * This method sorts and sends the bits in batches.
+     * Pilosa queries may return inconsistent results while importing data.
+     *
+     * @param frame       specify the frame
+     * @param iterator    specify the bit iterator
+     * @param options     specify the import options
+     * @param statusQueue specify the status queue for tracking import process
+     * @throws PilosaException if the import cannot be completed
+     * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
+     */
+    @SuppressWarnings("WeakerAccess")
     public void importFrame(Frame frame, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, frame, iterator, statusQueue);
@@ -785,38 +804,33 @@ class BitImportManager {
             workers.add(service.submit(worker));
         }
 
-        // Push bits from the iterator
-        while (iterator.hasNext()) {
-            Bit nextBit = iterator.next();
-            long slice = nextBit.columnID / sliceWidth;
-            try {
-                queues.get((int) (slice % threadCount)).put(nextBit);
-            } catch (InterruptedException e) {
-                throw new PilosaException("Timeout while offering a bit", e);
-            }
-        }
-
-        // Signal the threads to stop
-        for (BlockingQueue<Bit> q : queues) {
-            try {
-                q.put(Bit.DEFAULT);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Prepare to terminate the executor
-        service.shutdown();
-
         try {
+            // Push bits from the iterator
+            while (iterator.hasNext()) {
+                Bit nextBit = iterator.next();
+                long slice = nextBit.columnID / sliceWidth;
+                queues.get((int) (slice % threadCount)).put(nextBit);
+            }
+
+            // Signal the threads to stop
+            for (BlockingQueue<Bit> q : queues) {
+                q.put(Bit.DEFAULT);
+            }
+
+            // Prepare to terminate the executor
+            service.shutdown();
+
             for (Future worker : workers) {
                 worker.get();
             }
         } catch (InterruptedException e) {
-            // pass
+            for (Future worker : workers) {
+                worker.cancel(true);
+            }
         } catch (ExecutionException e) {
             throw new PilosaException("Error in import worker", e);
         }
+
     }
 
     BitImportManager(ImportOptions importOptions) {
@@ -849,12 +863,9 @@ class BitImportWorker implements Runnable {
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                if (Thread.interrupted()) {
-                    throw new InterruptedException();
-                }
                 Bit bit = this.queue.take();
                 if (bit.isDefaultBit()) {
-                    throw new InterruptedException();
+                    break;
                 }
                 long slice = bit.getColumnID() / sliceWidth;
                 SliceBits sliceBits = sliceGroup.get(slice);
@@ -886,7 +897,11 @@ class BitImportWorker implements Runnable {
         for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
             SliceBits sliceBits = entry.getValue();
             if (sliceBits.getBits().size() > 0) {
-                importBits(entry.getValue());
+                try {
+                    importBits(entry.getValue());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }
@@ -905,18 +920,14 @@ class BitImportWorker implements Runnable {
         return largestSlice;
     }
 
-    private void importBits(SliceBits sliceBits) {
+    private void importBits(SliceBits sliceBits) throws InterruptedException {
         long tic = System.currentTimeMillis();
         this.client.importBits(sliceBits);
         if (this.statusQueue != null) {
             long tac = System.currentTimeMillis();
             ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
                     sliceBits.getSlice(), sliceBits.getBits().size(), tac - tic);
-            try {
-                this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // pass
-            }
+            this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
         }
         sliceBits.clear();
     }

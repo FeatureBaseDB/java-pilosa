@@ -57,11 +57,6 @@ import java.util.TimeZone;
  * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
  */
 public class CsvFileBitIterator implements BitIterator {
-    private Scanner scanner = null;
-    private Bit nextBit = null;
-    private SimpleDateFormat timestampFormat;
-    private final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-
     private CsvFileBitIterator(SimpleDateFormat timestampFormat) {
         this.timestampFormat = timestampFormat;
         if (this.timestampFormat != null) {
@@ -136,19 +131,14 @@ public class CsvFileBitIterator implements BitIterator {
 
     @Override
     public boolean hasNext() {
-        return this.scanner != null && this.scanner.hasNextLine();
-    }
-
-    @Override
-    public Bit next() {
-        if (this.scanner == null) {
-            return null;
+        if (this.scanner == null || !this.scanner.hasNextLine()) {
+            return false;
         }
         String line = this.scanner.nextLine();
         if (line.isEmpty()) {
             this.scanner.close();
             this.scanner = null;
-            return null;
+            return false;
         }
         String[] fields = line.split(",");
         long rowID = Long.parseLong(fields[0]);
@@ -157,11 +147,22 @@ public class CsvFileBitIterator implements BitIterator {
         if (fields.length > 2) {
             timestamp = parseTimestamp(fields[2]);
         }
-        return Bit.create(rowID, columnID, timestamp);
+        this.nextBit = Bit.create(rowID, columnID, timestamp);
+        return true;
+    }
+
+    @Override
+    public Bit next() {
+        return this.nextBit;
     }
 
     @Override
     public void remove() {
         // We have this just to avoid compilation problems on JDK 7
     }
+
+    private Scanner scanner = null;
+    private Bit nextBit = null;
+    private SimpleDateFormat timestampFormat;
+    private final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 }

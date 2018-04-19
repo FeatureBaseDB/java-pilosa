@@ -431,41 +431,42 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void importTest2() throws IOException {
-        class XBitIterator implements BitIterator {
+    public void importTestWithBatch() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            StaticBitIterator iterator = new StaticBitIterator();
+            Frame frame = this.index.frame("importframe");
+            client.ensureFrame(frame);
+            ImportOptions options = ImportOptions.builder().
+                    setStrategy(ImportOptions.Strategy.BATCH).
+                    setBatchSize(3).
+                    setThreadCount(1).
+                    build();
 
-            XBitIterator(long maxID, long maxBits) {
-                this.maxID = maxID;
-                this.maxBits = maxBits;
+            client.importFrame(frame, iterator, options);
+            PqlBatchQuery bq = index.batchQuery(
+                    frame.bitmap(2),
+                    frame.bitmap(7),
+                    frame.bitmap(10)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(3L, 1L, 5L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                BitmapResult br = results.get(i).getBitmap();
+                assertEquals(target.get(i), br.getBits().get(0));
             }
-
-            public boolean hasNext() {
-                return this.maxBits > 0;
-            }
-
-            public Bit next() {
-                this.maxBits -= 1;
-                long rowID = (long) (Math.random() * this.maxID);
-                long columnID = (long) (Math.random() * this.maxID);
-                return Bit.create(rowID, columnID);
-            }
-
-            @Override
-            public void remove() {
-
-            }
-
-            private long maxID;
-            private long maxBits;
         }
+    }
 
+    @Test
+    public void importTest2() throws IOException {
         class ImportMonitor implements Runnable {
             @Override
             public void run() {
                 while (true) {
                     try {
                         ImportStatusUpdate statusUpdate = this.statusQueue.take();
-                        this.totalImported += statusUpdate.getImportedCount();
                         assertEquals(String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
                                 statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getSlice(), statusUpdate.getTimeMs()),
                                 statusUpdate.toString()); // for coverage
@@ -475,16 +476,11 @@ public class PilosaClientIT {
                 }
             }
 
-            public long getTotalImported() {
-                return this.totalImported;
-            }
-
             ImportMonitor(final BlockingQueue<ImportStatusUpdate> statusQueue) {
                 this.statusQueue = statusQueue;
             }
 
             private final BlockingQueue<ImportStatusUpdate> statusQueue;
-            private long totalImported = 0;
         }
 
         try (PilosaClient client = this.getClient()) {
@@ -510,6 +506,94 @@ public class PilosaClientIT {
                     .build();
             client.importFrame(frame, iterator, options, statusQueue);
             monitorThread.interrupt();
+        }
+    }
+
+    @Test
+    public void workerInterruptedTest() throws IOException {
+        class Importer implements Runnable {
+            Importer(PilosaClient client, Frame frame) {
+                this.client = client;
+                this.frame = frame;
+            }
+
+            @Override
+            public void run() {
+                BitIterator iterator = new XBitIterator(1_000, 1_000);
+
+                Frame frame = this.frame;
+                this.client.ensureFrame(frame);
+
+                ImportOptions options = ImportOptions.builder()
+                        .setBatchSize(1)
+                        .setThreadCount(1)
+                        .build();
+                this.client.importFrame(frame, iterator, options);
+            }
+
+            PilosaClient client;
+            Frame frame;
+        }
+
+        try (PilosaClient client = this.getClient()) {
+            Frame frame = this.index.frame("importframe-queue-interrupt");
+            client.ensureFrame(frame);
+            Thread importer = new Thread(new Importer(client, frame));
+            importer.setDaemon(true);
+            importer.start();
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                fail("interruption was not expected here");
+            }
+            importer.interrupt();
+        }
+    }
+
+    @Test
+    public void workerImportRemainingBitsInterruptedTest() throws IOException {
+        class Importer implements Runnable {
+            Importer(PilosaClient client, Frame frame) {
+                this.client = client;
+                this.frame = frame;
+            }
+
+            @Override
+            public void run() {
+                BitIterator iterator = new XBitIterator(1_000, 1_500);
+                // There should be 10_000/3_000 == 3 batch status updates
+                // And another one for the remaining bits
+                // Block after the 3 so we have a chance to interrupt the worker thread
+                //  while importing remaining bits...
+                BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
+
+                Frame frame = this.frame;
+                this.client.ensureFrame(frame);
+
+                ImportOptions options = ImportOptions.builder()
+                        .setStrategy(ImportOptions.Strategy.BATCH)
+                        .setBatchSize(1_000)
+                        .setThreadCount(1)
+                        .build();
+                this.client.importFrame(frame, iterator, options, statusQueue);
+            }
+
+            PilosaClient client;
+            Frame frame;
+        }
+
+        try (PilosaClient client = this.getClient()) {
+            Frame frame = this.index.frame("importframe-queue-interrupt");
+            client.ensureFrame(frame);
+            Thread importer = new Thread(new Importer(client, frame));
+//            importer.setDaemon(true);
+            importer.start();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                fail("interruption was not expected here");
+            }
+            importer.interrupt();
         }
     }
 
@@ -1004,4 +1088,31 @@ class InvalidPilosaClient extends InsecurePilosaClientIT {
     InvalidPilosaClient(Cluster cluster, ClientOptions options) {
         super(cluster, options);
     }
+}
+
+class XBitIterator implements BitIterator {
+
+    XBitIterator(long maxID, long maxBits) {
+        this.maxID = maxID;
+        this.maxBits = maxBits;
+    }
+
+    public boolean hasNext() {
+        return this.maxBits > 0;
+    }
+
+    public Bit next() {
+        this.maxBits -= 1;
+        long rowID = (long) (Math.random() * this.maxID);
+        long columnID = (long) (Math.random() * this.maxID);
+        return Bit.create(rowID, columnID);
+    }
+
+    @Override
+    public void remove() {
+
+    }
+
+    private long maxID;
+    private long maxBits;
 }

@@ -85,6 +85,7 @@ public final class FrameOptions {
          * @param enabled Set to <code>true</code> to enable.
          * @return FrameOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
+         * @deprecated
          */
         public Builder setInverseEnabled(boolean enabled) {
             this.inverseEnabled = enabled;

@@ -62,7 +62,7 @@ public class TopNResult implements QueryResult {
     }
 
     @Override
-    public long getSum() {
+    public long getValue() {
         return 0;
     }
 

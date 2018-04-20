@@ -650,17 +650,34 @@ public class PilosaClientIT {
                     .build();
             Frame frame = this.index.frame("rangeframe", options);
             client.ensureFrame(frame);
+            RangeField foo = frame.field("foo");
             client.query(this.index.batchQuery(
                     frame.setBit(1, 10),
                     frame.setBit(1, 100),
-                    frame.field("foo").setValue(10, 11),
-                    frame.field("foo").setValue(100, 15)
+                    foo.setValue(10, 11),
+                    foo.setValue(100, 15)
             ));
-            QueryResponse response = client.query(frame.field("foo").sum(frame.bitmap(1)));
-            assertEquals(26, response.getResult().getSum());
+            QueryResponse response = client.query(foo.sum(frame.bitmap(1)));
+            assertEquals(26, response.getResult().getValue());
             assertEquals(2, response.getResult().getCount());
 
-            response = client.query(frame.field("foo").lessThan(15));
+            response = client.query(foo.min());
+            assertEquals(11, response.getResult().getValue());
+            assertEquals(1, response.getResult().getCount());
+
+            response = client.query(foo.min(frame.bitmap(1)));
+            assertEquals(11, response.getResult().getValue());
+            assertEquals(1, response.getResult().getCount());
+
+            response = client.query(foo.max());
+            assertEquals(15, response.getResult().getValue());
+            assertEquals(1, response.getResult().getCount());
+
+            response = client.query(foo.max(frame.bitmap(1)));
+            assertEquals(15, response.getResult().getValue());
+            assertEquals(1, response.getResult().getCount());
+
+            response = client.query(foo.lessThan(15));
             assertEquals(1, response.getResults().size());
             assertEquals(10, (long) response.getResult().getBitmap().getBits().get(0));
         }

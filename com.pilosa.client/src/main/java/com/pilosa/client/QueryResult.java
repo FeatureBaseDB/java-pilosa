@@ -45,7 +45,7 @@ public interface QueryResult {
 
     long getCount();
 
-    long getSum();
+    long getValue();
 
     boolean isChanged();
 }

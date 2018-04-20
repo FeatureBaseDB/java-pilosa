@@ -57,7 +57,7 @@ public class TopNResultTest {
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
         assertEquals(targetItems, result.getCountItems());
         assertEquals(0L, result.getCount());
-        assertEquals(0L, result.getSum());
+        assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
     }
 

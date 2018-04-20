@@ -62,7 +62,7 @@ public class BitmapResultTest {
         assertEquals(QueryResultType.BITMAP, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
-        assertEquals(0L, result.getSum());
+        assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
     }
 
@@ -80,7 +80,7 @@ public class BitmapResultTest {
         assertEquals(QueryResultType.BITMAP, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
-        assertEquals(0L, result.getSum());
+        assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
     }
 

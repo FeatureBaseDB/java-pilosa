@@ -42,22 +42,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class SumCountResultTest {
+public class ValueCountResultTest {
     @Test
     public void testCreateSumCountResult() {
-        SumCountResult result = SumCountResult.create(20, 10);
-        assertEquals(QueryResultType.SUM_COUNT, result.getType());
+        ValueCountResult result = ValueCountResult.create(20, 10);
+        assertEquals(QueryResultType.VAL_COUNT, result.getType());
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(10, result.getCount());
-        assertEquals(20L, result.getSum());
+        assertEquals(20L, result.getValue());
         assertEquals(false, result.isChanged());
     }
 
     @Test
     public void testEquals() {
-        SumCountResult result1 = SumCountResult.create(33, 5);
-        SumCountResult result2 = SumCountResult.create(33, 5);
+        ValueCountResult result1 = ValueCountResult.create(33, 5);
+        ValueCountResult result2 = ValueCountResult.create(33, 5);
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -65,20 +65,20 @@ public class SumCountResultTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new SumCountResult()).equals(0);
+        boolean e = (new ValueCountResult()).equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        SumCountResult result = SumCountResult.create(6, 3);
+        ValueCountResult result = ValueCountResult.create(6, 3);
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        SumCountResult result1 = SumCountResult.create(22, 7);
-        SumCountResult result2 = SumCountResult.create(22, 7);
+        ValueCountResult result1 = ValueCountResult.create(22, 7);
+        ValueCountResult result2 = ValueCountResult.create(22, 7);
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 

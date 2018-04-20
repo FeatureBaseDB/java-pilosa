@@ -144,8 +144,8 @@ public final class QueryResponse {
                 case QueryResultType.PAIRS:
                     results.add(TopNResult.fromInternal(q));
                     break;
-                case QueryResultType.SUM_COUNT:
-                    results.add(SumCountResult.fromInternal(q));
+                case QueryResultType.VAL_COUNT:
+                    results.add(ValueCountResult.fromInternal(q));
                     break;
                 case QueryResultType.NIL:
                     results.add(NullResult.defaultResult());

@@ -50,7 +50,7 @@ public class NullResultTest {
         assertEquals(BitmapResult.defaultResult(), result.getBitmap());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
-        assertEquals(0L, result.getSum());
+        assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
     }
 

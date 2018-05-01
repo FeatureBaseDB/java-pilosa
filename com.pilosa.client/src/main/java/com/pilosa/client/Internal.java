@@ -70,17 +70,14 @@ public final class Internal {
      */
     java.util.List<java.lang.String>
     getKeysList();
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
     int getKeysCount();
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
     java.lang.String getKeys(int index);
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
@@ -249,7 +246,6 @@ public final class Internal {
 
     public static final int KEYS_FIELD_NUMBER = 3;
     private com.google.protobuf.LazyStringList keys_;
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
@@ -257,21 +253,18 @@ public final class Internal {
     getKeysList() {
       return keys_;
     }
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
     public int getKeysCount() {
       return keys_.size();
     }
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
     public java.lang.String getKeys(int index) {
       return keys_.get(index);
     }
-
     /**
      * <code>repeated string Keys = 3;</code>
      */
@@ -770,14 +763,12 @@ public final class Internal {
       }
 
       private com.google.protobuf.LazyStringList keys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-
       private void ensureKeysIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
           keys_ = new com.google.protobuf.LazyStringArrayList(keys_);
           bitField0_ |= 0x00000002;
         }
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
@@ -785,21 +776,18 @@ public final class Internal {
       getKeysList() {
         return keys_.getUnmodifiableView();
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
       public int getKeysCount() {
         return keys_.size();
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
       public java.lang.String getKeys(int index) {
         return keys_.get(index);
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
@@ -807,35 +795,32 @@ public final class Internal {
       getKeysBytes(int index) {
         return keys_.getByteString(index);
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
       public Builder setKeys(
               int index, java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
-        ensureKeysIsMutable();
+          ensureKeysIsMutable();
         keys_.set(index, value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
       public Builder addKeys(
               java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
-        ensureKeysIsMutable();
+          ensureKeysIsMutable();
         keys_.add(value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
@@ -847,7 +832,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
@@ -857,16 +841,15 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string Keys = 3;</code>
        */
       public Builder addKeysBytes(
               com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
-        checkByteStringIsUtf8(value);
+          checkByteStringIsUtf8(value);
         ensureKeysIsMutable();
         keys_.add(value);
         onChanged();
@@ -875,7 +858,6 @@ public final class Internal {
 
       private java.util.List<com.pilosa.client.Internal.Attr> attrs_ =
               java.util.Collections.emptyList();
-
       private void ensureAttrsIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
             attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>(attrs_);
@@ -1100,7 +1082,7 @@ public final class Internal {
         return getAttrsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
       getAttrsFieldBuilder() {
         if (attrsBuilder_ == null) {
           attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -1175,7 +1157,6 @@ public final class Internal {
      * <code>optional string Key = 3;</code>
      */
     java.lang.String getKey();
-
     /**
      * <code>optional string Key = 3;</code>
      */
@@ -1187,7 +1168,6 @@ public final class Internal {
      */
     long getCount();
   }
-
   /**
    * Protobuf type {@code internal.Pair}
    */
@@ -1226,10 +1206,10 @@ public final class Internal {
               break;
             default: {
               if (!input.skipField(tag)) {
-                    done = true;
-                  }
-                break;
+                  done = true;
               }
+                break;
+            }
             case 8: {
 
               iD_ = input.readUInt64();
@@ -1271,7 +1251,6 @@ public final class Internal {
 
     public static final int ID_FIELD_NUMBER = 1;
     private long iD_;
-
     /**
      * <code>optional uint64 ID = 1;</code>
      */
@@ -1281,7 +1260,6 @@ public final class Internal {
 
     public static final int KEY_FIELD_NUMBER = 3;
     private volatile java.lang.Object key_;
-
     /**
      * <code>optional string Key = 3;</code>
      */
@@ -1290,14 +1268,13 @@ public final class Internal {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         key_ = s;
         return s;
       }
     }
-
     /**
      * <code>optional string Key = 3;</code>
      */
@@ -1305,9 +1282,9 @@ public final class Internal {
     getKeyBytes() {
       java.lang.Object ref = key_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
         key_ = b;
         return b;
       } else {
@@ -1325,7 +1302,6 @@ public final class Internal {
     }
 
     private byte memoizedIsInitialized = -1;
-
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -1372,7 +1348,7 @@ public final class Internal {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+          return true;
       }
       if (!(obj instanceof com.pilosa.client.Internal.Pair)) {
         return super.equals(obj);
@@ -1585,7 +1561,7 @@ public final class Internal {
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.pilosa.client.Internal.Pair) {
-          return mergeFrom((com.pilosa.client.Internal.Pair) other);
+            return mergeFrom((com.pilosa.client.Internal.Pair) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1630,37 +1606,33 @@ public final class Internal {
         return this;
       }
 
-      private long iD_;
-
+        private long iD_;
       /**
        * <code>optional uint64 ID = 1;</code>
        */
       public long getID() {
         return iD_;
       }
-
       /**
        * <code>optional uint64 ID = 1;</code>
        */
       public Builder setID(long value) {
 
-        iD_ = value;
+          iD_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional uint64 ID = 1;</code>
        */
       public Builder clearID() {
 
-        iD_ = 0L;
+          iD_ = 0L;
         onChanged();
         return this;
       }
 
       private java.lang.Object key_ = "";
-
       /**
        * <code>optional string Key = 3;</code>
        */
@@ -1676,7 +1648,6 @@ public final class Internal {
           return (java.lang.String) ref;
         }
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
@@ -1684,50 +1655,47 @@ public final class Internal {
       getKeyBytes() {
         java.lang.Object ref = key_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
           key_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder setKey(
               java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
 
-        key_ = value;
+          key_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder clearKey() {
 
-        key_ = getDefaultInstance().getKey();
+          key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder setKeyBytes(
               com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
-        checkByteStringIsUtf8(value);
-
+          checkByteStringIsUtf8(value);
+        
         key_ = value;
         onChanged();
         return this;
@@ -1807,35 +1775,34 @@ public final class Internal {
 
   }
 
-  public interface SumCountOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:internal.SumCount)
-          com.google.protobuf.MessageOrBuilder {
+    public interface ValCountOrBuilder extends
+            // @@protoc_insertion_point(interface_extends:internal.ValCount)
+            com.google.protobuf.MessageOrBuilder {
 
     /**
-       * <code>optional int64 Sum = 1;</code>
+     * <code>optional int64 Val = 1;</code>
      */
-    long getSum();
+    long getVal();
 
     /**
      * <code>optional int64 Count = 2;</code>
      */
     long getCount();
   }
-
   /**
-   * Protobuf type {@code internal.SumCount}
+   * Protobuf type {@code internal.ValCount}
    */
-  public static final class SumCount extends
+  public static final class ValCount extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:internal.SumCount)
-          SumCountOrBuilder {
-    // Use SumCount.newBuilder() to construct.
-    private SumCount(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          // @@protoc_insertion_point(message_implements:internal.ValCount)
+          ValCountOrBuilder {
+      // Use ValCount.newBuilder() to construct.
+      private ValCount(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
 
-    private SumCount() {
-      sum_ = 0L;
+      private ValCount() {
+          val_ = 0L;
       count_ = 0L;
     }
 
@@ -1843,9 +1810,9 @@ public final class Internal {
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-        }
+    }
 
-    private SumCount(
+      private ValCount(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1867,7 +1834,7 @@ public final class Internal {
             }
             case 8: {
 
-              sum_ = input.readInt64();
+                val_ = input.readInt64();
               break;
             }
             case 16: {
@@ -1886,31 +1853,29 @@ public final class Internal {
         makeExtensionsImmutable();
       }
     }
-
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
-      return com.pilosa.client.Internal.internal_static_internal_SumCount_descriptor;
+        return com.pilosa.client.Internal.internal_static_internal_ValCount_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
     internalGetFieldAccessorTable() {
-          return com.pilosa.client.Internal.internal_static_internal_SumCount_fieldAccessorTable
+        return com.pilosa.client.Internal.internal_static_internal_ValCount_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.pilosa.client.Internal.SumCount.class, com.pilosa.client.Internal.SumCount.Builder.class);
+                  com.pilosa.client.Internal.ValCount.class, com.pilosa.client.Internal.ValCount.Builder.class);
     }
 
-    public static final int SUM_FIELD_NUMBER = 1;
-    private long sum_;
+      public static final int VAL_FIELD_NUMBER = 1;
+      private long val_;
     /**
-     * <code>optional int64 Sum = 1;</code>
+     * <code>optional int64 Val = 1;</code>
      */
-    public long getSum() {
-      return sum_;
+    public long getVal() {
+        return val_;
     }
 
     public static final int COUNT_FIELD_NUMBER = 2;
     private long count_;
-
     /**
      * <code>optional int64 Count = 2;</code>
      */
@@ -1930,8 +1895,8 @@ public final class Internal {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
-      if (sum_ != 0L) {
-        output.writeInt64(1, sum_);
+        if (val_ != 0L) {
+            output.writeInt64(1, val_);
       }
       if (count_ != 0L) {
         output.writeInt64(2, count_);
@@ -1943,9 +1908,9 @@ public final class Internal {
         if (size != -1) return size;
 
       size = 0;
-      if (sum_ != 0L) {
+        if (val_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, sum_);
+                .computeInt64Size(1, val_);
       }
       if (count_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -1956,20 +1921,19 @@ public final class Internal {
     }
 
     private static final long serialVersionUID = 0L;
-
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
        return true;
       }
-        if (!(obj instanceof com.pilosa.client.Internal.SumCount)) {
-          return super.equals(obj);
+        if (!(obj instanceof com.pilosa.client.Internal.ValCount)) {
+            return super.equals(obj);
         }
-      com.pilosa.client.Internal.SumCount other = (com.pilosa.client.Internal.SumCount) obj;
+        com.pilosa.client.Internal.ValCount other = (com.pilosa.client.Internal.ValCount) obj;
 
       boolean result = true;
-      result = result && (getSum()
-              == other.getSum());
+        result = result && (getVal()
+                == other.getVal());
       result = result && (getCount()
           == other.getCount());
       return result;
@@ -1982,9 +1946,9 @@ public final class Internal {
         }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + SUM_FIELD_NUMBER;
+        hash = (37 * hash) + VAL_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getSum());
+              getVal());
       hash = (37 * hash) + COUNT_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
                 getCount());
@@ -1993,89 +1957,89 @@ public final class Internal {
       return hash;
     }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
+      public static com.pilosa.client.Internal.ValCount parseFrom(
+              com.google.protobuf.ByteString data)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
     }
-    public static com.pilosa.client.Internal.SumCount parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+
+      public static com.pilosa.client.Internal.ValCount parseFrom(
+              com.google.protobuf.ByteString data,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
 
-        public static com.pilosa.client.Internal.SumCount parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+      public static com.pilosa.client.Internal.ValCount parseFrom(byte[] data)
+              throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
-        }
+      }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(
-            byte[] data,
+      public static com.pilosa.client.Internal.ValCount parseFrom(
+              byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+      public static com.pilosa.client.Internal.ValCount parseFrom(java.io.InputStream input)
+              throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseWithIOException(PARSER, input);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(
+      public static com.pilosa.client.Internal.ValCount parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
+              throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+      public static com.pilosa.client.Internal.ValCount parseDelimitedFrom(java.io.InputStream input)
+              throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      public static com.pilosa.client.Internal.ValCount parseDelimitedFrom(
+              java.io.InputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+                  .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-                .parseWithIOException(PARSER, input);
+      public static com.pilosa.client.Internal.ValCount parseFrom(
+              com.google.protobuf.CodedInputStream input)
+              throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+                  .parseWithIOException(PARSER, input);
     }
 
-    public static com.pilosa.client.Internal.SumCount parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+      public static com.pilosa.client.Internal.ValCount parseFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public Builder newBuilderForType() {
-      return newBuilder();
-    }
-
+      public Builder newBuilderForType() {
+          return newBuilder();
+      }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
 
-    public static Builder newBuilder(com.pilosa.client.Internal.SumCount prototype) {
+      public static Builder newBuilder(com.pilosa.client.Internal.ValCount prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-        }
+      }
 
-        public Builder toBuilder() {
+      public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
-        }
+      }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -2083,27 +2047,26 @@ public final class Internal {
       Builder builder = new Builder(parent);
       return builder;
     }
-
     /**
-     * Protobuf type {@code internal.SumCount}
+     * Protobuf type {@code internal.ValCount}
      */
     public static final class Builder extends
             com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:internal.SumCount)
-            com.pilosa.client.Internal.SumCountOrBuilder {
+            // @@protoc_insertion_point(builder_implements:internal.ValCount)
+            com.pilosa.client.Internal.ValCountOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-        return com.pilosa.client.Internal.internal_static_internal_SumCount_descriptor;
+          return com.pilosa.client.Internal.internal_static_internal_ValCount_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-        return com.pilosa.client.Internal.internal_static_internal_SumCount_fieldAccessorTable
+          return com.pilosa.client.Internal.internal_static_internal_ValCount_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.pilosa.client.Internal.SumCount.class, com.pilosa.client.Internal.SumCount.Builder.class);
+                    com.pilosa.client.Internal.ValCount.class, com.pilosa.client.Internal.ValCount.Builder.class);
       }
 
-      // Construct using com.pilosa.client.Internal.SumCount.newBuilder()
+        // Construct using com.pilosa.client.Internal.ValCount.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2118,10 +2081,9 @@ public final class Internal {
                 .alwaysUseFieldBuilders) {
         }
       }
-
       public Builder clear() {
         super.clear();
-        sum_ = 0L;
+          val_ = 0L;
 
         count_ = 0L;
 
@@ -2130,24 +2092,24 @@ public final class Internal {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.pilosa.client.Internal.internal_static_internal_SumCount_descriptor;
+          return com.pilosa.client.Internal.internal_static_internal_ValCount_descriptor;
       }
 
-      public com.pilosa.client.Internal.SumCount getDefaultInstanceForType() {
-        return com.pilosa.client.Internal.SumCount.getDefaultInstance();
+        public com.pilosa.client.Internal.ValCount getDefaultInstanceForType() {
+            return com.pilosa.client.Internal.ValCount.getDefaultInstance();
       }
 
-      public com.pilosa.client.Internal.SumCount build() {
-        com.pilosa.client.Internal.SumCount result = buildPartial();
+        public com.pilosa.client.Internal.ValCount build() {
+            com.pilosa.client.Internal.ValCount result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.pilosa.client.Internal.SumCount buildPartial() {
-        com.pilosa.client.Internal.SumCount result = new com.pilosa.client.Internal.SumCount(this);
-        result.sum_ = sum_;
+        public com.pilosa.client.Internal.ValCount buildPartial() {
+            com.pilosa.client.Internal.ValCount result = new com.pilosa.client.Internal.ValCount(this);
+            result.val_ = val_;
         result.count_ = count_;
         onBuilt();
         return result;
@@ -2157,46 +2119,43 @@ public final class Internal {
         return (Builder) super.clone();
       }
 
-            public Builder setField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    Object value) {
-              return (Builder) super.setField(field, value);
-            }
-
+        public Builder setField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                Object value) {
+            return (Builder) super.setField(field, value);
+        }
       public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
-
       public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
 
-            public Builder setRepeatedField(
-                    com.google.protobuf.Descriptors.FieldDescriptor field,
-                    int index, Object value) {
-              return (Builder) super.setRepeatedField(field, index, value);
-            }
+        public Builder setRepeatedField(
+                com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index, Object value) {
+            return (Builder) super.setRepeatedField(field, index, value);
+        }
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
-
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pilosa.client.Internal.SumCount) {
-          return mergeFrom((com.pilosa.client.Internal.SumCount)other);
+          if (other instanceof com.pilosa.client.Internal.ValCount) {
+              return mergeFrom((com.pilosa.client.Internal.ValCount) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.pilosa.client.Internal.SumCount other) {
-        if (other == com.pilosa.client.Internal.SumCount.getDefaultInstance()) return this;
-        if (other.getSum() != 0L) {
-          setSum(other.getSum());
+        public Builder mergeFrom(com.pilosa.client.Internal.ValCount other) {
+            if (other == com.pilosa.client.Internal.ValCount.getDefaultInstance()) return this;
+            if (other.getVal() != 0L) {
+                setVal(other.getVal());
         }
         if (other.getCount() != 0L) {
           setCount(other.getCount());
@@ -2213,11 +2172,11 @@ public final class Internal {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-        com.pilosa.client.Internal.SumCount parsedMessage = null;
+          com.pilosa.client.Internal.ValCount parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.pilosa.client.Internal.SumCount) e.getUnfinishedMessage();
+            parsedMessage = (com.pilosa.client.Internal.ValCount) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2227,61 +2186,58 @@ public final class Internal {
         return this;
       }
 
-      private long sum_ ;
+        private long val_;
       /**
-       * <code>optional int64 Sum = 1;</code>
+       * <code>optional int64 Val = 1;</code>
        */
-      public long getSum() {
-        return sum_;
+      public long getVal() {
+          return val_;
       }
       /**
-       * <code>optional int64 Sum = 1;</code>
+       * <code>optional int64 Val = 1;</code>
        */
-      public Builder setSum(long value) {
+      public Builder setVal(long value) {
 
-        sum_ = value;
+          val_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 Val = 1;</code>
+       */
+      public Builder clearVal() {
+
+          val_ = 0L;
         onChanged();
         return this;
       }
 
-      /**
-       * <code>optional int64 Sum = 1;</code>
-       */
-      public Builder clearSum() {
-        
-        sum_ = 0L;
-        onChanged();
-        return this;
-      }
-
-            private long count_ ;
+        private long count_;
       /**
        * <code>optional int64 Count = 2;</code>
        */
       public long getCount() {
         return count_;
       }
-
       /**
        * <code>optional int64 Count = 2;</code>
        */
       public Builder setCount(long value) {
 
-        count_ = value;
+          count_ = value;
         onChanged();
         return this;
       }
 
-            /**
-             * <code>optional int64 Count = 2;</code>
-             */
-            public Builder clearCount() {
+        /**
+         * <code>optional int64 Count = 2;</code>
+         */
+        public Builder clearCount() {
 
-              count_ = 0L;
-              onChanged();
-              return this;
-            }
-
+            count_ = 0L;
+            onChanged();
+            return this;
+        }
       public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -2293,40 +2249,40 @@ public final class Internal {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:internal.SumCount)
+        // @@protoc_insertion_point(builder_scope:internal.ValCount)
     }
 
-    // @@protoc_insertion_point(class_scope:internal.SumCount)
-    private static final com.pilosa.client.Internal.SumCount DEFAULT_INSTANCE;
+      // @@protoc_insertion_point(class_scope:internal.ValCount)
+      private static final com.pilosa.client.Internal.ValCount DEFAULT_INSTANCE;
 
-    static {
-      DEFAULT_INSTANCE = new com.pilosa.client.Internal.SumCount();
-    }
+      static {
+          DEFAULT_INSTANCE = new com.pilosa.client.Internal.ValCount();
+      }
 
-    public static com.pilosa.client.Internal.SumCount getDefaultInstance() {
+      public static com.pilosa.client.Internal.ValCount getDefaultInstance() {
       return DEFAULT_INSTANCE;
-    }
+      }
 
-    private static final com.google.protobuf.Parser<SumCount>
-            PARSER = new com.google.protobuf.AbstractParser<SumCount>() {
-      public SumCount parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
+      private static final com.google.protobuf.Parser<ValCount>
+              PARSER = new com.google.protobuf.AbstractParser<ValCount>() {
+          public ValCount parsePartialFrom(
+                  com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new SumCount(input, extensionRegistry);
-      }
-    };
+              return new ValCount(input, extensionRegistry);
+          }
+      };
 
-    public static com.google.protobuf.Parser<SumCount> parser() {
+      public static com.google.protobuf.Parser<ValCount> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<SumCount> getParserForType() {
+    public com.google.protobuf.Parser<ValCount> getParserForType() {
       return PARSER;
     }
 
-    public com.pilosa.client.Internal.SumCount getDefaultInstanceForType() {
+      public com.pilosa.client.Internal.ValCount getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2972,21 +2928,21 @@ public final class Internal {
             default: {
               if (!input.skipField(tag)) {
                 done = true;
-                  }
+              }
               break;
             }
               case 8: {
 
-                iD_ = input.readUInt64();
-                break;
+                  iD_ = input.readUInt64();
+                  break;
               }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                 attrs_ = new java.util.ArrayList<com.pilosa.client.Internal.Attr>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              attrs_.add(
-                      input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
+                attrs_.add(
+                        input.readMessage(com.pilosa.client.Internal.Attr.parser(), extensionRegistry));
               break;
             }
             case 26: {
@@ -3024,7 +2980,6 @@ public final class Internal {
     private int bitField0_;
     public static final int ID_FIELD_NUMBER = 1;
     private long iD_;
-
     /**
      * <code>optional uint64 ID = 1;</code>
      */
@@ -3034,7 +2989,6 @@ public final class Internal {
 
     public static final int KEY_FIELD_NUMBER = 3;
     private volatile java.lang.Object key_;
-
     /**
      * <code>optional string Key = 3;</code>
      */
@@ -3043,14 +2997,13 @@ public final class Internal {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         key_ = s;
         return s;
       }
     }
-
     /**
      * <code>optional string Key = 3;</code>
      */
@@ -3058,9 +3011,9 @@ public final class Internal {
     getKeyBytes() {
       java.lang.Object ref = key_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
         key_ = b;
         return b;
       } else {
@@ -3104,7 +3057,6 @@ public final class Internal {
     }
 
     private byte memoizedIsInitialized = -1;
-
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -3118,14 +3070,14 @@ public final class Internal {
             throws java.io.IOException {
       if (iD_ != 0L) {
           output.writeUInt64(1, iD_);
-        }
+      }
         for (int i = 0; i < attrs_.size(); i++) {
-          output.writeMessage(2, attrs_.get(i));
-        }
+            output.writeMessage(2, attrs_.get(i));
+      }
       if (!getKeyBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, key_);
-        }
       }
+    }
 
     public int getSerializedSize() {
       int size = memoizedSize;
@@ -3148,7 +3100,6 @@ public final class Internal {
     }
 
     private static final long serialVersionUID = 0L;
-
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
@@ -3296,14 +3247,12 @@ public final class Internal {
         super(parent);
         maybeForceBuilderInitialization();
       }
-
       private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessageV3
                   .alwaysUseFieldBuilders) {
           getAttrsFieldBuilder();
           }
-        }
-
+      }
       public Builder clear() {
         super.clear();
         iD_ = 0L;
@@ -3460,29 +3409,26 @@ public final class Internal {
       public long getID() {
         return iD_;
       }
-
       /**
        * <code>optional uint64 ID = 1;</code>
        */
       public Builder setID(long value) {
 
-        iD_ = value;
+          iD_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional uint64 ID = 1;</code>
        */
       public Builder clearID() {
 
-        iD_ = 0L;
+          iD_ = 0L;
         onChanged();
         return this;
       }
 
       private java.lang.Object key_ = "";
-
       /**
        * <code>optional string Key = 3;</code>
        */
@@ -3498,7 +3444,6 @@ public final class Internal {
           return (java.lang.String) ref;
         }
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
@@ -3506,50 +3451,47 @@ public final class Internal {
       getKeyBytes() {
         java.lang.Object ref = key_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
           key_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder setKey(
               java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+            throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder clearKey() {
 
-        key_ = getDefaultInstance().getKey();
+          key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Key = 3;</code>
        */
       public Builder setKeyBytes(
               com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
+            throw new NullPointerException();
         }
-        checkByteStringIsUtf8(value);
-
+          checkByteStringIsUtf8(value);
+        
         key_ = value;
         onChanged();
         return this;
@@ -3689,7 +3631,6 @@ public final class Internal {
         }
         return this;
       }
-
       /**
        * <code>repeated .internal.Attr Attrs = 2;</code>
        */
@@ -3774,7 +3715,6 @@ public final class Internal {
         return getAttrsFieldBuilder().addBuilder(
             index, com.pilosa.client.Internal.Attr.getDefaultInstance());
       }
-
       /**
        * <code>repeated .internal.Attr Attrs = 2;</code>
        */
@@ -3783,7 +3723,7 @@ public final class Internal {
         return getAttrsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
+              com.pilosa.client.Internal.Attr, com.pilosa.client.Internal.Attr.Builder, com.pilosa.client.Internal.AttrOrBuilder>
       getAttrsFieldBuilder() {
         if (attrsBuilder_ == null) {
           attrsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -5798,11 +5738,11 @@ public final class Internal {
       }
       if (columnAttrs_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                  .computeBoolSize(3, columnAttrs_);
+                .computeBoolSize(3, columnAttrs_);
       }
       if (remote_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                  .computeBoolSize(5, remote_);
+                .computeBoolSize(5, remote_);
       }
       if (excludeAttrs_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -5817,11 +5757,10 @@ public final class Internal {
     }
 
     private static final long serialVersionUID = 0L;
-
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+          return true;
       }
       if (!(obj instanceof com.pilosa.client.Internal.QueryRequest)) {
         return super.equals(obj);
@@ -5830,7 +5769,7 @@ public final class Internal {
 
       boolean result = true;
       result = result && getQuery()
-                .equals(other.getQuery());
+              .equals(other.getQuery());
       result = result && getSlicesList()
               .equals(other.getSlicesList());
       result = result && (getColumnAttrs()
@@ -6296,13 +6235,12 @@ public final class Internal {
       public boolean getRemote() {
         return remote_;
       }
-
       /**
        * <code>optional bool Remote = 5;</code>
        */
       public Builder setRemote(boolean value) {
 
-        remote_ = value;
+          remote_ = value;
         onChanged();
         return this;
       }
@@ -6317,7 +6255,6 @@ public final class Internal {
       }
 
       private boolean excludeAttrs_ ;
-
       /**
        * <code>optional bool ExcludeAttrs = 6;</code>
        */
@@ -6343,8 +6280,7 @@ public final class Internal {
         return this;
       }
 
-      private boolean excludeBits_;
-
+        private boolean excludeBits_ ;
       /**
        * <code>optional bool ExcludeBits = 7;</code>
        */
@@ -7641,7 +7577,7 @@ public final class Internal {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws com.google.protobuf.InvalidProtocolBufferException {
-        return new QueryResponse(input, extensionRegistry);
+          return new QueryResponse(input, extensionRegistry);
       }
     };
 
@@ -7677,7 +7613,6 @@ public final class Internal {
      * <code>optional .internal.Bitmap Bitmap = 1;</code>
      */
     com.pilosa.client.Internal.Bitmap getBitmap();
-
     /**
      * <code>optional .internal.Bitmap Bitmap = 1;</code>
      */
@@ -7693,11 +7628,10 @@ public final class Internal {
      */
     java.util.List<com.pilosa.client.Internal.Pair>
     getPairsList();
-
     /**
      * <code>repeated .internal.Pair Pairs = 3;</code>
-       */
-      com.pilosa.client.Internal.Pair getPairs(int index);
+     */
+    com.pilosa.client.Internal.Pair getPairs(int index);
     /**
      * <code>repeated .internal.Pair Pairs = 3;</code>
      */
@@ -7713,19 +7647,20 @@ public final class Internal {
     com.pilosa.client.Internal.PairOrBuilder getPairsOrBuilder(
         int index);
 
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    boolean hasSumCount();
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    com.pilosa.client.Internal.SumCount getSumCount();
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      boolean hasValCount();
 
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    com.pilosa.client.Internal.SumCountOrBuilder getSumCountOrBuilder();
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      com.pilosa.client.Internal.ValCount getValCount();
+
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      com.pilosa.client.Internal.ValCountOrBuilder getValCountOrBuilder();
 
     /**
      * <code>optional bool Changed = 4;</code>
@@ -7798,8 +7733,8 @@ public final class Internal {
                 pairs_ = new java.util.ArrayList<com.pilosa.client.Internal.Pair>();
                 mutable_bitField0_ |= 0x00000008;
               }
-              pairs_.add(
-                      input.readMessage(com.pilosa.client.Internal.Pair.parser(), extensionRegistry));
+                pairs_.add(
+                        input.readMessage(com.pilosa.client.Internal.Pair.parser(), extensionRegistry));
               break;
             }
             case 32: {
@@ -7807,15 +7742,15 @@ public final class Internal {
               changed_ = input.readBool();
               break;
             }
-            case 42: {
-              com.pilosa.client.Internal.SumCount.Builder subBuilder = null;
-              if (sumCount_ != null) {
-                subBuilder = sumCount_.toBuilder();
-              }
-              sumCount_ = input.readMessage(com.pilosa.client.Internal.SumCount.parser(), extensionRegistry);
+              case 42: {
+                  com.pilosa.client.Internal.ValCount.Builder subBuilder = null;
+                  if (valCount_ != null) {
+                      subBuilder = valCount_.toBuilder();
+                  }
+                  valCount_ = input.readMessage(com.pilosa.client.Internal.ValCount.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(sumCount_);
-                sumCount_ = subBuilder.buildPartial();
+                  subBuilder.mergeFrom(valCount_);
+                  valCount_ = subBuilder.buildPartial();
               }
 
               break;
@@ -7839,7 +7774,6 @@ public final class Internal {
         makeExtensionsImmutable();
       }
     }
-
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
       return com.pilosa.client.Internal.internal_static_internal_QueryResult_descriptor;
@@ -7849,7 +7783,7 @@ public final class Internal {
     internalGetFieldAccessorTable() {
       return com.pilosa.client.Internal.internal_static_internal_QueryResult_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                        com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
+                      com.pilosa.client.Internal.QueryResult.class, com.pilosa.client.Internal.QueryResult.Builder.class);
     }
 
     private int bitField0_;
@@ -7927,30 +7861,32 @@ public final class Internal {
       return pairs_.get(index);
     }
 
-    public static final int SUMCOUNT_FIELD_NUMBER = 5;
-    private com.pilosa.client.Internal.SumCount sumCount_;
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    public boolean hasSumCount() {
-      return sumCount_ != null;
-    }
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    public com.pilosa.client.Internal.SumCount getSumCount() {
-      return sumCount_ == null ? com.pilosa.client.Internal.SumCount.getDefaultInstance() : sumCount_;
-    }
-    /**
-     * <code>optional .internal.SumCount SumCount = 5;</code>
-     */
-    public com.pilosa.client.Internal.SumCountOrBuilder getSumCountOrBuilder() {
-      return getSumCount();
+      public static final int VALCOUNT_FIELD_NUMBER = 5;
+      private com.pilosa.client.Internal.ValCount valCount_;
+
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      public boolean hasValCount() {
+          return valCount_ != null;
+      }
+
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      public com.pilosa.client.Internal.ValCount getValCount() {
+          return valCount_ == null ? com.pilosa.client.Internal.ValCount.getDefaultInstance() : valCount_;
+      }
+
+      /**
+       * <code>optional .internal.ValCount ValCount = 5;</code>
+       */
+      public com.pilosa.client.Internal.ValCountOrBuilder getValCountOrBuilder() {
+          return getValCount();
     }
 
     public static final int CHANGED_FIELD_NUMBER = 4;
     private boolean changed_;
-
     /**
      * <code>optional bool Changed = 4;</code>
      */
@@ -7961,13 +7897,13 @@ public final class Internal {
       private byte memoizedIsInitialized = -1;
 
       public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
+          byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
+          if (isInitialized == 0) return false;
 
-        memoizedIsInitialized = 1;
+          memoizedIsInitialized = 1;
       return true;
-      }
+    }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
@@ -7975,16 +7911,16 @@ public final class Internal {
         output.writeMessage(1, getBitmap());
       }
       if (n_ != 0L) {
-        output.writeUInt64(2, n_);
-        }
+          output.writeUInt64(2, n_);
+      }
       for (int i = 0; i < pairs_.size(); i++) {
         output.writeMessage(3, pairs_.get(i));
       }
       if (changed_ != false) {
         output.writeBool(4, changed_);
       }
-      if (sumCount_ != null) {
-        output.writeMessage(5, getSumCount());
+        if (valCount_ != null) {
+            output.writeMessage(5, getValCount());
       }
       if (type_ != 0) {
         output.writeUInt32(6, type_);
@@ -8002,8 +7938,8 @@ public final class Internal {
       }
       if (n_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                    .computeUInt64Size(2, n_);
-          }
+                .computeUInt64Size(2, n_);
+      }
       for (int i = 0; i < pairs_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
                 .computeMessageSize(3, pairs_.get(i));
@@ -8012,9 +7948,9 @@ public final class Internal {
         size += com.google.protobuf.CodedOutputStream
                 .computeBoolSize(4, changed_);
       }
-      if (sumCount_ != null) {
+        if (valCount_ != null) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(5, getSumCount());
+                .computeMessageSize(5, getValCount());
       }
       if (type_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -8025,12 +7961,11 @@ public final class Internal {
     }
 
     private static final long serialVersionUID = 0L;
-
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
         if (obj == this) {
-          return true;
-        }
+            return true;
+      }
       if (!(obj instanceof com.pilosa.client.Internal.QueryResult)) {
         return super.equals(obj);
       }
@@ -8048,13 +7983,13 @@ public final class Internal {
               == other.getN());
       result = result && getPairsList()
               .equals(other.getPairsList());
-      result = result && (hasSumCount() == other.hasSumCount());
-      if (hasSumCount()) {
-        result = result && getSumCount()
-                .equals(other.getSumCount());
+        result = result && (hasValCount() == other.hasValCount());
+        if (hasValCount()) {
+            result = result && getValCount()
+                    .equals(other.getValCount());
       }
       result = result && (getChanged()
-                == other.getChanged());
+              == other.getChanged());
       return result;
     }
 
@@ -8078,9 +8013,9 @@ public final class Internal {
         hash = (37 * hash) + PAIRS_FIELD_NUMBER;
         hash = (53 * hash) + getPairsList().hashCode();
       }
-      if (hasSumCount()) {
-        hash = (37 * hash) + SUMCOUNT_FIELD_NUMBER;
-        hash = (53 * hash) + getSumCount().hashCode();
+        if (hasValCount()) {
+            hash = (37 * hash) + VALCOUNT_FIELD_NUMBER;
+            hash = (53 * hash) + getValCount().hashCode();
       }
       hash = (37 * hash) + CHANGED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -8196,14 +8131,12 @@ public final class Internal {
         super(parent);
         maybeForceBuilderInitialization();
       }
-
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getPairsFieldBuilder();
         }
       }
-
       public Builder clear() {
         super.clear();
         type_ = 0;
@@ -8222,11 +8155,11 @@ public final class Internal {
         } else {
           pairsBuilder_.clear();
         }
-        if (sumCountBuilder_ == null) {
-          sumCount_ = null;
-        } else {
-          sumCount_ = null;
-          sumCountBuilder_ = null;
+          if (valCountBuilder_ == null) {
+              valCount_ = null;
+          } else {
+              valCount_ = null;
+              valCountBuilder_ = null;
         }
         changed_ = false;
 
@@ -8255,9 +8188,9 @@ public final class Internal {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.type_ = type_;
-        if (bitmapBuilder_ == null) {
+          if (bitmapBuilder_ == null) {
               result.bitmap_ = bitmap_;
-          } else {
+        } else {
             result.bitmap_ = bitmapBuilder_.build();
         }
         result.n_ = n_;
@@ -8270,10 +8203,10 @@ public final class Internal {
         } else {
           result.pairs_ = pairsBuilder_.build();
         }
-        if (sumCountBuilder_ == null) {
-          result.sumCount_ = sumCount_;
-        } else {
-          result.sumCount_ = sumCountBuilder_.build();
+          if (valCountBuilder_ == null) {
+              result.valCount_ = valCount_;
+          } else {
+              result.valCount_ = valCountBuilder_.build();
         }
         result.changed_ = changed_;
         result.bitField0_ = to_bitField0_;
@@ -8302,7 +8235,6 @@ public final class Internal {
           int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
-
       public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
           Object value) {
@@ -8310,7 +8242,7 @@ public final class Internal {
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.pilosa.client.Internal.QueryResult) {
-          return mergeFrom((com.pilosa.client.Internal.QueryResult) other);
+            return mergeFrom((com.pilosa.client.Internal.QueryResult)other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -8320,11 +8252,11 @@ public final class Internal {
       public Builder mergeFrom(com.pilosa.client.Internal.QueryResult other) {
         if (other == com.pilosa.client.Internal.QueryResult.getDefaultInstance()) return this;
           if (other.getType() != 0) {
-            setType(other.getType());
+              setType(other.getType());
           }
           if (other.hasBitmap()) {
-            mergeBitmap(other.getBitmap());
-          }
+              mergeBitmap(other.getBitmap());
+        }
         if (other.getN() != 0L) {
           setN(other.getN());
         }
@@ -8354,8 +8286,8 @@ public final class Internal {
             }
           }
         }
-        if (other.hasSumCount()) {
-          mergeSumCount(other.getSumCount());
+          if (other.hasValCount()) {
+              mergeValCount(other.getValCount());
         }
         if (other.getChanged() != false) {
           setChanged(other.getChanged());
@@ -8386,22 +8318,20 @@ public final class Internal {
         return this;
       }
 
-      private int bitField0_;
+        private int bitField0_;
 
-      private int type_;
-
+        private int type_ ;
       /**
        * <code>optional uint32 Type = 6;</code>
        */
       public int getType() {
         return type_;
       }
-
       /**
        * <code>optional uint32 Type = 6;</code>
        */
       public Builder setType(int value) {
-
+        
         type_ = value;
         onChanged();
         return this;
@@ -8530,18 +8460,16 @@ public final class Internal {
                   isClean());
           bitmap_ = null;
         }
-        return bitmapBuilder_;
+          return bitmapBuilder_;
       }
 
-      private long n_;
-
+        private long n_ ;
       /**
        * <code>optional uint64 N = 2;</code>
        */
       public long getN() {
         return n_;
       }
-
       /**
        * <code>optional uint64 N = 2;</code>
        */
@@ -8557,9 +8485,9 @@ public final class Internal {
          */
         public Builder clearN() {
 
-          n_ = 0L;
-          onChanged();
-          return this;
+            n_ = 0L;
+            onChanged();
+            return this;
       }
 
       private java.util.List<com.pilosa.client.Internal.Pair> pairs_ =
@@ -8705,7 +8633,7 @@ public final class Internal {
           ensurePairsIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
                   values, pairs_);
-            onChanged();
+          onChanged();
         } else {
           pairsBuilder_.addAllMessages(values);
         }
@@ -8772,7 +8700,6 @@ public final class Internal {
         return getPairsFieldBuilder().addBuilder(
             com.pilosa.client.Internal.Pair.getDefaultInstance());
       }
-
       /**
        * <code>repeated .internal.Pair Pairs = 3;</code>
        */
@@ -8781,7 +8708,6 @@ public final class Internal {
         return getPairsFieldBuilder().addBuilder(
                 index, com.pilosa.client.Internal.Pair.getDefaultInstance());
       }
-
       /**
        * <code>repeated .internal.Pair Pairs = 3;</code>
        */
@@ -8790,7 +8716,7 @@ public final class Internal {
         return getPairsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>
+              com.pilosa.client.Internal.Pair, com.pilosa.client.Internal.Pair.Builder, com.pilosa.client.Internal.PairOrBuilder>
       getPairsFieldBuilder() {
         if (pairsBuilder_ == null) {
           pairsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
@@ -8801,128 +8727,133 @@ public final class Internal {
                   isClean());
           pairs_ = null;
         }
-        return pairsBuilder_;
+          return pairsBuilder_;
       }
 
-      private com.pilosa.client.Internal.SumCount sumCount_ = null;
+        private com.pilosa.client.Internal.ValCount valCount_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pilosa.client.Internal.SumCount, com.pilosa.client.Internal.SumCount.Builder, com.pilosa.client.Internal.SumCountOrBuilder> sumCountBuilder_;
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public boolean hasSumCount() {
-        return sumCountBuilder_ != null || sumCount_ != null;
-      }
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public com.pilosa.client.Internal.SumCount getSumCount() {
-        if (sumCountBuilder_ == null) {
-          return sumCount_ == null ? com.pilosa.client.Internal.SumCount.getDefaultInstance() : sumCount_;
-        } else {
-          return sumCountBuilder_.getMessage();
+              com.pilosa.client.Internal.ValCount, com.pilosa.client.Internal.ValCount.Builder, com.pilosa.client.Internal.ValCountOrBuilder> valCountBuilder_;
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public boolean hasValCount() {
+            return valCountBuilder_ != null || valCount_ != null;
         }
-      }
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public Builder setSumCount(com.pilosa.client.Internal.SumCount value) {
-        if (sumCountBuilder_ == null) {
-            if (value == null) {
-                throw new NullPointerException();
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public com.pilosa.client.Internal.ValCount getValCount() {
+            if (valCountBuilder_ == null) {
+                return valCount_ == null ? com.pilosa.client.Internal.ValCount.getDefaultInstance() : valCount_;
+            } else {
+                return valCountBuilder_.getMessage();
             }
-          sumCount_ = value;
-          onChanged();
-        } else {
-          sumCountBuilder_.setMessage(value);
         }
 
-        return this;
-      }
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public Builder setSumCount(
-              com.pilosa.client.Internal.SumCount.Builder builderForValue) {
-        if (sumCountBuilder_ == null) {
-          sumCount_ = builderForValue.build();
-          onChanged();
-        } else {
-          sumCountBuilder_.setMessage(builderForValue.build());
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public Builder setValCount(com.pilosa.client.Internal.ValCount value) {
+            if (valCountBuilder_ == null) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                valCount_ = value;
+                onChanged();
+            } else {
+                valCountBuilder_.setMessage(value);
+            }
+
+            return this;
         }
 
-        return this;
-      }
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public Builder setValCount(
+                com.pilosa.client.Internal.ValCount.Builder builderForValue) {
+            if (valCountBuilder_ == null) {
+                valCount_ = builderForValue.build();
+                onChanged();
+            } else {
+                valCountBuilder_.setMessage(builderForValue.build());
+            }
 
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public Builder mergeSumCount(com.pilosa.client.Internal.SumCount value) {
-        if (sumCountBuilder_ == null) {
-          if (sumCount_ != null) {
-            sumCount_ =
-              com.pilosa.client.Internal.SumCount.newBuilder(sumCount_).mergeFrom(value).buildPartial();
-          } else {
-            sumCount_ = value;
+            return this;
+        }
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public Builder mergeValCount(com.pilosa.client.Internal.ValCount value) {
+            if (valCountBuilder_ == null) {
+                if (valCount_ != null) {
+                    valCount_ =
+                            com.pilosa.client.Internal.ValCount.newBuilder(valCount_).mergeFrom(value).buildPartial();
+                } else {
+                    valCount_ = value;
+                }
+                onChanged();
+            } else {
+                valCountBuilder_.mergeFrom(value);
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public Builder clearValCount() {
+            if (valCountBuilder_ == null) {
+                valCount_ = null;
+                onChanged();
+            } else {
+                valCount_ = null;
+                valCountBuilder_ = null;
+            }
+
+            return this;
+        }
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public com.pilosa.client.Internal.ValCount.Builder getValCountBuilder() {
+
+            onChanged();
+            return getValCountFieldBuilder().getBuilder();
+        }
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        public com.pilosa.client.Internal.ValCountOrBuilder getValCountOrBuilder() {
+            if (valCountBuilder_ != null) {
+                return valCountBuilder_.getMessageOrBuilder();
+            } else {
+                return valCount_ == null ?
+                        com.pilosa.client.Internal.ValCount.getDefaultInstance() : valCount_;
+            }
+        }
+
+        /**
+         * <code>optional .internal.ValCount ValCount = 5;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+                com.pilosa.client.Internal.ValCount, com.pilosa.client.Internal.ValCount.Builder, com.pilosa.client.Internal.ValCountOrBuilder>
+        getValCountFieldBuilder() {
+            if (valCountBuilder_ == null) {
+                valCountBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                        com.pilosa.client.Internal.ValCount, com.pilosa.client.Internal.ValCount.Builder, com.pilosa.client.Internal.ValCountOrBuilder>(
+                        getValCount(),
+                        getParentForChildren(),
+                        isClean());
+              valCount_ = null;
           }
-          onChanged();
-        } else {
-          sumCountBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public Builder clearSumCount() {
-        if (sumCountBuilder_ == null) {
-          sumCount_ = null;
-          onChanged();
-        } else {
-          sumCount_ = null;
-          sumCountBuilder_ = null;
-        }
-
-        return this;
-      }
-
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public com.pilosa.client.Internal.SumCount.Builder getSumCountBuilder() {
-
-        onChanged();
-        return getSumCountFieldBuilder().getBuilder();
-      }
-
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      public com.pilosa.client.Internal.SumCountOrBuilder getSumCountOrBuilder() {
-        if (sumCountBuilder_ != null) {
-            return sumCountBuilder_.getMessageOrBuilder();
-        } else {
-            return sumCount_ == null ?
-                    com.pilosa.client.Internal.SumCount.getDefaultInstance() : sumCount_;
-        }
-      }
-
-      /**
-       * <code>optional .internal.SumCount SumCount = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-              com.pilosa.client.Internal.SumCount, com.pilosa.client.Internal.SumCount.Builder, com.pilosa.client.Internal.SumCountOrBuilder>
-          getSumCountFieldBuilder() {
-        if (sumCountBuilder_ == null) {
-          sumCountBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.pilosa.client.Internal.SumCount, com.pilosa.client.Internal.SumCount.Builder, com.pilosa.client.Internal.SumCountOrBuilder>(
-                  getSumCount(),
-                  getParentForChildren(),
-                  isClean());
-          sumCount_ = null;
-        }
-        return sumCountBuilder_;
+          return valCountBuilder_;
       }
 
       private boolean changed_ ;
@@ -9032,12 +8963,10 @@ public final class Internal {
      * <code>repeated uint64 RowIDs = 4;</code>
      */
     java.util.List<java.lang.Long> getRowIDsList();
-
     /**
      * <code>repeated uint64 RowIDs = 4;</code>
      */
     int getRowIDsCount();
-
     /**
      * <code>repeated uint64 RowIDs = 4;</code>
      */
@@ -9047,12 +8976,10 @@ public final class Internal {
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     java.util.List<java.lang.Long> getColumnIDsList();
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     int getColumnIDsCount();
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
@@ -9063,17 +8990,14 @@ public final class Internal {
      */
     java.util.List<java.lang.String>
     getRowKeysList();
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
     int getRowKeysCount();
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
     java.lang.String getRowKeys(int index);
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
@@ -9085,7 +9009,6 @@ public final class Internal {
      */
     java.util.List<java.lang.String>
     getColumnKeysList();
-
     /**
      * <code>repeated string ColumnKeys = 8;</code>
      */
@@ -9104,18 +9027,15 @@ public final class Internal {
      * <code>repeated int64 Timestamps = 6;</code>
      */
     java.util.List<java.lang.Long> getTimestampsList();
-
     /**
      * <code>repeated int64 Timestamps = 6;</code>
      */
     int getTimestampsCount();
-
     /**
      * <code>repeated int64 Timestamps = 6;</code>
      */
     long getTimestamps(int index);
   }
-
   /**
    * Protobuf type {@code internal.ImportRequest}
    */
@@ -9398,12 +9318,10 @@ public final class Internal {
     public long getRowIDs(int index) {
       return rowIDs_.get(index);
     }
-
     private int rowIDsMemoizedSerializedSize = -1;
 
     public static final int COLUMNIDS_FIELD_NUMBER = 5;
     private java.util.List<java.lang.Long> columnIDs_;
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
@@ -9411,26 +9329,22 @@ public final class Internal {
     getColumnIDsList() {
       return columnIDs_;
     }
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     public int getColumnIDsCount() {
       return columnIDs_.size();
     }
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     public long getColumnIDs(int index) {
       return columnIDs_.get(index);
     }
-
     private int columnIDsMemoizedSerializedSize = -1;
 
     public static final int ROWKEYS_FIELD_NUMBER = 7;
     private com.google.protobuf.LazyStringList rowKeys_;
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
@@ -9438,21 +9352,18 @@ public final class Internal {
     getRowKeysList() {
       return rowKeys_;
     }
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
     public int getRowKeysCount() {
       return rowKeys_.size();
     }
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
     public java.lang.String getRowKeys(int index) {
       return rowKeys_.get(index);
     }
-
     /**
      * <code>repeated string RowKeys = 7;</code>
      */
@@ -9463,7 +9374,6 @@ public final class Internal {
 
     public static final int COLUMNKEYS_FIELD_NUMBER = 8;
     private com.google.protobuf.LazyStringList columnKeys_;
-
     /**
      * <code>repeated string ColumnKeys = 8;</code>
      */
@@ -9471,7 +9381,6 @@ public final class Internal {
     getColumnKeysList() {
       return columnKeys_;
     }
-
     /**
      * <code>repeated string ColumnKeys = 8;</code>
      */
@@ -9644,7 +9553,6 @@ public final class Internal {
     }
 
     private static final long serialVersionUID = 0L;
-
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
@@ -9688,7 +9596,7 @@ public final class Internal {
       hash = (53 * hash) + getFrame().hashCode();
       hash = (37 * hash) + SLICE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getSlice());
+          getSlice());
       if (getRowIDsCount() > 0) {
         hash = (37 * hash) + ROWIDS_FIELD_NUMBER;
         hash = (53 * hash) + getRowIDsList().hashCode();
@@ -9812,31 +9720,30 @@ public final class Internal {
 
       // Construct using com.pilosa.client.Internal.ImportRequest.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+          maybeForceBuilderInitialization();
       }
 
-      private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
-      }
+        }
 
-      private void maybeForceBuilderInitialization() {
+        private void maybeForceBuilderInitialization() {
             if (com.google.protobuf.GeneratedMessageV3
-                    .alwaysUseFieldBuilders) {
-            }
+                  .alwaysUseFieldBuilders) {
+        }
       }
-
       public Builder clear() {
         super.clear();
         index_ = "";
 
-        frame_ = "";
+          frame_ = "";
 
-        slice_ = 0L;
+          slice_ = 0L;
 
-        rowIDs_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000008);
+          rowIDs_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
         columnIDs_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
         rowKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -10293,7 +10200,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -10303,7 +10209,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -10315,7 +10220,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -10327,14 +10231,12 @@ public final class Internal {
       }
 
       private com.google.protobuf.LazyStringList rowKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-
       private void ensureRowKeysIsMutable() {
         if (!((bitField0_ & 0x00000020) == 0x00000020)) {
           rowKeys_ = new com.google.protobuf.LazyStringArrayList(rowKeys_);
           bitField0_ |= 0x00000020;
-        }
+         }
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
@@ -10342,21 +10244,18 @@ public final class Internal {
       getRowKeysList() {
         return rowKeys_.getUnmodifiableView();
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
       public int getRowKeysCount() {
         return rowKeys_.size();
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
       public java.lang.String getRowKeys(int index) {
         return rowKeys_.get(index);
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
@@ -10364,35 +10263,32 @@ public final class Internal {
       getRowKeysBytes(int index) {
         return rowKeys_.getByteString(index);
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
       public Builder setRowKeys(
               int index, java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureRowKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureRowKeysIsMutable();
         rowKeys_.set(index, value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
       public Builder addRowKeys(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureRowKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureRowKeysIsMutable();
         rowKeys_.add(value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
@@ -10404,7 +10300,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
@@ -10414,16 +10309,15 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string RowKeys = 7;</code>
        */
       public Builder addRowKeysBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
         ensureRowKeysIsMutable();
         rowKeys_.add(value);
         onChanged();
@@ -10431,14 +10325,12 @@ public final class Internal {
       }
 
       private com.google.protobuf.LazyStringList columnKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-
       private void ensureColumnKeysIsMutable() {
         if (!((bitField0_ & 0x00000040) == 0x00000040)) {
           columnKeys_ = new com.google.protobuf.LazyStringArrayList(columnKeys_);
           bitField0_ |= 0x00000040;
-        }
+         }
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
@@ -10446,21 +10338,18 @@ public final class Internal {
       getColumnKeysList() {
         return columnKeys_.getUnmodifiableView();
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
       public int getColumnKeysCount() {
         return columnKeys_.size();
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
       public java.lang.String getColumnKeys(int index) {
         return columnKeys_.get(index);
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
@@ -10468,35 +10357,32 @@ public final class Internal {
       getColumnKeysBytes(int index) {
         return columnKeys_.getByteString(index);
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
       public Builder setColumnKeys(
               int index, java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureColumnKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureColumnKeysIsMutable();
         columnKeys_.set(index, value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
       public Builder addColumnKeys(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureColumnKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureColumnKeysIsMutable();
         columnKeys_.add(value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
@@ -10508,7 +10394,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
@@ -10518,16 +10403,15 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 8;</code>
        */
       public Builder addColumnKeysBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
         ensureColumnKeysIsMutable();
         columnKeys_.add(value);
         onChanged();
@@ -10579,7 +10463,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated int64 Timestamps = 6;</code>
        */
@@ -10616,7 +10499,6 @@ public final class Internal {
 
     // @@protoc_insertion_point(class_scope:internal.ImportRequest)
     private static final com.pilosa.client.Internal.ImportRequest DEFAULT_INSTANCE;
-
     static {
       DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportRequest();
     }
@@ -10631,7 +10513,7 @@ public final class Internal {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ImportRequest(input, extensionRegistry);
+          return new ImportRequest(input, extensionRegistry);
       }
     };
 
@@ -10658,7 +10540,6 @@ public final class Internal {
      * <code>optional string Index = 1;</code>
      */
     java.lang.String getIndex();
-
     /**
      * <code>optional string Index = 1;</code>
      */
@@ -10669,7 +10550,6 @@ public final class Internal {
      * <code>optional string Frame = 2;</code>
      */
     java.lang.String getFrame();
-
     /**
      * <code>optional string Frame = 2;</code>
      */
@@ -10685,7 +10565,6 @@ public final class Internal {
      * <code>optional string Field = 4;</code>
      */
     java.lang.String getField();
-
     /**
      * <code>optional string Field = 4;</code>
      */
@@ -10696,12 +10575,10 @@ public final class Internal {
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     java.util.List<java.lang.Long> getColumnIDsList();
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     int getColumnIDsCount();
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
@@ -10712,17 +10589,14 @@ public final class Internal {
      */
     java.util.List<java.lang.String>
     getColumnKeysList();
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
     int getColumnKeysCount();
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
     java.lang.String getColumnKeys(int index);
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
@@ -10733,18 +10607,15 @@ public final class Internal {
      * <code>repeated int64 Values = 6;</code>
      */
     java.util.List<java.lang.Long> getValuesList();
-
     /**
      * <code>repeated int64 Values = 6;</code>
      */
     int getValuesCount();
-
     /**
      * <code>repeated int64 Values = 6;</code>
      */
     long getValues(int index);
   }
-
   /**
    * Protobuf type {@code internal.ImportValueRequest}
    */
@@ -10756,7 +10627,6 @@ public final class Internal {
     private ImportValueRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-
     private ImportValueRequest() {
       index_ = "";
       frame_ = "";
@@ -10772,7 +10642,6 @@ public final class Internal {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-
     private ImportValueRequest(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -10887,7 +10756,6 @@ public final class Internal {
         makeExtensionsImmutable();
       }
     }
-
     public static final com.google.protobuf.Descriptors.Descriptor
     getDescriptor() {
       return com.pilosa.client.Internal.internal_static_internal_ImportValueRequest_descriptor;
@@ -10903,33 +10771,31 @@ public final class Internal {
     private int bitField0_;
     public static final int INDEX_FIELD_NUMBER = 1;
     private volatile java.lang.Object index_;
-
     /**
      * <code>optional string Index = 1;</code>
      */
     public java.lang.String getIndex() {
       java.lang.Object ref = index_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         index_ = s;
         return s;
       }
     }
-
     /**
      * <code>optional string Index = 1;</code>
      */
     public com.google.protobuf.ByteString
     getIndexBytes() {
-      java.lang.Object ref = index_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        java.lang.Object ref = index_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
         index_ = b;
         return b;
       } else {
@@ -10939,33 +10805,31 @@ public final class Internal {
 
     public static final int FRAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object frame_;
-
     /**
      * <code>optional string Frame = 2;</code>
      */
     public java.lang.String getFrame() {
       java.lang.Object ref = frame_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         frame_ = s;
         return s;
       }
     }
-
     /**
      * <code>optional string Frame = 2;</code>
      */
     public com.google.protobuf.ByteString
     getFrameBytes() {
-      java.lang.Object ref = frame_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        java.lang.Object ref = frame_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
         frame_ = b;
         return b;
       } else {
@@ -10975,7 +10839,6 @@ public final class Internal {
 
     public static final int SLICE_FIELD_NUMBER = 3;
     private long slice_;
-
     /**
      * <code>optional uint64 Slice = 3;</code>
      */
@@ -10985,33 +10848,31 @@ public final class Internal {
 
     public static final int FIELD_FIELD_NUMBER = 4;
     private volatile java.lang.Object field_;
-
     /**
      * <code>optional string Field = 4;</code>
      */
     public java.lang.String getField() {
       java.lang.Object ref = field_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+        } else {
+            com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         field_ = s;
         return s;
       }
     }
-
     /**
      * <code>optional string Field = 4;</code>
      */
     public com.google.protobuf.ByteString
     getFieldBytes() {
-      java.lang.Object ref = field_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        java.lang.Object ref = field_;
+        if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b =
+                    com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
         field_ = b;
         return b;
       } else {
@@ -11021,7 +10882,6 @@ public final class Internal {
 
     public static final int COLUMNIDS_FIELD_NUMBER = 5;
     private java.util.List<java.lang.Long> columnIDs_;
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
@@ -11029,26 +10889,22 @@ public final class Internal {
     getColumnIDsList() {
       return columnIDs_;
     }
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     public int getColumnIDsCount() {
       return columnIDs_.size();
     }
-
     /**
      * <code>repeated uint64 ColumnIDs = 5;</code>
      */
     public long getColumnIDs(int index) {
       return columnIDs_.get(index);
     }
-
     private int columnIDsMemoizedSerializedSize = -1;
 
     public static final int COLUMNKEYS_FIELD_NUMBER = 7;
     private com.google.protobuf.LazyStringList columnKeys_;
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
@@ -11056,21 +10912,18 @@ public final class Internal {
     getColumnKeysList() {
       return columnKeys_;
     }
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
     public int getColumnKeysCount() {
       return columnKeys_.size();
     }
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
     public java.lang.String getColumnKeys(int index) {
       return columnKeys_.get(index);
     }
-
     /**
      * <code>repeated string ColumnKeys = 7;</code>
      */
@@ -11081,7 +10934,6 @@ public final class Internal {
 
     public static final int VALUES_FIELD_NUMBER = 6;
     private java.util.List<java.lang.Long> values_;
-
     /**
      * <code>repeated int64 Values = 6;</code>
      */
@@ -11089,25 +10941,21 @@ public final class Internal {
     getValuesList() {
       return values_;
     }
-
     /**
      * <code>repeated int64 Values = 6;</code>
      */
     public int getValuesCount() {
       return values_.size();
     }
-
     /**
      * <code>repeated int64 Values = 6;</code>
      */
     public long getValues(int index) {
       return values_.get(index);
     }
-
     private int valuesMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
-
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -11211,10 +11059,10 @@ public final class Internal {
 
     private static final long serialVersionUID = 0L;
 
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-        return true;
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+       return true;
       }
       if (!(obj instanceof com.pilosa.client.Internal.ImportValueRequest)) {
         return super.equals(obj);
@@ -11252,7 +11100,7 @@ public final class Internal {
       hash = (53 * hash) + getFrame().hashCode();
       hash = (37 * hash) + SLICE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getSlice());
+          getSlice());
       hash = (37 * hash) + FIELD_FIELD_NUMBER;
       hash = (53 * hash) + getField().hashCode();
       if (getColumnIDsCount() > 0) {
@@ -11277,32 +11125,27 @@ public final class Internal {
             throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(java.io.InputStream input)
             throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseWithIOException(PARSER, input);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11310,13 +11153,11 @@ public final class Internal {
       return com.google.protobuf.GeneratedMessageV3
               .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11324,14 +11165,12 @@ public final class Internal {
       return com.google.protobuf.GeneratedMessageV3
               .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
               .parseWithIOException(PARSER, input);
     }
-
     public static com.pilosa.client.Internal.ImportValueRequest parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11340,18 +11179,13 @@ public final class Internal {
               .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public Builder newBuilderForType() {
-      return newBuilder();
-    }
-
+      public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-
     public static Builder newBuilder(com.pilosa.client.Internal.ImportValueRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
-
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -11363,7 +11197,6 @@ public final class Internal {
       Builder builder = new Builder(parent);
       return builder;
     }
-
     /**
      * Protobuf type {@code internal.ImportValueRequest}
      */
@@ -11385,21 +11218,19 @@ public final class Internal {
 
       // Construct using com.pilosa.client.Internal.ImportValueRequest.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+          maybeForceBuilderInitialization();
       }
 
-      private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        private Builder(
+                com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
-
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
         }
       }
-
       public Builder clear() {
         super.clear();
         index_ = "";
@@ -11467,38 +11298,32 @@ public final class Internal {
       public Builder clone() {
         return (Builder) super.clone();
       }
-
       public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               Object value) {
         return (Builder) super.setField(field, value);
       }
-
       public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
-
       public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
-
       public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
-
       public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
-
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pilosa.client.Internal.ImportValueRequest) {
-          return mergeFrom((com.pilosa.client.Internal.ImportValueRequest) other);
+          if (other instanceof com.pilosa.client.Internal.ImportValueRequest) {
+            return mergeFrom((com.pilosa.client.Internal.ImportValueRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -11577,11 +11402,9 @@ public final class Internal {
         }
         return this;
       }
-
       private int bitField0_;
 
       private java.lang.Object index_ = "";
-
       /**
        * <code>optional string Index = 1;</code>
        */
@@ -11597,65 +11420,60 @@ public final class Internal {
           return (java.lang.String) ref;
         }
       }
-
       /**
        * <code>optional string Index = 1;</code>
        */
       public com.google.protobuf.ByteString
       getIndexBytes() {
-        java.lang.Object ref = index_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          java.lang.Object ref = index_;
+          if (ref instanceof String) {
+              com.google.protobuf.ByteString b =
+                      com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
           index_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-
       /**
        * <code>optional string Index = 1;</code>
        */
       public Builder setIndex(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
+          if (value == null) {
+              throw new NullPointerException();
+  }
+  
         index_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Index = 1;</code>
        */
       public Builder clearIndex() {
-
+        
         index_ = getDefaultInstance().getIndex();
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Index = 1;</code>
        */
       public Builder setIndexBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
+        
         index_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object frame_ = "";
-
       /**
        * <code>optional string Frame = 2;</code>
        */
@@ -11671,94 +11489,86 @@ public final class Internal {
           return (java.lang.String) ref;
         }
       }
-
       /**
        * <code>optional string Frame = 2;</code>
        */
       public com.google.protobuf.ByteString
       getFrameBytes() {
-        java.lang.Object ref = frame_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          java.lang.Object ref = frame_;
+          if (ref instanceof String) {
+              com.google.protobuf.ByteString b =
+                      com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
           frame_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-
       /**
        * <code>optional string Frame = 2;</code>
        */
       public Builder setFrame(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
+          if (value == null) {
+              throw new NullPointerException();
+  }
+  
         frame_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Frame = 2;</code>
        */
       public Builder clearFrame() {
-
+        
         frame_ = getDefaultInstance().getFrame();
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Frame = 2;</code>
        */
       public Builder setFrameBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
 
-        frame_ = value;
+          frame_ = value;
         onChanged();
-        return this;
+          return this;
       }
 
-      private long slice_;
-
+        private long slice_ ;
       /**
        * <code>optional uint64 Slice = 3;</code>
        */
       public long getSlice() {
         return slice_;
       }
-
       /**
        * <code>optional uint64 Slice = 3;</code>
        */
       public Builder setSlice(long value) {
-
+        
         slice_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional uint64 Slice = 3;</code>
        */
       public Builder clearSlice() {
-
+        
         slice_ = 0L;
         onChanged();
         return this;
       }
 
       private java.lang.Object field_ = "";
-
       /**
        * <code>optional string Field = 4;</code>
        */
@@ -11774,72 +11584,66 @@ public final class Internal {
           return (java.lang.String) ref;
         }
       }
-
       /**
        * <code>optional string Field = 4;</code>
        */
       public com.google.protobuf.ByteString
       getFieldBytes() {
-        java.lang.Object ref = field_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          java.lang.Object ref = field_;
+          if (ref instanceof String) {
+              com.google.protobuf.ByteString b =
+                      com.google.protobuf.ByteString.copyFromUtf8(
+                            (java.lang.String) ref);
           field_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
-
       /**
        * <code>optional string Field = 4;</code>
        */
       public Builder setField(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-
+          if (value == null) {
+              throw new NullPointerException();
+  }
+  
         field_ = value;
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Field = 4;</code>
        */
       public Builder clearField() {
-
+        
         field_ = getDefaultInstance().getField();
         onChanged();
         return this;
       }
-
       /**
        * <code>optional string Field = 4;</code>
        */
       public Builder setFieldBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
+        
         field_ = value;
         onChanged();
         return this;
       }
 
       private java.util.List<java.lang.Long> columnIDs_ = java.util.Collections.emptyList();
-
       private void ensureColumnIDsIsMutable() {
         if (!((bitField0_ & 0x00000010) == 0x00000010)) {
           columnIDs_ = new java.util.ArrayList<java.lang.Long>(columnIDs_);
           bitField0_ |= 0x00000010;
-        }
+         }
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -11847,21 +11651,18 @@ public final class Internal {
       getColumnIDsList() {
         return java.util.Collections.unmodifiableList(columnIDs_);
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
       public int getColumnIDsCount() {
         return columnIDs_.size();
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
       public long getColumnIDs(int index) {
         return columnIDs_.get(index);
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -11872,7 +11673,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -11882,7 +11682,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -11894,7 +11693,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated uint64 ColumnIDs = 5;</code>
        */
@@ -11906,14 +11704,12 @@ public final class Internal {
       }
 
       private com.google.protobuf.LazyStringList columnKeys_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-
       private void ensureColumnKeysIsMutable() {
         if (!((bitField0_ & 0x00000020) == 0x00000020)) {
           columnKeys_ = new com.google.protobuf.LazyStringArrayList(columnKeys_);
           bitField0_ |= 0x00000020;
-        }
+         }
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
@@ -11921,21 +11717,18 @@ public final class Internal {
       getColumnKeysList() {
         return columnKeys_.getUnmodifiableView();
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
       public int getColumnKeysCount() {
         return columnKeys_.size();
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
       public java.lang.String getColumnKeys(int index) {
         return columnKeys_.get(index);
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
@@ -11943,35 +11736,32 @@ public final class Internal {
       getColumnKeysBytes(int index) {
         return columnKeys_.getByteString(index);
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
       public Builder setColumnKeys(
               int index, java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureColumnKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureColumnKeysIsMutable();
         columnKeys_.set(index, value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
       public Builder addColumnKeys(
               java.lang.String value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureColumnKeysIsMutable();
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          ensureColumnKeysIsMutable();
         columnKeys_.add(value);
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
@@ -11983,7 +11773,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
@@ -11993,16 +11782,15 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated string ColumnKeys = 7;</code>
        */
       public Builder addColumnKeysBytes(
               com.google.protobuf.ByteString value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
+          if (value == null) {
+              throw new NullPointerException();
+          }
+          checkByteStringIsUtf8(value);
         ensureColumnKeysIsMutable();
         columnKeys_.add(value);
         onChanged();
@@ -12010,14 +11798,12 @@ public final class Internal {
       }
 
       private java.util.List<java.lang.Long> values_ = java.util.Collections.emptyList();
-
       private void ensureValuesIsMutable() {
         if (!((bitField0_ & 0x00000040) == 0x00000040)) {
-          values_ = new java.util.ArrayList<java.lang.Long>(values_);
+            values_ = new java.util.ArrayList<java.lang.Long>(values_);
           bitField0_ |= 0x00000040;
-        }
+         }
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
@@ -12025,21 +11811,18 @@ public final class Internal {
       getValuesList() {
         return java.util.Collections.unmodifiableList(values_);
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
       public int getValuesCount() {
         return values_.size();
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
       public long getValues(int index) {
         return values_.get(index);
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
@@ -12050,7 +11833,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
@@ -12060,7 +11842,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
@@ -12072,7 +11853,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       /**
        * <code>repeated int64 Values = 6;</code>
        */
@@ -12082,7 +11862,6 @@ public final class Internal {
         onChanged();
         return this;
       }
-
       public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -12099,7 +11878,6 @@ public final class Internal {
 
     // @@protoc_insertion_point(class_scope:internal.ImportValueRequest)
     private static final com.pilosa.client.Internal.ImportValueRequest DEFAULT_INSTANCE;
-
     static {
       DEFAULT_INSTANCE = new com.pilosa.client.Internal.ImportValueRequest();
     }
@@ -12114,7 +11892,7 @@ public final class Internal {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ImportValueRequest(input, extensionRegistry);
+          return new ImportValueRequest(input, extensionRegistry);
       }
     };
 
@@ -12135,80 +11913,79 @@ public final class Internal {
 
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_Bitmap_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_Bitmap_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_Bitmap_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_Pair_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internal_static_internal_Pair_fieldAccessorTable;
+    private static final com.google.protobuf.Descriptors.Descriptor
+            internal_static_internal_ValCount_descriptor;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_ValCount_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_internal_SumCount_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_SumCount_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_internal_Bit_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_Bit_descriptor;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_internal_Bit_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_internal_ColumnAttrSet_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internal_static_internal_ColumnAttrSet_descriptor;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_internal_ColumnAttrSet_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_internal_Attr_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_Attr_fieldAccessorTable;
+          internal_static_internal_Attr_descriptor;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_Attr_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_AttrMap_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_AttrMap_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_AttrMap_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_QueryRequest_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_QueryRequest_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_QueryRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_QueryResponse_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_QueryResponse_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_QueryResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_QueryResult_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_QueryResult_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_QueryResult_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_ImportRequest_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_ImportRequest_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_ImportRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
           internal_static_internal_ImportValueRequest_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_internal_ImportValueRequest_fieldAccessorTable;
+    private static final
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internal_static_internal_ImportValueRequest_fieldAccessorTable;
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-  getDescriptor() {
-    return descriptor;
+    public static com.google.protobuf.Descriptors.FileDescriptor
+    getDescriptor() {
+        return descriptor;
   }
 
-  private static com.google.protobuf.Descriptors.FileDescriptor
-          descriptor;
-
+    private static com.google.protobuf.Descriptors.FileDescriptor
+      descriptor;
   static {
     java.lang.String[] descriptorData = {
             "\n+com.pilosa.client/src/internal/public." +
                     "proto\022\010internal\"C\n\006Bitmap\022\014\n\004Bits\030\001 \003(\004\022" +
                     "\014\n\004Keys\030\003 \003(\t\022\035\n\005Attrs\030\002 \003(\0132\016.internal." +
                     "Attr\".\n\004Pair\022\n\n\002ID\030\001 \001(\004\022\013\n\003Key\030\003 \001(\t\022\r\n" +
-                    "\005Count\030\002 \001(\004\"&\n\010SumCount\022\013\n\003Sum\030\001 \001(\003\022\r\n" +
+                    "\005Count\030\002 \001(\004\"&\n\010ValCount\022\013\n\003Val\030\001 \001(\003\022\r\n" +
                     "\005Count\030\002 \001(\003\"9\n\003Bit\022\r\n\005RowID\030\001 \001(\004\022\020\n\010Co" +
                     "lumnID\030\002 \001(\004\022\021\n\tTimestamp\030\003 \001(\003\"G\n\rColum" +
                     "nAttrSet\022\n\n\002ID\030\001 \001(\004\022\013\n\003Key\030\003 \001(\t\022\035\n\005Att" +
@@ -12225,8 +12002,8 @@ public final class Internal {
                     "2\027.internal.ColumnAttrSet\"\236\001\n\013QueryResul" +
                     "t\022\014\n\004Type\030\006 \001(\r\022 \n\006Bitmap\030\001 \001(\0132\020.intern",
             "al.Bitmap\022\t\n\001N\030\002 \001(\004\022\035\n\005Pairs\030\003 \003(\0132\016.in" +
-                    "ternal.Pair\022$\n\010SumCount\030\005 \001(\0132\022.internal" +
-                    ".SumCount\022\017\n\007Changed\030\004 \001(\010\"\230\001\n\rImportReq" +
+                    "ternal.Pair\022$\n\010ValCount\030\005 \001(\0132\022.internal" +
+                    ".ValCount\022\017\n\007Changed\030\004 \001(\010\"\230\001\n\rImportReq" +
                     "uest\022\r\n\005Index\030\001 \001(\t\022\r\n\005Frame\030\002 \001(\t\022\r\n\005Sl" +
                     "ice\030\003 \001(\004\022\016\n\006RowIDs\030\004 \003(\004\022\021\n\tColumnIDs\030\005" +
                     " \003(\004\022\017\n\007RowKeys\030\007 \003(\t\022\022\n\nColumnKeys\030\010 \003(" +
@@ -12238,88 +12015,88 @@ public final class Internal {
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-              public com.google.protobuf.ExtensionRegistry assignDescriptors(
-                      com.google.protobuf.Descriptors.FileDescriptor root) {
-                descriptor = root;
-                return null;
-              }
-            };
+                public com.google.protobuf.ExtensionRegistry assignDescriptors(
+                        com.google.protobuf.Descriptors.FileDescriptor root) {
+                    descriptor = root;
+                    return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-              new com.google.protobuf.Descriptors.FileDescriptor[]{
-              }, assigner);
+            .internalBuildGeneratedFileFrom(descriptorData,
+              new com.google.protobuf.Descriptors.FileDescriptor[] {
+        }, assigner);
     internal_static_internal_Bitmap_descriptor =
             getDescriptor().getMessageTypes().get(0);
     internal_static_internal_Bitmap_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_Bitmap_descriptor,
-            new java.lang.String[]{"Bits", "Keys", "Attrs",});
+            new java.lang.String[]{"Bits", "Keys", "Attrs", });
     internal_static_internal_Pair_descriptor =
             getDescriptor().getMessageTypes().get(1);
     internal_static_internal_Pair_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_Pair_descriptor,
             new java.lang.String[]{"ID", "Key", "Count",});
-    internal_static_internal_SumCount_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-    internal_static_internal_SumCount_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_internal_SumCount_descriptor,
-            new java.lang.String[]{"Sum", "Count",});
+      internal_static_internal_ValCount_descriptor =
+              getDescriptor().getMessageTypes().get(2);
+      internal_static_internal_ValCount_fieldAccessorTable = new
+              com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+              internal_static_internal_ValCount_descriptor,
+              new java.lang.String[] { "Val", "Count", });
     internal_static_internal_Bit_descriptor =
             getDescriptor().getMessageTypes().get(3);
     internal_static_internal_Bit_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_Bit_descriptor,
-            new java.lang.String[]{"RowID", "ColumnID", "Timestamp",});
+            new java.lang.String[]{"RowID", "ColumnID", "Timestamp", });
     internal_static_internal_ColumnAttrSet_descriptor =
             getDescriptor().getMessageTypes().get(4);
     internal_static_internal_ColumnAttrSet_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_ColumnAttrSet_descriptor,
-            new java.lang.String[]{"ID", "Key", "Attrs",});
+            new java.lang.String[]{"ID", "Key", "Attrs", });
     internal_static_internal_Attr_descriptor =
             getDescriptor().getMessageTypes().get(5);
     internal_static_internal_Attr_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_Attr_descriptor,
-            new java.lang.String[]{"Key", "Type", "StringValue", "IntValue", "BoolValue", "FloatValue",});
+            new java.lang.String[]{"Key", "Type", "StringValue", "IntValue", "BoolValue", "FloatValue", });
     internal_static_internal_AttrMap_descriptor =
             getDescriptor().getMessageTypes().get(6);
     internal_static_internal_AttrMap_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_AttrMap_descriptor,
-            new java.lang.String[]{"Attrs",});
+            new java.lang.String[] { "Attrs", });
     internal_static_internal_QueryRequest_descriptor =
             getDescriptor().getMessageTypes().get(7);
     internal_static_internal_QueryRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_QueryRequest_descriptor,
-            new java.lang.String[]{"Query", "Slices", "ColumnAttrs", "Remote", "ExcludeAttrs", "ExcludeBits",});
+            new java.lang.String[]{"Query", "Slices", "ColumnAttrs", "Remote", "ExcludeAttrs", "ExcludeBits", });
     internal_static_internal_QueryResponse_descriptor =
             getDescriptor().getMessageTypes().get(8);
     internal_static_internal_QueryResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_QueryResponse_descriptor,
-            new java.lang.String[]{"Err", "Results", "ColumnAttrSets",});
+            new java.lang.String[]{"Err", "Results", "ColumnAttrSets", });
     internal_static_internal_QueryResult_descriptor =
             getDescriptor().getMessageTypes().get(9);
     internal_static_internal_QueryResult_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_QueryResult_descriptor,
-            new java.lang.String[]{"Type", "Bitmap", "N", "Pairs", "SumCount", "Changed",});
+            new java.lang.String[]{"Type", "Bitmap", "N", "Pairs", "ValCount", "Changed", });
     internal_static_internal_ImportRequest_descriptor =
             getDescriptor().getMessageTypes().get(10);
     internal_static_internal_ImportRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_ImportRequest_descriptor,
-            new java.lang.String[]{"Index", "Frame", "Slice", "RowIDs", "ColumnIDs", "RowKeys", "ColumnKeys", "Timestamps",});
+            new java.lang.String[]{"Index", "Frame", "Slice", "RowIDs", "ColumnIDs", "RowKeys", "ColumnKeys", "Timestamps", });
     internal_static_internal_ImportValueRequest_descriptor =
             getDescriptor().getMessageTypes().get(11);
     internal_static_internal_ImportValueRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_internal_ImportValueRequest_descriptor,
-            new java.lang.String[]{"Index", "Frame", "Slice", "Field", "ColumnIDs", "ColumnKeys", "Values",});
+            new java.lang.String[]{"Index", "Frame", "Slice", "Field", "ColumnIDs", "ColumnKeys", "Values", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

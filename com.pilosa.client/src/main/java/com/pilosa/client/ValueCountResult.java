@@ -39,10 +39,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
-public class SumCountResult implements QueryResult {
+public class ValueCountResult implements QueryResult {
     @Override
     public int getType() {
-        return QueryResultType.SUM_COUNT;
+        return QueryResultType.VAL_COUNT;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class SumCountResult implements QueryResult {
     }
 
     @Override
-    public long getSum() {
-        return this.sum;
+    public long getValue() {
+        return this.value;
     }
 
     @Override
@@ -75,12 +75,12 @@ public class SumCountResult implements QueryResult {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SumCountResult)) {
+        if (!(obj instanceof ValueCountResult)) {
             return false;
         }
-        SumCountResult rhs = (SumCountResult) obj;
+        ValueCountResult rhs = (ValueCountResult) obj;
         return new EqualsBuilder()
-                .append(this.sum, rhs.sum)
+                .append(this.value, rhs.value)
                 .append(this.count, rhs.count)
                 .isEquals();
     }
@@ -88,23 +88,23 @@ public class SumCountResult implements QueryResult {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.sum)
+                .append(this.value)
                 .append(this.count)
                 .toHashCode();
     }
 
-    static SumCountResult create(long sum, long count) {
-        SumCountResult result = new SumCountResult();
-        result.sum = sum;
+    static ValueCountResult create(long sum, long count) {
+        ValueCountResult result = new ValueCountResult();
+        result.value = sum;
         result.count = count;
         return result;
     }
 
-    static SumCountResult fromInternal(Internal.QueryResult q) {
-        Internal.SumCount obj = q.getSumCount();
-        return create(obj.getSum(), obj.getCount());
+    static ValueCountResult fromInternal(Internal.QueryResult q) {
+        Internal.ValCount obj = q.getValCount();
+        return create(obj.getVal(), obj.getCount());
     }
 
-    private long sum;
+    private long value;
     private long count;
 }

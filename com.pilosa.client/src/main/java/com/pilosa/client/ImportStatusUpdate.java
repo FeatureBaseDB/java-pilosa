@@ -34,68 +34,37 @@
 
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.util.List;
-
-public class IntResult implements QueryResult {
-    @Override
-    public int getType() {
-        return QueryResultType.INT;
+public class ImportStatusUpdate {
+    public long getThreadID() {
+        return this.threadID;
     }
 
-    @Override
-    public BitmapResult getBitmap() {
-        return BitmapResult.defaultResult();
+    public long getSlice() {
+        return this.slice;
     }
 
-    @Override
-    public List<CountResultItem> getCountItems() {
-        return TopNResult.defaultItems();
+    public long getImportedCount() {
+        return this.importedCount;
     }
 
-    @Override
-    public long getCount() {
-        return this.count;
+    public long getTimeMs() {
+        return this.timeMs;
     }
 
-    @Override
-    public long getValue() {
-        return 0;
+    public String toString() {
+        return String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
+                this.threadID, this.importedCount, this.slice, this.timeMs);
     }
 
-    @Override
-    public boolean isChanged() {
-        return false;
+    ImportStatusUpdate(final long threadID, final long slice, final long importedCount, final long timeMs) {
+        this.threadID = threadID;
+        this.slice = slice;
+        this.importedCount = importedCount;
+        this.timeMs = timeMs;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof IntResult)) {
-            return false;
-        }
-        return this.count == ((IntResult) obj).count;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.count)
-                .toHashCode();
-    }
-
-    static IntResult create(long count) {
-        IntResult result = new IntResult();
-        result.count = count;
-        return result;
-    }
-
-    static IntResult fromInternal(Internal.QueryResult q) {
-        return IntResult.create(q.getN());
-    }
-
-    private long count;
+    private final long threadID;
+    private final long slice;
+    private final long importedCount;
+    private final long timeMs;
 }

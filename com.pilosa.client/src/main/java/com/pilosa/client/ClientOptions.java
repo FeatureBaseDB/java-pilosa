@@ -132,6 +132,16 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setImportThreadCount(int threadCount) {
+            this.importThreadCount = threadCount;
+            return this;
+        }
+
+        public Builder setSliceWidth(long sliceWidth) {
+            this.sliceWidth = sliceWidth;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
@@ -139,7 +149,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext);
+                    this.sslContext, this.importThreadCount, this.sliceWidth);
         }
 
         private int socketTimeout = 300000;
@@ -150,6 +160,8 @@ public final class ClientOptions {
         private SSLContext sslContext = SSLContexts.createDefault();
         private boolean skipVersionCheck = false;
         private boolean legacyMode = false;
+        private int importThreadCount = Runtime.getRuntime().availableProcessors();
+        private long sliceWidth = 1048576L;
     }
 
     /**
@@ -184,15 +196,26 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
+    public int getImportThreadCount() {
+        return this.importThreadCount;
+    }
+
+    public long getSliceWidth() {
+        return this.sliceWidth;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext) {
+                          final SSLContext sslContext, final int importThreadCount,
+                          final long sliceWidth) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
+        this.importThreadCount = importThreadCount;
+        this.sliceWidth = sliceWidth;
     }
 
     private final int socketTimeout; // milliseconds
@@ -201,4 +224,6 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
+    private final int importThreadCount;
+    private final long sliceWidth;
 }

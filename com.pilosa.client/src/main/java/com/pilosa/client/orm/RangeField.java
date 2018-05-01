@@ -131,8 +131,7 @@ public class RangeField {
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
     public PqlBaseQuery sum() {
-        String qry = String.format("Sum(frame='%s', field='%s')", frame.getName(), name);
-        return this.index.pqlQuery(qry);
+        return valueQuery("Sum", null);
     }
 
     /**
@@ -146,9 +145,61 @@ public class RangeField {
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
     public PqlBaseQuery sum(PqlBitmapQuery bitmap) {
-        String qry = String.format("Sum(%s, frame='%s', field='%s')",
-                bitmap.serialize(), frame.getName(), name);
-        return this.index.pqlQuery(qry);
+        return valueQuery("Sum", bitmap);
+    }
+
+    /**
+     * Creates a Min query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
+     */
+    public PqlBaseQuery min() {
+        return valueQuery("Min", null);
+    }
+
+    /**
+     * Creates a Min query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
+     */
+    public PqlBaseQuery min(PqlBitmapQuery bitmap) {
+        return valueQuery("Min", bitmap);
+    }
+
+    /**
+     * Creates a Max query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
+     */
+    public PqlBaseQuery max() {
+        return valueQuery("Max", null);
+    }
+
+    /**
+     * Creates a Max query.
+     * <p>
+     * The frame for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
+     */
+    public PqlBaseQuery max(PqlBitmapQuery bitmap) {
+        return valueQuery("Max", bitmap);
     }
 
     /**
@@ -195,6 +246,17 @@ public class RangeField {
         String qry = String.format("Range(frame='%s', %s %s %d)",
                 frame.getName(), this.name, op, n);
         return this.index.pqlBitmapQuery(qry);
+    }
+
+    public PqlBaseQuery valueQuery(String op, PqlBitmapQuery bitmap) {
+        String qry;
+        if (bitmap != null) {
+            qry = String.format("%s(%s, frame='%s', field='%s')",
+                    op, bitmap.serialize(), frame.getName(), name);
+        } else {
+            qry = String.format("%s(frame='%s', field='%s')", op, frame.getName(), name);
+        }
+        return this.index.pqlQuery(qry);
     }
 
     private Index index;

@@ -39,7 +39,7 @@ public class QueryResultType {
     public final static int NIL = 0;
     public final static int BITMAP = 1;
     public final static int PAIRS = 2;
-    public final static int SUM_COUNT = 3;
+    public final static int VAL_COUNT = 3;
     public final static int INT = 4;
     public final static int BOOL = 5;
 }

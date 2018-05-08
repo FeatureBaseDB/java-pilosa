@@ -1,6 +1,6 @@
 ## Change Log
 
-* **Next**
+* **v0.9.0** (2018-05-08)
     * Supports multi-threaded imports and import progress tracking.
     * Added `RangeField.min` and `RangeField.max` methods.
     * **Deprecation** `inverseEnabled` frame option, `Frame.inverseBitmap`, `Frame.inverseTopN`, `Frame.inverseRange` methods. Inverse frames will be removed on Pilosa 1.0.

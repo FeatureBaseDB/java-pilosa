@@ -35,7 +35,7 @@ Once you have indexes and frame objects created, you can create queries for them
 For instance, `Bitmap` queries work on rows; use a frame object to create those queries:
 
 ```java
-PqlQuery bitmapQuery = stargazer.bitmap(1);  // corresponds to PQL: Bitmap(frame='stargazer', row=1)
+PqlBitmapQuery bitmapQuery = stargazer.bitmap(1);  // corresponds to PQL: Bitmap(frame='stargazer', row=1)
 ```
 
 `Union` queries work on columns; use the index object to create them:
@@ -87,7 +87,7 @@ System.out.println(response.getResult().getBitmap().getBits());
 
 // Query for the total number of animals in captivity
 response = client.query(captivity.sum());
-System.out.println(response.getResult().getSum());
+System.out.println(response.getResult().getValue());
 ```
 
 It's possible to pass a bitmap query to `sum`, so only columns where a row is set are filtered in:
@@ -97,7 +97,7 @@ client.query(index.batchQuery(
         frame.setBit(42, 1),
         frame.setBit(42, 6)));
 response = client.query(captivity.sum(frame.bitmap(42)));
-System.out.println(response.getResult().getSum());
+System.out.println(response.getResult().getValue());
 ```
 
 See the *Field* functions further below for the list of functions that can be used with a `RangeField`.
@@ -116,20 +116,20 @@ Index:
 Frame:
 
 * `PqlBitmapQuery bitmap(long rowID)`
-* `PqlBitmapQuery inverseBitmap(long columnID)`
 * `PqlQuery setBit(long rowID, long columnID)`
 * `PqlQuery clearBit(long rowID, long columnID)`
 * `PqlBitmapQuery topN(long n)`
-* `PqlBitmapQuery inverseTopN(long n)`
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap)`
-* `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap)`
 * `PqlBitmapQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
-* `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
 * `PqlBitmapQuery range(long rowID, Date start, Date end)`
-* `PqlBitmapQuery inverseRange(long columnID, Date start, Date end)`
 * `PqlQuery setRowAttrs(long rowID, Map<String, Object> attributes)`
 * `PqlBaseQuery sum(String field)`
 * `PqlBaseQuery setFieldValue(long columnID, String field, long value)`
+* (**deprecated**) `PqlBitmapQuery inverseBitmap(long columnID)`
+* (**deprecated**) `PqlBitmapQuery inverseTopN(long n)`
+* (**deprecated**) `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap)`
+* (**deprecated**) `PqlBitmapQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values)`
+* (**deprecated**) `PqlBitmapQuery inverseRange(long columnID, Date start, Date end)`
 
 Field:
 

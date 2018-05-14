@@ -140,8 +140,10 @@ for (ColumnItem column : response.getColumns()) {
 `QueryResult` objects contain:
 
 * `getBitmap` method to retrieve a bitmap result,
-* `getCountItems` method to retrieve column count per row ID entries returned from `topN` queries,
-* `getCount` method to retrieve the number of rows per the given row ID returned from `count` queries.
+* `getCountItems` method to retrieve column count per row ID entries returned from `TopN` queries,
+* `getCount` method to retrieve the number of rows per the given row ID returned from `Count` queries.
+* `getValue` method to retrieve the result of `Min`, `Max` or `Sum` queries.
+* `isChanged` method returns whether a `SetBit` or `ClearBit` query changed a bit.
 
 ```java
 QueryResult result = response.getResult();
@@ -152,6 +154,10 @@ Map<String, Object> attributes = bitmap.getAttributes();
 List<CountResultItem> countItems = result.getCountItems();
 
 long count = result.getCount();
+
+long value = result.getValue();
+
+boolean changed = result.isChanged();
 ```
 
 ## SSL/TLS

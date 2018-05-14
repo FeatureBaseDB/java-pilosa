@@ -8,10 +8,7 @@ before_install:
   - wget https://s3.amazonaws.com/build.pilosa.com/pilosa-master-linux-amd64.tar.gz && tar xf pilosa-master-linux-amd64.tar.gz
   - ./pilosa-master-linux-amd64/pilosa server --metric.diagnostics=false -d http_data &
   - ./pilosa-master-linux-amd64/pilosa server --metric.diagnostics=false -b https://:30101 -d https_data --cluster.disabled --tls.skip-verify --tls.certificate test.pilosa.local.crt --tls.key test.pilosa.local.key &
-  - wget http://www-us.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
-  - tar xf apache-maven-3.5.2-bin.tar.gz
-  - export M2_HOME=$PWD/apache-maven-3.5.2
-  - export PATH=$M2_HOME/bin:$PATH
+  - sudo apt install -y maven
 script:
   - PILOSA_BIND="https://:30101" make test-all
   - mvn -f com.pilosa.client/pom.xml clean test failsafe:integration-test jacoco:report coveralls:report

@@ -42,13 +42,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Contains options to customize {@link Frame} objects and frame queries.
+ * Contains options to customize {@link Field} objects and frame queries.
  * <p>
- * In order to set options, create a {@link Builder} object using {@link FrameOptions#builder()}:
+ * In order to set options, create a {@link Builder} object using {@link FieldOptions#builder()}:
  * <p>
  * <pre>
  *  <code>
- *     FrameOptions options = FrameOptions.builder()
+ *     FieldOptions options = FieldOptions.builder()
  *         .setInverseEnabled(true)
  *         .setTimeQuantum(TimeQuantum.YEAR)
  *         .build();
@@ -58,7 +58,7 @@ import java.util.Map;
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
-public final class FrameOptions {
+public final class FieldOptions {
     public static class Builder {
         private Builder() {
         }
@@ -66,11 +66,11 @@ public final class FrameOptions {
         /**
          * Sets the time quantum for the frame.
          * <p>
-         *     If a Frame has a time quantum, then Views are generated
+         *     If a Field has a time quantum, then Views are generated
          *     for each of the defined time segments.
          *
          * @param timeQuantum See {@link TimeQuantum} for valid values.
-         * @return FrameOptions builder
+         * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#time-quantum">Time Quantum</a>
          * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
          */
@@ -80,25 +80,11 @@ public final class FrameOptions {
         }
 
         /**
-         * Enables inverted frames.
-         *
-         * @param enabled Set to <code>true</code> to enable.
-         * @return FrameOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
-         * @deprecated
-         */
-        public Builder setInverseEnabled(boolean enabled) {
-            this.inverseEnabled = enabled;
-            return this;
-        }
-
-
-        /**
          * Sets the cache type for the frame.
          *
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
-         * @return FrameOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
         public Builder setCacheType(CacheType cacheType) {
             this.cacheType = cacheType;
@@ -109,8 +95,8 @@ public final class FrameOptions {
          * Sets the cache size for the frame
          *
          * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
-         * @return FrameOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
         public Builder setCacheSize(int cacheSize) {
             this.cacheSize = cacheSize;
@@ -123,8 +109,8 @@ public final class FrameOptions {
          * @param name Name of the field.
          * @param min  Minimum value this field can represent.
          * @param max  Maximum value this field can represent.
-         * @return FrameOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Frame</a>
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
         public Builder addIntField(String name, long min, long max) {
             this.fields.put(name, RangeFieldInfo.intField(name, min, max));
@@ -132,18 +118,16 @@ public final class FrameOptions {
         }
 
         /**
-         * Creates the FrameOptions object.
+         * Creates the FieldOptions object.
          *
-         * @return FrameOptions object
+         * @return FieldOptions object
          */
-        public FrameOptions build() {
-            return new FrameOptions(this.timeQuantum,
-                    this.inverseEnabled, this.cacheType, this.cacheSize,
+        public FieldOptions build() {
+            return new FieldOptions(this.timeQuantum, this.cacheType, this.cacheSize,
                     this.fields);
         }
 
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
-        private boolean inverseEnabled = false;
         private CacheType cacheType = CacheType.DEFAULT;
         private int cacheSize = 0;
         private Map<String, RangeFieldInfo> fields = new HashMap<>();
@@ -151,12 +135,12 @@ public final class FrameOptions {
     }
 
     /**
-     * Creates a FrameOptions object with defaults.
+     * Creates a FieldOptions object with defaults.
      *
-     * @return FrameOptions object
+     * @return FieldOptions object
      */
     @SuppressWarnings("WeakerAccess")
-    public static FrameOptions withDefaults() {
+    public static FieldOptions withDefaults() {
         return new Builder().build();
     }
 
@@ -171,11 +155,6 @@ public final class FrameOptions {
 
     public TimeQuantum getTimeQuantum() {
         return this.timeQuantum;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public boolean isInverseEnabled() {
-        return this.inverseEnabled;
     }
 
     public CacheType getCacheType() {
@@ -194,19 +173,24 @@ public final class FrameOptions {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\"options\": {");
-        builder.append(this.inverseEnabled ? "\"inverseEnabled\":true" : "\"inverseEnabled\":false");
+        boolean hasComma = false; // XXX: remove this
         if (!this.timeQuantum.equals(TimeQuantum.NONE)) {
-            builder.append(String.format(",\"timeQuantum\":\"%s\"", this.timeQuantum.toString()));
+            builder.append(String.format("\"timeQuantum\":\"%s\"", this.timeQuantum.toString()));
+            hasComma = true;
         }
         if (!this.cacheType.equals(CacheType.DEFAULT)) {
-            builder.append(String.format(",\"cacheType\":\"%s\"", this.cacheType.toString()));
+            if (hasComma) builder.append(',');
+            builder.append(String.format("\"cacheType\":\"%s\"", this.cacheType.toString()));
+            hasComma = true;
         }
         if (this.cacheSize > 0) {
-            builder.append(String.format(",\"cacheSize\":%d", this.cacheSize));
+            if (hasComma) builder.append(',');
+            builder.append(String.format("\"cacheSize\":%d", this.cacheSize));
+            hasComma = true;
         }
         if (this.fields.size() > 0) {
-            builder.append(",\"rangeEnabled\":true");
-            builder.append(",\"fields\":[");
+            if (hasComma) builder.append(',');
+            builder.append("\"fields\":[");
             Iterator<Map.Entry<String, RangeFieldInfo>> iter = this.fields.entrySet().iterator();
             Map.Entry<String, RangeFieldInfo> entry = iter.next();
             builder.append(entry.getValue());
@@ -223,15 +207,14 @@ public final class FrameOptions {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof FrameOptions)) {
+        if (!(obj instanceof FieldOptions)) {
             return false;
         }
         if (obj == this) {
             return true;
         }
-        FrameOptions rhs = (FrameOptions) obj;
+        FieldOptions rhs = (FieldOptions) obj;
         return rhs.timeQuantum.equals(this.timeQuantum) &&
-                rhs.inverseEnabled == this.inverseEnabled &&
                 rhs.cacheType.equals(this.cacheType) &&
                 rhs.cacheSize == this.cacheSize &&
                 rhs.fields.equals(this.fields);
@@ -241,26 +224,22 @@ public final class FrameOptions {
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
                 .append(this.timeQuantum)
-                .append(this.inverseEnabled)
                 .append(this.cacheType)
                 .append(this.cacheSize)
                 .append(this.fields)
                 .toHashCode();
     }
 
-    private FrameOptions(final TimeQuantum timeQuantum,
-                         final boolean inverseEnabled,
+    private FieldOptions(final TimeQuantum timeQuantum,
                          final CacheType cacheType, final int cacheSize,
                          final Map<String, RangeFieldInfo> fields) {
         this.timeQuantum = timeQuantum;
-        this.inverseEnabled = inverseEnabled;
         this.cacheType = cacheType;
         this.cacheSize = cacheSize;
         this.fields = (fields != null) ? fields : new HashMap<String, RangeFieldInfo>();
     }
 
     private final TimeQuantum timeQuantum;
-    private final boolean inverseEnabled;
     private final CacheType cacheType;
     private final int cacheSize;
     private final Map<String, RangeFieldInfo> fields;

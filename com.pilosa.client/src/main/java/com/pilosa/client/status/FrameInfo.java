@@ -37,10 +37,10 @@ package com.pilosa.client.status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.orm.CacheType;
-import com.pilosa.client.orm.FrameOptions;
+import com.pilosa.client.orm.FieldOptions;
 
 public class FrameInfo implements IFrameInfo {
-    public FrameOptions getOptions() {
+    public FieldOptions getOptions() {
         return this.meta.getOptions();
     }
 
@@ -63,9 +63,8 @@ public class FrameInfo implements IFrameInfo {
 }
 
 final class FrameMeta {
-    FrameOptions getOptions() {
-        return FrameOptions.builder()
-                .setInverseEnabled(this.inverseEnabled)
+    FieldOptions getOptions() {
+        return FieldOptions.builder()
                 .setTimeQuantum(this.timeQuantum)
                 .setCacheType(this.cacheType)
                 .setCacheSize(this.cacheSize)

@@ -93,7 +93,7 @@ public class ValidatorTest {
             } catch (ValidationException ex) {
                 continue;
             }
-            fail("Frame name validation should have failed for: " + name);
+            fail("Field name validation should have failed for: " + name);
         }
     }
 

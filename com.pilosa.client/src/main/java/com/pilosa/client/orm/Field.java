@@ -50,16 +50,16 @@ import java.util.Map;
 /**
  * Frames are used to segment and define different functional characteristics within your entire index.
  * <p>
- * You can think of a Frame as a table-like data partition within your Index.
- * Row-level attributes are namespaced at the Frame level.
+ * You can think of a Field as a table-like data partition within your Index.
+ * Row-level attributes are namespaced at the Field level.
  * <p>
- * Do not create a Frame object directly. Instead, use {@link com.pilosa.client.orm.Index#frame(String)} method.
+ * Do not create a Field object directly. Instead, use {@link com.pilosa.client.orm.Index#frame(String)} method.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
-public class Frame {
-    private Frame(Index index, String name, FrameOptions options) {
+public class Field {
+    private Field(Index index, String name, FieldOptions options) {
         this.index = index;
         this.name = name;
         this.options = options;
@@ -67,17 +67,17 @@ public class Frame {
     }
 
     /**
-     * Creates a frame.
+     * Creates a field.
      *
-     * @param index   the index this frame belongs to
-     * @param name    name of the frame
-     * @param options frame options
-     * @return a Frame object
-     * @throws ValidationException if an invalid frame name is passed
+     * @param index   the index this field belongs to
+     * @param name    name of the field
+     * @param options field options
+     * @return a Field object
+     * @throws ValidationException if an invalid field name is passed
      */
-    static Frame create(Index index, String name, FrameOptions options) {
+    static Field create(Index index, String name, FieldOptions options) {
         Validator.ensureValidFrameName(name);
-        return new Frame(index, name, options);
+        return new Field(index, name, options);
     }
 
     public Index getIndex() {
@@ -88,7 +88,7 @@ public class Frame {
         return this.name;
     }
 
-    public FrameOptions getOptions() {
+    public FieldOptions getOptions() {
         return this.options;
     }
 
@@ -107,7 +107,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery bitmap(long rowID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(row=%d, frame='%s')", rowID, this.name));
+        return this.index.pqlBitmapQuery(String.format("Bitmap(row=%d, field='%s')", rowID, this.name));
     }
 
     /**
@@ -125,53 +125,15 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
     public PqlBitmapQuery bitmap(String rowKey) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(row='%s', frame='%s')",
+        return this.index.pqlBitmapQuery(String.format("Bitmap(row='%s', field='%s')",
                 rowKey, this.name));
-    }
-
-    /**
-     * Creates a Bitmap query.
-     * <p>
-     *     Bitmap retrieves the indices of all the set bits in a row or column
-     *     based on whether the row label or column label is given in the query.
-     *     It also retrieves any attributes set on that row or column.
-     *
-     * <p>
-     *     This variant of Bitmap query uses the column label.
-     *
-     * @param columnID column ID
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
-     */
-    public PqlBitmapQuery inverseBitmap(long columnID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(col=%d, frame='%s')",
-                columnID, this.name));
-    }
-
-    /**
-     * Creates a Bitmap query. (Enterprise version)
-     * <p>
-     *     Bitmap retrieves the indices of all the set bits in a row or column
-     *     based on whether the row label or column label is given in the query.
-     *     It also retrieves any attributes set on that row or column.
-     *
-     * <p>
-     *     This variant of Bitmap query uses the column label.
-     *
-     * @param columnKey column key
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
-     */
-    public PqlBitmapQuery inverseBitmap(String columnKey) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(col='%s', frame='%s')",
-                columnKey, this.name));
     }
 
     /**
      * Creates a SetBit query.
      * <p>
      *  SetBit assigns a value of 1 to a bit in the binary matrix,
-     *  thus associating the given row in the given frame with the given column.
+     *  thus associating the given row in the given field with the given column.
      *
      * @param rowID    row ID
      * @param columnID column ID
@@ -179,7 +141,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery setBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("SetBit(row=%d, frame='%s', col=%d)",
+        return this.index.pqlQuery(String.format("SetBit(row=%d, field='%s', col=%d)",
                 rowID, name, columnID));
     }
 
@@ -187,7 +149,7 @@ public class Frame {
      * Creates a SetBit query. (Enterprise version)
      * <p>
      *  SetBit assigns a value of 1 to a bit in the binary matrix,
-     *  thus associating the given row in the given frame with the given column.
+     *  thus associating the given row in the given field with the given column.
      *
      * @param rowKey    row key
      * @param columnKey column key
@@ -195,7 +157,7 @@ public class Frame {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery setBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("SetBit(row='%s', frame='%s', col='%s')",
+        return this.index.pqlQuery(String.format("SetBit(row='%s', field='%s', col='%s')",
                 rowKey, name, columnKey));
     }
 
@@ -204,7 +166,7 @@ public class Frame {
      * Creates a SetBit query.
      * <p>
      *  SetBit, assigns a value of 1 to a bit in the binary matrix,
-     *  thus associating the given row in the given frame with the given column.
+     *  thus associating the given row in the given field with the given column.
      * <p>
      *      This variant supports providing a timestamp.
      *
@@ -217,7 +179,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery setBit(long rowID, long columnID, Date timestamp) {
-        String qry = String.format("SetBit(row=%d, frame='%s', col=%d, timestamp='%sT%s')",
+        String qry = String.format("SetBit(row=%d, field='%s', col=%d, timestamp='%sT%s')",
                 rowID, name, columnID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
@@ -228,7 +190,7 @@ public class Frame {
      * Creates a SetBit query. (Enterprise version)
      * <p>
      *  SetBit, assigns a value of 1 to a bit in the binary matrix,
-     *  thus associating the given row in the given frame with the given column.
+     *  thus associating the given row in the given field with the given column.
      * <p>
      *      This variant supports providing a timestamp.
      *
@@ -241,7 +203,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery setBit(String rowKey, String columnKey, Date timestamp) {
-        String qry = String.format("SetBit(row='%s', frame='%s', col='%s', timestamp='%sT%s')",
+        String qry = String.format("SetBit(row='%s', field='%s', col='%s', timestamp='%sT%s')",
                 rowKey, name, columnKey,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
@@ -251,7 +213,7 @@ public class Frame {
      * Creates a ClearBit query.
      * <p>
      *     ClearBit assigns a value of 0 to a bit in the binary matrix,
-     *     thus disassociating the given row in the given frame from the given column.
+     *     thus disassociating the given row in the given field from the given column.
      *
      * @param rowID    row ID
      * @param columnID column ID
@@ -260,7 +222,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("ClearBit(row=%d, frame='%s', col=%d)",
+        return this.index.pqlQuery(String.format("ClearBit(row=%d, field='%s', col=%d)",
                 rowID, name, columnID));
     }
 
@@ -268,7 +230,7 @@ public class Frame {
      * Creates a ClearBit query. (Enterprise version)
      * <p>
      *     ClearBit assigns a value of 0 to a bit in the binary matrix,
-     *     thus disassociating the given row in the given frame from the given column.
+     *     thus disassociating the given row in the given field from the given column.
      *
      * @param rowKey    row key
      * @param columnKey column key
@@ -277,43 +239,28 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clearBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("ClearBit(row='%s', frame='%s', col='%s')",
+        return this.index.pqlQuery(String.format("ClearBit(row='%s', field='%s', col='%s')",
                 rowKey, name, columnKey));
     }
 
     /**
      * Creates a TopN query.
      * <p>
-     * TopN returns the id and count of the top n bitmaps (by count of bits) in the frame.
+     * TopN returns the id and count of the top n bitmaps (by count of bits) in the field.
      *
      * @param n number of items to return
      * @return a PQL Bitmap query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     public PqlBaseQuery topN(long n) {
-        String s = String.format("TopN(frame='%s', n=%d, inverse=false)", this.name, n);
+        String s = String.format("TopN(field='%s', n=%d)", this.name, n);
         return this.index.pqlQuery(s);
     }
 
     /**
      * Creates a TopN query.
      * <p>
-     * TopN returns the id and count of the top n bitmaps (by count of bits) in the frame.
-     * This variant sets inverse=true
-     *
-     * @param n number of items to return
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
-     */
-    public PqlBaseQuery inverseTopN(long n) {
-        String s = String.format("TopN(frame='%s', n=%d, inverse=true)", this.name, n);
-        return this.index.pqlQuery(s);
-    }
-
-    /**
-     * Creates a TopN query.
-     * <p>
-     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     * Return the id and count of the top n bitmaps (by count of bits) in the field.
      * <p>
      * This variant supports customizing the bitmap query.
      *
@@ -324,30 +271,13 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap) {
-        return this._topN(n, bitmap, false, null, null);
+        return this._topN(n, bitmap, null, null);
     }
 
     /**
      * Creates a TopN query.
      * <p>
-     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
-     * <p>
-     * This variant supports customizing the bitmap query and sets inverse=true
-     *
-     * @param n      number of items to return
-     * @param bitmap the bitmap query
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
-     */
-    @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery inverseTopN(long n, PqlBitmapQuery bitmap) {
-        return this._topN(n, bitmap, true, null, null);
-    }
-
-    /**
-     * Creates a TopN query.
-     * <p>
-     *     Return the id and count of the top n bitmaps (by count of bits) in the frame.
+     *     Return the id and count of the top n bitmaps (by count of bits) in the field.
      *     The field and filters arguments work together to only return Bitmaps
      *     which have the attribute specified by field with one of the values specified
      *     in filters.
@@ -361,32 +291,10 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
-        return _topN(n, bitmap, false, field, values);
+        return _topN(n, bitmap, field, values);
     }
 
-    /**
-     * Creates a TopN query.
-     * <p>
-     * Return the id and count of the top n bitmaps (by count of bits) in the frame.
-     * The field and filters arguments work together to only return Bitmaps
-     * which have the attribute specified by field with one of the values specified
-     * in filters.
-     * <p>
-     * This variant supports customizing the bitmap query and sets inverse=true
-     *
-     * @param n      number of items to return
-     * @param bitmap the bitmap query
-     * @param field  field name
-     * @param values filter values to be matched against the field
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
-     */
-    @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery inverseTopN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
-        return _topN(n, bitmap, true, field, values);
-    }
-
-    private PqlBaseQuery _topN(long n, PqlBitmapQuery bitmap, boolean inverse, String field, Object[] values) {
+    private PqlBaseQuery _topN(long n, PqlBitmapQuery bitmap, String field, Object[] values) {
         // TOOD: make field use its own validator
         String fieldString = "";
         if (field != null) {
@@ -396,10 +304,9 @@ public class Frame {
 
         try {
             String valuesString = (values == null || values.length == 0) ? "" : String.format(", filters=%s", this.mapper.writeValueAsString(values));
-            String inverseString = inverse ? "true" : "false";
             String bitmapString = (bitmap == null) ? "" : String.format("%s, ", bitmap.serialize());
-            String s = String.format("TopN(%sframe='%s', n=%d, inverse=%s%s%s)",
-                    bitmapString, this.name, n, inverseString, fieldString, valuesString);
+            String s = String.format("TopN(%sfield='%s', n=%d%s%s)",
+                    bitmapString, this.name, n, fieldString, valuesString);
             return this.index.pqlQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
@@ -420,7 +327,7 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(row=%d, frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(row=%d, field='%s', start='%sT%s', end='%sT%s')",
                 rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -439,53 +346,15 @@ public class Frame {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery range(String rowKey, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(row='%s', frame='%s', start='%sT%s', end='%sT%s')",
+        return this.index.pqlBitmapQuery(String.format("Range(row='%s', field='%s', start='%sT%s', end='%sT%s')",
                 rowKey, this.name, fmtDate.format(start),
-                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
-    }
-
-    /**
-     * Creates a Range query.
-     * <p>
-     * Similar to Bitmap, but only returns bits which were set with timestamps
-     * between the given start and end timestamps.
-     *
-     * @param columnID bitmap ID
-     * @param start start timestamp
-     * @param end   end timestamp
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
-     */
-    @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery inverseRange(long columnID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(col=%d, frame='%s', start='%sT%s', end='%sT%s')",
-                columnID, this.name, fmtDate.format(start),
-                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
-    }
-
-    /**
-     * Creates a Range query. (Enterprise version)
-     * <p>
-     * Similar to Bitmap, but only returns bits which were set with timestamps
-     * between the given start and end timestamps.
-     *
-     * @param columnKey bitmap key
-     * @param start start timestamp
-     * @param end   end timestamp
-     * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
-     */
-    @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery inverseRange(String columnKey, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(col='%s', frame='%s', start='%sT%s', end='%sT%s')",
-                columnKey, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 
     /**
      * Creates a SetRowAttrs query.
      * <p>
-     *     SetRowAttrs associates arbitrary key/value pairs with a row in a frame.
+     *     SetRowAttrs associates arbitrary key/value pairs with a row in a field.
      * <p>
      *     Following object types are accepted:
      *     <ul>
@@ -502,14 +371,14 @@ public class Frame {
      */
     public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(row=%d, frame='%s', %s)",
+        return this.index.pqlQuery(String.format("SetRowAttrs(row=%d, field='%s', %s)",
                 rowID, this.name, attributesString));
     }
 
     /**
      * Creates a SetRowAttrs query.
      * <p>
-     *     SetRowAttrs associates arbitrary key/value pairs with a row in a frame.
+     *     SetRowAttrs associates arbitrary key/value pairs with a row in a field.
      * <p>
      *     Following object types are accepted:
      *     <ul>
@@ -526,7 +395,7 @@ public class Frame {
      */
     public PqlBaseQuery setRowAttrs(String rowKey, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(row='%s', frame='%s', %s)",
+        return this.index.pqlQuery(String.format("SetRowAttrs(row='%s', field='%s', %s)",
                 rowKey, this.name, attributesString));
     }
 
@@ -547,13 +416,13 @@ public class Frame {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Frame)) {
+        if (!(obj instanceof Field)) {
             return false;
         }
         if (obj == this) {
             return true;
         }
-        Frame rhs = (Frame) obj;
+        Field rhs = (Field) obj;
         return rhs.index.getName().equals(this.index.getName()) &&
                 rhs.options.equals(this.options);
     }
@@ -570,7 +439,7 @@ public class Frame {
     private final static DateFormat fmtTime = new SimpleDateFormat("HH:mm");
     private String name;
     private Index index;
-    private FrameOptions options;
+    private FieldOptions options;
     private Map<String, RangeField> fields;
     private ObjectMapper mapper = new ObjectMapper();
 }

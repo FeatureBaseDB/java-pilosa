@@ -50,9 +50,9 @@ Schema schema = client.readSchema();
 Index myindex = schema.index("myindex");
 
 // Create a Frame object
-Frame myframe = myindex.frame("myframe");
+Frame myframe = myindex.field("myframe");
 
-// make sure the index and frame exists on the server
+// make sure the index and field exists on the server
 client.syncSchema(schema);
 
 // Send a SetBit query. PilosaException is thrown if execution of the query fails.

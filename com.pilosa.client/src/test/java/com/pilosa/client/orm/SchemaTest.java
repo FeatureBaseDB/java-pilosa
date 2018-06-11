@@ -46,21 +46,21 @@ public class SchemaTest {
     public void diffTest() {
         Schema schema1 = Schema.defaultSchema();
         Index index11 = schema1.index("diff-index1");
-        index11.frame("frame1-1");
-        index11.frame("frame1-2");
+        index11.field("field1-1");
+        index11.field("field1-2");
         Index index12 = schema1.index("diff-index2");
-        index12.frame("frame2-1");
+        index12.field("field2-1");
 
         Schema schema2 = Schema.defaultSchema();
         Index index21 = schema2.index("diff-index1");
-        index21.frame("another-frame");
+        index21.field("another-field");
 
         Schema targetDiff12 = Schema.defaultSchema();
         Index targetIndex1 = targetDiff12.index("diff-index1");
-        targetIndex1.frame("frame1-1");
-        targetIndex1.frame("frame1-2");
+        targetIndex1.field("field1-1");
+        targetIndex1.field("field1-2");
         Index targetIndex2 = targetDiff12.index("diff-index2");
-        targetIndex2.frame("frame2-1");
+        targetIndex2.field("field2-1");
 
         Schema diff12 = schema1.diff(schema2);
         assertEquals(targetDiff12, diff12);
@@ -78,7 +78,7 @@ public class SchemaTest {
     public void indexCopy() {
         Schema schema1 = Schema.defaultSchema();
         Index index1 = schema1.index("foo");
-        index1.frame("bar");
+        index1.field("bar");
         Index index2 = schema1.index(index1);
         assertEquals(index1, index2);
     }

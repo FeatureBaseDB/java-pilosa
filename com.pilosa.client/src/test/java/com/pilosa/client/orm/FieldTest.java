@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @Category(UnitTest.class)
-public class FrameTest {
+public class FieldTest {
 
     @Before
     public void setUp() {
@@ -55,33 +55,33 @@ public class FrameTest {
 
     @Test(expected = ValidationException.class)
     public void checkValidatorWasCalledTest() {
-        Frame frame = this.index.frame("a:b");
+        Field field = this.index.field("a:b");
     }
 
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = this.index.frame("foo").equals("foo");
+        boolean e = this.index.field("foo").equals("foo");
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        Frame frame = this.index.frame("some-frame");
-        assertEquals(frame, frame);
+        Field field = this.index.field("some-field");
+        assertEquals(field, field);
     }
 
     @Test
     public void testHashCode() {
-        FrameOptions options1 = FrameOptions.builder()
+        FieldOptions options1 = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
-        FrameOptions options2 = FrameOptions.builder()
+        FieldOptions options2 = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
-        Frame frame1 = this.index.frame("frame1", options1);
-        Frame frame2 = this.index.frame("frame2", options2);
-        assertEquals(frame1.hashCode(), frame2.hashCode());
+        Field field1 = this.index.field("field1", options1);
+        Field field2 = this.index.field("field2", options2);
+        assertEquals(field1.hashCode(), field2.hashCode());
     }
 
     private Index index;

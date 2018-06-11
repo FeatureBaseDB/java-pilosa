@@ -34,10 +34,10 @@
 
 package com.pilosa.client.status;
 
-import com.pilosa.client.orm.FrameOptions;
+import com.pilosa.client.orm.FieldOptions;
 
 public interface IFrameInfo {
-    FrameOptions getOptions();
+    FieldOptions getOptions();
 
     String getName();
 }

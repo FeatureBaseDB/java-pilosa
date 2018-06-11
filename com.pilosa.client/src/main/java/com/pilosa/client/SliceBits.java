@@ -34,7 +34,7 @@
 
 package com.pilosa.client;
 
-import com.pilosa.client.orm.Frame;
+import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Index;
 
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ import java.util.Comparator;
 import java.util.List;
 
 class SliceBits {
-    public static SliceBits create(final Frame frame, final long slice) {
-        return new SliceBits(frame, slice);
+    public static SliceBits create(final Field field, final long slice) {
+        return new SliceBits(field, slice);
     }
 
     public Index getIndex() {
-        return this.frame.getIndex();
+        return this.field.getIndex();
     }
 
     public long getSlice() {
@@ -81,8 +81,8 @@ class SliceBits {
             timestamps.add(bit.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
-                .setIndex(this.frame.getIndex().getName())
-                .setFrame(this.frame.getName())
+                .setIndex(this.field.getIndex().getName())
+                .setFrame(this.field.getName())
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)
                 .addAllColumnIDs(columnIDs)
@@ -90,14 +90,14 @@ class SliceBits {
                 .build();
     }
 
-    SliceBits(final Frame frame, final long slice) {
-        this.frame = frame;
+    SliceBits(final Field field, final long slice) {
+        this.field = field;
         this.slice = slice;
         this.bits = new ArrayList<>();
     }
 
     private static Comparator<Bit> bitComparator = new BitComparator();
-    private final Frame frame;
+    private final Field field;
     private final long slice;
     private List<Bit> bits;
     private boolean sorted = false;

@@ -68,41 +68,41 @@ public class Index {
     }
 
     /**
-     * Returns a frame object with the specified name and defaults.
+     * Returns a field object with the specified name and defaults.
      *
-     * @param name frame name
-     * @return a Frame object
-     * @throws ValidationException if the passed frame name is not valid
+     * @param name field name
+     * @return a Field object
+     * @throws ValidationException if the passed field name is not valid
      */
-    public Frame frame(String name) {
-        return this.frame(name, FrameOptions.withDefaults());
+    public Field field(String name) {
+        return this.field(name, FieldOptions.withDefaults());
     }
 
     /**
-     * Returns a frame with the specified name and options.
+     * Returns a field with the specified name and options.
      *
-     * @param name    frame name
-     * @param options frame options
-     * @return a Frame object
-     * @throws ValidationException if the passed frame name is not valid
+     * @param name    field name
+     * @param options field options
+     * @return a Field object
+     * @throws ValidationException if the passed field name is not valid
      */
-    public Frame frame(String name, FrameOptions options) {
-        if (this.frames.containsKey(name)) {
-            return this.frames.get(name);
+    public Field field(String name, FieldOptions options) {
+        if (this.fields.containsKey(name)) {
+            return this.fields.get(name);
         }
-        Frame frame = Frame.create(this, name, options);
-        this.frames.put(name, frame);
-        return frame;
+        Field field = Field.create(this, name, options);
+        this.fields.put(name, field);
+        return field;
     }
 
     /**
-     * Copies other frame to this index and returns the new frame
+     * Copies other field to this index and returns the new field
      *
-     * @param other frame
-     * @return copied frame
+     * @param other field
+     * @return copied field
      */
-    public Frame frame(Frame other) {
-        return frame(other.getName(), other.getOptions());
+    public Field field(Field other) {
+        return field(other.getName(), other.getOptions());
     }
 
     /**
@@ -279,8 +279,8 @@ public class Index {
                 key, attributesString));
     }
 
-    public Map<String, Frame> getFrames() {
-        return this.frames;
+    public Map<String, Field> getFrames() {
+        return this.fields;
     }
 
     @Override
@@ -293,12 +293,12 @@ public class Index {
         }
         Index rhs = (Index) obj;
         return rhs.name.equals(this.name) &&
-                rhs.frames.equals(this.frames);
+                rhs.fields.equals(this.fields);
     }
 
     @Override
     public int hashCode() {
-        // note that we don't include frames in the hash
+        // note that we don't include fields in the hash
         return new HashCodeBuilder(31, 47)
                 .append(this.name)
                 .toHashCode();
@@ -314,9 +314,9 @@ public class Index {
 
     Index(Index index) {
         this(index.name);
-        for (Map.Entry<String, Frame> entry : index.frames.entrySet()) {
-            // we don't copy frame options, since FrameOptions has no mutating methods
-            this.frame(entry.getKey(), entry.getValue().getOptions());
+        for (Map.Entry<String, Field> entry : index.fields.entrySet()) {
+            // we don't copy field options, since FieldOptions has no mutating methods
+            this.field(entry.getKey(), entry.getValue().getOptions());
         }
     }
 
@@ -339,5 +339,5 @@ public class Index {
 
     private String name;
     private ObjectMapper mapper = new ObjectMapper();
-    private Map<String, Frame> frames = new HashMap<>();
+    private Map<String, Field> fields = new HashMap<>();
 }

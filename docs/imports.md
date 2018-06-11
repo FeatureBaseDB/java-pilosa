@@ -1,6 +1,6 @@
 # Importing Data
 
-If you have large amounts of data, it is more efficient to import it into Pilosa instead of using multiple SetBit queries. This library supports importing bits into an existing frame.
+If you have large amounts of data, it is more efficient to import it into Pilosa instead of using multiple SetBit queries. This library supports importing bits into an existing field.
 
 Before starting the import, create an instance of a struct which implements `BitIterator` interface and pass it to the `client.importFrame` method. This library ships with the `CsvFileBitIterator` class which supports importing bits in the CSV (comma separated values) format:
 
@@ -32,7 +32,7 @@ CsvFileBitIterator iterator = CsvFileBitIterator.fromPath("/tmp/sample.csv");
 After creating the iterator, use the `PilosaClient.importFrame` method to start importing:
 ```java
 try {
-    client.importFrame(frame, iterator);
+    client.importFrame(field, iterator);
 }
 catch (PilosaException ex) {
     // Handle the error.

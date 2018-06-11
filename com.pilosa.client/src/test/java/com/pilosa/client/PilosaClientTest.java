@@ -35,7 +35,7 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.orm.FrameOptions;
+import com.pilosa.client.orm.FieldOptions;
 import com.pilosa.client.status.IFrameInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
@@ -88,10 +88,9 @@ public class PilosaClientTest {
         assertEquals("mi", indexInfo.getName());
         assertEquals(1, indexInfo.getFrames().size());
         IFrameInfo frameInfo = indexInfo.getFrames().get(0);
-        FrameOptions frameOptions = frameInfo.getOptions();
+        FieldOptions fieldOptions = frameInfo.getOptions();
         assertEquals("mf10", frameInfo.getName());
-        assertEquals(true, frameOptions.isInverseEnabled());
-        assertEquals(TimeQuantum.YEAR_MONTH_DAY, frameOptions.getTimeQuantum());
+        assertEquals(TimeQuantum.YEAR_MONTH_DAY, fieldOptions.getTimeQuantum());
     }
 
     @Test(expected = IllegalArgumentException.class)

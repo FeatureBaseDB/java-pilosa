@@ -45,7 +45,7 @@ public class RangeFieldTest {
 
     @Test
     public void testEqualsFailsWithOtherObject() {
-        RangeField field = frame.field("myfield");
+        RangeField field = RangeFieldTest.field.field("myfield");
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = field.equals("foo");
         assertFalse(e);
@@ -53,29 +53,29 @@ public class RangeFieldTest {
 
     @Test
     public void testEqualsSameObject() {
-        RangeField field = frame.field("myfield");
+        RangeField field = RangeFieldTest.field.field("myfield");
         assertEquals(field, field);
     }
 
     @Test
     public void testEquals() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = new RangeField(frame, "myfield");
+        RangeField field1 = field.field("myfield");
+        RangeField field2 = new RangeField(field, "myfield");
         assertTrue(field1.equals(field2));
     }
 
     @Test
     public void testHashCode() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = frame.field("myfield");
+        RangeField field1 = field.field("myfield");
+        RangeField field2 = field.field("myfield");
         assertEquals(field1.hashCode(), field2.hashCode());
     }
 
     static {
         Schema schema = Schema.defaultSchema();
         Index index = schema.index("myindex");
-        frame = index.frame("myframe");
+        field = index.field("myframe");
     }
 
-    private static Frame frame;
+    private static Field field;
 }

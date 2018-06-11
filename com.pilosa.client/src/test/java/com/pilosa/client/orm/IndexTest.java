@@ -113,11 +113,11 @@ public class IndexTest {
     private boolean checkArguments(String methodName, int count)
             throws NoSuchMethodException, IllegalAccessException {
         Index index = Index.withName("my-index");
-        Frame frame = index.frame("my-frame");
+        Field field = index.field("my-field");
         Method m = index.getClass().getMethod(methodName, PqlBitmapQuery[].class);
         PqlBitmapQuery queries[] = new PqlBitmapQuery[count];
         for (int i = 0; i < count; i++) {
-            queries[i] = frame.bitmap(i);
+            queries[i] = field.bitmap(i);
         }
         try {
             m.invoke(index, (Object) queries);

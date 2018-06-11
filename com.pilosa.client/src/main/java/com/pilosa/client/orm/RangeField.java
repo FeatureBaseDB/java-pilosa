@@ -103,8 +103,8 @@ public class RangeField {
      * @return a PQL query
      */
     public PqlBitmapQuery notNull() {
-        String qry = String.format("Range(frame='%s', %s != null)",
-                frame.getName(), this.name);
+        String qry = String.format("Range(field='%s', %s != null)",
+                field.getName(), this.name);
         return this.index.pqlBitmapQuery(qry);
     }
 
@@ -116,15 +116,15 @@ public class RangeField {
      * @return a PQL query
      */
     public PqlBitmapQuery between(long a, long b) {
-        String qry = String.format("Range(frame='%s', %s >< [%d,%d])",
-                frame.getName(), this.name, a, b);
+        String qry = String.format("Range(field='%s', %s >< [%d,%d])",
+                field.getName(), this.name, a, b);
         return this.index.pqlBitmapQuery(qry);
     }
 
     /**
      * Creates a Sum query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @return a PQL query
@@ -137,7 +137,7 @@ public class RangeField {
     /**
      * Creates a Sum query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @param bitmap The bitmap query to use.
@@ -151,7 +151,7 @@ public class RangeField {
     /**
      * Creates a Min query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @return a PQL query
@@ -164,7 +164,7 @@ public class RangeField {
     /**
      * Creates a Min query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @param bitmap The bitmap query to use.
@@ -178,7 +178,7 @@ public class RangeField {
     /**
      * Creates a Max query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @return a PQL query
@@ -191,7 +191,7 @@ public class RangeField {
     /**
      * Creates a Max query.
      * <p>
-     * The frame for this query should have fields set.
+     * The field for this query should have fields set.
      * </p>
      *
      * @param bitmap The bitmap query to use.
@@ -211,8 +211,8 @@ public class RangeField {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
      */
     public PqlBaseQuery setValue(long columnID, long value) {
-        String qry = String.format("SetFieldValue(frame='%s', col=%d, %s=%d)",
-                frame.getName(), columnID, name, value);
+        String qry = String.format("SetFieldValue(field='%s', col=%d, %s=%d)",
+                field.getName(), columnID, name, value);
         return this.index.pqlQuery(qry);
     }
 
@@ -236,30 +236,30 @@ public class RangeField {
     }
 
 
-    RangeField(Frame frame, String name) {
-        this.index = frame.getIndex();
-        this.frame = frame;
+    RangeField(Field field, String name) {
+        this.index = field.getIndex();
+        this.field = field;
         this.name = name;
     }
 
     private PqlBitmapQuery binaryOperation(String op, long n) {
-        String qry = String.format("Range(frame='%s', %s %s %d)",
-                frame.getName(), this.name, op, n);
+        String qry = String.format("Range(field='%s', %s %s %d)",
+                field.getName(), this.name, op, n);
         return this.index.pqlBitmapQuery(qry);
     }
 
     public PqlBaseQuery valueQuery(String op, PqlBitmapQuery bitmap) {
         String qry;
         if (bitmap != null) {
-            qry = String.format("%s(%s, frame='%s', field='%s')",
-                    op, bitmap.serialize(), frame.getName(), name);
+            qry = String.format("%s(%s, field='%s', field='%s')",
+                    op, bitmap.serialize(), field.getName(), name);
         } else {
-            qry = String.format("%s(frame='%s', field='%s')", op, frame.getName(), name);
+            qry = String.format("%s(field='%s', field='%s')", op, field.getName(), name);
         }
         return this.index.pqlQuery(qry);
     }
 
     private Index index;
-    private Frame frame;
+    private Field field;
     private String name;
 }

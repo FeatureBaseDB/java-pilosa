@@ -37,8 +37,11 @@ package com.pilosa.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.exceptions.*;
-import com.pilosa.client.orm.Frame;
+import com.pilosa.client.exceptions.HttpConflict;
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.PilosaURIException;
+import com.pilosa.client.exceptions.ValidationException;
+import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
@@ -84,7 +87,7 @@ import java.util.concurrent.*;
  *     PilosaClient client = PilosaClient.defaultClient();
  *     // Create an Index instance
  *     Index index = Index.withName("repository");
- *     Frame stargazer = index.frame("stargazer");
+ *     Field stargazer = index.field("stargazer");
  *     QueryResponse response = client.query(stargazer.bitmap(5));
  *     // Act on the result
  *     System.out.println(response.getResult());
@@ -185,7 +188,7 @@ public class PilosaClient implements AutoCloseable {
      * Creates an index on the server using the given Index object.
      *
      * @param index index object
-     * @throws IndexExistsException if there already is a index with the given name
+     * @throws HttpConflict if there already is a index with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
@@ -205,34 +208,34 @@ public class PilosaClient implements AutoCloseable {
     public void ensureIndex(Index index) {
         try {
             createIndex(index);
-        } catch (IndexExistsException ex) {
+        } catch (HttpConflict ex) {
             // pass
         }
     }
 
     /**
-     * Creates a frame on the server using the given Frame object.
-     * @param frame frame object
-     * @throws FrameExistsException if there already is a frame with the given name
-     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
+     * Creates a field on the server using the given Field object.
+     * @param field field object
+     * @throws HttpConflict if there already is a field with the given name
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void createFrame(Frame frame) {
-        String path = String.format("/index/%s/frame/%s", frame.getIndex().getName(), frame.getName());
-        String body = frame.getOptions().toString();
+    public void createFrame(Field field) {
+        String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
+        String body = field.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, protobufHeaders, "Error while creating frame");
+        clientExecute("POST", path, data, protobufHeaders, "Error while creating field");
     }
 
     /**
-     * Creates a frame on the server if it does not exist.
+     * Creates a field on the server if it does not exist.
      *
-     * @param frame frame object
-     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
+     * @param field field object
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void ensureFrame(Frame frame) {
+    public void ensureFrame(Field field) {
         try {
-            createFrame(frame);
-        } catch (FrameExistsException ex) {
+            createFrame(field);
+        } catch (HttpConflict ex) {
             // pass
         }
     }
@@ -249,53 +252,53 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Deletes the given frame on the server.
+     * Deletes the given field on the server.
      *
-     * @param frame the frame to delete
-     * @throws PilosaException if the frame does not exist
-     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Frame</a>
+     * @param field the field to delete
+     * @throws PilosaException if the field does not exist
+     * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void deleteFrame(Frame frame) {
-        String path = String.format("/index/%s/frame/%s", frame.getIndex().getName(), frame.getName());
-        clientExecute("DELETE", path, null, null, "Error while deleting frame");
+    public void deleteFrame(Field field) {
+        String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
+        clientExecute("DELETE", path, null, null, "Error while deleting field");
     }
 
     /**
-     * Imports bits to the given index and frame with the default batch size.
+     * Imports bits to the given index and field with the default batch size.
      *
-     * @param frame    specify the frame
+     * @param field    specify the field
      * @param iterator     specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
-    public void importFrame(Frame frame, BitIterator iterator) {
-        importFrame(frame, iterator, ImportOptions.builder().build(), null);
+    public void importFrame(Field field, BitIterator iterator) {
+        importFrame(field, iterator, ImportOptions.builder().build(), null);
     }
 
     /**
-     * Imports bits to the given index and frame.
+     * Imports bits to the given index and field.
      *<p>
      *     This method sorts and sends the bits in batches.
      *     Pilosa queries may return inconsistent results while importing data.
      *
-     * @param frame    specify the frame
+     * @param field    specify the field
      * @param iterator     specify the bit iterator
      * @param options specify the import options
      * @throws PilosaException if the import cannot be completed
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Frame frame, BitIterator iterator, ImportOptions options) {
+    public void importFrame(Field field, BitIterator iterator, ImportOptions options) {
         BitImportManager manager = new BitImportManager(options);
-        manager.run(this, frame, iterator, null);
+        manager.run(this, field, iterator, null);
     }
 
     /**
-     * Imports bits to the given index and frame.
+     * Imports bits to the given index and field.
      * <p>
      * This method sorts and sends the bits in batches.
      * Pilosa queries may return inconsistent results while importing data.
      *
-     * @param frame       specify the frame
+     * @param field       specify the field
      * @param iterator    specify the bit iterator
      * @param options     specify the import options
      * @param statusQueue specify the status queue for tracking import process
@@ -303,9 +306,9 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Frame frame, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void importFrame(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
-        manager.run(this, frame, iterator, statusQueue);
+        manager.run(this, field, iterator, statusQueue);
     }
 
     /**
@@ -316,11 +319,9 @@ public class PilosaClient implements AutoCloseable {
      */
     public SchemaInfo readServerSchema() {
         String path = "/schema";
-        CloseableHttpResponse response = null;
         try {
-            try {
-                response = clientExecute("GET", path, null, null, "Error while reading schema",
-                        ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+            try (CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while reading schema",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE)) {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     try (InputStream src = entity.getContent()) {
@@ -328,10 +329,6 @@ public class PilosaClient implements AutoCloseable {
                     }
                 }
                 throw new PilosaException("Server returned empty response");
-            } finally {
-                if (response != null) {
-                    response.close();
-                }
             }
         } catch (IOException ex) {
             throw new PilosaException("Error while reading response", ex);
@@ -349,7 +346,7 @@ public class PilosaClient implements AutoCloseable {
         for (IndexInfo indexInfo : schema.getIndexes()) {
             Index index = result.index(indexInfo.getName());
             for (IFrameInfo frameInfo : indexInfo.getFrames()) {
-                index.frame(frameInfo.getName(), frameInfo.getOptions());
+                index.field(frameInfo.getName(), frameInfo.getOptions());
             }
         }
         return result;
@@ -375,7 +372,7 @@ public class PilosaClient implements AutoCloseable {
             if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
                 ensureIndex(index);
             }
-            for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {
+            for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
                 this.ensureFrame(frameEntry.getValue());
             }
         }
@@ -389,8 +386,8 @@ public class PilosaClient implements AutoCloseable {
                 schema.index(index);
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
-                for (Map.Entry<String, Frame> frameEntry : index.getFrames().entrySet()) {
-                    localIndex.frame(frameEntry.getValue());
+                for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
+                    localIndex.field(frameEntry.getValue());
                 }
             }
         }
@@ -509,14 +506,11 @@ public class PilosaClient implements AutoCloseable {
                     HttpEntity entity = response.getEntity();
                     if (entity != null) {
                         try (InputStream src = entity.getContent()) {
-                            String responseError = readStream(src);
                             // try to throw the appropriate exception
-                            switch (responseError) {
-                                case "index already exists\n":
-                                    throw new IndexExistsException();
-                                case "frame already exists\n":
-                                    throw new FrameExistsException();
+                            if (statusCode == 409) {
+                                throw new HttpConflict();
                             }
+                            String responseError = readStream(src);
                             // couldn't find the exact exception, just throw a generic one
                             throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
                         }
@@ -789,7 +783,7 @@ class BitComparator implements Comparator<Bit> {
 }
 
 class BitImportManager {
-    public void run(final PilosaClient client, final Frame frame, final BitIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void run(final PilosaClient client, final Field field, final BitIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         final long sliceWidth = this.options.getSliceWidth();
         final int threadCount = this.options.getThreadCount();
         final int batchSize = this.options.getBatchSize();
@@ -800,7 +794,7 @@ class BitImportManager {
         for (int i = 0; i < threadCount; i++) {
             BlockingQueue<Bit> q = new LinkedBlockingDeque<>(batchSize);
             queues.add(q);
-            Runnable worker = new BitImportWorker(client, frame, q, statusQueue, this.options);
+            Runnable worker = new BitImportWorker(client, field, q, statusQueue, this.options);
             workers.add(service.submit(worker));
         }
 
@@ -842,12 +836,12 @@ class BitImportManager {
 
 class BitImportWorker implements Runnable {
     BitImportWorker(final PilosaClient client,
-                    final Frame frame,
+                    final Field field,
                     final BlockingQueue<Bit> queue,
                     final BlockingQueue<ImportStatusUpdate> statusQueue,
                     final ImportOptions options) {
         this.client = client;
-        this.frame = frame;
+        this.field = field;
         this.queue = queue;
         this.statusQueue = statusQueue;
         this.options = options;
@@ -870,7 +864,7 @@ class BitImportWorker implements Runnable {
                 long slice = bit.getColumnID() / sliceWidth;
                 SliceBits sliceBits = sliceGroup.get(slice);
                 if (sliceBits == null) {
-                    sliceBits = SliceBits.create(this.frame, slice);
+                    sliceBits = SliceBits.create(this.field, slice);
                     sliceGroup.put(slice, sliceBits);
                 }
                 sliceBits.add(bit);
@@ -933,7 +927,7 @@ class BitImportWorker implements Runnable {
     }
 
     private final PilosaClient client;
-    private final Frame frame;
+    private final Field field;
     private final BlockingQueue<Bit> queue;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;

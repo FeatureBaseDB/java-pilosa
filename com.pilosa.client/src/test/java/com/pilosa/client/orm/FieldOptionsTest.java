@@ -46,27 +46,25 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class FrameOptionsTest {
+public class FieldOptionsTest {
     @Test
     public void testBuilder() {
-        FrameOptions options = FrameOptions.builder()
+        FieldOptions options = FieldOptions.builder()
                 .build();
         compare(options, TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
 
-        options = FrameOptions.builder()
+        options = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                 .build();
         compare(options, TimeQuantum.YEAR_MONTH_DAY_HOUR, false, CacheType.DEFAULT, 0);
 
-        options = FrameOptions.builder()
+        options = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
-                .setInverseEnabled(true)
                 .build();
         compare(options, TimeQuantum.YEAR, true, CacheType.DEFAULT, 0);
 
-        options = FrameOptions.builder()
+        options = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR)
-                .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(10000)
                 .build();
@@ -75,21 +73,22 @@ public class FrameOptionsTest {
 
     @Test
     public void testFrameOptionsToString() {
-        FrameOptions options = FrameOptions.builder()
+        FieldOptions options = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.DAY_HOUR)
-                .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
                 .addIntField("foo", 10, 100)
                 .addIntField("bar", -1, 1)
                 .build();
-        String target = "{\"options\": {\"inverseEnabled\":true,\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"rangeEnabled\":true,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
+        String target = "{\"options\": {\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
+        System.out.println(target);
+        System.out.println(options.toString());
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
     @Test
     public void testEqualsFailsWithOtherObject() {
-        FrameOptions options = FrameOptions.builder().build();
+        FieldOptions options = FieldOptions.builder().build();
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = options.equals("foo");
         assertFalse(e);
@@ -97,22 +96,20 @@ public class FrameOptionsTest {
 
     @Test
     public void testEqualsSameObject() {
-        FrameOptions options = FrameOptions.builder().build();
+        FieldOptions options = FieldOptions.builder().build();
         assertEquals(options, options);
     }
 
     @Test
     public void testHashCode() {
-        FrameOptions options1 = FrameOptions.builder()
+        FieldOptions options1 = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
                 .addIntField("foo", 10, 1000)
                 .build();
-        FrameOptions options2 = FrameOptions.builder()
+        FieldOptions options2 = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .setInverseEnabled(true)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
                 .addIntField("foo", 10, 1000)
@@ -122,19 +119,18 @@ public class FrameOptionsTest {
 
     @Test
     public void testIsRangeEnabled() {
-        FrameOptions options = FrameOptions.withDefaults();
+        FieldOptions options = FieldOptions.withDefaults();
         assertFalse(options.isRangeEnabled());
-        options = FrameOptions.builder()
+        options = FieldOptions.builder()
                 .addIntField("baz", 10, 100)
                 .build();
         assertTrue(options.isRangeEnabled());
     }
 
-    private void compare(FrameOptions options,
+    private void compare(FieldOptions options,
                          TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,
                          CacheType targetCacheType, int targetCacheSize) {
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
-        assertEquals(targetInverseEnabled, options.isInverseEnabled());
         assertEquals(targetCacheType, options.getCacheType());
         assertEquals(targetCacheSize, options.getCacheSize());
     }

@@ -122,7 +122,7 @@ public class PilosaClientIT {
     @Test
     public void createFrameWithTimeQuantumTest() throws IOException {
         FieldOptions options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Field field = this.index.field("field-with-timequantum", options);
         try (PilosaClient client = getClient()) {
@@ -143,7 +143,6 @@ public class PilosaClientIT {
             FieldOptions fieldOptions = FieldOptions.builder()
                     .setCacheSize(9999)
                     .setCacheType(CacheType.LRU)
-                    .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                     .build();
             Field field = this.index.field("schema-test-field", fieldOptions);
             client.ensureFrame(field);
@@ -152,9 +151,6 @@ public class PilosaClientIT {
             FieldOptions fo = f.getOptions();
             assertEquals(9999, fo.getCacheSize());
             assertEquals(CacheType.LRU, fo.getCacheType());
-            assertEquals(TimeQuantum.YEAR_MONTH_DAY, fo.getTimeQuantum());
-
-
         }
     }
 
@@ -618,38 +614,37 @@ public class PilosaClientIT {
     public void rangeFrameTest() throws IOException {
         try (PilosaClient client = getClient()) {
             FieldOptions options = FieldOptions.builder()
-                    .addIntField("foo", 10, 20)
+                    .fieldInt(10, 20)
                     .build();
             Field field = this.index.field("rangefield", options);
             client.ensureFrame(field);
-            RangeField foo = field.field("foo");
             client.query(this.index.batchQuery(
                     field.setBit(1, 10),
                     field.setBit(1, 100),
-                    foo.setValue(10, 11),
-                    foo.setValue(100, 15)
+                    field.setValue(10, 11),
+                    field.setValue(100, 15)
             ));
-            QueryResponse response = client.query(foo.sum(field.bitmap(1)));
+            QueryResponse response = client.query(field.sum(field.bitmap(1)));
             assertEquals(26, response.getResult().getValue());
             assertEquals(2, response.getResult().getCount());
 
-            response = client.query(foo.min());
+            response = client.query(field.min());
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.min(field.bitmap(1)));
+            response = client.query(field.min(field.bitmap(1)));
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.max());
+            response = client.query(field.max());
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.max(field.bitmap(1)));
+            response = client.query(field.max(field.bitmap(1)));
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.lessThan(15));
+            response = client.query(field.lessThan(15));
             assertEquals(1, response.getResults().size());
             assertEquals(10, (long) response.getResult().getBitmap().getBits().get(0));
         }

@@ -44,7 +44,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,7 +52,7 @@ import java.util.Map;
  * You can think of a Field as a table-like data partition within your Index.
  * Row-level attributes are namespaced at the Field level.
  * <p>
- * Do not create a Field object directly. Instead, use {@link com.pilosa.client.orm.Index#frame(String)} method.
+ * Do not create a Field object directly. Instead, use {@link com.pilosa.client.orm.Index#field(String)} method.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
@@ -63,7 +62,6 @@ public class Field {
         this.index = index;
         this.name = name;
         this.options = options;
-        this.fields = new HashMap<>();
     }
 
     /**
@@ -400,18 +398,196 @@ public class Field {
     }
 
     /**
-     * Returns a RangeField object with the given name
-     * @param name field name
-     * @return RangeField object
+     * Creates a Range query with less than (<) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
      */
-    public RangeField field(String name) {
-        RangeField field = this.fields.get(name);
-        if (field == null) {
-            Validator.ensureValidLabel(name);
-            field = new RangeField(this, name);
-            this.fields.put(name, field);
+    public PqlBitmapQuery lessThan(long n) {
+        return binaryOperation("<", n);
+    }
+
+    /**
+     * Creates a Range query with less than or equal (<=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery lessThanOrEqual(long n) {
+        return binaryOperation("<=", n);
+    }
+
+    /**
+     * Creates a Range query with greater than (>) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery greaterThan(long n) {
+        return binaryOperation(">", n);
+    }
+
+    /**
+     * Creates a Range query with greater than or equal (>=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery greaterThanOrEqual(long n) {
+        return binaryOperation(">=", n);
+    }
+
+    /**
+     * Creates a Range query with equals (==) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery equals(long n) {
+        return binaryOperation("==", n);
+    }
+
+    /**
+     * Creates a Range query with not equal to (!=) condition.
+     *
+     * @param n The value to compare
+     * @return a PQL query
+     */
+    public PqlBitmapQuery notEquals(long n) {
+        return binaryOperation("!=", n);
+    }
+
+    /**
+     * Creates a Range query with not null (!= null) condition.
+     *
+     * @return a PQL query
+     */
+    public PqlBitmapQuery notNull() {
+        String qry = String.format("Range(%s != null)", this.name);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    /**
+     * Creates a Range query with between (><) condition.
+     *
+     * @param a Closed range start
+     * @param b Closed range end
+     * @return a PQL query
+     */
+    public PqlBitmapQuery between(long a, long b) {
+        String qry = String.format("Range(%s >< [%d,%d])", this.name, a, b);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    /**
+     * Creates a Sum query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum() {
+        return valueQuery("Sum", null);
+    }
+
+    /**
+     * Creates a Sum query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
+     */
+    public PqlBaseQuery sum(PqlBitmapQuery bitmap) {
+        return valueQuery("Sum", bitmap);
+    }
+
+    /**
+     * Creates a Min query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
+     */
+    public PqlBaseQuery min() {
+        return valueQuery("Min", null);
+    }
+
+    /**
+     * Creates a Min query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
+     */
+    public PqlBaseQuery min(PqlBitmapQuery bitmap) {
+        return valueQuery("Min", bitmap);
+    }
+
+    /**
+     * Creates a Max query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
+     */
+    public PqlBaseQuery max() {
+        return valueQuery("Max", null);
+    }
+
+    /**
+     * Creates a Max query.
+     * <p>
+     * The field for this query should have fields set.
+     * </p>
+     *
+     * @param bitmap The bitmap query to use.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
+     */
+    public PqlBaseQuery max(PqlBitmapQuery bitmap) {
+        return valueQuery("Max", bitmap);
+    }
+
+    /**
+     * Creates a SetFieldValue query.
+     *
+     * @param columnID column ID
+     * @param value    the value to assign to the field
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
+     */
+    public PqlBaseQuery setValue(long columnID, long value) {
+        String qry = String.format("SetValue(col=%d, %s=%d)",
+                columnID, this.name, value);
+        return this.index.pqlQuery(qry);
+    }
+
+    private PqlBitmapQuery binaryOperation(String op, long n) {
+        String qry = String.format("Range(%s %s %d)", this.name, op, n);
+        return this.index.pqlBitmapQuery(qry);
+    }
+
+    private PqlBaseQuery valueQuery(String op, PqlBitmapQuery bitmap) {
+        String qry;
+        if (bitmap != null) {
+            qry = String.format("%s(%s, field='%s')",
+                    op, bitmap.serialize(), this.name);
+        } else {
+            qry = String.format("%s(field='%s')", op, this.name);
         }
-        return field;
+        return this.index.pqlQuery(qry);
     }
 
     @Override
@@ -440,6 +616,5 @@ public class Field {
     private String name;
     private Index index;
     private FieldOptions options;
-    private Map<String, RangeField> fields;
     private ObjectMapper mapper = new ObjectMapper();
 }

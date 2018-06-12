@@ -77,12 +77,9 @@ public class FieldOptionsTest {
                 .setTimeQuantum(TimeQuantum.DAY_HOUR)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
-                .addIntField("foo", 10, 100)
-                .addIntField("bar", -1, 1)
+                .fieldInt(-10, 100)
                 .build();
-        String target = "{\"options\": {\"timeQuantum\":\"DH\",\"cacheType\":\"ranked\",\"cacheSize\":1000,\"fields\":[{\"name\":\"bar\",\"min\":-1,\"type\":\"int\",\"max\":1},{\"name\":\"foo\",\"min\":10,\"type\":\"int\",\"max\":100}]}}";
-        System.out.println(target);
-        System.out.println(options.toString());
+        String target = "{\"options\":{\"cacheSize\":1000,\"min\":-10,\"max\":100,\"type\":\"int\",\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -106,25 +103,15 @@ public class FieldOptionsTest {
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
-                .addIntField("foo", 10, 1000)
+                .fieldInt(10, 1000)
                 .build();
         FieldOptions options2 = FieldOptions.builder()
                 .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
                 .setCacheType(CacheType.RANKED)
                 .setCacheSize(1000)
-                .addIntField("foo", 10, 1000)
+                .fieldInt(10, 1000)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
-    }
-
-    @Test
-    public void testIsRangeEnabled() {
-        FieldOptions options = FieldOptions.withDefaults();
-        assertFalse(options.isRangeEnabled());
-        options = FieldOptions.builder()
-                .addIntField("baz", 10, 100)
-                .build();
-        assertTrue(options.isRangeEnabled());
     }
 
     private void compare(FieldOptions options,

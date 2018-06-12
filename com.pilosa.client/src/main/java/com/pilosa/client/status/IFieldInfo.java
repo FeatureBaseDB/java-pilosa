@@ -32,50 +32,12 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client.status;
 
-import com.pilosa.client.UnitTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import com.pilosa.client.orm.FieldOptions;
 
-import static org.junit.Assert.*;
+public interface IFieldInfo {
+    FieldOptions getOptions();
 
-@Category(UnitTest.class)
-public class RangeFieldTest {
-
-    @Test
-    public void testEqualsFailsWithOtherObject() {
-        RangeField field = RangeFieldTest.field.field("myfield");
-        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = field.equals("foo");
-        assertFalse(e);
-    }
-
-    @Test
-    public void testEqualsSameObject() {
-        RangeField field = RangeFieldTest.field.field("myfield");
-        assertEquals(field, field);
-    }
-
-    @Test
-    public void testEquals() {
-        RangeField field1 = field.field("myfield");
-        RangeField field2 = new RangeField(field, "myfield");
-        assertTrue(field1.equals(field2));
-    }
-
-    @Test
-    public void testHashCode() {
-        RangeField field1 = field.field("myfield");
-        RangeField field2 = field.field("myfield");
-        assertEquals(field1.hashCode(), field2.hashCode());
-    }
-
-    static {
-        Schema schema = Schema.defaultSchema();
-        Index index = schema.index("myindex");
-        field = index.field("myframe");
-    }
-
-    private static Field field;
+    String getName();
 }

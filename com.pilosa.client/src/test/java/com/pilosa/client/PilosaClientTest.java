@@ -36,7 +36,7 @@ package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.FieldOptions;
-import com.pilosa.client.status.IFrameInfo;
+import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class PilosaClientTest {
         IndexInfo indexInfo = info.getIndexes().get(0);
         assertEquals("mi", indexInfo.getName());
         assertEquals(1, indexInfo.getFrames().size());
-        IFrameInfo frameInfo = indexInfo.getFrames().get(0);
+        IFieldInfo frameInfo = indexInfo.getFrames().get(0);
         FieldOptions fieldOptions = frameInfo.getOptions();
         assertEquals("mf10", frameInfo.getName());
         assertEquals(TimeQuantum.YEAR_MONTH_DAY, fieldOptions.getTimeQuantum());

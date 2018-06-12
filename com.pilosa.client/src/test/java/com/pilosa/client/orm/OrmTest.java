@@ -36,7 +36,6 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -362,95 +361,90 @@ public class OrmTest {
 
     @Test
     public void fieldLessThanTest() {
-        PqlQuery q = sampleField.field("foo").lessThan(10);
+        PqlQuery q = collabField.lessThan(10);
         assertEquals(
-                "Range(field='sample-field', foo < 10)",
+                "Range(collaboration < 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldLessThanOrEqualTest() {
-        PqlQuery q = sampleField.field("foo").lessThanOrEqual(10);
+        PqlQuery q = collabField.lessThanOrEqual(10);
         assertEquals(
-                "Range(field='sample-field', foo <= 10)",
+                "Range(collaboration <= 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldGreaterThanTest() {
-        PqlQuery q = sampleField.field("foo").greaterThan(10);
+        PqlQuery q = collabField.greaterThan(10);
         assertEquals(
-                "Range(field='sample-field', foo > 10)",
+                "Range(collaboration > 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldGreaterThanOrEqualTest() {
-        PqlQuery q = sampleField.field("foo").greaterThanOrEqual(10);
+        PqlQuery q = collabField.greaterThanOrEqual(10);
         assertEquals(
-                "Range(field='sample-field', foo >= 10)",
+                "Range(collaboration >= 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldEqualsTest() {
-        PqlQuery q = sampleField.field("foo").equals(10);
+        PqlQuery q = collabField.equals(10);
         assertEquals(
-                "Range(field='sample-field', foo == 10)",
+                "Range(collaboration == 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldNotEqualsTest() {
-        PqlQuery q = sampleField.field("foo").notEquals(10);
+        PqlQuery q = collabField.notEquals(10);
         assertEquals(
-                "Range(field='sample-field', foo != 10)",
+                "Range(collaboration != 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldNotNullTest() {
-        PqlQuery q = sampleField.field("foo").notNull();
+        PqlQuery q = collabField.notNull();
         assertEquals(
-                "Range(field='sample-field', foo != null)",
+                "Range(collaboration != null)",
                 q.serialize());
     }
 
     @Test
     public void fieldBetweenTest() {
-        PqlQuery q = sampleField.field("foo").between(10, 20);
+        PqlQuery q = collabField.between(10, 20);
         assertEquals(
-                "Range(field='sample-field', foo >< [10,20])",
+                "Range(collaboration >< [10,20])",
                 q.serialize());
 
     }
 
     @Test
     public void fieldSumTest() {
-        PqlQuery q = sampleField.field("foo").sum(sampleField.bitmap(10));
+        PqlQuery q = collabField.sum(collabField.bitmap(10));
         assertEquals(
-                "Sum(Bitmap(row=10, field='sample-field'), field='sample-field', field='foo')",
+                "Sum(Bitmap(row=10, field='collaboration'), field='collaboration')",
                 q.serialize());
-        q = sampleField.field("foo").sum();
+        q = collabField.sum();
         assertEquals(
-                "Sum(field='sample-field', field='foo')",
+                "Sum(field='collaboration')",
                 q.serialize()
         );
     }
 
     @Test
     public void fieldSetValueTest() {
-        PqlQuery q = sampleField.field("foo").setValue(10, 20);
+        PqlQuery q = collabField.setValue(10, 20);
         assertEquals(
-                "SetFieldValue(field='sample-field', col=10, foo=20)",
+                "SetValue(col=10, collaboration=20)",
                 q.serialize());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void invalidFieldTest() {
-        sampleField.field("??foo");
     }
 }

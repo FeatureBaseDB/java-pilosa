@@ -45,7 +45,7 @@ import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
-import com.pilosa.client.status.IFrameInfo;
+import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
 import org.apache.http.Header;
@@ -345,7 +345,7 @@ public class PilosaClient implements AutoCloseable {
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
             Index index = result.index(indexInfo.getName());
-            for (IFrameInfo frameInfo : indexInfo.getFrames()) {
+            for (IFieldInfo frameInfo : indexInfo.getFrames()) {
                 index.field(frameInfo.getName(), frameInfo.getOptions());
             }
         }

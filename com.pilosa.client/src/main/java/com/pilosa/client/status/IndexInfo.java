@@ -52,15 +52,15 @@ public class IndexInfo {
         this.name = name;
     }
 
-    @JsonProperty("frames")
-    public List<FrameInfo> getFrames() {
+    @JsonProperty("fields")
+    public List<FieldInfo> getFrames() {
         return this.frames;
     }
 
-    public void setFrames(List<FrameInfo> frames) {
+    public void setFrames(List<FieldInfo> frames) {
         this.frames = frames;
     }
 
     private String name;
-    private List<FrameInfo> frames = new ArrayList<>();
+    private List<FieldInfo> frames = new ArrayList<>();
 }

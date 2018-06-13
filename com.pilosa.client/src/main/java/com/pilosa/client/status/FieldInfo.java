@@ -66,12 +66,10 @@ public class FieldInfo implements IFieldInfo {
 
 final class FieldMeta {
     FieldOptions getOptions() {
-        FieldOptions.Builder builder = FieldOptions.builder()
-                .setCacheType(this.cacheType)
-                .setCacheSize(this.cacheSize);
+        FieldOptions.Builder builder = FieldOptions.builder();
         switch (this.fieldType) {
             case SET:
-                builder = builder.fieldSet();
+                builder = builder.fieldSet(this.cacheType, this.cacheSize);
                 break;
             case INT:
                 builder = builder.fieldInt(this.min, this.max);

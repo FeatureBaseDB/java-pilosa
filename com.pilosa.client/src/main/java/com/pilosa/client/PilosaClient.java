@@ -219,7 +219,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws HttpConflict if there already is a field with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void createFrame(Field field) {
+    public void createField(Field field) {
         String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
         String body = field.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
@@ -232,9 +232,9 @@ public class PilosaClient implements AutoCloseable {
      * @param field field object
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void ensureFrame(Field field) {
+    public void ensureField(Field field) {
         try {
-            createFrame(field);
+            createField(field);
         } catch (HttpConflict ex) {
             // pass
         }
@@ -258,7 +258,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws PilosaException if the field does not exist
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void deleteFrame(Field field) {
+    public void deleteField(Field field) {
         String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
         clientExecute("DELETE", path, null, null, "Error while deleting field");
     }
@@ -270,8 +270,8 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
-    public void importFrame(Field field, BitIterator iterator) {
-        importFrame(field, iterator, ImportOptions.builder().build(), null);
+    public void importField(Field field, BitIterator iterator) {
+        importField(field, iterator, ImportOptions.builder().build(), null);
     }
 
     /**
@@ -287,7 +287,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Field field, BitIterator iterator, ImportOptions options) {
+    public void importField(Field field, BitIterator iterator, ImportOptions options) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, null);
     }
@@ -306,7 +306,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void importField(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, statusQueue);
     }
@@ -372,8 +372,8 @@ public class PilosaClient implements AutoCloseable {
             if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
                 ensureIndex(index);
             }
-            for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
-                this.ensureFrame(frameEntry.getValue());
+            for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
+                this.ensureField(frameEntry.getValue());
             }
         }
 
@@ -386,7 +386,7 @@ public class PilosaClient implements AutoCloseable {
                 schema.index(index);
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
-                for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
+                for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
                     localIndex.field(frameEntry.getValue());
                 }
             }

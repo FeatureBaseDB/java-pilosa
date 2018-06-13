@@ -48,38 +48,49 @@ import static org.junit.Assert.*;
 @Category(UnitTest.class)
 public class FieldOptionsTest {
     @Test
-    public void testBuilder() {
-        FieldOptions options = FieldOptions.builder()
-                .build();
-        compare(options, TimeQuantum.NONE, false, CacheType.DEFAULT, 0);
+    public void testSetFrameOptions() {
+        FieldOptions options;
+        String target;
 
         options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY_HOUR)
+                .fieldSet(CacheType.RANKED, 1000)
                 .build();
-        compare(options, TimeQuantum.YEAR_MONTH_DAY_HOUR, false, CacheType.DEFAULT, 0);
+        compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
+        target = "{\"options\":{\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR)
+                .fieldSet(CacheType.RANKED)
                 .build();
-        compare(options, TimeQuantum.YEAR, true, CacheType.DEFAULT, 0);
+        compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
+        target = "{\"options\":{\"type\":\"set\",\"cacheType\":\"ranked\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR)
-                .setCacheType(CacheType.RANKED)
-                .setCacheSize(10000)
+                .fieldSet()
                 .build();
-        compare(options, TimeQuantum.YEAR, true, CacheType.RANKED, 10000);
+        compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
+        target = "{\"options\":{\"type\":\"set\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
     @Test
-    public void testFrameOptionsToString() {
+    public void testIntFrameOptions() {
         FieldOptions options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.DAY_HOUR)
-                .setCacheType(CacheType.RANKED)
-                .setCacheSize(1000)
-                .fieldInt(-10, 100)
+                .fieldInt(-100, 500)
                 .build();
-        String target = "{\"options\":{\"cacheSize\":1000,\"min\":-10,\"max\":100,\"type\":\"int\",\"cacheType\":\"ranked\"}}";
+        compare(options, FieldType.INT, TimeQuantum.NONE, CacheType.DEFAULT, 0, -100, 500);
+        String target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+    }
+
+    @Test
+    public void testTimeFrameOptions() {
+        FieldOptions options = FieldOptions.builder()
+                .fieldTime(TimeQuantum.MONTH_DAY_HOUR)
+                .build();
+        compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
+        String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -99,27 +110,46 @@ public class FieldOptionsTest {
 
     @Test
     public void testHashCode() {
-        FieldOptions options1 = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .setCacheType(CacheType.RANKED)
-                .setCacheSize(1000)
-                .fieldInt(10, 1000)
+        FieldOptions options1, options2;
+
+        options1 = FieldOptions.builder()
+                .fieldSet(CacheType.RANKED, 100)
                 .build();
-        FieldOptions options2 = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .setCacheType(CacheType.RANKED)
-                .setCacheSize(1000)
-                .fieldInt(10, 1000)
+        options2 = FieldOptions.builder()
+                .fieldSet(CacheType.RANKED, 100)
+                .build();
+        assertEquals(options1.hashCode(), options2.hashCode());
+
+        options1 = FieldOptions.builder()
+                .fieldInt(-100, 200)
+                .build();
+        options2 = FieldOptions.builder()
+                .fieldInt(-100, 200)
+                .build();
+        assertEquals(options1.hashCode(), options2.hashCode());
+
+        options1 = FieldOptions.builder()
+                .fieldTime(TimeQuantum.YEAR_MONTH)
+                .build();
+        options2 = FieldOptions.builder()
+                .fieldTime(TimeQuantum.YEAR_MONTH)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
     }
 
     private void compare(FieldOptions options,
-                         TimeQuantum targetTimeQuantum, boolean targetInverseEnabled,
-                         CacheType targetCacheType, int targetCacheSize) {
+                         FieldType targetFieldType,
+                         TimeQuantum targetTimeQuantum,
+                         CacheType targetCacheType,
+                         int targetCacheSize,
+                         int targetMin,
+                         int targetMax) {
+        assertEquals(targetFieldType, options.getFieldType());
         assertEquals(targetTimeQuantum, options.getTimeQuantum());
         assertEquals(targetCacheType, options.getCacheType());
         assertEquals(targetCacheSize, options.getCacheSize());
+        assertEquals(targetMin, options.getMin());
+        assertEquals(targetMax, options.getMax());
     }
 
     private Object[] stringToSortedChars(String s) {

@@ -32,14 +32,28 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.exceptions;
+package com.pilosa.client.orm;
 
-public class ValidationException extends PilosaException {
-    public ValidationException() {
-        super();
+import com.pilosa.client.UnitTest;
+import com.pilosa.client.exceptions.ValidationException;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import static org.junit.Assert.assertEquals;
+
+@Category(UnitTest.class)
+public class FieldTypeTest {
+
+    @Test
+    public void testFromString() {
+        assertEquals(FieldType.SET, FieldType.fromString("set"));
+        assertEquals(FieldType.INT, FieldType.fromString("int"));
+        assertEquals(FieldType.TIME, FieldType.fromString("time"));
+        assertEquals(FieldType.DEFAULT, FieldType.fromString(""));
     }
 
-    public ValidationException(String message) {
-        super(message);
+    @Test(expected = ValidationException.class)
+    public void testInvalidFromString() {
+        FieldType.fromString("none");
     }
 }

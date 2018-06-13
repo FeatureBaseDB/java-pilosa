@@ -72,7 +72,7 @@ public class Schema {
      */
     public Index index(Index other) {
         Index index = this.index(other.getName());
-        for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
+        for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
             Field field = frameEntry.getValue();
             index.field(field.getName(), field.getOptions());
         }
@@ -91,15 +91,15 @@ public class Schema {
                 // the index exists in the other schema; check the frames
                 Index resultIndex = Index.withName(indexName);
                 Index otherIndex = other.indexes.get(indexName);
-                Map<String, Field> otherIndexFrames = otherIndex.getFrames();
-                for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
+                Map<String, Field> otherIndexFrames = otherIndex.getFields();
+                for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
                     String frameName = frameEntry.getKey();
                     if (!otherIndexFrames.containsKey(frameName)) {
                         resultIndex.field(frameName, frameEntry.getValue().getOptions());
                     }
                 }
                 // check whether we modified result index
-                if (resultIndex.getFrames().size() > 0) {
+                if (resultIndex.getFields().size() > 0) {
                     result.indexes.put(indexName, resultIndex);
                 }
             }

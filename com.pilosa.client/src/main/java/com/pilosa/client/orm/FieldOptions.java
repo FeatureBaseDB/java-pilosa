@@ -67,47 +67,32 @@ public final class FieldOptions {
         }
 
         /**
-         * Sets the time quantum for the frame.
-         * <p>
-         *     If a Field has a time quantum, then Views are generated
-         *     for each of the defined time segments.
-         *
-         * @param timeQuantum See {@link TimeQuantum} for valid values.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#time-quantum">Time Quantum</a>
-         * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
-        public Builder setTimeQuantum(TimeQuantum timeQuantum) {
-            this.timeQuantum = timeQuantum;
-            return this;
+        public Builder fieldSet() {
+            return fieldSet(CacheType.DEFAULT, 0);
         }
 
         /**
-         * Sets the cache type for the frame.
-         *
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
-        public Builder setCacheType(CacheType cacheType) {
-            this.cacheType = cacheType;
-            return this;
+        public Builder fieldSet(CacheType cacheType) {
+            return fieldSet(cacheType, 0);
         }
 
         /**
-         * Sets the cache size for the frame
-         *
+         * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
          */
-        public Builder setCacheSize(int cacheSize) {
-            this.cacheSize = cacheSize;
-            return this;
-        }
-
-        public Builder fieldSet() {
+        public Builder fieldSet(CacheType cacheType, int cacheSize) {
             this.fieldType = FieldType.SET;
+            this.cacheType = cacheType;
+            this.cacheSize = cacheSize;
             return this;
         }
 
@@ -200,18 +185,19 @@ public final class FieldOptions {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
         Map<String, Object> options = new HashMap<>();
         if (this.fieldType != FieldType.DEFAULT) {
             options.put("type", this.fieldType.toString());
         }
-        if (!this.cacheType.equals(CacheType.DEFAULT)) {
-            options.put("cacheType", this.cacheType.toString());
-        }
-        if (this.cacheSize > 0) {
-            options.put("cacheSize", this.cacheSize);
-        }
         switch (this.fieldType) {
+            case SET:
+                if (!this.cacheType.equals(CacheType.DEFAULT)) {
+                    options.put("cacheType", this.cacheType.toString());
+                }
+                if (this.cacheSize > 0) {
+                    options.put("cacheSize", this.cacheSize);
+                }
+                break;
             case INT:
                 options.put("min", this.min);
                 options.put("max", this.max);

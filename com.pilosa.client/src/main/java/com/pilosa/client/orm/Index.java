@@ -279,7 +279,7 @@ public class Index {
                 key, attributesString));
     }
 
-    public Map<String, Field> getFrames() {
+    public Map<String, Field> getFields() {
         return this.fields;
     }
 

@@ -106,10 +106,10 @@ public class PilosaClientIT {
     public void responseDefaultsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             QueryResponse response = client.query(this.field.topN(5));
-            assertNotNull(response.getResult().getBitmap());
+            assertNotNull(response.getResult().getRow());
             assertNotNull(response.getResult().getCountItems());
-            response = client.query(this.field.bitmap(99999));
-            assertNotNull(response.getResult().getBitmap());
+            response = client.query(this.field.row(99999));
+            assertNotNull(response.getResult().getRow());
             assertNotNull(response.getResult().getCountItems());
         }
 
@@ -195,12 +195,12 @@ public class PilosaClientIT {
             QueryOptions queryOptions = QueryOptions.builder()
                     .setColumns(true)
                     .build();
-            QueryResponse response = client.query(field.bitmap(100), queryOptions);
+            QueryResponse response = client.query(field.row(100), queryOptions);
             assertNotNull(response.getColumn());
             assertEquals(1000, response.getColumn().getID());
             assertEquals(columnAttrs, response.getColumn().getAttributes());
 
-            response = client.query(field.bitmap(300));
+            response = client.query(field.row(300));
             assertNull(response.getColumn());
         }
     }
@@ -251,7 +251,7 @@ public class PilosaClientIT {
             qry.add(countField.setBit(10, 21));
             qry.add(countField.setBit(15, 25));
             client.query(qry);
-            QueryResponse response = client.query(this.index.count(countField.bitmap(10)));
+            QueryResponse response = client.query(this.index.count(countField.row(10)));
             assertEquals(2, response.getResult().getCount());
         }
     }
@@ -260,9 +260,9 @@ public class PilosaClientIT {
     public void newOrmTest() throws IOException {
         try (PilosaClient client = getClient()) {
             client.query(this.field.setBit(10, 20));
-            QueryResponse response1 = client.query(this.field.bitmap(10));
+            QueryResponse response1 = client.query(this.field.row(10));
             assertEquals(0, response1.getColumns().size());
-            BitmapResult bitmap1 = response1.getResult().getBitmap();
+            RowResult bitmap1 = response1.getResult().getRow();
             assertEquals(0, bitmap1.getAttributes().size());
             assertEquals(1, bitmap1.getBits().size());
             assertEquals(20, (long) bitmap1.getBits().get(0));
@@ -273,7 +273,7 @@ public class PilosaClientIT {
             QueryOptions queryOptions = QueryOptions.builder()
                     .setColumns(true)
                     .build();
-            QueryResponse response2 = client.query(this.field.bitmap(10), queryOptions);
+            QueryResponse response2 = client.query(this.field.row(10), queryOptions);
             ColumnItem column = response2.getColumn();
             assertNotNull(column);
             assertEquals(20, column.getID());
@@ -284,8 +284,8 @@ public class PilosaClientIT {
             bitmapAttrs.put("height", 1.81);
             bitmapAttrs.put("name", "Mr. Pi");
             client.query(this.field.setRowAttrs(10, bitmapAttrs));
-            QueryResponse response3 = client.query(this.field.bitmap(10));
-            BitmapResult bitmap = response3.getResult().getBitmap();
+            QueryResponse response3 = client.query(this.field.row(10));
+            RowResult bitmap = response3.getResult().getRow();
             assertEquals(1, bitmap.getBits().size());
             assertEquals(4, bitmap.getAttributes().size());
             assertEquals(true, bitmap.getAttributes().get("active"));
@@ -402,16 +402,16 @@ public class PilosaClientIT {
             client.ensureField(field);
             client.importField(field, iterator);
             PqlBatchQuery bq = index.batchQuery(
-                    field.bitmap(2),
-                    field.bitmap(7),
-                    field.bitmap(10)
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
             );
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(3L, 1L, 5L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
-                BitmapResult br = results.get(i).getBitmap();
+                RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getBits().get(0));
             }
         }
@@ -431,16 +431,16 @@ public class PilosaClientIT {
 
             client.importField(field, iterator, options);
             PqlBatchQuery bq = index.batchQuery(
-                    field.bitmap(2),
-                    field.bitmap(7),
-                    field.bitmap(10)
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
             );
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(3L, 1L, 5L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
-                BitmapResult br = results.get(i).getBitmap();
+                RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getBits().get(0));
             }
         }
@@ -643,7 +643,7 @@ public class PilosaClientIT {
                     field.setValue(10, 11),
                     field.setValue(100, 15)
             ));
-            QueryResponse response = client.query(field.sum(field.bitmap(1)));
+            QueryResponse response = client.query(field.sum(field.row(1)));
             assertEquals(26, response.getResult().getValue());
             assertEquals(2, response.getResult().getCount());
 
@@ -651,7 +651,7 @@ public class PilosaClientIT {
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(field.min(field.bitmap(1)));
+            response = client.query(field.min(field.row(1)));
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
@@ -659,13 +659,13 @@ public class PilosaClientIT {
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(field.max(field.bitmap(1)));
+            response = client.query(field.max(field.row(1)));
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
             response = client.query(field.lessThan(15));
             assertEquals(1, response.getResults().size());
-            assertEquals(10, (long) response.getResult().getBitmap().getBits().get(0));
+            assertEquals(10, (long) response.getResult().getRow().getBits().get(0));
         }
     }
 
@@ -686,17 +686,17 @@ public class PilosaClientIT {
             options = QueryOptions.builder()
                     .setExcludeBits(true)
                     .build();
-            response = client.query(field.bitmap(1), options);
-            assertEquals(0, response.getResult().getBitmap().getBits().size());
-            assertEquals(1, response.getResult().getBitmap().getAttributes().size());
+            response = client.query(field.row(1), options);
+            assertEquals(0, response.getResult().getRow().getBits().size());
+            assertEquals(1, response.getResult().getRow().getAttributes().size());
 
             // test exclude attributes.
             options = QueryOptions.builder()
                     .setExcludeAttributes(true)
                     .build();
-            response = client.query(field.bitmap(1), options);
-            assertEquals(1, response.getResult().getBitmap().getBits().size());
-            assertEquals(0, response.getResult().getBitmap().getAttributes().size());
+            response = client.query(field.row(1), options);
+            assertEquals(1, response.getResult().getRow().getBits().size());
+            assertEquals(0, response.getResult().getRow().getAttributes().size());
 
         }
     }
@@ -721,9 +721,9 @@ public class PilosaClientIT {
             QueryOptions options = QueryOptions.builder()
                     .setSlices(0L, 3L)
                     .build();
-            QueryResponse response = client.query(field.bitmap(1), options);
+            QueryResponse response = client.query(field.row(1), options);
 
-            List<Long> bits = response.getResult().getBitmap().getBits();
+            List<Long> bits = response.getResult().getRow().getBits();
             assertEquals(2, bits.size());
             assertEquals(100, (long) bits.get(0));
             assertEquals(sliceWidth*3, (long) bits.get(1));

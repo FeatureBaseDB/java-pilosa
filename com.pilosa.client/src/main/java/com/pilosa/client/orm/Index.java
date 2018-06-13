@@ -180,7 +180,7 @@ public class Index {
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery intersect(PqlBitmapQuery... bitmaps) {
         if (bitmaps.length < 1) {
-            throw new IllegalArgumentException("Intersect operation requires at least 1 bitmap");
+            throw new IllegalArgumentException("Intersect operation requires at least 1 row");
         }
         return bitmapOperation("Intersect", bitmaps);
     }
@@ -199,7 +199,7 @@ public class Index {
     @SuppressWarnings("WeakerAccess")
     public PqlBitmapQuery difference(PqlBitmapQuery... bitmaps) {
         if (bitmaps.length < 1) {
-            throw new IllegalArgumentException("Difference operation requires at least 1 bitmap");
+            throw new IllegalArgumentException("Difference operation requires at least 1 row");
         }
         return bitmapOperation("Difference", bitmaps);
     }
@@ -224,7 +224,7 @@ public class Index {
      * <p>
      * Count returns the number of set bits in the BITMAP_CALL passed in.
      *
-     * @param bitmap the bitmap query
+     * @param bitmap the row query
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */

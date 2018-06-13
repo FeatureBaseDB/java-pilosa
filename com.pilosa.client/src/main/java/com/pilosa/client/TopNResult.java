@@ -47,8 +47,8 @@ public class TopNResult implements QueryResult {
     }
 
     @Override
-    public BitmapResult getBitmap() {
-        return BitmapResult.defaultResult();
+    public RowResult getRow() {
+        return RowResult.defaultResult();
     }
 
     @Override

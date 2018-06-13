@@ -71,25 +71,25 @@ public class ValidatorTest {
     }
 
     @Test
-    public void ensureValidFrameNameTest() {
-        String[] validFrameNames = new String[]{
+    public void ensureValidFieldNameTest() {
+        String[] validFieldNames = new String[]{
                 "a", "ab", "ab1", "b-c", "d_e",
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         };
-        for (String name : validFrameNames) {
-            Validator.ensureValidFrameName(name);
+        for (String name : validFieldNames) {
+            Validator.ensureValidFieldName(name);
         }
     }
 
     @Test
-    public void ensureValidFrameNameFailsTest() {
-        String[] invalidFrameNames = new String[]{
+    public void ensureValidFieldNameFailsTest() {
+        String[] invalidFieldNames = new String[]{
                 "", "'", "^", "/", "\\", "A", "*", "a:b", "valid?no", "yüce", "_", "-", ".data", "d.e", "1",
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1"
         };
-        for (String name : invalidFrameNames) {
+        for (String name : invalidFieldNames) {
             try {
-                Validator.ensureValidFrameName(name);
+                Validator.ensureValidFieldName(name);
             } catch (ValidationException ex) {
                 continue;
             }

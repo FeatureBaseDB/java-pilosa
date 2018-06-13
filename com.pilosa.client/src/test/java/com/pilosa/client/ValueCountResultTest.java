@@ -47,7 +47,7 @@ public class ValueCountResultTest {
     public void testCreateSumCountResult() {
         ValueCountResult result = ValueCountResult.create(20, 10);
         assertEquals(QueryResultType.VAL_COUNT, result.getType());
-        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(RowResult.defaultResult(), result.getRow());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(10, result.getCount());
         assertEquals(20L, result.getValue());

@@ -82,7 +82,7 @@ class SliceBits {
         }
         return Internal.ImportRequest.newBuilder()
                 .setIndex(this.field.getIndex().getName())
-                .setFrame(this.field.getName())
+                .setField(this.field.getName())
                 .setSlice(slice)
                 .addAllRowIDs(bitmapIDs)
                 .addAllColumnIDs(columnIDs)

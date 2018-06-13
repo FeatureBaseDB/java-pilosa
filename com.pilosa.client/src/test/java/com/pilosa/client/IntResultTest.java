@@ -47,7 +47,7 @@ public class IntResultTest {
     public void testCreateIntResult() {
         IntResult result = IntResult.create(55);
         assertEquals(QueryResultType.INT, result.getType());
-        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(RowResult.defaultResult(), result.getRow());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(55L, result.getCount());
         assertEquals(0L, result.getValue());

@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
-public final class BitmapResult implements QueryResult {
+public final class RowResult implements QueryResult {
     /**
      * Returns the attributes of the reply.
      *
@@ -81,7 +81,7 @@ public final class BitmapResult implements QueryResult {
     }
 
     @Override
-    public BitmapResult getBitmap() {
+    public RowResult getRow() {
         return this;
     }
 
@@ -107,7 +107,7 @@ public final class BitmapResult implements QueryResult {
 
     @Override
     public String toString() {
-        return String.format("BitmapResult(attrs=%s, bits=%s, keys=%s)",
+        return String.format("RowResult(attrs=%s, bits=%s, keys=%s)",
                 this.attributes, this.bits, this.keys);
     }
 
@@ -116,10 +116,10 @@ public final class BitmapResult implements QueryResult {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BitmapResult)) {
+        if (!(obj instanceof RowResult)) {
             return false;
         }
-        BitmapResult rhs = (BitmapResult) obj;
+        RowResult rhs = (RowResult) obj;
         return new EqualsBuilder()
                 .append(this.attributes, rhs.attributes)
                 .append(this.bits, rhs.bits)
@@ -136,33 +136,33 @@ public final class BitmapResult implements QueryResult {
                 .toHashCode();
     }
 
-    static BitmapResult create(Map<String, Object> attributes, List<Long> bits, List<String> keys) {
-        BitmapResult result = new BitmapResult();
+    static RowResult create(Map<String, Object> attributes, List<Long> bits, List<String> keys) {
+        RowResult result = new RowResult();
         result.attributes = (attributes == null) ? defaultAttributes : attributes;
         result.bits = (bits == null) ? defaultBits : bits;
         result.keys = (keys == null) ? defaultKeys : keys;
         return result;
     }
 
-    static BitmapResult fromInternal(Internal.QueryResult q) {
-        Internal.Bitmap b = q.getBitmap();
+    static RowResult fromInternal(Internal.QueryResult q) {
+        Internal.Row b = q.getRow();
         return create(Util.protobufAttrsToMap(b.getAttrsList()),
-                b.getBitsList(),
+                b.getColumnsList(),
                 b.getKeysList());
     }
 
-    static BitmapResult defaultResult() {
+    static RowResult defaultResult() {
         return defaultResult;
     }
 
     static {
-        BitmapResult result = new BitmapResult();
+        RowResult result = new RowResult();
         result.attributes = new HashMap<>();
         result.bits = new ArrayList<>();
         defaultResult = result;
     }
 
-    private static BitmapResult defaultResult;
+    private static RowResult defaultResult;
     private static Map<String, Object> defaultAttributes = new HashMap<>(0);
     private static List<Long> defaultBits = new ArrayList<>(0);
     private static List<String> defaultKeys = new ArrayList<>(0);

@@ -39,7 +39,7 @@ import java.util.List;
 public interface QueryResult {
     int getType();
 
-    BitmapResult getBitmap();
+    RowResult getRow();
 
     List<CountResultItem> getCountItems();
 

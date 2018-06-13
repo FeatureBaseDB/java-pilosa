@@ -88,7 +88,7 @@ import java.util.concurrent.*;
  *     // Create an Index instance
  *     Index index = Index.withName("repository");
  *     Field stargazer = index.field("stargazer");
- *     QueryResponse response = client.query(stargazer.bitmap(5));
+ *     QueryResponse response = client.query(stargazer.row(5));
  *     // Act on the result
  *     System.out.println(response.getResult());
  * </code>
@@ -345,8 +345,8 @@ public class PilosaClient implements AutoCloseable {
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
             Index index = result.index(indexInfo.getName());
-            for (IFieldInfo frameInfo : indexInfo.getFrames()) {
-                index.field(frameInfo.getName(), frameInfo.getOptions());
+            for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                index.field(fieldInfo.getName(), fieldInfo.getOptions());
             }
         }
         return result;
@@ -372,8 +372,8 @@ public class PilosaClient implements AutoCloseable {
             if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
                 ensureIndex(index);
             }
-            for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
-                this.ensureField(frameEntry.getValue());
+            for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                this.ensureField(fieldEntry.getValue());
             }
         }
 
@@ -386,8 +386,8 @@ public class PilosaClient implements AutoCloseable {
                 schema.index(index);
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
-                for (Map.Entry<String, Field> frameEntry : index.getFields().entrySet()) {
-                    localIndex.field(frameEntry.getValue());
+                for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    localIndex.field(fieldEntry.getValue());
                 }
             }
         }
@@ -578,7 +578,7 @@ public class PilosaClient implements AutoCloseable {
 
     void importBits(SliceBits sliceBits) {
         String indexName = sliceBits.getIndex().getName();
-        List<IFragmentNode> nodes = fetchFrameNodes(indexName, sliceBits.getSlice());
+        List<IFragmentNode> nodes = fetchFieldNodes(indexName, sliceBits.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
@@ -587,7 +587,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    List<IFragmentNode> fetchFrameNodes(String indexName, long slice) {
+    List<IFragmentNode> fetchFieldNodes(String indexName, long slice) {
         String key = String.format("%s%d", indexName, slice);
         List<IFragmentNode> nodes;
 
@@ -724,8 +724,8 @@ class QueryRequest {
         return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveColumnAttributes)
-                .setExcludeBits(this.excludeBits)
-                .setExcludeAttrs(this.excludeAttributes)
+                .setExcludeColumns(this.excludeBits)
+                .setExcludeRowAttrs(this.excludeAttributes)
                 .addAllSlices(Arrays.asList(this.slices))
                 .build();
     }

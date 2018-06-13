@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Contains options to customize {@link Field} objects and frame queries.
+ * Contains options to customize {@link Field} objects and field queries.
  * <p>
  * In order to set options, create a {@link Builder} object using {@link FieldOptions#builder()}:
  * <p>
@@ -68,7 +68,7 @@ public final class FieldOptions {
 
         /**
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldSet() {
             return fieldSet(CacheType.DEFAULT, 0);
@@ -77,7 +77,7 @@ public final class FieldOptions {
         /**
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldSet(CacheType cacheType) {
             return fieldSet(cacheType, 0);
@@ -87,7 +87,7 @@ public final class FieldOptions {
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldSet(CacheType cacheType, int cacheSize) {
             this.fieldType = FieldType.SET;
@@ -97,12 +97,12 @@ public final class FieldOptions {
         }
 
         /**
-         * Adds an integer field to the frame options
+         * Adds an integer field to the field options
          *
          * @param min  Minimum value this field can represent.
          * @param max  Maximum value this field can represent.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldInt(long min, long max) {
             this.fieldType = FieldType.INT;
@@ -151,7 +151,7 @@ public final class FieldOptions {
     }
 
     /**
-     * Creates a FrameBuilder.Builder object.
+     * Creates a FieldBuilder.Builder object.
      *
      * @return a Builder object
      */

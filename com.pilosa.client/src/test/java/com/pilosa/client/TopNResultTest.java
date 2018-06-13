@@ -54,7 +54,7 @@ public class TopNResultTest {
         assertEquals(QueryResultType.PAIRS, result.getType());
         List<CountResultItem> targetItems = new ArrayList<>();
         targetItems.add(CountResultItem.create(5, "", 10));
-        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(RowResult.defaultResult(), result.getRow());
         assertEquals(targetItems, result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());

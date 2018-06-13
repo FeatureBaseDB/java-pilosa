@@ -47,7 +47,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Frames are used to segment and define different functional characteristics within your entire index.
+ * Fields are used to segment and define different functional characteristics within your entire index.
  * <p>
  * You can think of a Field as a table-like data partition within your Index.
  * Row-level attributes are namespaced at the Field level.
@@ -74,7 +74,7 @@ public class Field {
      * @throws ValidationException if an invalid field name is passed
      */
     static Field create(Index index, String name, FieldOptions options) {
-        Validator.ensureValidFrameName(name);
+        Validator.ensureValidFieldName(name);
         return new Field(index, name, options);
     }
 
@@ -104,7 +104,7 @@ public class Field {
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
-    public PqlBitmapQuery bitmap(long rowID) {
+    public PqlBitmapQuery row(long rowID) {
         return this.index.pqlBitmapQuery(String.format("Bitmap(row=%d, field='%s')", rowID, this.name));
     }
 
@@ -122,7 +122,7 @@ public class Field {
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
      */
-    public PqlBitmapQuery bitmap(String rowKey) {
+    public PqlBitmapQuery row(String rowKey) {
         return this.index.pqlBitmapQuery(String.format("Bitmap(row='%s', field='%s')",
                 rowKey, this.name));
     }
@@ -260,10 +260,10 @@ public class Field {
      * <p>
      * Return the id and count of the top n bitmaps (by count of bits) in the field.
      * <p>
-     * This variant supports customizing the bitmap query.
+     * This variant supports customizing the row query.
      *
      * @param n      number of items to return
-     * @param bitmap the bitmap query
+     * @param bitmap the row query
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
@@ -281,7 +281,7 @@ public class Field {
      *     in filters.
      *
      * @param n      number of items to return
-     * @param bitmap the bitmap query
+     * @param bitmap the row query
      * @param field  field name
      * @param values filter values to be matched against the field
      * @return a PQL query
@@ -498,7 +498,7 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The bitmap query to use.
+     * @param bitmap The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
@@ -525,7 +525,7 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The bitmap query to use.
+     * @param bitmap The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
      */
@@ -552,7 +552,7 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The bitmap query to use.
+     * @param bitmap The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
      */

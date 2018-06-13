@@ -48,7 +48,7 @@ import static org.junit.Assert.*;
 @Category(UnitTest.class)
 public class FieldOptionsTest {
     @Test
-    public void testSetFrameOptions() {
+    public void testSetFieldOptions() {
         FieldOptions options;
         String target;
 
@@ -75,7 +75,7 @@ public class FieldOptionsTest {
     }
 
     @Test
-    public void testIntFrameOptions() {
+    public void testIntFieldOptions() {
         FieldOptions options = FieldOptions.builder()
                 .fieldInt(-100, 500)
                 .build();
@@ -85,7 +85,7 @@ public class FieldOptionsTest {
     }
 
     @Test
-    public void testTimeFrameOptions() {
+    public void testTimeFieldOptions() {
         FieldOptions options = FieldOptions.builder()
                 .fieldTime(TimeQuantum.MONTH_DAY_HOUR)
                 .build();

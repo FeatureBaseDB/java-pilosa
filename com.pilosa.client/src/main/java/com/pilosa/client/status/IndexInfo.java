@@ -53,14 +53,14 @@ public class IndexInfo {
     }
 
     @JsonProperty("fields")
-    public List<FieldInfo> getFrames() {
-        return this.frames;
+    public List<FieldInfo> getFields() {
+        return this.fields;
     }
 
-    public void setFrames(List<FieldInfo> frames) {
-        this.frames = frames;
+    public void setFields(List<FieldInfo> fields) {
+        this.fields = fields;
     }
 
     private String name;
-    private List<FieldInfo> frames = new ArrayList<>();
+    private List<FieldInfo> fields = new ArrayList<>();
 }

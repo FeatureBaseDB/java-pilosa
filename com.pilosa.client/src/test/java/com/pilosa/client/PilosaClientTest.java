@@ -59,9 +59,9 @@ public class PilosaClientTest {
 
     // Note that following tests need access to internal methods, that's why they are here.
     @Test(expected = PilosaException.class)
-    public void fetchFrameNodesTest() throws IOException {
+    public void fetchFieldNodesTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("non-existent-domain-555.com:19000")) {
-            client.fetchFrameNodes("foo", 0);
+            client.fetchFieldNodes("foo", 0);
         }
     }
 
@@ -86,10 +86,10 @@ public class PilosaClientTest {
         assertEquals(2, info.getIndexes().size());
         IndexInfo indexInfo = info.getIndexes().get(0);
         assertEquals("mi", indexInfo.getName());
-        assertEquals(1, indexInfo.getFrames().size());
-        IFieldInfo frameInfo = indexInfo.getFrames().get(0);
-        FieldOptions fieldOptions = frameInfo.getOptions();
-        assertEquals("mf10", frameInfo.getName());
+        assertEquals(1, indexInfo.getFields().size());
+        IFieldInfo fieldInfo = indexInfo.getFields().get(0);
+        FieldOptions fieldOptions = fieldInfo.getOptions();
+        assertEquals("mf10", fieldInfo.getName());
         assertEquals(TimeQuantum.YEAR_MONTH_DAY, fieldOptions.getTimeQuantum());
     }
 

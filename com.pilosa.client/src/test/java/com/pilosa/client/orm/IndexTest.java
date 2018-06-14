@@ -114,8 +114,8 @@ public class IndexTest {
             throws NoSuchMethodException, IllegalAccessException {
         Index index = Index.withName("my-index");
         Field field = index.field("my-field");
-        Method m = index.getClass().getMethod(methodName, PqlBitmapQuery[].class);
-        PqlBitmapQuery queries[] = new PqlBitmapQuery[count];
+        Method m = index.getClass().getMethod(methodName, PqlRowQuery[].class);
+        PqlRowQuery queries[] = new PqlRowQuery[count];
         for (int i = 0; i < count; i++) {
             queries[i] = field.row(i);
         }

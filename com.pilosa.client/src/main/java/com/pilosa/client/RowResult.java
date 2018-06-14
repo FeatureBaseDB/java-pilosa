@@ -77,7 +77,7 @@ public final class RowResult implements QueryResult {
 
     @Override
     public int getType() {
-        return QueryResultType.BITMAP;
+        return QueryResultType.ROW;
     }
 
     @Override

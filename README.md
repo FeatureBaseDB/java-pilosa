@@ -8,7 +8,7 @@
 
 <img src="https://www.pilosa.com/img/ee.svg" style="float: right" align="right" height="301">
 
-Java client for Pilosa high performance distributed bitmap index.
+Java client for Pilosa high performance distributed index.
 
 ## What's New?
 
@@ -59,7 +59,7 @@ client.syncSchema(schema);
 client.query(myframe.setBit(5, 42));
 
 // Send a Bitmap query. PilosaException is thrown if execution of the query fails.
-QueryResponse response = client.query(myframe.bitmap(5));
+QueryResponse response = client.query(myframe.row(5));
 
 // Get the result
 QueryResult result = response.getResult();

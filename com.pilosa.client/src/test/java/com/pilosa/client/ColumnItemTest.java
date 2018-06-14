@@ -59,7 +59,7 @@ public class ColumnItemTest {
     }
 
     @Test
-    public void testBitmapResultToString() {
+    public void testRowResultToString() {
         ColumnItem result = createSampleProfileItem();
         String s = result.toString();
         assertEquals("ColumnItem(id=33, attrs={city=Austin})", s);

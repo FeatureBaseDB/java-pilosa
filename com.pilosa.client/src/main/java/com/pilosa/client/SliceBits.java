@@ -72,11 +72,11 @@ class SliceBits {
     }
 
     Internal.ImportRequest convertToImportRequest() {
-        List<Long> bitmapIDs = new ArrayList<>(bits.size());
+        List<Long> rowIDs = new ArrayList<>(bits.size());
         List<Long> columnIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
         for (Bit bit : bits) {
-            bitmapIDs.add(bit.getRowID());
+            rowIDs.add(bit.getRowID());
             columnIDs.add(bit.getColumnID());
             timestamps.add(bit.getTimestamp());
         }
@@ -84,7 +84,7 @@ class SliceBits {
                 .setIndex(this.field.getIndex().getName())
                 .setField(this.field.getName())
                 .setSlice(slice)
-                .addAllRowIDs(bitmapIDs)
+                .addAllRowIDs(rowIDs)
                 .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();

@@ -46,7 +46,7 @@ import java.util.Scanner;
 import java.util.TimeZone;
 
 /**
- * Iterates over a CSV of bitmaps.
+ * Iterates over a CSV of rows.
  * <p>
  * This class is used for iterating over bitmaps for a import operation.
  * <p>

@@ -35,12 +35,12 @@
 package com.pilosa.client.orm;
 
 @SuppressWarnings("WeakerAccess")
-public class PqlBitmapQuery extends PqlBaseQuery {
-    PqlBitmapQuery(String pql) {
+public class PqlRowQuery extends PqlBaseQuery {
+    PqlRowQuery(String pql) {
         super(pql);
     }
 
-    PqlBitmapQuery(String pql, Index index) {
+    PqlRowQuery(String pql, Index index) {
         super(pql, index);
     }
 }

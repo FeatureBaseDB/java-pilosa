@@ -66,8 +66,8 @@ public class OrmTest {
     }
 
     @Test
-    public void pqlBitmapQueryCreate() {
-        PqlBitmapQuery pql = new PqlBitmapQuery("Bitmap(field='foo', row=10)");
+    public void pqlRowQueryCreate() {
+        PqlRowQuery pql = new PqlRowQuery("Bitmap(field='foo', row=10)");
         assertEquals("Bitmap(field='foo', row=10)", pql.serialize());
         assertEquals(null, pql.getIndex());
     }
@@ -102,7 +102,7 @@ public class OrmTest {
     }
 
     @Test
-    public void bitmapTest() {
+    public void rowTest() {
         PqlBaseQuery qry1 = sampleField.row(5);
         assertEquals(
                 "Bitmap(row=5, field='sample-field')",
@@ -170,10 +170,10 @@ public class OrmTest {
 
     @Test
     public void unionTest() {
-        PqlBitmapQuery b1 = sampleField.row(10);
-        PqlBitmapQuery b2 = sampleField.row(20);
-        PqlBitmapQuery b3 = sampleField.row(42);
-        PqlBitmapQuery b4 = collabField.row(2);
+        PqlRowQuery b1 = sampleField.row(10);
+        PqlRowQuery b2 = sampleField.row(20);
+        PqlRowQuery b3 = sampleField.row(42);
+        PqlRowQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
@@ -193,22 +193,22 @@ public class OrmTest {
 
     @Test
     public void union0Test() {
-        PqlBitmapQuery q = sampleIndex.union();
+        PqlRowQuery q = sampleIndex.union();
         assertEquals("Union()", q.serialize());
     }
 
     @Test
     public void union1Test() {
-        PqlBitmapQuery q = sampleIndex.union(sampleField.row(10));
+        PqlRowQuery q = sampleIndex.union(sampleField.row(10));
         assertEquals("Union(Bitmap(row=10, field='sample-field'))", q.serialize());
     }
 
     @Test
     public void intersectTest() {
-        PqlBitmapQuery b1 = sampleField.row(10);
-        PqlBitmapQuery b2 = sampleField.row(20);
-        PqlBitmapQuery b3 = sampleField.row(42);
-        PqlBitmapQuery b4 = collabField.row(2);
+        PqlRowQuery b1 = sampleField.row(10);
+        PqlRowQuery b2 = sampleField.row(20);
+        PqlRowQuery b3 = sampleField.row(42);
+        PqlRowQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
@@ -228,10 +228,10 @@ public class OrmTest {
 
     @Test
     public void differenceTest() {
-        PqlBitmapQuery b1 = sampleField.row(10);
-        PqlBitmapQuery b2 = sampleField.row(20);
-        PqlBitmapQuery b3 = sampleField.row(42);
-        PqlBitmapQuery b4 = collabField.row(2);
+        PqlRowQuery b1 = sampleField.row(10);
+        PqlRowQuery b2 = sampleField.row(20);
+        PqlRowQuery b3 = sampleField.row(42);
+        PqlRowQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
@@ -251,8 +251,8 @@ public class OrmTest {
 
     @Test
     public void xorTest() {
-        PqlBitmapQuery b1 = sampleField.row(10);
-        PqlBitmapQuery b2 = sampleField.row(20);
+        PqlRowQuery b1 = sampleField.row(10);
+        PqlRowQuery b2 = sampleField.row(20);
         PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
         assertEquals(
                 "Xor(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
@@ -261,7 +261,7 @@ public class OrmTest {
 
     @Test
     public void countTest() {
-        PqlBitmapQuery b = collabField.row(42);
+        PqlRowQuery b = collabField.row(42);
         PqlQuery q = projectIndex.count(b);
         assertEquals(
                 "Count(Bitmap(row=42, field='collaboration'))",

@@ -72,8 +72,8 @@ public class Schema {
      */
     public Index index(Index other) {
         Index index = this.index(other.getName());
-        for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
-            Field field = frameEntry.getValue();
+        for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+            Field field = fieldEntry.getValue();
             index.field(field.getName(), field.getOptions());
         }
         return index;
@@ -88,18 +88,18 @@ public class Schema {
                 // if the index doesn't exist in the other schema, simply copy it
                 result.indexes.put(indexName, new Index(indexEntry.getValue()));
             } else {
-                // the index exists in the other schema; check the frames
+                // the index exists in the other schema; check the fields
                 Index resultIndex = Index.withName(indexName);
                 Index otherIndex = other.indexes.get(indexName);
-                Map<String, Field> otherIndexFrames = otherIndex.getFrames();
-                for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
-                    String frameName = frameEntry.getKey();
-                    if (!otherIndexFrames.containsKey(frameName)) {
-                        resultIndex.field(frameName, frameEntry.getValue().getOptions());
+                Map<String, Field> otherIndexFields = otherIndex.getFields();
+                for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    String fieldName = fieldEntry.getKey();
+                    if (!otherIndexFields.containsKey(fieldName)) {
+                        resultIndex.field(fieldName, fieldEntry.getValue().getOptions());
                     }
                 }
                 // check whether we modified result index
-                if (resultIndex.getFrames().size() > 0) {
+                if (resultIndex.getFields().size() > 0) {
                     result.indexes.put(indexName, resultIndex);
                 }
             }
@@ -125,7 +125,7 @@ public class Schema {
 
     @Override
     public int hashCode() {
-        // note that we don't include frames in the hash
+        // note that we don't include fields in the hash
         return new HashCodeBuilder(31, 47)
                 .append(this.indexes)
                 .toHashCode();

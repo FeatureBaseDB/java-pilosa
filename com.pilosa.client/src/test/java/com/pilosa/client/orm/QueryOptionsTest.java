@@ -39,7 +39,7 @@ import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class QueryOptionsTest {
@@ -48,6 +48,6 @@ public class QueryOptionsTest {
         QueryOptions options = QueryOptions.builder()
                 .setColumns(true)
                 .build();
-        assertEquals(true, options.isColumns());
+        assertTrue(options.isColumns());
     }
 }

@@ -57,7 +57,7 @@ public class QueryOptions {
         }
 
         /**
-         * Enables returning column data from bitmap queries.
+         * Enables returning column data from row queries.
          *
          * @param columns set to <code>true</code> for returning column data
          * @return QueryOptions builder
@@ -68,7 +68,7 @@ public class QueryOptions {
         }
 
         /**
-         * Disables returning bits from bitmap queries.
+         * Disables returning bits from row queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) bits
          * @return QueryOptions builder
@@ -79,7 +79,7 @@ public class QueryOptions {
         }
 
         /**
-         * Disables returning attributes from bitmap queries.
+         * Disables returning attributes from row queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) attributes
          * @return QueryOptions builder

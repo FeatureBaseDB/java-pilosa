@@ -2,11 +2,11 @@
   "indexes": [
     {
       "name": "mi",
-      "frames": [
+      "fields": [
         {
           "name": "mf10",
           "options": {
-            "inverseEnabled": true,
+            "type": "time",
             "cacheType": "lru",
             "cacheSize": 50000,
             "timeQuantum": "YMD"

@@ -45,7 +45,7 @@ import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
-import com.pilosa.client.status.IFrameInfo;
+import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
 import org.apache.http.Header;
@@ -88,7 +88,7 @@ import java.util.concurrent.*;
  *     // Create an Index instance
  *     Index index = Index.withName("repository");
  *     Field stargazer = index.field("stargazer");
- *     QueryResponse response = client.query(stargazer.bitmap(5));
+ *     QueryResponse response = client.query(stargazer.row(5));
  *     // Act on the result
  *     System.out.println(response.getResult());
  * </code>
@@ -219,7 +219,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws HttpConflict if there already is a field with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void createFrame(Field field) {
+    public void createField(Field field) {
         String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
         String body = field.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
@@ -232,9 +232,9 @@ public class PilosaClient implements AutoCloseable {
      * @param field field object
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void ensureFrame(Field field) {
+    public void ensureField(Field field) {
         try {
-            createFrame(field);
+            createField(field);
         } catch (HttpConflict ex) {
             // pass
         }
@@ -258,7 +258,7 @@ public class PilosaClient implements AutoCloseable {
      * @throws PilosaException if the field does not exist
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
-    public void deleteFrame(Field field) {
+    public void deleteField(Field field) {
         String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
         clientExecute("DELETE", path, null, null, "Error while deleting field");
     }
@@ -270,8 +270,8 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
-    public void importFrame(Field field, BitIterator iterator) {
-        importFrame(field, iterator, ImportOptions.builder().build(), null);
+    public void importField(Field field, BitIterator iterator) {
+        importField(field, iterator, ImportOptions.builder().build(), null);
     }
 
     /**
@@ -287,7 +287,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Field field, BitIterator iterator, ImportOptions options) {
+    public void importField(Field field, BitIterator iterator, ImportOptions options) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, null);
     }
@@ -306,7 +306,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importFrame(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void importField(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, statusQueue);
     }
@@ -345,8 +345,8 @@ public class PilosaClient implements AutoCloseable {
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
             Index index = result.index(indexInfo.getName());
-            for (IFrameInfo frameInfo : indexInfo.getFrames()) {
-                index.field(frameInfo.getName(), frameInfo.getOptions());
+            for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                index.field(fieldInfo.getName(), fieldInfo.getOptions());
             }
         }
         return result;
@@ -372,8 +372,8 @@ public class PilosaClient implements AutoCloseable {
             if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
                 ensureIndex(index);
             }
-            for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
-                this.ensureFrame(frameEntry.getValue());
+            for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                this.ensureField(fieldEntry.getValue());
             }
         }
 
@@ -386,8 +386,8 @@ public class PilosaClient implements AutoCloseable {
                 schema.index(index);
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
-                for (Map.Entry<String, Field> frameEntry : index.getFrames().entrySet()) {
-                    localIndex.field(frameEntry.getValue());
+                for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    localIndex.field(fieldEntry.getValue());
                 }
             }
         }
@@ -578,7 +578,7 @@ public class PilosaClient implements AutoCloseable {
 
     void importBits(SliceBits sliceBits) {
         String indexName = sliceBits.getIndex().getName();
-        List<IFragmentNode> nodes = fetchFrameNodes(indexName, sliceBits.getSlice());
+        List<IFragmentNode> nodes = fetchFieldNodes(indexName, sliceBits.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
@@ -587,7 +587,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    List<IFragmentNode> fetchFrameNodes(String indexName, long slice) {
+    List<IFragmentNode> fetchFieldNodes(String indexName, long slice) {
         String key = String.format("%s%d", indexName, slice);
         List<IFragmentNode> nodes;
 
@@ -724,8 +724,8 @@ class QueryRequest {
         return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveColumnAttributes)
-                .setExcludeBits(this.excludeBits)
-                .setExcludeAttrs(this.excludeAttributes)
+                .setExcludeColumns(this.excludeBits)
+                .setExcludeRowAttrs(this.excludeAttributes)
                 .addAllSlices(Arrays.asList(this.slices))
                 .build();
     }

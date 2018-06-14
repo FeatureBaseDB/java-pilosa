@@ -72,18 +72,14 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             this.schema = client.readSchema();
             this.index = schema.index(getRandomIndexName());
-//            client.createIndex(this.index);
             this.index.field("another-field");
             this.index.field("test");
             this.index.field("count-test");
             this.index.field("topn_test");
 
             this.colIndex = schema.index(this.index.getName() + "-opts");
-//            client.createIndex(this.colIndex);
-
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
-//            client.createFrame(this.field);
             client.syncSchema(this.schema);
         }
     }
@@ -110,25 +106,25 @@ public class PilosaClientIT {
     public void responseDefaultsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             QueryResponse response = client.query(this.field.topN(5));
-            assertNotNull(response.getResult().getBitmap());
+            assertNotNull(response.getResult().getRow());
             assertNotNull(response.getResult().getCountItems());
-            response = client.query(this.field.bitmap(99999));
-            assertNotNull(response.getResult().getBitmap());
+            response = client.query(this.field.row(99999));
+            assertNotNull(response.getResult().getRow());
             assertNotNull(response.getResult().getCountItems());
         }
 
     }
 
     @Test
-    public void createFrameWithTimeQuantumTest() throws IOException {
+    public void createFieldWithTimeQuantumTest() throws IOException {
         FieldOptions options = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Field field = this.index.field("field-with-timequantum", options);
         try (PilosaClient client = getClient()) {
-            client.ensureFrame(field);
+            client.ensureField(field);
             Schema schema = client.readSchema();
-            Field info = findFrame(schema, field);
+            Field info = findField(schema, field);
             assertNotNull(info);
             assertEquals(TimeQuantum.YEAR_MONTH_DAY, info.getOptions().getTimeQuantum());
         }
@@ -139,22 +135,41 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             Schema schema = client.readSchema();
             assertTrue(schema.getIndexes().size() >= 1);
-            assertTrue(schema.getIndexes().entrySet().iterator().next().getValue().getFrames().size() >= 1);
+            assertTrue(schema.getIndexes().entrySet().iterator().next().getValue().getFields().size() >= 1);
             FieldOptions fieldOptions = FieldOptions.builder()
-                    .setCacheSize(9999)
-                    .setCacheType(CacheType.LRU)
-                    .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                    .fieldSet(CacheType.LRU, 9999)
                     .build();
             Field field = this.index.field("schema-test-field", fieldOptions);
-            client.ensureFrame(field);
+            client.ensureField(field);
             schema = client.readSchema();
-            Field f = schema.getIndexes().get(this.index.getName()).getFrames().get("schema-test-field");
+            Field f = schema.getIndexes().get(this.index.getName()).getFields().get("schema-test-field");
             FieldOptions fo = f.getOptions();
+            assertEquals(FieldType.SET, fo.getFieldType());
             assertEquals(9999, fo.getCacheSize());
             assertEquals(CacheType.LRU, fo.getCacheType());
+
+            fieldOptions = FieldOptions.builder()
+                    .fieldInt(-10, 10)
+                    .build();
+            field = this.index.field("schema-test-field-int", fieldOptions);
+            client.ensureField(field);
+            schema = client.readSchema();
+            f = schema.getIndexes().get(this.index.getName()).getFields().get("schema-test-field-int");
+            fo = f.getOptions();
+            assertEquals(FieldType.INT, fo.getFieldType());
+            assertEquals(-10, fo.getMin());
+            assertEquals(10, fo.getMax());
+
+            fieldOptions = FieldOptions.builder()
+                    .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
+                    .build();
+            field = this.index.field("schema-test-field-time", fieldOptions);
+            client.ensureField(field);
+            schema = client.readSchema();
+            f = schema.getIndexes().get(this.index.getName()).getFields().get("schema-test-field-time");
+            fo = f.getOptions();
+            assertEquals(FieldType.TIME, fo.getFieldType());
             assertEquals(TimeQuantum.YEAR_MONTH_DAY, fo.getTimeQuantum());
-
-
         }
     }
 
@@ -162,7 +177,7 @@ public class PilosaClientIT {
     public void queryTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Field field = this.index.field("query-test");
-            client.ensureFrame(field);
+            client.ensureField(field);
             QueryResponse response = client.query(field.setBit(555, 10));
             assertNotNull(response.getResult());
         }
@@ -172,7 +187,7 @@ public class PilosaClientIT {
     public void queryWithColumnsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Field field = this.index.field("query-test");
-            client.ensureFrame(field);
+            client.ensureField(field);
             client.query(field.setBit(100, 1000));
             Map<String, Object> columnAttrs = new HashMap<>(1);
             columnAttrs.put("name", "bombo");
@@ -180,12 +195,12 @@ public class PilosaClientIT {
             QueryOptions queryOptions = QueryOptions.builder()
                     .setColumns(true)
                     .build();
-            QueryResponse response = client.query(field.bitmap(100), queryOptions);
+            QueryResponse response = client.query(field.row(100), queryOptions);
             assertNotNull(response.getColumn());
             assertEquals(1000, response.getColumn().getID());
             assertEquals(columnAttrs, response.getColumn().getAttributes());
 
-            response = client.query(field.bitmap(300));
+            response = client.query(field.row(300));
             assertNull(response.getColumn());
         }
     }
@@ -197,7 +212,7 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             try {
                 client.createIndex(dbname);
-                client.createFrame(field);
+                client.createField(field);
                 client.query(field.setBit(1, 2));
             } finally {
                 client.deleteIndex(dbname);
@@ -230,13 +245,13 @@ public class PilosaClientIT {
     public void ormCountTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Field countField = this.index.field("count-test");
-            client.ensureFrame(countField);
+            client.ensureField(countField);
             PqlBatchQuery qry = this.index.batchQuery();
             qry.add(countField.setBit(10, 20));
             qry.add(countField.setBit(10, 21));
             qry.add(countField.setBit(15, 25));
             client.query(qry);
-            QueryResponse response = client.query(this.index.count(countField.bitmap(10)));
+            QueryResponse response = client.query(this.index.count(countField.row(10)));
             assertEquals(2, response.getResult().getCount());
         }
     }
@@ -245,9 +260,9 @@ public class PilosaClientIT {
     public void newOrmTest() throws IOException {
         try (PilosaClient client = getClient()) {
             client.query(this.field.setBit(10, 20));
-            QueryResponse response1 = client.query(this.field.bitmap(10));
+            QueryResponse response1 = client.query(this.field.row(10));
             assertEquals(0, response1.getColumns().size());
-            BitmapResult bitmap1 = response1.getResult().getBitmap();
+            RowResult bitmap1 = response1.getResult().getRow();
             assertEquals(0, bitmap1.getAttributes().size());
             assertEquals(1, bitmap1.getBits().size());
             assertEquals(20, (long) bitmap1.getBits().get(0));
@@ -258,7 +273,7 @@ public class PilosaClientIT {
             QueryOptions queryOptions = QueryOptions.builder()
                     .setColumns(true)
                     .build();
-            QueryResponse response2 = client.query(this.field.bitmap(10), queryOptions);
+            QueryResponse response2 = client.query(this.field.row(10), queryOptions);
             ColumnItem column = response2.getColumn();
             assertNotNull(column);
             assertEquals(20, column.getID());
@@ -269,8 +284,8 @@ public class PilosaClientIT {
             bitmapAttrs.put("height", 1.81);
             bitmapAttrs.put("name", "Mr. Pi");
             client.query(this.field.setRowAttrs(10, bitmapAttrs));
-            QueryResponse response3 = client.query(this.field.bitmap(10));
-            BitmapResult bitmap = response3.getResult().getBitmap();
+            QueryResponse response3 = client.query(this.field.row(10));
+            RowResult bitmap = response3.getResult().getRow();
             assertEquals(1, bitmap.getBits().size());
             assertEquals(4, bitmap.getAttributes().size());
             assertEquals(true, bitmap.getAttributes().get("active"));
@@ -292,7 +307,7 @@ public class PilosaClientIT {
     @Test
     public void testTopN() throws IOException, InterruptedException {
         try (PilosaClient client = getClient()) {
-            client.ensureFrame(this.field);
+            client.ensureField(this.field);
             Field field = this.index.field("topn_test");
             client.query(this.index.batchQuery(
                     field.setBit(10, 5),
@@ -328,9 +343,9 @@ public class PilosaClientIT {
     }
 
     @Test(expected = HttpConflict.class)
-    public void createExistingFrameFails() throws IOException {
+    public void createExistingFieldFails() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.createFrame(this.field);
+            client.createField(this.field);
         }
     }
 
@@ -346,21 +361,21 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             final Index index = Index.withName(this.index.getName() + "-ensure");
             client.ensureIndex(index);
-            client.createFrame(index.field("frm"));
+            client.createField(index.field("frm"));
             client.ensureIndex(index);  // shouldn't throw an exception
             client.deleteIndex(index);
         }
     }
 
     @Test
-    public void ensureFrameExistsTest() throws IOException {
+    public void ensureFieldExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             final Index index = Index.withName(this.index.getName() + "-ensure-field");
             try {
                 client.createIndex(index);
                 final Field field = index.field("field");
-                client.ensureFrame(field);
-                client.ensureFrame(field); // shouldn't throw an exception
+                client.ensureField(field);
+                client.ensureField(field); // shouldn't throw an exception
                 client.query(field.setBit(1, 10));
             } finally {
                 client.deleteIndex(index);
@@ -369,13 +384,13 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void deleteFrameTest() throws IOException {
+    public void deleteFieldTest() throws IOException {
         try (PilosaClient client = getClient()) {
             final Field field = index.field("to-delete");
-            client.ensureFrame(field);
-            client.deleteFrame(field);
+            client.ensureField(field);
+            client.deleteField(field);
             // the following should succeed
-            client.createFrame(field);
+            client.createField(field);
         }
     }
 
@@ -384,19 +399,19 @@ public class PilosaClientIT {
         try (PilosaClient client = this.getClient()) {
             StaticBitIterator iterator = new StaticBitIterator();
             Field field = this.index.field("importfield");
-            client.ensureFrame(field);
-            client.importFrame(field, iterator);
+            client.ensureField(field);
+            client.importField(field, iterator);
             PqlBatchQuery bq = index.batchQuery(
-                    field.bitmap(2),
-                    field.bitmap(7),
-                    field.bitmap(10)
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
             );
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(3L, 1L, 5L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
-                BitmapResult br = results.get(i).getBitmap();
+                RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getBits().get(0));
             }
         }
@@ -407,25 +422,25 @@ public class PilosaClientIT {
         try (PilosaClient client = this.getClient()) {
             StaticBitIterator iterator = new StaticBitIterator();
             Field field = this.index.field("importfield");
-            client.ensureFrame(field);
+            client.ensureField(field);
             ImportOptions options = ImportOptions.builder().
                     setStrategy(ImportOptions.Strategy.BATCH).
                     setBatchSize(3).
                     setThreadCount(1).
                     build();
 
-            client.importFrame(field, iterator, options);
+            client.importField(field, iterator, options);
             PqlBatchQuery bq = index.batchQuery(
-                    field.bitmap(2),
-                    field.bitmap(7),
-                    field.bitmap(10)
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
             );
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(3L, 1L, 5L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
-                BitmapResult br = results.get(i).getBitmap();
+                RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getBits().get(0));
             }
         }
@@ -468,7 +483,7 @@ public class PilosaClientIT {
             BitIterator iterator = new XBitIterator(maxID, maxBits);
 
             Field field = this.index.field("importfield2");
-            client.ensureFrame(field);
+            client.ensureField(field);
 
             ImportOptions options = ImportOptions.builder()
                     .setBatchSize(100000)
@@ -476,7 +491,7 @@ public class PilosaClientIT {
                     .setStrategy(ImportOptions.Strategy.TIMEOUT)
                     .setTimeoutMs(5)
                     .build();
-            client.importFrame(field, iterator, options, statusQueue);
+            client.importField(field, iterator, options, statusQueue);
             monitorThread.interrupt();
         }
     }
@@ -495,14 +510,14 @@ public class PilosaClientIT {
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
-                this.client.ensureFrame(field);
+                this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
                         .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(500)
                         .setThreadCount(1)
                         .build();
-                this.client.importFrame(field, iterator, options, statusQueue);
+                this.client.importField(field, iterator, options, statusQueue);
             }
 
             PilosaClient client;
@@ -511,7 +526,7 @@ public class PilosaClientIT {
 
         try (PilosaClient client = this.getClient()) {
             Field field = this.index.field("importfield-queue-interrupt");
-            client.ensureFrame(field);
+            client.ensureField(field);
             Thread importer = new Thread(new Importer(client, field));
             importer.setDaemon(true);
             importer.start();
@@ -542,14 +557,14 @@ public class PilosaClientIT {
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
-                this.client.ensureFrame(field);
+                this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
                         .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(1_000)
                         .setThreadCount(1)
                         .build();
-                this.client.importFrame(field, iterator, options, statusQueue);
+                this.client.importField(field, iterator, options, statusQueue);
             }
 
             PilosaClient client;
@@ -558,7 +573,7 @@ public class PilosaClientIT {
 
         try (PilosaClient client = this.getClient()) {
             Field field = this.index.field("importfield-queue-interrupt");
-            client.ensureFrame(field);
+            client.ensureField(field);
             Thread importer = new Thread(new Importer(client, field));
 //            importer.setDaemon(true);
             importer.start();
@@ -603,7 +618,7 @@ public class PilosaClientIT {
 
         try (PilosaClient client = this.getClient()) {
             client.ensureIndex(remoteIndex);
-            client.ensureFrame(remoteField);
+            client.ensureField(remoteField);
             client.syncSchema(schema1);
         } finally {
             try (PilosaClient client = this.getClient()) {
@@ -615,43 +630,42 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void rangeFrameTest() throws IOException {
+    public void rangeFieldTest() throws IOException {
         try (PilosaClient client = getClient()) {
             FieldOptions options = FieldOptions.builder()
-                    .addIntField("foo", 10, 20)
+                    .fieldInt(10, 20)
                     .build();
             Field field = this.index.field("rangefield", options);
-            client.ensureFrame(field);
-            RangeField foo = field.field("foo");
+            client.ensureField(field);
             client.query(this.index.batchQuery(
                     field.setBit(1, 10),
                     field.setBit(1, 100),
-                    foo.setValue(10, 11),
-                    foo.setValue(100, 15)
+                    field.setValue(10, 11),
+                    field.setValue(100, 15)
             ));
-            QueryResponse response = client.query(foo.sum(field.bitmap(1)));
+            QueryResponse response = client.query(field.sum(field.row(1)));
             assertEquals(26, response.getResult().getValue());
             assertEquals(2, response.getResult().getCount());
 
-            response = client.query(foo.min());
+            response = client.query(field.min());
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.min(field.bitmap(1)));
+            response = client.query(field.min(field.row(1)));
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.max());
+            response = client.query(field.max());
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.max(field.bitmap(1)));
+            response = client.query(field.max(field.row(1)));
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(foo.lessThan(15));
+            response = client.query(field.lessThan(15));
             assertEquals(1, response.getResults().size());
-            assertEquals(10, (long) response.getResult().getBitmap().getBits().get(0));
+            assertEquals(10, (long) response.getResult().getRow().getBits().get(0));
         }
     }
 
@@ -672,17 +686,17 @@ public class PilosaClientIT {
             options = QueryOptions.builder()
                     .setExcludeBits(true)
                     .build();
-            response = client.query(field.bitmap(1), options);
-            assertEquals(0, response.getResult().getBitmap().getBits().size());
-            assertEquals(1, response.getResult().getBitmap().getAttributes().size());
+            response = client.query(field.row(1), options);
+            assertEquals(0, response.getResult().getRow().getBits().size());
+            assertEquals(1, response.getResult().getRow().getAttributes().size());
 
             // test exclude attributes.
             options = QueryOptions.builder()
                     .setExcludeAttributes(true)
                     .build();
-            response = client.query(field.bitmap(1), options);
-            assertEquals(1, response.getResult().getBitmap().getBits().size());
-            assertEquals(0, response.getResult().getBitmap().getAttributes().size());
+            response = client.query(field.row(1), options);
+            assertEquals(1, response.getResult().getRow().getBits().size());
+            assertEquals(0, response.getResult().getRow().getAttributes().size());
 
         }
     }
@@ -707,9 +721,9 @@ public class PilosaClientIT {
             QueryOptions options = QueryOptions.builder()
                     .setSlices(0L, 3L)
                     .build();
-            QueryResponse response = client.query(field.bitmap(1), options);
+            QueryResponse response = client.query(field.row(1), options);
 
-            List<Long> bits = response.getResult().getBitmap().getBits();
+            List<Long> bits = response.getResult().getRow().getBits();
             assertEquals(2, bits.size());
             assertEquals(100, (long) bits.get(0));
             assertEquals(sliceWidth*3, (long) bits.get(1));
@@ -722,7 +736,7 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.index.field("importfield"), iterator);
+                client.importField(this.index.field("importfield"), iterator);
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -737,7 +751,7 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.index.field("importfield"), iterator);
+                client.importField(this.index.field("importfield"), iterator);
             } catch (PilosaException ex) {
                 // pass
                 return;
@@ -794,12 +808,12 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
-    public void failFetchFrameNodesEmptyResponseTest() throws IOException {
+    public void failFetchFieldNodesEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/fragment/nodes", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticBitIterator iterator = new StaticBitIterator();
             try {
-                client.importFrame(this.index.field("importfield"), iterator);
+                client.importField(this.index.field("importfield"), iterator);
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -867,7 +881,7 @@ public class PilosaClientIT {
         try (PilosaClient client = new InvalidPilosaClient(cluster, options)) {
             StaticBitIterator iterator = new StaticBitIterator();
             Field field = this.index.field("importfield");
-            client.importFrame(field, iterator);
+            client.importField(field, iterator);
         }
     }
 
@@ -1003,10 +1017,10 @@ public class PilosaClientIT {
         return null;
     }
 
-    private Field findFrame(Schema schema, Field target) {
+    private Field findField(Schema schema, Field target) {
         Index index = findIndex(schema, target.getIndex());
         if (index != null) {
-            for (Map.Entry<String, Field> entry : index.getFrames().entrySet()) {
+            for (Map.Entry<String, Field> entry : index.getFields().entrySet()) {
                 if (entry.getKey().equals(target.getName())) {
                     return entry.getValue();
                 }

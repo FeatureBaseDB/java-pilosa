@@ -34,60 +34,36 @@
 
 package com.pilosa.client.orm;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pilosa.client.Validator;
 import com.pilosa.client.exceptions.ValidationException;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+public enum FieldType {
+    DEFAULT(""),
+    SET("set"),
+    TIME("time"),
+    INT("int");
 
-public class RangeFieldInfo {
-    public static RangeFieldInfo intField(String name, long min, long max) {
-        Validator.ensureValidLabel(name);
-        if (max <= min) {
-            throw new ValidationException("Max should be greater than min for int fields");
+    FieldType(String value) {
+        this.value = value;
+    }
+
+    public static FieldType fromString(String s) {
+        switch (s) {
+            case "":
+                return FieldType.DEFAULT;
+            case "set":
+                return FieldType.SET;
+            case "time":
+                return FieldType.TIME;
+            case "int":
+                return FieldType.INT;
         }
-        Map<String, Object> properties = new HashMap<>(4);
-        properties.put("name", name);
-        properties.put("type", "int");
-        properties.put("min", min);
-        properties.put("max", max);
-        return new RangeFieldInfo(properties);
+        throw new ValidationException(String.format("Invalid field type string: %s", s));
     }
 
     @Override
     public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this.properties);
-        } catch (Exception ex) {
-            throw new ValidationException("Field properties weren't converted to JSON", ex);
-        }
+        return this.value;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof RangeFieldInfo)) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-        RangeFieldInfo rhs = (RangeFieldInfo) obj;
-        return rhs.properties.equals(this.properties);
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.properties)
-                .toHashCode();
-    }
-
-    RangeFieldInfo(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    private final Map<String, Object> properties;
+    private final String value;
 }

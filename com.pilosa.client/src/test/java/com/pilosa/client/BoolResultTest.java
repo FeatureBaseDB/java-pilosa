@@ -47,7 +47,7 @@ public class BoolResultTest {
     public void testCreateBoolResult() {
         BoolResult result = BoolResult.create(true);
         assertEquals(QueryResultType.BOOL, result.getType());
-        assertEquals(BitmapResult.defaultResult(), result.getBitmap());
+        assertEquals(RowResult.defaultResult(), result.getRow());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());

@@ -41,11 +41,11 @@ import java.util.regex.Pattern;
 public final class Validator {
     // See: https://github.com/pilosa/pilosa/issues/280
     private final static Pattern INDEX_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
-    private final static Pattern FRAME_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
+    private final static Pattern FIELD_NAME = Pattern.compile("^[a-z][a-z0-9_-]*$");
     private final static Pattern LABEL = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_-]*$");
     private final static Pattern KEY = Pattern.compile("^[A-Za-z0-9_{}+/=.~%:-]*$");
     private final static int MAX_INDEX_NAME = 64;
-    private final static int MAX_FRAME_NAME = 64;
+    private final static int MAX_FIELD_NAME = 64;
     private final static int MAX_LABEL = 64;
     private final static int MAX_KEY = 64;
 
@@ -67,17 +67,17 @@ public final class Validator {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static boolean validFrameName(String frameName) {
+    public static boolean validFieldName(String fieldName) {
         //noinspection SimplifiableIfStatement
-        if (frameName.length() > MAX_FRAME_NAME) {
+        if (fieldName.length() > MAX_FIELD_NAME) {
             return false;
         }
-        return FRAME_NAME.matcher(frameName).matches();
+        return FIELD_NAME.matcher(fieldName).matches();
     }
 
-    public static void ensureValidFrameName(String frameName) {
-        if (!validFrameName(frameName)) {
-            throw new ValidationException(String.format("Invalid frame name: %s", frameName));
+    public static void ensureValidFieldName(String fieldName) {
+        if (!validFieldName(fieldName)) {
+            throw new ValidationException(String.format("Invalid field name: %s", fieldName));
         }
     }
 

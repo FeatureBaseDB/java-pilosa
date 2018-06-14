@@ -36,7 +36,6 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -76,8 +75,8 @@ public class OrmTest {
     @Test
     public void batchTest() {
         PqlBatchQuery b = sampleIndex.batchQuery();
-        b.add(sampleField.bitmap(44));
-        b.add(sampleField.bitmap(10101));
+        b.add(sampleField.row(44));
+        b.add(sampleField.row(10101));
         assertEquals(
                 "Bitmap(row=44, field='sample-field')Bitmap(row=10101, field='sample-field')",
                 b.serialize());
@@ -86,7 +85,7 @@ public class OrmTest {
     @Test
     public void batchWithCapacityTest() {
         PqlBatchQuery b = projectIndex.batchQuery(3);
-        b.add(collabField.bitmap(2));
+        b.add(collabField.row(2));
         b.add(collabField.setBit(20, 40));
         b.add(collabField.topN(2));
         assertEquals(
@@ -99,21 +98,21 @@ public class OrmTest {
     @Test(expected = PilosaException.class)
     public void batchAddFailsForDifferentDbsTest() {
         PqlBatchQuery b = projectIndex.batchQuery();
-        b.add(sampleField.bitmap(1));
+        b.add(sampleField.row(1));
     }
 
     @Test
     public void bitmapTest() {
-        PqlBaseQuery qry1 = sampleField.bitmap(5);
+        PqlBaseQuery qry1 = sampleField.row(5);
         assertEquals(
                 "Bitmap(row=5, field='sample-field')",
                 qry1.serialize());
 
-        PqlBaseQuery qry2 = collabField.bitmap(10);
+        PqlBaseQuery qry2 = collabField.row(10);
         assertEquals(
                 "Bitmap(row=10, field='collaboration')",
                 qry2.serialize());
-        PqlBaseQuery qry3 = sampleField.bitmap("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        PqlBaseQuery qry3 = sampleField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
                 "Bitmap(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='sample-field')",
                 qry3.serialize());
@@ -171,10 +170,10 @@ public class OrmTest {
 
     @Test
     public void unionTest() {
-        PqlBitmapQuery b1 = sampleField.bitmap(10);
-        PqlBitmapQuery b2 = sampleField.bitmap(20);
-        PqlBitmapQuery b3 = sampleField.bitmap(42);
-        PqlBitmapQuery b4 = collabField.bitmap(2);
+        PqlBitmapQuery b1 = sampleField.row(10);
+        PqlBitmapQuery b2 = sampleField.row(20);
+        PqlBitmapQuery b3 = sampleField.row(42);
+        PqlBitmapQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
@@ -200,16 +199,16 @@ public class OrmTest {
 
     @Test
     public void union1Test() {
-        PqlBitmapQuery q = sampleIndex.union(sampleField.bitmap(10));
+        PqlBitmapQuery q = sampleIndex.union(sampleField.row(10));
         assertEquals("Union(Bitmap(row=10, field='sample-field'))", q.serialize());
     }
 
     @Test
     public void intersectTest() {
-        PqlBitmapQuery b1 = sampleField.bitmap(10);
-        PqlBitmapQuery b2 = sampleField.bitmap(20);
-        PqlBitmapQuery b3 = sampleField.bitmap(42);
-        PqlBitmapQuery b4 = collabField.bitmap(2);
+        PqlBitmapQuery b1 = sampleField.row(10);
+        PqlBitmapQuery b2 = sampleField.row(20);
+        PqlBitmapQuery b3 = sampleField.row(42);
+        PqlBitmapQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
@@ -229,10 +228,10 @@ public class OrmTest {
 
     @Test
     public void differenceTest() {
-        PqlBitmapQuery b1 = sampleField.bitmap(10);
-        PqlBitmapQuery b2 = sampleField.bitmap(20);
-        PqlBitmapQuery b3 = sampleField.bitmap(42);
-        PqlBitmapQuery b4 = collabField.bitmap(2);
+        PqlBitmapQuery b1 = sampleField.row(10);
+        PqlBitmapQuery b2 = sampleField.row(20);
+        PqlBitmapQuery b3 = sampleField.row(42);
+        PqlBitmapQuery b4 = collabField.row(2);
 
         PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
@@ -252,8 +251,8 @@ public class OrmTest {
 
     @Test
     public void xorTest() {
-        PqlBitmapQuery b1 = sampleField.bitmap(10);
-        PqlBitmapQuery b2 = sampleField.bitmap(20);
+        PqlBitmapQuery b1 = sampleField.row(10);
+        PqlBitmapQuery b2 = sampleField.row(20);
         PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
         assertEquals(
                 "Xor(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
@@ -262,7 +261,7 @@ public class OrmTest {
 
     @Test
     public void countTest() {
-        PqlBitmapQuery b = collabField.bitmap(42);
+        PqlBitmapQuery b = collabField.row(42);
         PqlQuery q = projectIndex.count(b);
         assertEquals(
                 "Count(Bitmap(row=42, field='collaboration'))",
@@ -276,12 +275,12 @@ public class OrmTest {
                 "TopN(field='sample-field', n=27)",
                 q1.serialize());
 
-        PqlQuery q2 = sampleField.topN(10, collabField.bitmap(3));
+        PqlQuery q2 = sampleField.topN(10, collabField.row(3));
         assertEquals(
                 "TopN(Bitmap(row=3, field='collaboration'), field='sample-field', n=10)",
                 q2.serialize());
 
-        PqlBaseQuery q3 = sampleField.topN(12, collabField.bitmap(7), "category", 80, 81);
+        PqlBaseQuery q3 = sampleField.topN(12, collabField.row(7), "category", 80, 81);
         assertEquals(
                 "TopN(Bitmap(row=7, field='collaboration'), field='sample-field', n=12, field='category', filters=[80,81])",
                 q3.serialize());
@@ -294,7 +293,7 @@ public class OrmTest {
 
     @Test(expected = PilosaException.class)
     public void topNInvalidValuesTest() {
-        sampleField.topN(5, sampleField.bitmap(2), "category", 80, new Object());
+        sampleField.topN(5, sampleField.row(2), "category", 80, new Object());
 
     }
 
@@ -362,95 +361,90 @@ public class OrmTest {
 
     @Test
     public void fieldLessThanTest() {
-        PqlQuery q = sampleField.field("foo").lessThan(10);
+        PqlQuery q = collabField.lessThan(10);
         assertEquals(
-                "Range(field='sample-field', foo < 10)",
+                "Range(collaboration < 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldLessThanOrEqualTest() {
-        PqlQuery q = sampleField.field("foo").lessThanOrEqual(10);
+        PqlQuery q = collabField.lessThanOrEqual(10);
         assertEquals(
-                "Range(field='sample-field', foo <= 10)",
+                "Range(collaboration <= 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldGreaterThanTest() {
-        PqlQuery q = sampleField.field("foo").greaterThan(10);
+        PqlQuery q = collabField.greaterThan(10);
         assertEquals(
-                "Range(field='sample-field', foo > 10)",
+                "Range(collaboration > 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldGreaterThanOrEqualTest() {
-        PqlQuery q = sampleField.field("foo").greaterThanOrEqual(10);
+        PqlQuery q = collabField.greaterThanOrEqual(10);
         assertEquals(
-                "Range(field='sample-field', foo >= 10)",
+                "Range(collaboration >= 10)",
                 q.serialize());
 
     }
 
     @Test
     public void fieldEqualsTest() {
-        PqlQuery q = sampleField.field("foo").equals(10);
+        PqlQuery q = collabField.equals(10);
         assertEquals(
-                "Range(field='sample-field', foo == 10)",
+                "Range(collaboration == 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldNotEqualsTest() {
-        PqlQuery q = sampleField.field("foo").notEquals(10);
+        PqlQuery q = collabField.notEquals(10);
         assertEquals(
-                "Range(field='sample-field', foo != 10)",
+                "Range(collaboration != 10)",
                 q.serialize());
     }
 
     @Test
     public void fieldNotNullTest() {
-        PqlQuery q = sampleField.field("foo").notNull();
+        PqlQuery q = collabField.notNull();
         assertEquals(
-                "Range(field='sample-field', foo != null)",
+                "Range(collaboration != null)",
                 q.serialize());
     }
 
     @Test
     public void fieldBetweenTest() {
-        PqlQuery q = sampleField.field("foo").between(10, 20);
+        PqlQuery q = collabField.between(10, 20);
         assertEquals(
-                "Range(field='sample-field', foo >< [10,20])",
+                "Range(collaboration >< [10,20])",
                 q.serialize());
 
     }
 
     @Test
     public void fieldSumTest() {
-        PqlQuery q = sampleField.field("foo").sum(sampleField.bitmap(10));
+        PqlQuery q = collabField.sum(collabField.row(10));
         assertEquals(
-                "Sum(Bitmap(row=10, field='sample-field'), field='sample-field', field='foo')",
+                "Sum(Bitmap(row=10, field='collaboration'), field='collaboration')",
                 q.serialize());
-        q = sampleField.field("foo").sum();
+        q = collabField.sum();
         assertEquals(
-                "Sum(field='sample-field', field='foo')",
+                "Sum(field='collaboration')",
                 q.serialize()
         );
     }
 
     @Test
     public void fieldSetValueTest() {
-        PqlQuery q = sampleField.field("foo").setValue(10, 20);
+        PqlQuery q = collabField.setValue(10, 20);
         assertEquals(
-                "SetFieldValue(field='sample-field', col=10, foo=20)",
+                "SetValue(col=10, collaboration=20)",
                 q.serialize());
-    }
-
-    @Test(expected = ValidationException.class)
-    public void invalidFieldTest() {
-        sampleField.field("??foo");
     }
 }

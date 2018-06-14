@@ -39,5 +39,5 @@ import java.util.List;
 public interface IIndexInfo {
     String getName();
 
-    List<IFrameInfo> getFrames();
+    List<IFieldInfo> getFields();
 }

@@ -34,15 +34,18 @@
 
 package com.pilosa.client.orm;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.exceptions.PilosaException;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Contains options to customize {@link Field} objects and frame queries.
+ * Contains options to customize {@link Field} objects and field queries.
  * <p>
  * In order to set options, create a {@link Builder} object using {@link FieldOptions#builder()}:
  * <p>
@@ -64,56 +67,53 @@ public final class FieldOptions {
         }
 
         /**
-         * Sets the time quantum for the frame.
-         * <p>
-         *     If a Field has a time quantum, then Views are generated
-         *     for each of the defined time segments.
-         *
-         * @param timeQuantum See {@link TimeQuantum} for valid values.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#time-quantum">Time Quantum</a>
-         * @see <a href="https://www.pilosa.com/docs/data-model/#view">Pilosa Data Model: View</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder setTimeQuantum(TimeQuantum timeQuantum) {
-            this.timeQuantum = timeQuantum;
-            return this;
+        public Builder fieldSet() {
+            return fieldSet(CacheType.DEFAULT, 0);
         }
 
         /**
-         * Sets the cache type for the frame.
-         *
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder setCacheType(CacheType cacheType) {
-            this.cacheType = cacheType;
-            return this;
+        public Builder fieldSet(CacheType cacheType) {
+            return fieldSet(cacheType, 0);
         }
 
         /**
-         * Sets the cache size for the frame
-         *
+         * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder setCacheSize(int cacheSize) {
+        public Builder fieldSet(CacheType cacheType, int cacheSize) {
+            this.fieldType = FieldType.SET;
+            this.cacheType = cacheType;
             this.cacheSize = cacheSize;
             return this;
         }
 
         /**
-         * Adds an integer field to the frame options
+         * Adds an integer field to the field options
          *
-         * @param name Name of the field.
          * @param min  Minimum value this field can represent.
          * @param max  Maximum value this field can represent.
          * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#frame">Pilosa Data Model: Field</a>
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder addIntField(String name, long min, long max) {
-            this.fields.put(name, RangeFieldInfo.intField(name, min, max));
+        public Builder fieldInt(long min, long max) {
+            this.fieldType = FieldType.INT;
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+
+        public Builder fieldTime(TimeQuantum timeQuantum) {
+            this.fieldType = FieldType.TIME;
+            this.timeQuantum = timeQuantum;
             return this;
         }
 
@@ -123,14 +123,20 @@ public final class FieldOptions {
          * @return FieldOptions object
          */
         public FieldOptions build() {
-            return new FieldOptions(this.timeQuantum, this.cacheType, this.cacheSize,
-                    this.fields);
+            return new FieldOptions(this.timeQuantum,
+                    this.cacheType,
+                    this.cacheSize,
+                    this.fieldType,
+                    this.min,
+                    this.max);
         }
 
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private CacheType cacheType = CacheType.DEFAULT;
         private int cacheSize = 0;
-        private Map<String, RangeFieldInfo> fields = new HashMap<>();
+        private FieldType fieldType = FieldType.DEFAULT;
+        private long min = 0;
+        private long max = 0;
 
     }
 
@@ -145,7 +151,7 @@ public final class FieldOptions {
     }
 
     /**
-     * Creates a FrameBuilder.Builder object.
+     * Creates a FieldBuilder.Builder object.
      *
      * @return a Builder object
      */
@@ -165,44 +171,47 @@ public final class FieldOptions {
         return this.cacheSize;
     }
 
-    public boolean isRangeEnabled() {
-        return this.fields.size() > 0;
+    public FieldType getFieldType() {
+        return this.fieldType;
+    }
+
+    public long getMin() {
+        return this.min;
+    }
+
+    public long getMax() {
+        return this.max;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\"options\": {");
-        boolean hasComma = false; // XXX: remove this
-        if (!this.timeQuantum.equals(TimeQuantum.NONE)) {
-            builder.append(String.format("\"timeQuantum\":\"%s\"", this.timeQuantum.toString()));
-            hasComma = true;
+        Map<String, Object> options = new HashMap<>();
+        if (this.fieldType != FieldType.DEFAULT) {
+            options.put("type", this.fieldType.toString());
         }
-        if (!this.cacheType.equals(CacheType.DEFAULT)) {
-            if (hasComma) builder.append(',');
-            builder.append(String.format("\"cacheType\":\"%s\"", this.cacheType.toString()));
-            hasComma = true;
+        switch (this.fieldType) {
+            case SET:
+                if (!this.cacheType.equals(CacheType.DEFAULT)) {
+                    options.put("cacheType", this.cacheType.toString());
+                }
+                if (this.cacheSize > 0) {
+                    options.put("cacheSize", this.cacheSize);
+                }
+                break;
+            case INT:
+                options.put("min", this.min);
+                options.put("max", this.max);
+                break;
+            case TIME:
+                options.put("timeQuantum", this.timeQuantum.toString());
         }
-        if (this.cacheSize > 0) {
-            if (hasComma) builder.append(',');
-            builder.append(String.format("\"cacheSize\":%d", this.cacheSize));
-            hasComma = true;
+        Map<String, Object> optionsRoot = new HashMap<>(1);
+        optionsRoot.put("options", options);
+        try {
+            return mapper.writeValueAsString(optionsRoot);
+        } catch (JsonProcessingException e) {
+            throw new PilosaException("Options cannot be serialized");
         }
-        if (this.fields.size() > 0) {
-            if (hasComma) builder.append(',');
-            builder.append("\"fields\":[");
-            Iterator<Map.Entry<String, RangeFieldInfo>> iter = this.fields.entrySet().iterator();
-            Map.Entry<String, RangeFieldInfo> entry = iter.next();
-            builder.append(entry.getValue());
-            while (iter.hasNext()) {
-                entry = iter.next();
-                builder.append(",");
-                builder.append(entry.getValue());
-            }
-            builder.append("]");
-        }
-        builder.append("}}");
-        return builder.toString();
     }
 
     @Override
@@ -217,7 +226,9 @@ public final class FieldOptions {
         return rhs.timeQuantum.equals(this.timeQuantum) &&
                 rhs.cacheType.equals(this.cacheType) &&
                 rhs.cacheSize == this.cacheSize &&
-                rhs.fields.equals(this.fields);
+                rhs.fieldType == this.fieldType &&
+                rhs.min == this.min &&
+                rhs.max == this.max;
     }
 
     @Override
@@ -226,21 +237,37 @@ public final class FieldOptions {
                 .append(this.timeQuantum)
                 .append(this.cacheType)
                 .append(this.cacheSize)
-                .append(this.fields)
+                .append(this.fieldType)
+                .append(this.min)
+                .append(this.max)
                 .toHashCode();
     }
 
     private FieldOptions(final TimeQuantum timeQuantum,
-                         final CacheType cacheType, final int cacheSize,
-                         final Map<String, RangeFieldInfo> fields) {
+                         final CacheType cacheType,
+                         final int cacheSize,
+                         final FieldType fieldType,
+                         final long min,
+                         final long max) {
         this.timeQuantum = timeQuantum;
         this.cacheType = cacheType;
         this.cacheSize = cacheSize;
-        this.fields = (fields != null) ? fields : new HashMap<String, RangeFieldInfo>();
+        this.fieldType = fieldType;
+        this.min = min;
+        this.max = max;
     }
 
+    static {
+        ObjectMapper m = new ObjectMapper();
+        m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = m;
+    }
+
+    private static final ObjectMapper mapper;
     private final TimeQuantum timeQuantum;
     private final CacheType cacheType;
     private final int cacheSize;
-    private final Map<String, RangeFieldInfo> fields;
+    private final FieldType fieldType;
+    private final long min;
+    private final long max;
 }

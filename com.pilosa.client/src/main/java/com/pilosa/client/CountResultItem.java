@@ -63,9 +63,9 @@ public final class CountResultItem {
     }
 
     /**
-     * Returns the count of column IDs where this bitmap item is 1.
+     * Returns the count of column IDs where this row item is 1.
      *
-     * @return count of column IDs where this bitmap item is 1
+     * @return count of column IDs where this row item is 1
      */
     public long getCount() {
         return this.count;

@@ -133,7 +133,7 @@ public final class QueryResponse {
             int type = q.getType();
             switch (type) {
                 case QueryResultType.BITMAP:
-                    results.add(BitmapResult.fromInternal(q));
+                    results.add(RowResult.fromInternal(q));
                     break;
                 case QueryResultType.BOOL:
                     results.add(BoolResult.fromInternal(q));

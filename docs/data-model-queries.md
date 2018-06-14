@@ -17,7 +17,7 @@ Frames are created with a call to `Index.field` method:
 Frame stargazer = repository.field("stargazer");
 ```
 
-You can pass custom options to frames:
+You can pass custom options to fields:
 
 ```java
 FrameOptions stargazerOptions = FrameOptions.builder()
@@ -30,7 +30,7 @@ Frame stargazer = repository.field("stargazer", stargazerOptions);
 
 ## Queries
 
-Once you have indexes and field objects created, you can create queries for them. Some of the queries work on the columns; corresponding methods are attached to the index. Other queries work on rows, with related methods attached to frames.
+Once you have indexes and field objects created, you can create queries for them. Some of the queries work on the columns; corresponding methods are attached to the index. Other queries work on rows, with related methods attached to fields.
 
 For instance, `Bitmap` queries work on rows; use a field object to create those queries:
 

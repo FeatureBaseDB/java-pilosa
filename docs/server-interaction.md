@@ -74,7 +74,7 @@ ClientOptions options = ClientOptions.builder()
 PilosaClient client = PilosaClient.withCluster(cluster, options);
 ```
 
-Once you create a client, you can create indexes, frames and start sending queries.
+Once you create a client, you can create indexes, fields and start sending queries.
 
 Here is how you would create a index and field:
 

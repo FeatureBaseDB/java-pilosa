@@ -74,10 +74,10 @@ public class FieldTest {
     @Test
     public void testHashCode() {
         FieldOptions options1 = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         FieldOptions options2 = FieldOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
                 .build();
         Field field1 = this.index.field("field1", options1);
         Field field2 = this.index.field("field2", options2);

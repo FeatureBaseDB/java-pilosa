@@ -91,39 +91,35 @@ public class Field {
     }
 
     /**
-     * Creates a Bitmap query.
+     * Creates a Row query.
      * <p>
-     *     Bitmap retrieves the indices of all the set bits in a row or column
+     *     Row retrieves the indices of all columns in a row
      *     based on whether the row label or column label is given in the query.
      *     It also retrieves any attributes set on that row or column.
      *
      * <p>
-     *     This variant of Bitmap query uses the row label.
      *
      * @param rowID row ID
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
-    public PqlBitmapQuery row(long rowID) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(row=%d, field='%s')", rowID, this.name));
+    public PqlRowQuery row(long rowID) {
+        return this.index.pqlRowQuery(String.format("Bitmap(row=%d, field='%s')", rowID, this.name));
     }
 
     /**
-     * Creates a Bitmap query. (Enterprise version)
+     * Creates a Row query. (Enterprise version)
      * <p>
-     * Bitmap retrieves the indices of all the set bits in a row or column
-     * based on whether the row label or column label is given in the query.
-     * It also retrieves any attributes set on that row or column.
-     * <p>
-     * <p>
-     * This variant of Bitmap query uses the row label.
+     *     Row retrieves the indices of all columns in a row
+     *     based on whether the row label or column label is given in the query.
+     *     It also retrieves any attributes set on that row or column.
      *
      * @param rowKey row key
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#bitmap">Bitmap Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
-    public PqlBitmapQuery row(String rowKey) {
-        return this.index.pqlBitmapQuery(String.format("Bitmap(row='%s', field='%s')",
+    public PqlRowQuery row(String rowKey) {
+        return this.index.pqlRowQuery(String.format("Bitmap(row='%s', field='%s')",
                 rowKey, this.name));
     }
 
@@ -244,10 +240,10 @@ public class Field {
     /**
      * Creates a TopN query.
      * <p>
-     * TopN returns the id and count of the top n bitmaps (by count of bits) in the field.
+     * TopN returns the id and count of the top n rows (by count of bits) in the field.
      *
      * @param n number of items to return
-     * @return a PQL Bitmap query
+     * @return a PQL Row query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     public PqlBaseQuery topN(long n) {
@@ -258,41 +254,41 @@ public class Field {
     /**
      * Creates a TopN query.
      * <p>
-     * Return the id and count of the top n bitmaps (by count of bits) in the field.
+     * Return the id and count of the top n rows (by count of bits) in the field.
      * <p>
      * This variant supports customizing the row query.
      *
      * @param n      number of items to return
-     * @param bitmap the row query
+     * @param row the row query
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap) {
-        return this._topN(n, bitmap, null, null);
+    public PqlBaseQuery topN(long n, PqlRowQuery row) {
+        return this._topN(n, row, null, null);
     }
 
     /**
      * Creates a TopN query.
      * <p>
-     *     Return the id and count of the top n bitmaps (by count of bits) in the field.
-     *     The field and filters arguments work together to only return Bitmaps
+     *     Return the id and count of the top n rows (by count of bits) in the field.
+     *     The field and filters arguments work together to only return rows
      *     which have the attribute specified by field with one of the values specified
      *     in filters.
      *
      * @param n      number of items to return
-     * @param bitmap the row query
+     * @param row the row query
      * @param field  field name
      * @param values filter values to be matched against the field
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery topN(long n, PqlBitmapQuery bitmap, String field, Object... values) {
-        return _topN(n, bitmap, field, values);
+    public PqlBaseQuery topN(long n, PqlRowQuery row, String field, Object... values) {
+        return _topN(n, row, field, values);
     }
 
-    private PqlBaseQuery _topN(long n, PqlBitmapQuery bitmap, String field, Object[] values) {
+    private PqlBaseQuery _topN(long n, PqlRowQuery row, String field, Object[] values) {
         // TOOD: make field use its own validator
         String fieldString = "";
         if (field != null) {
@@ -302,9 +298,9 @@ public class Field {
 
         try {
             String valuesString = (values == null || values.length == 0) ? "" : String.format(", filters=%s", this.mapper.writeValueAsString(values));
-            String bitmapString = (bitmap == null) ? "" : String.format("%s, ", bitmap.serialize());
+            String rowString = (row == null) ? "" : String.format("%s, ", row.serialize());
             String s = String.format("TopN(%sfield='%s', n=%d%s%s)",
-                    bitmapString, this.name, n, fieldString, valuesString);
+                    rowString, this.name, n, fieldString, valuesString);
             return this.index.pqlQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
@@ -314,7 +310,7 @@ public class Field {
     /**
      * Creates a Range query.
      * <p>
-     *     Similar to Bitmap, but only returns bits which were set with timestamps
+     *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
      *
      * @param rowID row ID
@@ -324,8 +320,8 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(row=%d, field='%s', start='%sT%s', end='%sT%s')",
+    public PqlRowQuery range(long rowID, Date start, Date end) {
+        return this.index.pqlRowQuery(String.format("Range(row=%d, field='%s', start='%sT%s', end='%sT%s')",
                 rowID, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -333,7 +329,7 @@ public class Field {
     /**
      * Creates a Range query. (Enterprise version)
      * <p>
-     *     Similar to Bitmap, but only returns bits which were set with timestamps
+     *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
      *
      * @param rowKey row key
@@ -343,8 +339,8 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery range(String rowKey, Date start, Date end) {
-        return this.index.pqlBitmapQuery(String.format("Range(row='%s', field='%s', start='%sT%s', end='%sT%s')",
+    public PqlRowQuery range(String rowKey, Date start, Date end) {
+        return this.index.pqlRowQuery(String.format("Range(row='%s', field='%s', start='%sT%s', end='%sT%s')",
                 rowKey, this.name, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
@@ -403,7 +399,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery lessThan(long n) {
+    public PqlRowQuery lessThan(long n) {
         return binaryOperation("<", n);
     }
 
@@ -413,7 +409,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery lessThanOrEqual(long n) {
+    public PqlRowQuery lessThanOrEqual(long n) {
         return binaryOperation("<=", n);
     }
 
@@ -423,7 +419,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery greaterThan(long n) {
+    public PqlRowQuery greaterThan(long n) {
         return binaryOperation(">", n);
     }
 
@@ -433,7 +429,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery greaterThanOrEqual(long n) {
+    public PqlRowQuery greaterThanOrEqual(long n) {
         return binaryOperation(">=", n);
     }
 
@@ -443,7 +439,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery equals(long n) {
+    public PqlRowQuery equals(long n) {
         return binaryOperation("==", n);
     }
 
@@ -453,7 +449,7 @@ public class Field {
      * @param n The value to compare
      * @return a PQL query
      */
-    public PqlBitmapQuery notEquals(long n) {
+    public PqlRowQuery notEquals(long n) {
         return binaryOperation("!=", n);
     }
 
@@ -462,9 +458,9 @@ public class Field {
      *
      * @return a PQL query
      */
-    public PqlBitmapQuery notNull() {
+    public PqlRowQuery notNull() {
         String qry = String.format("Range(%s != null)", this.name);
-        return this.index.pqlBitmapQuery(qry);
+        return this.index.pqlRowQuery(qry);
     }
 
     /**
@@ -474,9 +470,9 @@ public class Field {
      * @param b Closed range end
      * @return a PQL query
      */
-    public PqlBitmapQuery between(long a, long b) {
+    public PqlRowQuery between(long a, long b) {
         String qry = String.format("Range(%s >< [%d,%d])", this.name, a, b);
-        return this.index.pqlBitmapQuery(qry);
+        return this.index.pqlRowQuery(qry);
     }
 
     /**
@@ -498,12 +494,12 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The row query to use.
+     * @param row The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#sum">Sum Query</a>
      */
-    public PqlBaseQuery sum(PqlBitmapQuery bitmap) {
-        return valueQuery("Sum", bitmap);
+    public PqlBaseQuery sum(PqlRowQuery row) {
+        return valueQuery("Sum", row);
     }
 
     /**
@@ -525,12 +521,12 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The row query to use.
+     * @param row The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#min">Min Query</a>
      */
-    public PqlBaseQuery min(PqlBitmapQuery bitmap) {
-        return valueQuery("Min", bitmap);
+    public PqlBaseQuery min(PqlRowQuery row) {
+        return valueQuery("Min", row);
     }
 
     /**
@@ -552,12 +548,12 @@ public class Field {
      * The field for this query should have fields set.
      * </p>
      *
-     * @param bitmap The row query to use.
+     * @param row The row query to use.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#max">Max Query</a>
      */
-    public PqlBaseQuery max(PqlBitmapQuery bitmap) {
-        return valueQuery("Max", bitmap);
+    public PqlBaseQuery max(PqlRowQuery row) {
+        return valueQuery("Max", row);
     }
 
     /**
@@ -574,16 +570,16 @@ public class Field {
         return this.index.pqlQuery(qry);
     }
 
-    private PqlBitmapQuery binaryOperation(String op, long n) {
+    private PqlRowQuery binaryOperation(String op, long n) {
         String qry = String.format("Range(%s %s %d)", this.name, op, n);
-        return this.index.pqlBitmapQuery(qry);
+        return this.index.pqlRowQuery(qry);
     }
 
-    private PqlBaseQuery valueQuery(String op, PqlBitmapQuery bitmap) {
+    private PqlBaseQuery valueQuery(String op, PqlRowQuery row) {
         String qry;
-        if (bitmap != null) {
+        if (row != null) {
             qry = String.format("%s(%s, field='%s')",
-                    op, bitmap.serialize(), this.name);
+                    op, row.serialize(), this.name);
         } else {
             qry = String.format("%s(field='%s')", op, this.name);
         }

@@ -156,80 +156,80 @@ public class Index {
     /**
      * Creates a Union query.
      * <p>
-     * Union performs a logical OR on the results of each BITMAP_CALL query passed to it.
+     * Union performs a logical OR on the results of each ROW_CALL query passed to it.
      *
-     * @param bitmaps 2 or more bitmaps to union
+     * @param rows 2 or more rows to union
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#union">Union Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery union(PqlBitmapQuery... bitmaps) {
-        return bitmapOperation("Union", bitmaps);
+    public PqlRowQuery union(PqlRowQuery... rows) {
+        return rowOperation("Union", rows);
     }
 
     /**
      * Creates an Intersect query.
      * <p>
-     * Intersect performs a logical AND on the results of each BITMAP_CALL query passed to it.
+     * Intersect performs a logical AND on the results of each ROW_CALL query passed to it.
      *
-     * @param bitmaps 2 or more bitmaps to intersect
+     * @param rows 2 or more rows to intersect
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 1
+     * @throws IllegalArgumentException if the number of rows is less than 1
      * @see <a href="https://www.pilosa.com/docs/query-language/#intersect">Intersect Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery intersect(PqlBitmapQuery... bitmaps) {
-        if (bitmaps.length < 1) {
+    public PqlRowQuery intersect(PqlRowQuery... rows) {
+        if (rows.length < 1) {
             throw new IllegalArgumentException("Intersect operation requires at least 1 row");
         }
-        return bitmapOperation("Intersect", bitmaps);
+        return rowOperation("Intersect", rows);
     }
 
     /**
      * Creates a Difference query.
      * <p>
-     * Difference returns all of the bits from the first BITMAP_CALL argument
-     *   passed to it, without the bits from each subsequent BITMAP_CALL.
+     * Difference returns all of the bits from the first ROW_CALL argument
+     *   passed to it, without the bits from each subsequent ROW_CALL.
      *
-     * @param bitmaps 1 or more bitmaps to differentiate
+     * @param rows 1 or more rows to differentiate
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 1
+     * @throws IllegalArgumentException if the number of rows is less than 1
      * @see <a href="https://www.pilosa.com/docs/query-language/#difference">Difference Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBitmapQuery difference(PqlBitmapQuery... bitmaps) {
-        if (bitmaps.length < 1) {
+    public PqlRowQuery difference(PqlRowQuery... rows) {
+        if (rows.length < 1) {
             throw new IllegalArgumentException("Difference operation requires at least 1 row");
         }
-        return bitmapOperation("Difference", bitmaps);
+        return rowOperation("Difference", rows);
     }
 
     /**
      * Creates an Xor query.
      *
-     * @param bitmaps 2 or more bitmaps to xor
+     * @param rows 2 or more rows to xor
      * @return a PQL query
-     * @throws IllegalArgumentException if the number of bitmaps is less than 2
+     * @throws IllegalArgumentException if the number of rows is less than 2
      * @see <a href="https://www.pilosa.com/docs/query-language/#xor">Xor Query</a>
      */
-    public PqlBitmapQuery xor(PqlBitmapQuery... bitmaps) {
-        if (bitmaps.length < 2) {
-            throw new IllegalArgumentException("Difference operation requires at least 2 bitmaps");
+    public PqlRowQuery xor(PqlRowQuery... rows) {
+        if (rows.length < 2) {
+            throw new IllegalArgumentException("Difference operation requires at least 2 rows");
         }
-        return bitmapOperation("Xor", bitmaps);
+        return rowOperation("Xor", rows);
     }
 
     /**
      * Creates a Count query.
      * <p>
-     * Count returns the number of set bits in the BITMAP_CALL passed in.
+     * Count returns the number of set bits in the ROW_CALL passed in.
      *
-     * @param bitmap the row query
+     * @param rows the row query
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */
-    public PqlBaseQuery count(PqlBitmapQuery bitmap) {
-        return pqlQuery(String.format("Count(%s)", bitmap.serialize()));
+    public PqlBaseQuery count(PqlRowQuery rows) {
+        return pqlQuery(String.format("Count(%s)", rows.serialize()));
     }
 
     /**
@@ -251,7 +251,7 @@ public class Index {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
-        String attributesString = Util.createAttributesString(this.mapper, attributes);
+        String attributesString = Util.createAttributesString(mapper, attributes);
         return pqlQuery(String.format("SetColumnAttrs(col=%d, %s)", id, attributesString));
     }
 
@@ -308,8 +308,8 @@ public class Index {
         return new PqlBaseQuery(query, this);
     }
 
-    PqlBitmapQuery pqlBitmapQuery(String query) {
-        return new PqlBitmapQuery(query, this);
+    PqlRowQuery pqlRowQuery(String query) {
+        return new PqlRowQuery(query, this);
     }
 
     Index(Index index) {
@@ -320,17 +320,17 @@ public class Index {
         }
     }
 
-    private PqlBitmapQuery bitmapOperation(String name, PqlBitmapQuery... bitmaps) {
-        if (bitmaps.length == 0) {
-            return pqlBitmapQuery(String.format("%s()", name));
+    private PqlRowQuery rowOperation(String name, PqlRowQuery... rows) {
+        if (rows.length == 0) {
+            return pqlRowQuery(String.format("%s()", name));
         }
-        StringBuilder builder = new StringBuilder(bitmaps.length - 1);
-        builder.append(bitmaps[0].serialize());
-        for (int i = 1; i < bitmaps.length; i++) {
+        StringBuilder builder = new StringBuilder(rows.length - 1);
+        builder.append(rows[0].serialize());
+        for (int i = 1; i < rows.length; i++) {
             builder.append(", ");
-            builder.append(bitmaps[i].serialize());
+            builder.append(rows[i].serialize());
         }
-        return pqlBitmapQuery(String.format("%s(%s)", name, builder.toString()));
+        return pqlRowQuery(String.format("%s(%s)", name, builder.toString()));
     }
 
     private Index(String name) {
@@ -338,6 +338,6 @@ public class Index {
     }
 
     private String name;
-    private ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
     private Map<String, Field> fields = new HashMap<>();
 }

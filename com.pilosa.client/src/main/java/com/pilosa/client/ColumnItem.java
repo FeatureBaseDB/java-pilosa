@@ -43,7 +43,7 @@ import java.util.Map;
  * Contains data about a column.
  * <p>
  * Column data is returned from {@link QueryResponse#getColumns()} method.
- * They are only returned if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
+ * They are only returned if {@link QueryOptions.Builder#setColumnAttributes(boolean)} was set to <code>true</code>.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>

@@ -42,9 +42,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-class SliceBits {
-    public static SliceBits create(final Field field, final long slice) {
-        return new SliceBits(field, slice);
+class SliceColumns {
+    public static SliceColumns create(final Field field, final long slice) {
+        return new SliceColumns(field, slice);
     }
 
     public Index getIndex() {
@@ -55,7 +55,7 @@ class SliceBits {
         return this.slice;
     }
 
-    public List<Bit> getBits() {
+    public List<Bit> getColumns() {
         if (!this.sorted) {
             Collections.sort(bits, bitComparator);
             this.sorted = true;
@@ -72,11 +72,11 @@ class SliceBits {
     }
 
     Internal.ImportRequest convertToImportRequest() {
-        List<Long> bitmapIDs = new ArrayList<>(bits.size());
+        List<Long> rowIDs = new ArrayList<>(bits.size());
         List<Long> columnIDs = new ArrayList<>(bits.size());
         List<Long> timestamps = new ArrayList<>(bits.size());
         for (Bit bit : bits) {
-            bitmapIDs.add(bit.getRowID());
+            rowIDs.add(bit.getRowID());
             columnIDs.add(bit.getColumnID());
             timestamps.add(bit.getTimestamp());
         }
@@ -84,13 +84,13 @@ class SliceBits {
                 .setIndex(this.field.getIndex().getName())
                 .setField(this.field.getName())
                 .setSlice(slice)
-                .addAllRowIDs(bitmapIDs)
+                .addAllRowIDs(rowIDs)
                 .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
     }
 
-    SliceBits(final Field field, final long slice) {
+    SliceColumns(final Field field, final long slice) {
         this.field = field;
         this.slice = slice;
         this.bits = new ArrayList<>();

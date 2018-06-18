@@ -49,17 +49,17 @@ import static org.junit.Assert.assertTrue;
 @Category(UnitTest.class)
 public class RowResultTest {
     @Test
-    public void testCreateBitmapResult() {
+    public void testCreateRowResult() {
         RowResult result = createSampleResult();
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
         assertEquals(0, result.getKeys().size());
-        List<Long> bits = result.getBits();
+        List<Long> bits = result.getColumns();
         assertEquals(2, bits.size());
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
-        assertEquals(QueryResultType.BITMAP, result.getType());
+        assertEquals(QueryResultType.ROW, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
@@ -67,17 +67,17 @@ public class RowResultTest {
     }
 
     @Test
-    public void testCreateBitmapResultEnterprise() {
+    public void testCreateRowResultEnterprise() {
         RowResult result = createSampleEnterpriseResult();
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
-        assertEquals(0, result.getBits().size());
+        assertEquals(0, result.getColumns().size());
         List<String> keys = result.getKeys();
         assertEquals(2, keys.size());
         assertEquals("2a84a392-529e-4603-ab25-fe2ceea3167e", keys.get(0));
         assertEquals("ad76b92c-2fd0-472a-8b7f-ef6daf5a3305", keys.get(1));
-        assertEquals(QueryResultType.BITMAP, result.getType());
+        assertEquals(QueryResultType.ROW, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
@@ -85,10 +85,10 @@ public class RowResultTest {
     }
 
     @Test
-    public void testBitmapResultToString() {
+    public void testRowResultToString() {
         RowResult result = createSampleResult();
         String s = result.toString();
-        assertEquals("RowResult(attrs={color=blue}, bits=[42, 45], keys=[])", s);
+        assertEquals("RowResult(attrs={color=blue}, columns=[42, 45], keys=[])", s);
     }
 
     @Test

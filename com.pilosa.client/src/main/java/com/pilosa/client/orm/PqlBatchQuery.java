@@ -49,7 +49,7 @@ import java.util.List;
  * <pre>
  * <code>
  *     Index repo = Index.withName("repository");
- *     Field stargazer = repo.frame("stargazer");
+ *     Field stargazer = repo.field("stargazer");
  *     PqlBatchQuery query = repo.batchQuery(
  *          stargazer.row(5),
  *          stargazer.row(15),

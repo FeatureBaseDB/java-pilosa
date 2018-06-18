@@ -177,8 +177,8 @@ public class PilosaClient implements AutoCloseable {
     public QueryResponse query(PqlQuery query, QueryOptions options) {
         QueryRequest request = QueryRequest.withQuery(query);
         request.setRetrieveColumnAttributes(options.isColumns());
-        request.setExcludeAttributes(options.isExcludeAttributes());
-        request.setExcludeBits(options.isExcludeBits());
+        request.setExcludeRowAttributes(options.isExcludeAttributes());
+        request.setExcludeColumns(options.isExcludeColumns());
         request.setSlices(options.getSlices());
         request.setQuery(query.serialize());
         return queryPath(request);
@@ -336,7 +336,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Returns the indexes and frames on the server.
+     * Returns the indexes and fields on the server.
      *
      * @return server-side schema
      */
@@ -353,10 +353,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Updates a schema with the indexes and frames on the server and
-     * creates the indexes and frames in the schema on the server side.
+     * Updates a schema with the indexes and fields on the server and
+     * creates the indexes and fields in the schema on the server side.
      * <p>
-     * This function does not delete indexes and the frames on the server side nor in the schema.
+     * This function does not delete indexes and the fields on the server side nor in the schema.
      * </p>
      *
      * @param schema local schema to be synced
@@ -366,7 +366,7 @@ public class PilosaClient implements AutoCloseable {
 
         // find out local - remote schema
         Schema diffSchema = schema.diff(serverSchema);
-        // create the indexes and frames which doesn't exist on the server side
+        // create the indexes and fields which doesn't exist on the server side
         for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
             Index index = indexEntry.getValue();
             if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
@@ -576,13 +576,13 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    void importBits(SliceBits sliceBits) {
-        String indexName = sliceBits.getIndex().getName();
-        List<IFragmentNode> nodes = fetchFieldNodes(indexName, sliceBits.getSlice());
+    void importColumns(SliceColumns sliceColumns) {
+        String indexName = sliceColumns.getIndex().getName();
+        List<IFragmentNode> nodes = fetchFieldNodes(indexName, sliceColumns.getSlice());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
-            Internal.ImportRequest importRequest = sliceBits.convertToImportRequest();
+            Internal.ImportRequest importRequest = sliceColumns.convertToImportRequest();
             client.importNode(importRequest);
         }
     }
@@ -674,8 +674,8 @@ class QueryRequest {
     private Index index;
     private String query = "";
     private boolean retrieveColumnAttributes = false;
-    private boolean excludeBits = false;
-    private boolean excludeAttributes = false;
+    private boolean excludeColumns = false;
+    private boolean excludeRowAttributes = false;
     private Long[] slices = {};
 
     private QueryRequest(Index index) {
@@ -708,12 +708,12 @@ class QueryRequest {
         this.retrieveColumnAttributes = ok;
     }
 
-    public void setExcludeBits(boolean excludeBits) {
-        this.excludeBits = excludeBits;
+    public void setExcludeColumns(boolean excludeColumns) {
+        this.excludeColumns = excludeColumns;
     }
 
-    public void setExcludeAttributes(boolean excludeAttributes) {
-        this.excludeAttributes = excludeAttributes;
+    public void setExcludeRowAttributes(boolean excludeRowAttributes) {
+        this.excludeRowAttributes = excludeRowAttributes;
     }
 
     public void setSlices(Long... slices) {
@@ -724,8 +724,8 @@ class QueryRequest {
         return Internal.QueryRequest.newBuilder()
                 .setQuery(this.query)
                 .setColumnAttrs(this.retrieveColumnAttributes)
-                .setExcludeColumns(this.excludeBits)
-                .setExcludeRowAttrs(this.excludeAttributes)
+                .setExcludeColumns(this.excludeColumns)
+                .setExcludeRowAttrs(this.excludeRowAttributes)
                 .addAllSlices(Arrays.asList(this.slices))
                 .build();
     }
@@ -775,7 +775,7 @@ class FragmentNodeURI {
 class BitComparator implements Comparator<Bit> {
     @Override
     public int compare(Bit bit, Bit other) {
-        // The maximum ingestion speed is accomplished by sorting bits by row ID and then column ID
+        // The maximum ingestion speed is accomplished by sorting columns by row ID and then column ID
         int bitCmp = Long.signum(bit.rowID - other.rowID);
         int prfCmp = Long.signum(bit.columnID - other.columnID);
         return (bitCmp == 0) ? prfCmp : bitCmp;
@@ -799,7 +799,7 @@ class BitImportManager {
         }
 
         try {
-            // Push bits from the iterator
+            // Push columns from the iterator
             while (iterator.hasNext()) {
                 Bit nextBit = iterator.next();
                 long slice = nextBit.columnID / sliceWidth;
@@ -862,24 +862,24 @@ class BitImportWorker implements Runnable {
                     break;
                 }
                 long slice = bit.getColumnID() / sliceWidth;
-                SliceBits sliceBits = sliceGroup.get(slice);
-                if (sliceBits == null) {
-                    sliceBits = SliceBits.create(this.field, slice);
-                    sliceGroup.put(slice, sliceBits);
+                SliceColumns sliceColumns = sliceGroup.get(slice);
+                if (sliceColumns == null) {
+                    sliceColumns = SliceColumns.create(this.field, slice);
+                    sliceGroup.put(slice, sliceColumns);
                 }
-                sliceBits.add(bit);
+                sliceColumns.add(bit);
                 batchCountDown -= 1;
                 if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
-                    for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
-                        sliceBits = entry.getValue();
-                        if (sliceBits.getBits().size() > 0) {
-                            importBits(entry.getValue());
+                    for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
+                        sliceColumns = entry.getValue();
+                        if (sliceColumns.getColumns().size() > 0) {
+                            importColumns(entry.getValue());
                         }
                     }
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
-                    importBits(sliceGroup.get(largestSlice()));
+                    importColumns(sliceGroup.get(largestSlice()));
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 }
@@ -887,12 +887,12 @@ class BitImportWorker implements Runnable {
                 break;
             }
         }
-        // The thread is shutting down, import remaining bits in the batch
-        for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
-            SliceBits sliceBits = entry.getValue();
-            if (sliceBits.getBits().size() > 0) {
+        // The thread is shutting down, import remaining columns in the batch
+        for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
+            SliceColumns sliceColumns = entry.getValue();
+            if (sliceColumns.getColumns().size() > 0) {
                 try {
-                    importBits(entry.getValue());
+                    importColumns(entry.getValue());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -903,9 +903,9 @@ class BitImportWorker implements Runnable {
     private long largestSlice() {
         long largestCount = 0;
         long largestSlice = -1;
-        for (Map.Entry<Long, SliceBits> entry : this.sliceGroup.entrySet()) {
-            SliceBits sliceBits = entry.getValue();
-            int sliceBitCount = sliceBits.getBits().size();
+        for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
+            SliceColumns sliceColumns = entry.getValue();
+            int sliceBitCount = sliceColumns.getColumns().size();
             if (sliceBitCount > largestCount) {
                 largestCount = sliceBitCount;
                 largestSlice = entry.getKey();
@@ -914,16 +914,16 @@ class BitImportWorker implements Runnable {
         return largestSlice;
     }
 
-    private void importBits(SliceBits sliceBits) throws InterruptedException {
+    private void importColumns(SliceColumns sliceColumns) throws InterruptedException {
         long tic = System.currentTimeMillis();
-        this.client.importBits(sliceBits);
+        this.client.importColumns(sliceColumns);
         if (this.statusQueue != null) {
             long tac = System.currentTimeMillis();
             ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
-                    sliceBits.getSlice(), sliceBits.getBits().size(), tac - tic);
+                    sliceColumns.getSlice(), sliceColumns.getColumns().size(), tac - tic);
             this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
         }
-        sliceBits.clear();
+        sliceColumns.clear();
     }
 
     private final PilosaClient client;
@@ -931,5 +931,5 @@ class BitImportWorker implements Runnable {
     private final BlockingQueue<Bit> queue;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
-    private Map<Long, SliceBits> sliceGroup = new HashMap<>();
+    private Map<Long, SliceColumns> sliceGroup = new HashMap<>();
 }

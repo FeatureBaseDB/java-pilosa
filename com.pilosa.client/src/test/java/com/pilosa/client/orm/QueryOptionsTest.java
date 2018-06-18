@@ -46,7 +46,7 @@ public class QueryOptionsTest {
     @Test
     public void testCreateQueryOptions() {
         QueryOptions options = QueryOptions.builder()
-                .setColumns(true)
+                .setColumnAttributes(true)
                 .build();
         assertTrue(options.isColumns());
     }

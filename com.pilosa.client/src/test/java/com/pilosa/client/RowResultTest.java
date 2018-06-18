@@ -55,7 +55,7 @@ public class RowResultTest {
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
         assertEquals(0, result.getKeys().size());
-        List<Long> bits = result.getBits();
+        List<Long> bits = result.getColumns();
         assertEquals(2, bits.size());
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
@@ -72,7 +72,7 @@ public class RowResultTest {
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
-        assertEquals(0, result.getBits().size());
+        assertEquals(0, result.getColumns().size());
         List<String> keys = result.getKeys();
         assertEquals(2, keys.size());
         assertEquals("2a84a392-529e-4603-ab25-fe2ceea3167e", keys.get(0));
@@ -88,7 +88,7 @@ public class RowResultTest {
     public void testRowResultToString() {
         RowResult result = createSampleResult();
         String s = result.toString();
-        assertEquals("RowResult(attrs={color=blue}, bits=[42, 45], keys=[])", s);
+        assertEquals("RowResult(attrs={color=blue}, columns=[42, 45], keys=[])", s);
     }
 
     @Test

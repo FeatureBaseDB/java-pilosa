@@ -48,11 +48,11 @@ import java.util.TimeZone;
 /**
  * Iterates over a CSV of rows.
  * <p>
- * This class is used for iterating over bitmaps for a import operation.
+ * This class is used for iterating over rows for a import operation.
  * <p>
  * The CSV file should not have a header and should have the following structure:
  * <pre>
- *     BITMAP_ID,PROFILE_ID[,TIMESTAMP]
+ *     ROW_ID,COLUMN_ID[,TIMESTAMP]
  * </pre>
  * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
  */

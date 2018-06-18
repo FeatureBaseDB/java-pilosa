@@ -115,6 +115,4 @@ public class ImportOptions {
     final private long timeoutMs;
     final private int batchSize;
     final private Strategy strategy;
-    // import Bits fun
-
 }

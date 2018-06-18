@@ -193,7 +193,7 @@ public class PilosaClientIT {
             columnAttrs.put("name", "bombo");
             client.query(this.index.setColumnAttrs(1000, columnAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
-                    .setColumns(true)
+                    .setColumnAttributes(true)
                     .build();
             QueryResponse response = client.query(field.row(100), queryOptions);
             assertNotNull(response.getColumn());
@@ -264,14 +264,14 @@ public class PilosaClientIT {
             assertEquals(0, response1.getColumns().size());
             RowResult row1 = response1.getResult().getRow();
             assertEquals(0, row1.getAttributes().size());
-            assertEquals(1, row1.getBits().size());
-            assertEquals(20, (long) row1.getBits().get(0));
+            assertEquals(1, row1.getColumns().size());
+            assertEquals(20, (long) row1.getColumns().get(0));
 
             Map<String, Object> columnAttrs = new HashMap<>(1);
             columnAttrs.put("name", "bombo");
             client.query(this.colIndex.setColumnAttrs(20, columnAttrs));
             QueryOptions queryOptions = QueryOptions.builder()
-                    .setColumns(true)
+                    .setColumnAttributes(true)
                     .build();
             QueryResponse response2 = client.query(this.field.row(10), queryOptions);
             ColumnItem column = response2.getColumn();
@@ -286,7 +286,7 @@ public class PilosaClientIT {
             client.query(this.field.setRowAttrs(10, rowAttrs));
             QueryResponse response3 = client.query(this.field.row(10));
             RowResult row = response3.getResult().getRow();
-            assertEquals(1, row.getBits().size());
+            assertEquals(1, row.getColumns().size());
             assertEquals(4, row.getAttributes().size());
             assertEquals(true, row.getAttributes().get("active"));
             assertEquals(5L, row.getAttributes().get("unsigned"));
@@ -412,7 +412,7 @@ public class PilosaClientIT {
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();
-                assertEquals(target.get(i), br.getBits().get(0));
+                assertEquals(target.get(i), br.getColumns().get(0));
             }
         }
     }
@@ -441,7 +441,7 @@ public class PilosaClientIT {
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();
-                assertEquals(target.get(i), br.getBits().get(0));
+                assertEquals(target.get(i), br.getColumns().get(0));
             }
         }
     }
@@ -454,7 +454,7 @@ public class PilosaClientIT {
                 while (true) {
                     try {
                         ImportStatusUpdate statusUpdate = this.statusQueue.take();
-                        assertEquals(String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
+                        assertEquals(String.format("thread:%d imported:%d columns for slice:%d in:%d ms",
                                 statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getSlice(), statusUpdate.getTimeMs()),
                                 statusUpdate.toString()); // for coverage
                     } catch (InterruptedException e) {
@@ -472,7 +472,7 @@ public class PilosaClientIT {
 
         try (PilosaClient client = this.getClient()) {
             long maxID = 300_000_000;
-            long maxBits = 100_000;
+            long maxColumns = 100_000;
 
             BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1000);
             ImportMonitor monitor = new ImportMonitor(statusQueue);
@@ -480,7 +480,7 @@ public class PilosaClientIT {
             monitorThread.setDaemon(true);
             monitorThread.start();
 
-            BitIterator iterator = new XBitIterator(maxID, maxBits);
+            BitIterator iterator = new XBitIterator(maxID, maxColumns);
 
             Field field = this.index.field("importfield2");
             client.ensureField(field);
@@ -540,7 +540,7 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void workerImportRemainingBitsInterruptedTest() throws IOException {
+    public void workerImportRemainingColumnsInterruptedTest() throws IOException {
         class Importer implements Runnable {
             Importer(PilosaClient client, Field field) {
                 this.client = client;
@@ -551,9 +551,9 @@ public class PilosaClientIT {
             public void run() {
                 BitIterator iterator = new XBitIterator(1_000, 1_500);
                 // There should be 10_000/3_000 == 3 batch status updates
-                // And another one for the remaining bits
+                // And another one for the remaining columns
                 // Block after the 3 so we have a chance to interrupt the worker thread
-                //  while importing remaining bits...
+                //  while importing remaining columns...
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
@@ -665,12 +665,12 @@ public class PilosaClientIT {
 
             response = client.query(field.lessThan(15));
             assertEquals(1, response.getResults().size());
-            assertEquals(10, (long) response.getResult().getRow().getBits().get(0));
+            assertEquals(10, (long) response.getResult().getRow().getColumns().get(0));
         }
     }
 
     @Test
-    public void excludeAttrsBitsTest() throws IOException {
+    public void excludeAttrsColumnsTest() throws IOException {
         try (PilosaClient client = getClient()) {
             Map<String, Object> attrs = new HashMap<>(1);
             attrs.put("foo", "bar");
@@ -682,12 +682,12 @@ public class PilosaClientIT {
             QueryResponse response;
             QueryOptions options;
 
-            // test exclude bits.
+            // test exclude columns.
             options = QueryOptions.builder()
-                    .setExcludeBits(true)
+                    .setExcludeColumns(true)
                     .build();
             response = client.query(field.row(1), options);
-            assertEquals(0, response.getResult().getRow().getBits().size());
+            assertEquals(0, response.getResult().getRow().getColumns().size());
             assertEquals(1, response.getResult().getRow().getAttributes().size());
 
             // test exclude attributes.
@@ -695,7 +695,7 @@ public class PilosaClientIT {
                     .setExcludeAttributes(true)
                     .build();
             response = client.query(field.row(1), options);
-            assertEquals(1, response.getResult().getRow().getBits().size());
+            assertEquals(1, response.getResult().getRow().getColumns().size());
             assertEquals(0, response.getResult().getRow().getAttributes().size());
 
         }
@@ -723,10 +723,10 @@ public class PilosaClientIT {
                     .build();
             QueryResponse response = client.query(field.row(1), options);
 
-            List<Long> bits = response.getResult().getRow().getBits();
-            assertEquals(2, bits.size());
-            assertEquals(100, (long) bits.get(0));
-            assertEquals(sliceWidth*3, (long) bits.get(1));
+            List<Long> columns = response.getResult().getRow().getColumns();
+            assertEquals(2, columns.size());
+            assertEquals(100, (long) columns.get(0));
+            assertEquals(sliceWidth * 3, (long) columns.get(1));
         }
     }
 
@@ -1063,24 +1063,24 @@ public class PilosaClientIT {
 }
 
 class StaticBitIterator implements BitIterator {
-    private List<Bit> bits;
+    private List<Bit> columns;
     private int index = 0;
 
     StaticBitIterator() {
-        this.bits = new ArrayList<>(3);
-        this.bits.add(Bit.create(10, 5));
-        this.bits.add(Bit.create(2, 3));
-        this.bits.add(Bit.create(7, 1));
+        this.columns = new ArrayList<>(3);
+        this.columns.add(Bit.create(10, 5));
+        this.columns.add(Bit.create(2, 3));
+        this.columns.add(Bit.create(7, 1));
     }
 
     @Override
     public boolean hasNext() {
-        return this.index < this.bits.size();
+        return this.index < this.columns.size();
     }
 
     @Override
     public Bit next() {
-        return this.bits.get(index++);
+        return this.columns.get(index++);
     }
 
     @Override
@@ -1097,17 +1097,17 @@ class InvalidPilosaClient extends InsecurePilosaClientIT {
 
 class XBitIterator implements BitIterator {
 
-    XBitIterator(long maxID, long maxBits) {
+    XBitIterator(long maxID, long maxColumns) {
         this.maxID = maxID;
-        this.maxBits = maxBits;
+        this.maxColumns = maxColumns;
     }
 
     public boolean hasNext() {
-        return this.maxBits > 0;
+        return this.maxColumns > 0;
     }
 
     public Bit next() {
-        this.maxBits -= 1;
+        this.maxColumns -= 1;
         long rowID = (long) (Math.random() * this.maxID);
         long columnID = (long) (Math.random() * this.maxID);
         return Bit.create(rowID, columnID);
@@ -1119,5 +1119,5 @@ class XBitIterator implements BitIterator {
     }
 
     private long maxID;
-    private long maxBits;
+    private long maxColumns;
 }

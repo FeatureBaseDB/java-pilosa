@@ -329,7 +329,7 @@ public class OrmTest {
     }
 
     @Test(expected = PilosaException.class)
-    public void setBitmapAttrsInvalidValuesTest() {
+    public void setRowAttrsInvalidValuesTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("color", "blue");
         attrsMap.put("happy", new Object());

@@ -58,12 +58,12 @@ public final class RowResult implements QueryResult {
     }
 
     /**
-     * Returns the bits in the reply.
+     * Returns the columns in the reply.
      *
      * @return list of column IDs where the corresponding bit is 1
      */
-    public List<Long> getBits() {
-        return this.bits;
+    public List<Long> getColumns() {
+        return this.columns;
     }
 
     /**
@@ -107,8 +107,8 @@ public final class RowResult implements QueryResult {
 
     @Override
     public String toString() {
-        return String.format("RowResult(attrs=%s, bits=%s, keys=%s)",
-                this.attributes, this.bits, this.keys);
+        return String.format("RowResult(attrs=%s, columns=%s, keys=%s)",
+                this.attributes, this.columns, this.keys);
     }
 
     @Override
@@ -122,7 +122,7 @@ public final class RowResult implements QueryResult {
         RowResult rhs = (RowResult) obj;
         return new EqualsBuilder()
                 .append(this.attributes, rhs.attributes)
-                .append(this.bits, rhs.bits)
+                .append(this.columns, rhs.columns)
                 .append(this.keys, rhs.keys)
                 .isEquals();
     }
@@ -131,15 +131,15 @@ public final class RowResult implements QueryResult {
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
                 .append(this.attributes)
-                .append(this.bits)
+                .append(this.columns)
                 .append(this.keys)
                 .toHashCode();
     }
 
-    static RowResult create(Map<String, Object> attributes, List<Long> bits, List<String> keys) {
+    static RowResult create(Map<String, Object> attributes, List<Long> columns, List<String> keys) {
         RowResult result = new RowResult();
         result.attributes = (attributes == null) ? defaultAttributes : attributes;
-        result.bits = (bits == null) ? defaultBits : bits;
+        result.columns = (columns == null) ? defaultColumns : columns;
         result.keys = (keys == null) ? defaultKeys : keys;
         return result;
     }
@@ -158,16 +158,16 @@ public final class RowResult implements QueryResult {
     static {
         RowResult result = new RowResult();
         result.attributes = new HashMap<>();
-        result.bits = new ArrayList<>();
+        result.columns = new ArrayList<>();
         defaultResult = result;
     }
 
     private static RowResult defaultResult;
     private static Map<String, Object> defaultAttributes = new HashMap<>(0);
-    private static List<Long> defaultBits = new ArrayList<>(0);
+    private static List<Long> defaultColumns = new ArrayList<>(0);
     private static List<String> defaultKeys = new ArrayList<>(0);
 
     private Map<String, Object> attributes;
-    private List<Long> bits;
+    private List<Long> columns;
     private List<String> keys;
 }

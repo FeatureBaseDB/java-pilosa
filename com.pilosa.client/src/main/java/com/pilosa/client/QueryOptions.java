@@ -44,7 +44,7 @@ import com.pilosa.client.orm.PqlQuery;
  * <pre>
  *  <code>
  *     QueryOptions options = QueryOptions.builder()
- *         .setColumns(true)
+ *         .setColumnAttributes(true)
  *         .build();
  *  </code>
  * </pre>
@@ -62,19 +62,19 @@ public class QueryOptions {
          * @param columns set to <code>true</code> for returning column data
          * @return QueryOptions builder
          */
-        public Builder setColumns(boolean columns) {
+        public Builder setColumnAttributes(boolean columns) {
             this.columns = columns;
             return this;
         }
 
         /**
-         * Disables returning bits from row queries.
+         * Disables returning columns from row queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) bits
          * @return QueryOptions builder
          */
-        public Builder setExcludeBits(boolean exclude) {
-            this.excludeBits = exclude;
+        public Builder setExcludeColumns(boolean exclude) {
+            this.excludeColumns = exclude;
             return this;
         }
 
@@ -106,11 +106,11 @@ public class QueryOptions {
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns, this.excludeBits, this.excludeAttributes, this.slices);
+            return new QueryOptions(this.columns, this.excludeColumns, this.excludeAttributes, this.slices);
         }
 
         private boolean columns = false;
-        private boolean excludeBits;
+        private boolean excludeColumns;
         private boolean excludeAttributes;
         private Long slices[] = {};
     }
@@ -129,7 +129,7 @@ public class QueryOptions {
         return this.columns;
     }
 
-    public boolean isExcludeBits() {
+    public boolean isExcludeColumns() {
         return this.excludeBits;
     }
 

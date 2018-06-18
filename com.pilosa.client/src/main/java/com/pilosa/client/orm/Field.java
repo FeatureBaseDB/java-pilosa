@@ -329,7 +329,7 @@ public class Field {
     /**
      * Creates a Range query. (Enterprise version)
      * <p>
-     *     Similar to Bitmap, but only returns bits which were set with timestamps
+     *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
      *
      * @param rowKey row key

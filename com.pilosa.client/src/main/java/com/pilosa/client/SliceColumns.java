@@ -42,9 +42,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-class SliceBits {
-    public static SliceBits create(final Field field, final long slice) {
-        return new SliceBits(field, slice);
+class SliceColumns {
+    public static SliceColumns create(final Field field, final long slice) {
+        return new SliceColumns(field, slice);
     }
 
     public Index getIndex() {
@@ -55,7 +55,7 @@ class SliceBits {
         return this.slice;
     }
 
-    public List<Bit> getBits() {
+    public List<Bit> getColumns() {
         if (!this.sorted) {
             Collections.sort(bits, bitComparator);
             this.sorted = true;
@@ -90,7 +90,7 @@ class SliceBits {
                 .build();
     }
 
-    SliceBits(final Field field, final long slice) {
+    SliceColumns(final Field field, final long slice) {
         this.field = field;
         this.slice = slice;
         this.bits = new ArrayList<>();

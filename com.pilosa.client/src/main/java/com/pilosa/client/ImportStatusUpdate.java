@@ -52,7 +52,7 @@ public class ImportStatusUpdate {
     }
 
     public String toString() {
-        return String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
+        return String.format("thread:%d imported:%d columns for slice:%d in:%d ms",
                 this.threadID, this.importedCount, this.slice, this.timeMs);
     }
 

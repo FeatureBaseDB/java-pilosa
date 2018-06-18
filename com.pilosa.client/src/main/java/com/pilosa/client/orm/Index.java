@@ -156,7 +156,7 @@ public class Index {
     /**
      * Creates a Union query.
      * <p>
-     * Union performs a logical OR on the results of each BITMAP_CALL query passed to it.
+     * Union performs a logical OR on the results of each ROW_CALL query passed to it.
      *
      * @param rows 2 or more rows to union
      * @return a PQL query
@@ -170,7 +170,7 @@ public class Index {
     /**
      * Creates an Intersect query.
      * <p>
-     * Intersect performs a logical AND on the results of each BITMAP_CALL query passed to it.
+     * Intersect performs a logical AND on the results of each ROW_CALL query passed to it.
      *
      * @param rows 2 or more rows to intersect
      * @return a PQL query
@@ -188,8 +188,8 @@ public class Index {
     /**
      * Creates a Difference query.
      * <p>
-     * Difference returns all of the bits from the first BITMAP_CALL argument
-     *   passed to it, without the bits from each subsequent BITMAP_CALL.
+     * Difference returns all of the bits from the first ROW_CALL argument
+     *   passed to it, without the bits from each subsequent ROW_CALL.
      *
      * @param rows 1 or more rows to differentiate
      * @return a PQL query
@@ -222,7 +222,7 @@ public class Index {
     /**
      * Creates a Count query.
      * <p>
-     * Count returns the number of set bits in the BITMAP_CALL passed in.
+     * Count returns the number of set bits in the ROW_CALL passed in.
      *
      * @param rows the row query
      * @return a PQL query
@@ -251,7 +251,7 @@ public class Index {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
-        String attributesString = Util.createAttributesString(this.mapper, attributes);
+        String attributesString = Util.createAttributesString(mapper, attributes);
         return pqlQuery(String.format("SetColumnAttrs(col=%d, %s)", id, attributesString));
     }
 

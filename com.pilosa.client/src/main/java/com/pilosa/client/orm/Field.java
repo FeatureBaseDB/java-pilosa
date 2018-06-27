@@ -104,7 +104,7 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(long rowID) {
-        return this.index.pqlRowQuery(String.format("Bitmap(row=%d, field='%s')", rowID, this.name));
+        return this.index.pqlRowQuery(String.format("Row(%s=%d)", this.name, rowID));
     }
 
     /**
@@ -119,14 +119,14 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(String rowKey) {
-        return this.index.pqlRowQuery(String.format("Bitmap(row='%s', field='%s')",
-                rowKey, this.name));
+        return this.index.pqlRowQuery(String.format("Row(%s='%s')",
+                this.name, rowKey));
     }
 
     /**
-     * Creates a SetBit query.
+     * Creates a Set query.
      * <p>
-     *  SetBit assigns a value of 1 to a bit in the binary matrix,
+     *  Set assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
      *
      * @param rowID    row ID
@@ -134,15 +134,15 @@ public class Field {
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
-    public PqlBaseQuery setBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("SetBit(row=%d, field='%s', col=%d)",
-                rowID, name, columnID));
+    public PqlBaseQuery set(long rowID, long columnID) {
+        return this.index.pqlQuery(String.format("Set(%d,%s=%d)",
+                columnID, name, rowID));
     }
 
     /**
-     * Creates a SetBit query. (Enterprise version)
+     * Creates a Set query. (Enterprise version)
      * <p>
-     *  SetBit assigns a value of 1 to a bit in the binary matrix,
+     *  Set assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
      *
      * @param rowKey    row key
@@ -150,16 +150,16 @@ public class Field {
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
-    public PqlBaseQuery setBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("SetBit(row='%s', field='%s', col='%s')",
-                rowKey, name, columnKey));
+    public PqlBaseQuery set(String rowKey, String columnKey) {
+        return this.index.pqlQuery(String.format("Set(%s,%s='%s')",
+                columnKey, name, rowKey));
     }
 
     /**
      /**
-     * Creates a SetBit query.
+     * Creates a Set query.
      * <p>
-     *  SetBit, assigns a value of 1 to a bit in the binary matrix,
+     *  Set, assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
      * <p>
      *      This variant supports providing a timestamp.
@@ -172,18 +172,18 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery setBit(long rowID, long columnID, Date timestamp) {
-        String qry = String.format("SetBit(row=%d, field='%s', col=%d, timestamp='%sT%s')",
-                rowID, name, columnID,
+    public PqlBaseQuery set(long rowID, long columnID, Date timestamp) {
+        String qry = String.format("Set(%d,%s=%d,%sT%s)",
+                columnID, name, rowID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
     }
 
     /**
      /**
-     * Creates a SetBit query. (Enterprise version)
+     * Creates a Set query. (Enterprise version)
      * <p>
-     *  SetBit, assigns a value of 1 to a bit in the binary matrix,
+     *  Set, assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
      * <p>
      *      This variant supports providing a timestamp.
@@ -196,17 +196,17 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery setBit(String rowKey, String columnKey, Date timestamp) {
-        String qry = String.format("SetBit(row='%s', field='%s', col='%s', timestamp='%sT%s')",
-                rowKey, name, columnKey,
+    public PqlBaseQuery set(String rowKey, String columnKey, Date timestamp) {
+        String qry = String.format("Set('%s',%s='%s',%sT%s)",
+                columnKey, name, rowKey,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
         return this.index.pqlQuery(qry);
     }
 
     /**
-     * Creates a ClearBit query.
+     * Creates a Clear query.
      * <p>
-     *     ClearBit assigns a value of 0 to a bit in the binary matrix,
+     *     Clear assigns a value of 0 to a column in the binary matrix,
      *     thus disassociating the given row in the given field from the given column.
      *
      * @param rowID    row ID
@@ -215,15 +215,15 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery clearBit(long rowID, long columnID) {
-        return this.index.pqlQuery(String.format("ClearBit(row=%d, field='%s', col=%d)",
-                rowID, name, columnID));
+    public PqlBaseQuery clear(long rowID, long columnID) {
+        return this.index.pqlQuery(String.format("Clear(%d,%s=%d)",
+                columnID, name, rowID));
     }
 
     /**
-     * Creates a ClearBit query. (Enterprise version)
+     * Creates a Clear query. (Enterprise version)
      * <p>
-     *     ClearBit assigns a value of 0 to a bit in the binary matrix,
+     *     Clear assigns a value of 0 to a column in the binary matrix,
      *     thus disassociating the given row in the given field from the given column.
      *
      * @param rowKey    row key
@@ -232,9 +232,9 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery clearBit(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("ClearBit(row='%s', field='%s', col='%s')",
-                rowKey, name, columnKey));
+    public PqlBaseQuery clear(String rowKey, String columnKey) {
+        return this.index.pqlQuery(String.format("Clear('%s',%s='%s')",
+                columnKey, name, rowKey));
     }
 
     /**
@@ -247,7 +247,7 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     public PqlBaseQuery topN(long n) {
-        String s = String.format("TopN(field='%s', n=%d)", this.name, n);
+        String s = String.format("TopN(%s,n=%d)", this.name, n);
         return this.index.pqlQuery(s);
     }
 
@@ -293,14 +293,14 @@ public class Field {
         String fieldString = "";
         if (field != null) {
             Validator.ensureValidLabel(field);
-            fieldString = String.format(", field='%s'", field);
+            fieldString = String.format(",field='%s'", field);
         }
 
         try {
-            String valuesString = (values == null || values.length == 0) ? "" : String.format(", filters=%s", this.mapper.writeValueAsString(values));
-            String rowString = (row == null) ? "" : String.format("%s, ", row.serialize());
-            String s = String.format("TopN(%sfield='%s', n=%d%s%s)",
-                    rowString, this.name, n, fieldString, valuesString);
+            String valuesString = (values == null || values.length == 0) ? "" : String.format(",filters=%s", this.mapper.writeValueAsString(values));
+            String rowString = (row == null) ? "" : String.format(",%s", row.serialize());
+            String s = String.format("TopN(%s%s,n=%d%s%s)",
+                    this.name, rowString, n, fieldString, valuesString);
             return this.index.pqlQuery(s);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
@@ -321,8 +321,8 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlRowQuery(String.format("Range(row=%d, field='%s', start='%sT%s', end='%sT%s')",
-                rowID, this.name, fmtDate.format(start),
+        return this.index.pqlRowQuery(String.format("Range(%s=%d,%sT%s,%sT%s)",
+                this.name, rowID, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 
@@ -340,8 +340,8 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(String rowKey, Date start, Date end) {
-        return this.index.pqlRowQuery(String.format("Range(row='%s', field='%s', start='%sT%s', end='%sT%s')",
-                rowKey, this.name, fmtDate.format(start),
+        return this.index.pqlRowQuery(String.format("Range(%s='%s',%sT%s,%sT%s)",
+                this.name, rowKey, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
     }
 
@@ -365,8 +365,8 @@ public class Field {
      */
     public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(row=%d, field='%s', %s)",
-                rowID, this.name, attributesString));
+        return this.index.pqlQuery(String.format("SetRowAttrs(%s,%d,%s)",
+                this.name, rowID, attributesString));
     }
 
     /**
@@ -389,8 +389,8 @@ public class Field {
      */
     public PqlBaseQuery setRowAttrs(String rowKey, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(row='%s', field='%s', %s)",
-                rowKey, this.name, attributesString));
+        return this.index.pqlQuery(String.format("SetRowAttrs('%s','%s',%s)",
+                this.name, rowKey, attributesString));
     }
 
     /**
@@ -578,7 +578,7 @@ public class Field {
     private PqlBaseQuery valueQuery(String op, PqlRowQuery row) {
         String qry;
         if (row != null) {
-            qry = String.format("%s(%s, field='%s')",
+            qry = String.format("%s(%s,field='%s')",
                     op, row.serialize(), this.name);
         } else {
             qry = String.format("%s(field='%s')", op, this.name);

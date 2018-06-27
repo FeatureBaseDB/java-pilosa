@@ -78,7 +78,7 @@ public class OrmTest {
         b.add(sampleField.row(44));
         b.add(sampleField.row(10101));
         assertEquals(
-                "Bitmap(row=44, field='sample-field')Bitmap(row=10101, field='sample-field')",
+                "Row(sample-field=44)Row(sample-field=10101)",
                 b.serialize());
     }
 
@@ -86,12 +86,12 @@ public class OrmTest {
     public void batchWithCapacityTest() {
         PqlBatchQuery b = projectIndex.batchQuery(3);
         b.add(collabField.row(2));
-        b.add(collabField.setBit(20, 40));
+        b.add(collabField.set(20, 40));
         b.add(collabField.topN(2));
         assertEquals(
-                "Bitmap(row=2, field='collaboration')" +
-                        "SetBit(row=20, field='collaboration', col=40)" +
-                        "TopN(field='collaboration', n=2)",
+                "Row(collaboration=2)" +
+                        "Set(40,collaboration=20)" +
+                        "TopN(collaboration,n=2)",
                 b.serialize());
     }
 
@@ -103,68 +103,55 @@ public class OrmTest {
 
     @Test
     public void rowTest() {
-        PqlBaseQuery qry1 = sampleField.row(5);
+        PqlBaseQuery qry1 = collabField.row(5);
         assertEquals(
-                "Bitmap(row=5, field='sample-field')",
+                "Row(collaboration=5)",
                 qry1.serialize());
 
-        PqlBaseQuery qry2 = collabField.row(10);
+        PqlBaseQuery qry2 = collabField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Bitmap(row=10, field='collaboration')",
+                "Row(collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
                 qry2.serialize());
-        PqlBaseQuery qry3 = sampleField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
-        assertEquals(
-                "Bitmap(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='sample-field')",
-                qry3.serialize());
     }
 
     @Test
-    public void setBitTest() {
-        PqlQuery qry1 = sampleField.setBit(5, 10);
+    public void setTest() {
+        PqlQuery qry1 = collabField.set(5, 10);
         assertEquals(
-                "SetBit(row=5, field='sample-field', col=10)",
+                "Set(10,collaboration=5)",
                 qry1.serialize());
 
-        PqlQuery qry2 = collabField.setBit(10, 20);
+        PqlQuery qry3 = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
-                "SetBit(row=10, field='collaboration', col=20)",
-                qry2.serialize());
-        PqlQuery qry3 = sampleField.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
-        assertEquals(
-                "SetBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='sample-field', col='some_id')",
+                "Set(some_id,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
                 qry3.serialize());
 
     }
 
     @Test
-    public void setBitWithTimestampTest() {
+    public void setWithTimestampTest() {
         Calendar timestamp = Calendar.getInstance();
         timestamp.set(2017, Calendar.APRIL, 24, 12, 14);
-        PqlQuery qry = collabField.setBit(10, 20, timestamp.getTime());
+        PqlQuery qry = collabField.set(10, 20, timestamp.getTime());
         assertEquals(
-                "SetBit(row=10, field='collaboration', col=20, timestamp='2017-04-24T12:14')",
+                "Set(20,collaboration=10,2017-04-24T12:14)",
                 qry.serialize());
-        PqlQuery qry2 = collabField.setBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some", timestamp.getTime());
+        PqlQuery qry2 = collabField.set("myrow", "mycol", timestamp.getTime());
         assertEquals(
-                "SetBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='collaboration', col='some', timestamp='2017-04-24T12:14')",
+                "Set('mycol',collaboration='myrow',2017-04-24T12:14)",
                 qry2.serialize());
-        PqlQuery qry3 = sampleField.clearBit("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
-        assertEquals(
-                "ClearBit(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='sample-field', col='some_id')",
-                qry3.serialize());
-
     }
 
     @Test
-    public void clearBitTest() {
-        PqlQuery qry1 = sampleField.clearBit(5, 10);
+    public void clearTest() {
+        PqlQuery qry1 = collabField.clear(5, 10);
         assertEquals(
-                "ClearBit(row=5, field='sample-field', col=10)",
+                "Clear(10,collaboration=5)",
                 qry1.serialize());
 
-        PqlQuery qry2 = collabField.clearBit(10, 20);
+        PqlQuery qry2 = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
-                "ClearBit(row=10, field='collaboration', col=20)",
+                "Clear('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
                 qry2.serialize());
     }
 
@@ -177,17 +164,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
-                "Union(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
+                "Union(Row(sample-field=10),Row(sample-field=20))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.union(b1, b2, b3);
         assertEquals(
-                "Union(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'), Bitmap(row=42, field='sample-field'))",
+                "Union(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.union(b1, b4);
         assertEquals(
-                "Union(Bitmap(row=10, field='sample-field'), Bitmap(row=2, field='collaboration'))",
+                "Union(Row(sample-field=10),Row(collaboration=2))",
                 q3.serialize());
     }
 
@@ -200,7 +187,7 @@ public class OrmTest {
     @Test
     public void union1Test() {
         PqlRowQuery q = sampleIndex.union(sampleField.row(10));
-        assertEquals("Union(Bitmap(row=10, field='sample-field'))", q.serialize());
+        assertEquals("Union(Row(sample-field=10))", q.serialize());
     }
 
     @Test
@@ -212,17 +199,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
-                "Intersect(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
+                "Intersect(Row(sample-field=10),Row(sample-field=20))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.intersect(b1, b2, b3);
         assertEquals(
-                "Intersect(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'), Bitmap(row=42, field='sample-field'))",
+                "Intersect(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.intersect(b1, b4);
         assertEquals(
-                "Intersect(Bitmap(row=10, field='sample-field'), Bitmap(row=2, field='collaboration'))",
+                "Intersect(Row(sample-field=10),Row(collaboration=2))",
                 q3.serialize());
     }
 
@@ -235,17 +222,17 @@ public class OrmTest {
 
         PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
-                "Difference(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
+                "Difference(Row(sample-field=10),Row(sample-field=20))",
                 q1.serialize());
 
         PqlBaseQuery q2 = sampleIndex.difference(b1, b2, b3);
         assertEquals(
-                "Difference(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'), Bitmap(row=42, field='sample-field'))",
+                "Difference(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleIndex.difference(b1, b4);
         assertEquals(
-                "Difference(Bitmap(row=10, field='sample-field'), Bitmap(row=2, field='collaboration'))",
+                "Difference(Row(sample-field=10),Row(collaboration=2))",
                 q3.serialize());
     }
 
@@ -255,7 +242,7 @@ public class OrmTest {
         PqlRowQuery b2 = sampleField.row(20);
         PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
         assertEquals(
-                "Xor(Bitmap(row=10, field='sample-field'), Bitmap(row=20, field='sample-field'))",
+                "Xor(Row(sample-field=10),Row(sample-field=20))",
                 q1.serialize());
     }
 
@@ -264,30 +251,30 @@ public class OrmTest {
         PqlRowQuery b = collabField.row(42);
         PqlQuery q = projectIndex.count(b);
         assertEquals(
-                "Count(Bitmap(row=42, field='collaboration'))",
+                "Count(Row(collaboration=42))",
                 q.serialize());
     }
 
     @Test
     public void topNTest() {
-        PqlQuery q1 = sampleField.topN(27);
+        PqlQuery q1 = collabField.topN(27);
         assertEquals(
-                "TopN(field='sample-field', n=27)",
+                "TopN(collaboration,n=27)",
                 q1.serialize());
 
-        PqlQuery q2 = sampleField.topN(10, collabField.row(3));
+        PqlQuery q2 = collabField.topN(10, collabField.row(3));
         assertEquals(
-                "TopN(Bitmap(row=3, field='collaboration'), field='sample-field', n=10)",
+                "TopN(collaboration,Row(collaboration=3),n=10)",
                 q2.serialize());
 
         PqlBaseQuery q3 = sampleField.topN(12, collabField.row(7), "category", 80, 81);
         assertEquals(
-                "TopN(Bitmap(row=7, field='collaboration'), field='sample-field', n=12, field='category', filters=[80,81])",
+                "TopN(sample-field,Row(collaboration=7),n=12,field='category',filters=[80,81])",
                 q3.serialize());
 
-        PqlBaseQuery q4 = sampleField.topN(5, null);
+        PqlBaseQuery q4 = sampleField.topN(12, null, "category", 80, 81);
         assertEquals(
-                "TopN(field='sample-field', n=5)",
+                "TopN(sample-field,n=12,field='category',filters=[80,81])",
                 q4.serialize());
     }
 
@@ -305,11 +292,11 @@ public class OrmTest {
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
         PqlBaseQuery q = collabField.range(10, start.getTime(), end.getTime());
         assertEquals(
-                "Range(row=10, field='collaboration', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(collaboration=10,1970-01-01T00:00,2000-02-02T03:04)",
                 q.serialize());
-        q = sampleField.range("b7feb014-8ea7-49a8-9cd8-19709161ab63", start.getTime(), end.getTime());
+        q = collabField.range("foo", start.getTime(), end.getTime());
         assertEquals(
-                "Range(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='sample-field', start='1970-01-01T00:00', end='2000-02-02T03:04')",
+                "Range(collaboration='foo',1970-01-01T00:00,2000-02-02T03:04)",
                 q.serialize());
     }
 
@@ -320,11 +307,11 @@ public class OrmTest {
         attrsMap.put("active", true);
         PqlQuery q = collabField.setRowAttrs(5, attrsMap);
         assertEquals(
-                "SetRowAttrs(row=5, field='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs(collaboration,5,active=true,quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
-        q = collabField.setRowAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
+        q = collabField.setRowAttrs("foo", attrsMap);
         assertEquals(
-                "SetRowAttrs(row='b7feb014-8ea7-49a8-9cd8-19709161ab63', field='collaboration', active=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetRowAttrs('collaboration','foo',active=true,quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -343,11 +330,11 @@ public class OrmTest {
         attrsMap.put("happy", true);
         PqlQuery q = projectIndex.setColumnAttrs(5, attrsMap);
         assertEquals(
-                "SetColumnAttrs(col=5, happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs(5,happy=true,quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
         q = projectIndex.setColumnAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
-                "SetColumnAttrs(col='b7feb014-8ea7-49a8-9cd8-19709161ab63', happy=true, quote=\"\\\"Don't worry, be happy\\\"\")",
+                "SetColumnAttrs('b7feb014-8ea7-49a8-9cd8-19709161ab63',happy=true,quote=\"\\\"Don't worry, be happy\\\"\")",
                 q.serialize());
     }
 
@@ -431,7 +418,7 @@ public class OrmTest {
     public void fieldSumTest() {
         PqlQuery q = collabField.sum(collabField.row(10));
         assertEquals(
-                "Sum(Bitmap(row=10, field='collaboration'), field='collaboration')",
+                "Sum(Row(collaboration=10),field='collaboration')",
                 q.serialize());
         q = collabField.sum();
         assertEquals(

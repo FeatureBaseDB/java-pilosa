@@ -603,7 +603,7 @@ public class PilosaClient implements AutoCloseable {
             }
         }
 
-        String path = String.format("/fragment/nodes?index=%s&slice=%d", indexName, slice);
+        String path = String.format("/fragment/nodes?index=%s&shard=%d", indexName, slice);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE);

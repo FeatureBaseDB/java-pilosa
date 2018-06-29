@@ -178,7 +178,7 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             Field field = this.index.field("query-test");
             client.ensureField(field);
-            QueryResponse response = client.query(field.setBit(555, 10));
+            QueryResponse response = client.query(field.set(555, 10));
             assertNotNull(response.getResult());
         }
     }
@@ -188,7 +188,7 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             Field field = this.index.field("query-test");
             client.ensureField(field);
-            client.query(field.setBit(100, 1000));
+            client.query(field.set(100, 1000));
             Map<String, Object> columnAttrs = new HashMap<>(1);
             columnAttrs.put("name", "bombo");
             client.query(this.index.setColumnAttrs(1000, columnAttrs));
@@ -213,7 +213,7 @@ public class PilosaClientIT {
             try {
                 client.createIndex(dbname);
                 client.createField(field);
-                client.query(field.setBit(1, 2));
+                client.query(field.set(1, 2));
             } finally {
                 client.deleteIndex(dbname);
             }
@@ -223,14 +223,14 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failedConnectionTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
-            client.query(this.field.setBit(15, 10));
+            client.query(this.field.set(15, 10));
         }
     }
 
     @Test(expected = PilosaException.class)
     public void unknownSchemeTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("notknown://:15555")) {
-            client.query(this.field.setBit(15, 10));
+            client.query(this.field.set(15, 10));
         }
     }
 
@@ -247,9 +247,9 @@ public class PilosaClientIT {
             Field countField = this.index.field("count-test");
             client.ensureField(countField);
             PqlBatchQuery qry = this.index.batchQuery();
-            qry.add(countField.setBit(10, 20));
-            qry.add(countField.setBit(10, 21));
-            qry.add(countField.setBit(15, 25));
+            qry.add(countField.set(10, 20));
+            qry.add(countField.set(10, 21));
+            qry.add(countField.set(15, 25));
             client.query(qry);
             QueryResponse response = client.query(this.index.count(countField.row(10)));
             assertEquals(2, response.getResult().getCount());
@@ -259,7 +259,7 @@ public class PilosaClientIT {
     @Test
     public void newOrmTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.field.setBit(10, 20));
+            client.query(this.field.set(10, 20));
             QueryResponse response1 = client.query(this.field.row(10));
             assertEquals(0, response1.getColumns().size());
             RowResult row1 = response1.getResult().getRow();
@@ -294,7 +294,7 @@ public class PilosaClientIT {
             assertEquals("Mr. Pi", row.getAttributes().get("name"));
 
             Field topnField = this.index.field("topn_test");
-            client.query(topnField.setBit(155, 551));
+            client.query(topnField.set(155, 551));
             QueryResponse response4 = client.query(topnField.topN(1));
             List<CountResultItem> items = response4.getResult().getCountItems();
             assertEquals(1, items.size());
@@ -310,11 +310,11 @@ public class PilosaClientIT {
             client.ensureField(this.field);
             Field field = this.index.field("topn_test");
             client.query(this.index.batchQuery(
-                    field.setBit(10, 5),
-                    field.setBit(10, 10),
-                    field.setBit(10, 15),
-                    field.setBit(20, 5),
-                    field.setBit(30, 5)
+                    field.set(10, 5),
+                    field.set(10, 10),
+                    field.set(10, 15),
+                    field.set(20, 5),
+                    field.set(30, 5)
             ));
             // The following is required to make this test pass. See: https://github.com/pilosa/pilosa/issues/625
             client.httpRequest("POST", "/recalculate-caches");
@@ -376,7 +376,7 @@ public class PilosaClientIT {
                 final Field field = index.field("field");
                 client.ensureField(field);
                 client.ensureField(field); // shouldn't throw an exception
-                client.query(field.setBit(1, 10));
+                client.query(field.set(1, 10));
             } finally {
                 client.deleteIndex(index);
             }
@@ -638,8 +638,8 @@ public class PilosaClientIT {
             Field field = this.index.field("rangefield", options);
             client.ensureField(field);
             client.query(this.index.batchQuery(
-                    field.setBit(1, 10),
-                    field.setBit(1, 100),
+                    field.set(1, 10),
+                    field.set(1, 100),
                     field.setValue(10, 11),
                     field.setValue(100, 15)
             ));
@@ -675,7 +675,7 @@ public class PilosaClientIT {
             Map<String, Object> attrs = new HashMap<>(1);
             attrs.put("foo", "bar");
             client.query(colIndex.batchQuery(
-                    field.setBit(1, 100),
+                    field.set(1, 100),
                     field.setRowAttrs(1, attrs)
             ));
 
@@ -713,9 +713,9 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             final long sliceWidth = 1048576L;
             client.query(colIndex.batchQuery(
-                    field.setBit(1, 100),
-                    field.setBit(1, sliceWidth),
-                    field.setBit(1, sliceWidth * 3)
+                    field.set(1, 100),
+                    field.set(1, sliceWidth),
+                    field.set(1, sliceWidth * 3)
             ));
 
             QueryOptions options = QueryOptions.builder()
@@ -769,7 +769,7 @@ public class PilosaClientIT {
         HttpServer server = runContentSizeLyingHttpServer("/404");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.query(this.field.setBit(15, 10));
+                client.query(this.field.set(15, 10));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -798,7 +798,7 @@ public class PilosaClientIT {
         HttpServer server = runContent0HttpServer(path, 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.query(this.field.setBit(15, 10));
+                client.query(this.field.set(15, 10));
             } finally {
                 if (server != null) {
                     server.stop(0);

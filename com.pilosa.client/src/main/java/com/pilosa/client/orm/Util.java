@@ -56,7 +56,7 @@ final class Util {
                 Validator.ensureValidLabel(item.getKey());
                 kvs.add(String.format("%s=%s", item.getKey(), mapper.writeValueAsString(item.getValue())));
             }
-            return StringUtils.join(kvs, ", ");
+            return StringUtils.join(kvs, ",");
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }

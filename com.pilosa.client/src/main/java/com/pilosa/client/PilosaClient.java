@@ -196,7 +196,7 @@ public class PilosaClient implements AutoCloseable {
         String path = String.format("/index/%s", index.getName());
         String body = "";
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, protobufHeaders, "Error while creating index");
+        clientExecute("POST", path, data, null, "Error while creating index");
     }
 
     /**
@@ -223,7 +223,7 @@ public class PilosaClient implements AutoCloseable {
         String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
         String body = field.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, protobufHeaders, "Error while creating field");
+        clientExecute("POST", path, data, null, "Error while creating field");
     }
 
     /**
@@ -549,7 +549,9 @@ public class PilosaClient implements AutoCloseable {
             default:
                 throw new IllegalArgumentException(String.format("%s is not a valid HTTP method", method));
         }
-        request.setHeaders(headers);
+        if (headers != null) {
+            request.setHeaders(headers);
+        }
         return request;
     }
 
@@ -601,7 +603,7 @@ public class PilosaClient implements AutoCloseable {
             }
         }
 
-        String path = String.format("/fragment/nodes?index=%s&slice=%d", indexName, slice);
+        String path = String.format("/fragment/nodes?index=%s&shard=%d", indexName, slice);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE);

@@ -252,7 +252,7 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(col=%d, %s)", id, attributesString));
+        return pqlQuery(String.format("SetColumnAttrs(%d,%s)", id, attributesString));
     }
 
     /**
@@ -274,8 +274,8 @@ public class Index {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setcolumnattrs">SetColumnAttrs Query</a>
      */
     public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
-        String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(col='%s', %s)",
+        String attributesString = Util.createAttributesString(mapper, attributes);
+        return pqlQuery(String.format("SetColumnAttrs('%s',%s)",
                 key, attributesString));
     }
 
@@ -327,7 +327,7 @@ public class Index {
         StringBuilder builder = new StringBuilder(rows.length - 1);
         builder.append(rows[0].serialize());
         for (int i = 1; i < rows.length; i++) {
-            builder.append(", ");
+            builder.append(",");
             builder.append(rows[i].serialize());
         }
         return pqlRowQuery(String.format("%s(%s)", name, builder.toString()));

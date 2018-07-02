@@ -36,19 +36,19 @@ package com.pilosa.client;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Bit {
-    public static final Bit DEFAULT = Bit.defaultBit();
+public class Column {
+    public static final Column DEFAULT = Column.defaultColumn();
 
-    public static Bit create(long rowID, long columnID) {
-        return Bit.create(rowID, columnID, 0);
+    public static Column create(long rowID, long columnID) {
+        return Column.create(rowID, columnID, 0);
     }
 
-    public static Bit create(long rowID, long columnID, long timestamp) {
-        Bit bit = new Bit();
-        bit.rowID = rowID;
-        bit.columnID = columnID;
-        bit.timestamp = timestamp;
-        return bit;
+    public static Column create(long rowID, long columnID, long timestamp) {
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnID = columnID;
+        column.timestamp = timestamp;
+        return column;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -66,8 +66,8 @@ public class Bit {
         return this.timestamp;
     }
 
-    public boolean isDefaultBit() {
-        return this.defaultBit;
+    public boolean isDefaultColumn() {
+        return this.defaultColumn;
     }
 
     @Override
@@ -76,20 +76,20 @@ public class Bit {
             return true;
         }
 
-        if (!(o instanceof Bit)) {
+        if (!(o instanceof Column)) {
             return false;
         }
 
-        Bit bit = (Bit) o;
-        return this.defaultBit == bit.defaultBit ||
-                this.rowID == bit.rowID &&
-                        this.columnID == bit.columnID &&
-                        this.timestamp == bit.timestamp;
+        Column column = (Column) o;
+        return this.defaultColumn == column.defaultColumn ||
+                this.rowID == column.rowID &&
+                        this.columnID == column.columnID &&
+                        this.timestamp == column.timestamp;
     }
 
     @Override
     public int hashCode() {
-        if (this.defaultBit) {
+        if (this.defaultColumn) {
             return new HashCodeBuilder(31, 47).append(true).toHashCode();
         }
         return new HashCodeBuilder(31, 47)
@@ -101,23 +101,23 @@ public class Bit {
 
     @Override
     public String toString() {
-        if (this.defaultBit) {
-            return "(default bit)";
+        if (this.defaultColumn) {
+            return "(default column)";
         }
         return String.format("%d:%d[%d]", this.rowID, this.columnID, this.timestamp);
     }
 
-    private Bit() {
+    private Column() {
     }
 
-    private static Bit defaultBit() {
-        Bit bit = new Bit();
-        bit.defaultBit = true;
-        return bit;
+    private static Column defaultColumn() {
+        Column column = new Column();
+        column.defaultColumn = true;
+        return column;
     }
 
     long rowID = 0;
     long columnID = 0;
     long timestamp = 0;
-    boolean defaultBit = false;
+    boolean defaultColumn = false;
 }

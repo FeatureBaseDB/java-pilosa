@@ -90,13 +90,13 @@ public class QueryOptions {
         }
 
         /**
-         * Restricts query to a subset of slices.
+         * Restricts query to a subset of shards.
          *
-         * @param slices set to a list of slices to restrict query to.
+         * @param shards set to a list of shards to restrict query to.
          * @return QueryOptions builder
          */
-        public Builder setSlices(Long... slices) {
-            this.slices = slices;
+        public Builder setShards(Long... shards) {
+            this.shards = shards;
             return this;
         }
 
@@ -106,13 +106,13 @@ public class QueryOptions {
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns, this.excludeColumns, this.excludeAttributes, this.slices);
+            return new QueryOptions(this.columns, this.excludeColumns, this.excludeAttributes, this.shards);
         }
 
         private boolean columns = false;
         private boolean excludeColumns;
         private boolean excludeAttributes;
-        private Long slices[] = {};
+        private Long shards[] = {};
     }
 
     /**
@@ -130,15 +130,15 @@ public class QueryOptions {
     }
 
     public boolean isExcludeColumns() {
-        return this.excludeBits;
+        return this.excludeColumns;
     }
 
     public boolean isExcludeAttributes() {
         return this.excludeAttributes;
     }
 
-    public Long[] getSlices() {
-        return this.slices;
+    public Long[] getShards() {
+        return this.shards;
     }
 
     /**
@@ -149,15 +149,15 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes, Long[] slices) {
+    private QueryOptions(boolean columns, boolean excludeColumns, boolean excludeAttributes, Long[] shards) {
         this.columns = columns;
-        this.excludeBits = excludeBits;
+        this.excludeColumns = excludeColumns;
         this.excludeAttributes = excludeAttributes;
-        this.slices = slices;
+        this.shards = shards;
     }
 
     private final boolean columns;
-    private final boolean excludeBits;
+    private final boolean excludeColumns;
     private final boolean excludeAttributes;
-    private final Long[] slices;
+    private final Long[] shards;
 }

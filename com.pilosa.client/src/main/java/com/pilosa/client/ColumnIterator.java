@@ -34,37 +34,7 @@
 
 package com.pilosa.client;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import java.util.Iterator;
 
-import static org.junit.Assert.*;
-
-@Category(UnitTest.class)
-public class BitTest {
-    @Test
-    public void hashCodeTest() {
-        Bit bit1 = Bit.create(1, 10, 65000);
-        Bit bit2 = Bit.create(1, 10, 65000);
-        assertEquals(bit1.hashCode(), bit2.hashCode());
-        assertNotEquals(bit1.hashCode(), Bit.DEFAULT.hashCode());
-    }
-
-    @Test
-    public void equalsSameObjectTest() {
-        Bit bit = Bit.create(5, 7, 100000);
-        assertTrue(bit.equals(bit));
-    }
-
-    @Test
-    public void notEqualTest() {
-        Bit bit = Bit.create(15, 2, 50000);
-        assertFalse(bit.equals(5));
-    }
-
-    @Test
-    public void toStringTest() {
-        Bit bit = Bit.create(15, 2, 50000);
-        assertEquals("15:2[50000]", bit.toString());
-        assertEquals("(default bit)", Bit.DEFAULT.toString());
-    }
+public interface ColumnIterator extends Iterator<Column> {
 }

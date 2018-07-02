@@ -179,7 +179,7 @@ public class PilosaClient implements AutoCloseable {
         request.setRetrieveColumnAttributes(options.isColumns());
         request.setExcludeRowAttributes(options.isExcludeAttributes());
         request.setExcludeColumns(options.isExcludeColumns());
-        request.setSlices(options.getSlices());
+        request.setShards(options.getShards());
         request.setQuery(query.serialize());
         return queryPath(request);
     }
@@ -270,7 +270,7 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
-    public void importField(Field field, BitIterator iterator) {
+    public void importField(Field field, ColumnIterator iterator) {
         importField(field, iterator, ImportOptions.builder().build(), null);
     }
 
@@ -287,7 +287,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importField(Field field, BitIterator iterator, ImportOptions options) {
+    public void importField(Field field, ColumnIterator iterator, ImportOptions options) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, null);
     }
@@ -306,7 +306,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importField(Field field, BitIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void importField(Field field, ColumnIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, statusQueue);
     }
@@ -578,19 +578,19 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    void importColumns(SliceColumns sliceColumns) {
-        String indexName = sliceColumns.getIndex().getName();
-        List<IFragmentNode> nodes = fetchFieldNodes(indexName, sliceColumns.getSlice());
+    void importColumns(ShardColumns shardColumns) {
+        String indexName = shardColumns.getIndex().getName();
+        List<IFragmentNode> nodes = fetchFieldNodes(indexName, shardColumns.getShard());
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
-            Internal.ImportRequest importRequest = sliceColumns.convertToImportRequest();
+            Internal.ImportRequest importRequest = shardColumns.convertToImportRequest();
             client.importNode(importRequest);
         }
     }
 
-    List<IFragmentNode> fetchFieldNodes(String indexName, long slice) {
-        String key = String.format("%s%d", indexName, slice);
+    List<IFragmentNode> fetchFieldNodes(String indexName, long shard) {
+        String key = String.format("%s%d", indexName, shard);
         List<IFragmentNode> nodes;
 
         if (this.fragmentNodeCache == null) {
@@ -603,7 +603,7 @@ public class PilosaClient implements AutoCloseable {
             }
         }
 
-        String path = String.format("/fragment/nodes?index=%s&shard=%d", indexName, slice);
+        String path = String.format("/fragment/nodes?index=%s&shard=%d", indexName, shard);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE);
@@ -678,7 +678,7 @@ class QueryRequest {
     private boolean retrieveColumnAttributes = false;
     private boolean excludeColumns = false;
     private boolean excludeRowAttributes = false;
-    private Long[] slices = {};
+    private Long[] shards = {};
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -718,8 +718,8 @@ class QueryRequest {
         this.excludeRowAttributes = excludeRowAttributes;
     }
 
-    public void setSlices(Long... slices) {
-        this.slices = slices;
+    public void setShards(Long... shards) {
+        this.shards = shards;
     }
 
     Internal.QueryRequest toProtobuf() {
@@ -728,7 +728,7 @@ class QueryRequest {
                 .setColumnAttrs(this.retrieveColumnAttributes)
                 .setExcludeColumns(this.excludeColumns)
                 .setExcludeRowAttrs(this.excludeRowAttributes)
-                .addAllSlices(Arrays.asList(this.slices))
+                .addAllShards(Arrays.asList(this.shards))
                 .build();
     }
 }
@@ -774,27 +774,27 @@ class FragmentNodeURI {
     private int port;
 }
 
-class BitComparator implements Comparator<Bit> {
+class BitComparator implements Comparator<Column> {
     @Override
-    public int compare(Bit bit, Bit other) {
+    public int compare(Column column, Column other) {
         // The maximum ingestion speed is accomplished by sorting columns by row ID and then column ID
-        int bitCmp = Long.signum(bit.rowID - other.rowID);
-        int prfCmp = Long.signum(bit.columnID - other.columnID);
+        int bitCmp = Long.signum(column.rowID - other.rowID);
+        int prfCmp = Long.signum(column.columnID - other.columnID);
         return (bitCmp == 0) ? prfCmp : bitCmp;
     }
 }
 
 class BitImportManager {
-    public void run(final PilosaClient client, final Field field, final BitIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        final long sliceWidth = this.options.getSliceWidth();
+    public void run(final PilosaClient client, final Field field, final ColumnIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+        final long shardWidth = this.options.getShardWidth();
         final int threadCount = this.options.getThreadCount();
         final int batchSize = this.options.getBatchSize();
-        List<BlockingQueue<Bit>> queues = new ArrayList<>(threadCount);
+        List<BlockingQueue<Column>> queues = new ArrayList<>(threadCount);
         List<Future> workers = new ArrayList<>(threadCount);
 
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            BlockingQueue<Bit> q = new LinkedBlockingDeque<>(batchSize);
+            BlockingQueue<Column> q = new LinkedBlockingDeque<>(batchSize);
             queues.add(q);
             Runnable worker = new BitImportWorker(client, field, q, statusQueue, this.options);
             workers.add(service.submit(worker));
@@ -803,14 +803,14 @@ class BitImportManager {
         try {
             // Push columns from the iterator
             while (iterator.hasNext()) {
-                Bit nextBit = iterator.next();
-                long slice = nextBit.columnID / sliceWidth;
-                queues.get((int) (slice % threadCount)).put(nextBit);
+                Column nextColumn = iterator.next();
+                long shard = nextColumn.columnID / shardWidth;
+                queues.get((int) (shard % threadCount)).put(nextColumn);
             }
 
             // Signal the threads to stop
-            for (BlockingQueue<Bit> q : queues) {
-                q.put(Bit.DEFAULT);
+            for (BlockingQueue<Column> q : queues) {
+                q.put(Column.DEFAULT);
             }
 
             // Prepare to terminate the executor
@@ -839,7 +839,7 @@ class BitImportManager {
 class BitImportWorker implements Runnable {
     BitImportWorker(final PilosaClient client,
                     final Field field,
-                    final BlockingQueue<Bit> queue,
+                    final BlockingQueue<Column> queue,
                     final BlockingQueue<ImportStatusUpdate> statusQueue,
                     final ImportOptions options) {
         this.client = client;
@@ -851,7 +851,7 @@ class BitImportWorker implements Runnable {
 
     @Override
     public void run() {
-        final long sliceWidth = this.options.getSliceWidth();
+        final long shardWidth = this.options.getShardWidth();
         final ImportOptions.Strategy strategy = this.options.getStrategy();
         final long timeout = this.options.getTimeoutMs();
         int batchCountDown = this.options.getBatchSize();
@@ -859,29 +859,29 @@ class BitImportWorker implements Runnable {
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                Bit bit = this.queue.take();
-                if (bit.isDefaultBit()) {
+                Column column = this.queue.take();
+                if (column.isDefaultColumn()) {
                     break;
                 }
-                long slice = bit.getColumnID() / sliceWidth;
-                SliceColumns sliceColumns = sliceGroup.get(slice);
-                if (sliceColumns == null) {
-                    sliceColumns = SliceColumns.create(this.field, slice);
-                    sliceGroup.put(slice, sliceColumns);
+                long shard = column.getColumnID() / shardWidth;
+                ShardColumns shardColumns = shardGroup.get(shard);
+                if (shardColumns == null) {
+                    shardColumns = ShardColumns.create(this.field, shard);
+                    shardGroup.put(shard, shardColumns);
                 }
-                sliceColumns.add(bit);
+                shardColumns.add(column);
                 batchCountDown -= 1;
                 if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
-                    for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
-                        sliceColumns = entry.getValue();
-                        if (sliceColumns.getColumns().size() > 0) {
+                    for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
+                        shardColumns = entry.getValue();
+                        if (shardColumns.getColumns().size() > 0) {
                             importColumns(entry.getValue());
                         }
                     }
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
-                    importColumns(sliceGroup.get(largestSlice()));
+                    importColumns(shardGroup.get(largestShard()));
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 }
@@ -890,9 +890,9 @@ class BitImportWorker implements Runnable {
             }
         }
         // The thread is shutting down, import remaining columns in the batch
-        for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
-            SliceColumns sliceColumns = entry.getValue();
-            if (sliceColumns.getColumns().size() > 0) {
+        for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
+            ShardColumns shardColumns = entry.getValue();
+            if (shardColumns.getColumns().size() > 0) {
                 try {
                     importColumns(entry.getValue());
                 } catch (InterruptedException e) {
@@ -902,36 +902,36 @@ class BitImportWorker implements Runnable {
         }
     }
 
-    private long largestSlice() {
+    private long largestShard() {
         long largestCount = 0;
-        long largestSlice = -1;
-        for (Map.Entry<Long, SliceColumns> entry : this.sliceGroup.entrySet()) {
-            SliceColumns sliceColumns = entry.getValue();
-            int sliceBitCount = sliceColumns.getColumns().size();
-            if (sliceBitCount > largestCount) {
-                largestCount = sliceBitCount;
-                largestSlice = entry.getKey();
+        long largestShard = -1;
+        for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
+            ShardColumns shardColumns = entry.getValue();
+            int shardBitCount = shardColumns.getColumns().size();
+            if (shardBitCount > largestCount) {
+                largestCount = shardBitCount;
+                largestShard = entry.getKey();
             }
         }
-        return largestSlice;
+        return largestShard;
     }
 
-    private void importColumns(SliceColumns sliceColumns) throws InterruptedException {
+    private void importColumns(ShardColumns shardColumns) throws InterruptedException {
         long tic = System.currentTimeMillis();
-        this.client.importColumns(sliceColumns);
+        this.client.importColumns(shardColumns);
         if (this.statusQueue != null) {
             long tac = System.currentTimeMillis();
             ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
-                    sliceColumns.getSlice(), sliceColumns.getColumns().size(), tac - tic);
+                    shardColumns.getShard(), shardColumns.getColumns().size(), tac - tic);
             this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
         }
-        sliceColumns.clear();
+        shardColumns.clear();
     }
 
     private final PilosaClient client;
     private final Field field;
-    private final BlockingQueue<Bit> queue;
+    private final BlockingQueue<Column> queue;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
-    private Map<Long, SliceColumns> sliceGroup = new HashMap<>();
+    private Map<Long, ShardColumns> shardGroup = new HashMap<>();
 }

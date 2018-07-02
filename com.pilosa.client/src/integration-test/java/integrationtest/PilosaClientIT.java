@@ -397,7 +397,7 @@ public class PilosaClientIT {
     @Test
     public void importTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             Field field = this.index.field("importfield");
             client.ensureField(field);
             client.importField(field, iterator);
@@ -420,7 +420,7 @@ public class PilosaClientIT {
     @Test
     public void importTestWithBatch() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             Field field = this.index.field("importfield");
             client.ensureField(field);
             ImportOptions options = ImportOptions.builder().
@@ -454,8 +454,8 @@ public class PilosaClientIT {
                 while (true) {
                     try {
                         ImportStatusUpdate statusUpdate = this.statusQueue.take();
-                        assertEquals(String.format("thread:%d imported:%d columns for slice:%d in:%d ms",
-                                statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getSlice(), statusUpdate.getTimeMs()),
+                        assertEquals(String.format("thread:%d imported:%d columns for shard:%d in:%d ms",
+                                statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getShard(), statusUpdate.getTimeMs()),
                                 statusUpdate.toString()); // for coverage
                     } catch (InterruptedException e) {
                         break;
@@ -480,7 +480,7 @@ public class PilosaClientIT {
             monitorThread.setDaemon(true);
             monitorThread.start();
 
-            BitIterator iterator = new XBitIterator(maxID, maxColumns);
+            ColumnIterator iterator = new XColumnIterator(maxID, maxColumns);
 
             Field field = this.index.field("importfield2");
             client.ensureField(field);
@@ -506,7 +506,7 @@ public class PilosaClientIT {
 
             @Override
             public void run() {
-                BitIterator iterator = new XBitIterator(1_000, 1_000);
+                ColumnIterator iterator = new XColumnIterator(1_000, 1_000);
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
@@ -549,7 +549,7 @@ public class PilosaClientIT {
 
             @Override
             public void run() {
-                BitIterator iterator = new XBitIterator(1_000, 1_500);
+                ColumnIterator iterator = new XColumnIterator(1_000, 1_500);
                 // There should be 10_000/3_000 == 3 batch status updates
                 // And another one for the remaining columns
                 // Block after the 3 so we have a chance to interrupt the worker thread
@@ -709,24 +709,24 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void slicesTest() throws IOException {
+    public void shardsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final long sliceWidth = 1048576L;
+            final long shardWidth = 1048576L;
             client.query(colIndex.batchQuery(
                     field.set(1, 100),
-                    field.set(1, sliceWidth),
-                    field.set(1, sliceWidth * 3)
+                    field.set(1, shardWidth),
+                    field.set(1, shardWidth * 3)
             ));
 
             QueryOptions options = QueryOptions.builder()
-                    .setSlices(0L, 3L)
+                    .setShards(0L, 3L)
                     .build();
             QueryResponse response = client.query(field.row(1), options);
 
             List<Long> columns = response.getResult().getRow().getColumns();
             assertEquals(2, columns.size());
             assertEquals(100, (long) columns.get(0));
-            assertEquals(sliceWidth * 3, (long) columns.get(1));
+            assertEquals(shardWidth * 3, (long) columns.get(1));
         }
     }
 
@@ -734,7 +734,7 @@ public class PilosaClientIT {
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             try {
                 client.importField(this.index.field("importfield"), iterator);
             } finally {
@@ -749,7 +749,7 @@ public class PilosaClientIT {
     public void importFail200Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             try {
                 client.importField(this.index.field("importfield"), iterator);
             } catch (PilosaException ex) {
@@ -811,7 +811,7 @@ public class PilosaClientIT {
     public void failFetchFieldNodesEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/fragment/nodes", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             try {
                 client.importField(this.index.field("importfield"), iterator);
             } finally {
@@ -879,7 +879,7 @@ public class PilosaClientIT {
         Cluster cluster = Cluster.withHost(URI.address(getBindAddress()));
         ClientOptions options = ClientOptions.builder().build();
         try (PilosaClient client = new InvalidPilosaClient(cluster, options)) {
-            StaticBitIterator iterator = new StaticBitIterator();
+            StaticColumnIterator iterator = new StaticColumnIterator();
             Field field = this.index.field("importfield");
             client.importField(field, iterator);
         }
@@ -1036,9 +1036,9 @@ public class PilosaClientIT {
         if (isLegacyModeOff()) {
             optionsBuilder.setLegacyMode(false);
         }
-        long sliceWidth = getSliceWidth();
-        if (sliceWidth > 0) {
-            optionsBuilder.setSliceWidth(sliceWidth);
+        long shardWidth = getShardWidth();
+        if (shardWidth > 0) {
+            optionsBuilder.setShardWidth(shardWidth);
         }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
     }
@@ -1056,21 +1056,21 @@ public class PilosaClientIT {
         return legacyModeOffStr != null && legacyModeOffStr.equals("true");
     }
 
-    private long getSliceWidth() {
-        String sliceWidthStr = System.getenv("SLICE_WIDTH");
-        return (sliceWidthStr == null) ? 0 : Long.parseLong(sliceWidthStr);
+    private long getShardWidth() {
+        String shardWidthStr = System.getenv("SHARD_WIDTH");
+        return (shardWidthStr == null) ? 0 : Long.parseLong(shardWidthStr);
     }
 }
 
-class StaticBitIterator implements BitIterator {
-    private List<Bit> columns;
+class StaticColumnIterator implements ColumnIterator {
+    private List<Column> columns;
     private int index = 0;
 
-    StaticBitIterator() {
+    StaticColumnIterator() {
         this.columns = new ArrayList<>(3);
-        this.columns.add(Bit.create(10, 5));
-        this.columns.add(Bit.create(2, 3));
-        this.columns.add(Bit.create(7, 1));
+        this.columns.add(Column.create(10, 5));
+        this.columns.add(Column.create(2, 3));
+        this.columns.add(Column.create(7, 1));
     }
 
     @Override
@@ -1079,7 +1079,7 @@ class StaticBitIterator implements BitIterator {
     }
 
     @Override
-    public Bit next() {
+    public Column next() {
         return this.columns.get(index++);
     }
 
@@ -1095,9 +1095,9 @@ class InvalidPilosaClient extends InsecurePilosaClientIT {
     }
 }
 
-class XBitIterator implements BitIterator {
+class XColumnIterator implements ColumnIterator {
 
-    XBitIterator(long maxID, long maxColumns) {
+    XColumnIterator(long maxID, long maxColumns) {
         this.maxID = maxID;
         this.maxColumns = maxColumns;
     }
@@ -1106,11 +1106,11 @@ class XBitIterator implements BitIterator {
         return this.maxColumns > 0;
     }
 
-    public Bit next() {
+    public Column next() {
         this.maxColumns -= 1;
         long rowID = (long) (Math.random() * this.maxID);
         long columnID = (long) (Math.random() * this.maxID);
-        return Bit.create(rowID, columnID);
+        return Column.create(rowID, columnID);
     }
 
     @Override

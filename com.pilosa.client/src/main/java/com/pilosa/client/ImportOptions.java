@@ -107,7 +107,7 @@ public class ImportOptions {
         return this.strategy;
     }
 
-    public long getSliceWidth() {
+    public long getShardWidth() {
         return 1048576L;
     }
 

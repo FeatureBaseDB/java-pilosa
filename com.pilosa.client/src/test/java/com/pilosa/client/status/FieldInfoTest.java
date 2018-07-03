@@ -32,9 +32,18 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.status;
 
-import java.util.Iterator;
+import com.pilosa.client.UnitTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public interface BitIterator extends Iterator<Bit> {
+@Category(UnitTest.class)
+public class FieldInfoTest {
+    @Test
+    public void testFieldMeta() {
+        FieldMeta meta = new FieldMeta();
+        // setCacheType ignores the validation error
+        meta.setCacheType("foo");
+    }
 }

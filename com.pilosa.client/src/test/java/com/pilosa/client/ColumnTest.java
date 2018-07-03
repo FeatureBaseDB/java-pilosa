@@ -40,31 +40,31 @@ import org.junit.experimental.categories.Category;
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class BitTest {
+public class ColumnTest {
     @Test
     public void hashCodeTest() {
-        Bit bit1 = Bit.create(1, 10, 65000);
-        Bit bit2 = Bit.create(1, 10, 65000);
-        assertEquals(bit1.hashCode(), bit2.hashCode());
-        assertNotEquals(bit1.hashCode(), Bit.DEFAULT.hashCode());
+        Column column1 = Column.create(1, 10, 65000);
+        Column column2 = Column.create(1, 10, 65000);
+        assertEquals(column1.hashCode(), column2.hashCode());
+        assertNotEquals(column1.hashCode(), Column.DEFAULT.hashCode());
     }
 
     @Test
     public void equalsSameObjectTest() {
-        Bit bit = Bit.create(5, 7, 100000);
-        assertTrue(bit.equals(bit));
+        Column column = Column.create(5, 7, 100000);
+        assertTrue(column.equals(column));
     }
 
     @Test
     public void notEqualTest() {
-        Bit bit = Bit.create(15, 2, 50000);
-        assertFalse(bit.equals(5));
+        Column column = Column.create(15, 2, 50000);
+        assertFalse(column.equals(5));
     }
 
     @Test
     public void toStringTest() {
-        Bit bit = Bit.create(15, 2, 50000);
-        assertEquals("15:2[50000]", bit.toString());
-        assertEquals("(default bit)", Bit.DEFAULT.toString());
+        Column column = Column.create(15, 2, 50000);
+        assertEquals("15:2[50000]", column.toString());
+        assertEquals("(default column)", Column.DEFAULT.toString());
     }
 }

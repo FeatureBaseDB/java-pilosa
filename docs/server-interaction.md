@@ -143,7 +143,7 @@ for (ColumnItem column : response.getColumns()) {
 * `getCountItems` method to retrieve column count per row ID entries returned from `TopN` queries,
 * `getCount` method to retrieve the number of rows per the given row ID returned from `Count` queries.
 * `getValue` method to retrieve the result of `Min`, `Max` or `Sum` queries.
-* `isChanged` method returns whether a `SetBit` or `ClearBit` query changed a bit.
+* `isChanged` method returns whether a `SetBit` or `ClearBit` query changed a column.
 
 ```java
 QueryResult result = response.getResult();

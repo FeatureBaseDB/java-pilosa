@@ -57,7 +57,6 @@ public class PilosaClientTest {
         }
     }
 
-    // Note that following tests need access to internal methods, that's why they are here.
     @Test(expected = PilosaException.class)
     public void fetchFieldNodesTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("non-existent-domain-555.com:19000")) {

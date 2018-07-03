@@ -34,37 +34,7 @@
 
 package com.pilosa.client;
 
-public class ImportStatusUpdate {
-    public long getThreadID() {
-        return this.threadID;
-    }
+import java.util.Iterator;
 
-    public long getShard() {
-        return this.shard;
-    }
-
-    public long getImportedCount() {
-        return this.importedCount;
-    }
-
-    public long getTimeMs() {
-        return this.timeMs;
-    }
-
-    public String toString() {
-        return String.format("thread:%d imported:%d columns for shard:%d in:%d ms",
-                this.threadID, this.importedCount, this.shard, this.timeMs);
-    }
-
-    ImportStatusUpdate(final long threadID, final long shard, final long importedCount, final long timeMs) {
-        this.threadID = threadID;
-        this.shard = shard;
-        this.importedCount = importedCount;
-        this.timeMs = timeMs;
-    }
-
-    private final long threadID;
-    private final long shard;
-    private final long importedCount;
-    private final long timeMs;
+public interface ColumnIterator extends Iterator<Column> {
 }

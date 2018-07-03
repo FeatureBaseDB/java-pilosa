@@ -42,63 +42,63 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-class SliceColumns {
-    public static SliceColumns create(final Field field, final long slice) {
-        return new SliceColumns(field, slice);
+class ShardColumns {
+    public static ShardColumns create(final Field field, final long shard) {
+        return new ShardColumns(field, shard);
     }
 
     public Index getIndex() {
         return this.field.getIndex();
     }
 
-    public long getSlice() {
-        return this.slice;
+    public long getShard() {
+        return this.shard;
     }
 
-    public List<Bit> getColumns() {
+    public List<Column> getColumns() {
         if (!this.sorted) {
-            Collections.sort(bits, bitComparator);
+            Collections.sort(columns, shardComparator);
             this.sorted = true;
         }
-        return this.bits;
+        return this.columns;
     }
 
-    public void add(Bit bit) {
-        this.bits.add(bit);
+    public void add(Column column) {
+        this.columns.add(column);
     }
 
     public void clear() {
-        this.bits.clear();
+        this.columns.clear();
     }
 
     Internal.ImportRequest convertToImportRequest() {
-        List<Long> rowIDs = new ArrayList<>(bits.size());
-        List<Long> columnIDs = new ArrayList<>(bits.size());
-        List<Long> timestamps = new ArrayList<>(bits.size());
-        for (Bit bit : bits) {
-            rowIDs.add(bit.getRowID());
-            columnIDs.add(bit.getColumnID());
-            timestamps.add(bit.getTimestamp());
+        List<Long> rowIDs = new ArrayList<>(columns.size());
+        List<Long> columnIDs = new ArrayList<>(columns.size());
+        List<Long> timestamps = new ArrayList<>(columns.size());
+        for (Column column : columns) {
+            rowIDs.add(column.getRowID());
+            columnIDs.add(column.getColumnID());
+            timestamps.add(column.getTimestamp());
         }
         return Internal.ImportRequest.newBuilder()
                 .setIndex(this.field.getIndex().getName())
                 .setField(this.field.getName())
-                .setSlice(slice)
+                .setShard(shard)
                 .addAllRowIDs(rowIDs)
                 .addAllColumnIDs(columnIDs)
                 .addAllTimestamps(timestamps)
                 .build();
     }
 
-    SliceColumns(final Field field, final long slice) {
+    ShardColumns(final Field field, final long shard) {
         this.field = field;
-        this.slice = slice;
-        this.bits = new ArrayList<>();
+        this.shard = shard;
+        this.columns = new ArrayList<>();
     }
 
-    private static Comparator<Bit> bitComparator = new BitComparator();
+    private static Comparator<Column> shardComparator = new BitComparator();
     private final Field field;
-    private final long slice;
-    private List<Bit> bits;
+    private final long shard;
+    private List<Column> columns;
     private boolean sorted = false;
 }

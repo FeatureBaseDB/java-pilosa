@@ -34,8 +34,8 @@
 
 package integrationtest;
 
-import com.pilosa.client.Bit;
-import com.pilosa.client.CsvFileBitIterator;
+import com.pilosa.client.Column;
+import com.pilosa.client.CsvFileColumnIterator;
 import com.pilosa.client.IntegrationTest;
 import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
@@ -51,7 +51,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
-public class CsvFileBitIteratorIT {
+public class CsvFileColumnIteratorIT {
     @Test
     public void readFromCsvTest() throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -59,14 +59,14 @@ public class CsvFileBitIteratorIT {
         if (uri == null) {
             fail("sample1.csv not found");
         }
-        CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath());
-        List<Bit> bits = new ArrayList<>(3);
+        CsvFileColumnIterator iterator = CsvFileColumnIterator.fromPath(uri.getPath());
+        List<Column> columns = new ArrayList<>(3);
         while (iterator.hasNext()) {
-            bits.add(iterator.next());
+            columns.add(iterator.next());
         }
-        List<Bit> target = getTargetRows();
-        assertEquals(3, bits.size());
-        assertEquals(target, bits);
+        List<Column> target = getTargetRows();
+        assertEquals(3, columns.size());
+        assertEquals(target, columns);
 
         // to get %100 test coverage
         assertFalse(iterator.hasNext());
@@ -80,15 +80,15 @@ public class CsvFileBitIteratorIT {
         if (uri == null) {
             fail("sample2.csv not found");
         }
-        SimpleDateFormat timestampFormat = CsvFileBitIterator.getDefaultTimestampFormat();
-        CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
-        List<Bit> bits = new ArrayList<>(3);
+        SimpleDateFormat timestampFormat = CsvFileColumnIterator.getDefaultTimestampFormat();
+        CsvFileColumnIterator iterator = CsvFileColumnIterator.fromPath(uri.getPath(), timestampFormat);
+        List<Column> columns = new ArrayList<>(3);
         while (iterator.hasNext()) {
-            bits.add(iterator.next());
+            columns.add(iterator.next());
         }
-        List<Bit> target = getTargetRows();
-        assertEquals(3, bits.size());
-        assertEquals(target, bits);
+        List<Column> target = getTargetRows();
+        assertEquals(3, columns.size());
+        assertEquals(target, columns);
     }
 
     @Test(expected = PilosaException.class)
@@ -100,21 +100,21 @@ public class CsvFileBitIteratorIT {
         }
         // timestamp format that doesn't match sample2.csv
         SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'TX'hh:mm");
-        CsvFileBitIterator iterator = CsvFileBitIterator.fromPath(uri.getPath(), timestampFormat);
-        List<Bit> bits = new ArrayList<>(3);
+        CsvFileColumnIterator iterator = CsvFileColumnIterator.fromPath(uri.getPath(), timestampFormat);
+        List<Column> columns = new ArrayList<>(3);
         while (iterator.hasNext()) {
-            bits.add(iterator.next());
+            columns.add(iterator.next());
         }
     }
 
-    private List<Bit> getTargetRows() {
+    private List<Column> getTargetRows() {
         List<List<Long>> targetValues = Arrays.asList(
                 Arrays.asList(1L, 10L, 683804000L),
                 Arrays.asList(5L, 20L, 683804100L),
                 Arrays.asList(3L, 41L, 683804185L));
-        List<Bit> target = new ArrayList<>(3);
+        List<Column> target = new ArrayList<>(3);
         for (List<Long> item : targetValues) {
-            target.add(Bit.create(item.get(0), item.get(1), item.get(2)));
+            target.add(Column.create(item.get(0), item.get(1), item.get(2)));
         }
         return target;
     }

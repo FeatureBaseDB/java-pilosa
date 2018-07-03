@@ -107,8 +107,8 @@ public class ImportOptions {
         return this.strategy;
     }
 
-    public long getSliceWidth() {
-        return 1048576L;
+    public long getShardWidth() {
+        return ClientOptions.DEFAULT_SHARD_WIDTH;
     }
 
     final private int threadCount;

@@ -14,7 +14,7 @@ Optionally, a timestamp can be added. Note that Pilosa is not time zone aware:
 ROW_ID,COLUMN_ID,TIMESTAMP
 ```
 
-Note that each line corresponds to a single bit and ends with a new line (`\n` or `\r\n`).
+Note that each line corresponds to a single column and ends with a new line (`\n` or `\r\n`).
 
 ```java
 String data = "1,10,683793200\n" +

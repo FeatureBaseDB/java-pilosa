@@ -603,7 +603,7 @@ public class PilosaClient implements AutoCloseable {
             }
         }
 
-        String path = String.format("/fragment/nodes?index=%s&shard=%d", indexName, shard);
+        String path = String.format("/internal/fragment/nodes?index=%s&shard=%d", indexName, shard);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE);
@@ -625,7 +625,8 @@ public class PilosaClient implements AutoCloseable {
 
     void importNode(Internal.ImportRequest importRequest) {
         ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
-        clientExecute("POST", "/import", body, protobufHeaders, "Error while importing");
+        String path = String.format("/index/%s/field/%s/import", importRequest.getIndex(), importRequest.getField());
+        clientExecute("POST", path, body, protobufHeaders, "Error while importing");
     }
 
     private String readStream(InputStream stream) throws IOException {

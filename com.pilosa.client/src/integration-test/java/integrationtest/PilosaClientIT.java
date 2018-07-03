@@ -89,6 +89,8 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             client.deleteIndex(this.index);
             client.deleteIndex(this.colIndex);
+        } catch (PilosaException ex) {
+            // pass
         }
     }
 
@@ -747,7 +749,7 @@ public class PilosaClientIT {
 
     @Test
     public void importFail200Test() throws IOException {
-        HttpServer server = runContentSizeLyingHttpServer("/fragment/nodes");
+        HttpServer server = runContentSizeLyingHttpServer("/internal/fragment/nodes");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticColumnIterator iterator = new StaticColumnIterator();
             try {
@@ -809,7 +811,7 @@ public class PilosaClientIT {
 
     @Test(expected = PilosaException.class)
     public void failFetchFieldNodesEmptyResponseTest() throws IOException {
-        HttpServer server = runContent0HttpServer("/fragment/nodes", 204);
+        HttpServer server = runContent0HttpServer("/internal/fragment/nodes", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             StaticColumnIterator iterator = new StaticColumnIterator();
             try {
@@ -910,7 +912,7 @@ public class PilosaClientIT {
         final int port = 15999;
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext("/fragment/nodes", new FragmentNodesHandler());
+            server.createContext("/internal/fragment/nodes", new FragmentNodesHandler());
             server.setExecutor(null);
             server.start();
             return server;

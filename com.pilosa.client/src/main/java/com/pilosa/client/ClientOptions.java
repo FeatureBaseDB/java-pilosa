@@ -161,8 +161,10 @@ public final class ClientOptions {
         private boolean skipVersionCheck = false;
         private boolean legacyMode = false;
         private int importThreadCount = Runtime.getRuntime().availableProcessors();
-        private long shardWidth = 1048576L;
+        private long shardWidth = DEFAULT_SHARD_WIDTH;
     }
+
+    public static final long DEFAULT_SHARD_WIDTH = 1048576L;
 
     /**
      * Creates a ClientOptions.Builder object.

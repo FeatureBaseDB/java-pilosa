@@ -108,7 +108,7 @@ public class ImportOptions {
     }
 
     public long getShardWidth() {
-        return 1048576L;
+        return ClientOptions.DEFAULT_SHARD_WIDTH;
     }
 
     final private int threadCount;

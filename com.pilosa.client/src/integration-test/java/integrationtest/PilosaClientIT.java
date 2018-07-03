@@ -711,7 +711,7 @@ public class PilosaClientIT {
     @Test
     public void shardsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final long shardWidth = 1048576L;
+            final long shardWidth = ClientOptions.DEFAULT_SHARD_WIDTH;
             client.query(colIndex.batchQuery(
                     field.set(1, 100),
                     field.set(1, shardWidth),

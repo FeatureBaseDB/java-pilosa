@@ -431,7 +431,7 @@ public class OrmTest {
     public void fieldSetValueTest() {
         PqlQuery q = collabField.setValue(10, 20);
         assertEquals(
-                "SetValue(col=10, collaboration=20)",
+                "Set(10, collaboration=20)",
                 q.serialize());
     }
 }

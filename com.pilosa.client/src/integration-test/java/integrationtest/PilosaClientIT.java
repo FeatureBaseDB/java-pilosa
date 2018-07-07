@@ -639,13 +639,15 @@ public class PilosaClientIT {
                     .build();
             Field field = this.index.field("rangefield", options);
             client.ensureField(field);
+            Field field2 = this.index.field("rangefield-test");
+            client.ensureField(field2);
             client.query(this.index.batchQuery(
-                    field.set(1, 10),
-                    field.set(1, 100),
+                    field2.set(1, 10),
+                    field2.set(1, 100),
                     field.setValue(10, 11),
                     field.setValue(100, 15)
             ));
-            QueryResponse response = client.query(field.sum(field.row(1)));
+            QueryResponse response = client.query(field.sum(field2.row(1)));
             assertEquals(26, response.getResult().getValue());
             assertEquals(2, response.getResult().getCount());
 
@@ -653,7 +655,7 @@ public class PilosaClientIT {
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(field.min(field.row(1)));
+            response = client.query(field.min(field2.row(1)));
             assertEquals(11, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
@@ -661,7 +663,7 @@ public class PilosaClientIT {
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 
-            response = client.query(field.max(field.row(1)));
+            response = client.query(field.max(field2.row(1)));
             assertEquals(15, response.getResult().getValue());
             assertEquals(1, response.getResult().getCount());
 

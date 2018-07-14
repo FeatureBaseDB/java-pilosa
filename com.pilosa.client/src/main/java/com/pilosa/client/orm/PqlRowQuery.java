@@ -34,55 +34,13 @@
 
 package com.pilosa.client.orm;
 
-import com.pilosa.client.TimeQuantum;
-import com.pilosa.client.UnitTest;
-import com.pilosa.client.exceptions.ValidationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-@Category(UnitTest.class)
-public class FrameTest {
-
-    @Before
-    public void setUp() {
-        Schema schema = Schema.defaultSchema();
-        this.index = schema.index("test-index");
+@SuppressWarnings("WeakerAccess")
+public class PqlRowQuery extends PqlBaseQuery {
+    PqlRowQuery(String pql) {
+        super(pql);
     }
 
-    @Test(expected = ValidationException.class)
-    public void checkValidatorWasCalledTest() {
-        Frame frame = this.index.frame("a:b");
+    PqlRowQuery(String pql, Index index) {
+        super(pql, index);
     }
-
-    @Test
-    public void testEqualsFailsWithOtherObject() {
-        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = this.index.frame("foo").equals("foo");
-        assertFalse(e);
-    }
-
-    @Test
-    public void testEqualsSameObject() {
-        Frame frame = this.index.frame("some-frame");
-        assertEquals(frame, frame);
-    }
-
-    @Test
-    public void testHashCode() {
-        FrameOptions options1 = FrameOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .build();
-        FrameOptions options2 = FrameOptions.builder()
-                .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
-                .build();
-        Frame frame1 = this.index.frame("frame1", options1);
-        Frame frame2 = this.index.frame("frame2", options2);
-        assertEquals(frame1.hashCode(), frame2.hashCode());
-    }
-
-    private Index index;
 }

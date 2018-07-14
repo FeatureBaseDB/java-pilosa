@@ -36,5 +36,5 @@ package com.pilosa.client;
 
 import java.util.Iterator;
 
-public interface BitIterator extends Iterator<Bit> {
+public interface ColumnIterator extends Iterator<Column> {
 }

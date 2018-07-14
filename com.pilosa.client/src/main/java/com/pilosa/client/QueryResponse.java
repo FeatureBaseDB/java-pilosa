@@ -85,7 +85,7 @@ public final class QueryResponse {
     /**
      * Returns the list of columns.
      * <p>
-     * The response contains the columns if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
+     * The response contains the columns if {@link QueryOptions.Builder#setColumnAttributes(boolean)} was set to <code>true</code>.
      *
      * @return list of columns or <code>null</code> if the response did not have its columns field set.
      */
@@ -96,7 +96,7 @@ public final class QueryResponse {
     /**
      * Returns the first column in the response.
      * <p>
-     * The response contains the columns if {@link QueryOptions.Builder#setColumns(boolean)} was set to <code>true</code>.
+     * The response contains the columns if {@link QueryOptions.Builder#setColumnAttributes(boolean)} was set to <code>true</code>.
      *
      * @return the first column or <code>null</code> if the response did not have its columns field set.
      */
@@ -132,8 +132,8 @@ public final class QueryResponse {
         for (Internal.QueryResult q : response.getResultsList()) {
             int type = q.getType();
             switch (type) {
-                case QueryResultType.BITMAP:
-                    results.add(BitmapResult.fromInternal(q));
+                case QueryResultType.ROW:
+                    results.add(RowResult.fromInternal(q));
                     break;
                 case QueryResultType.BOOL:
                     results.add(BoolResult.fromInternal(q));

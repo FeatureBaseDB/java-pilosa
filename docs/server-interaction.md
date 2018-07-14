@@ -74,21 +74,21 @@ ClientOptions options = ClientOptions.builder()
 PilosaClient client = PilosaClient.withCluster(cluster, options);
 ```
 
-Once you create a client, you can create indexes, frames and start sending queries.
+Once you create a client, you can create indexes, fields and start sending queries.
 
-Here is how you would create a index and frame:
+Here is how you would create a index and field:
 
 ```java
 Schema schema = client.readSchema();
 Index index = schema.index("index");
-Frame frame = index.frame("frame");
+Field field = index.field("field");
 client.syncSchema(schema);
 ```
 
 You can send queries to a Pilosa server using the `query` method of client objects:
 
 ```java
-QueryResponse response = client.query(frame.bitmap(5));
+QueryResponse response = client.query(field.row(5));
 ```
 
 `query` method accepts an optional argument of type `QueryOptions`:
@@ -98,7 +98,7 @@ QueryOptions options = QueryOptions.builder()
     .setColumns(true)  // return column data in the response
     .build();
 
-QueryResponse response = client.query(frame.bitmap(5), options);
+QueryResponse response = client.query(field.row(5), options);
 ```
 
 ## Server Response
@@ -108,7 +108,7 @@ When a query is sent to a Pilosa server, the server either fulfills the query or
 A `QueryResponse` object may contain zero or more results of `QueryResult` type. You can access all results using the `getResults` method of `QueryResponse` (which returns a list of `QueryResult` objects),or you can use the `getResult` method (which returns either the first result or `null` if there are no results):
 
 ```java
-QueryResponse response = client.query(frame.bitmap(5));
+QueryResponse response = client.query(field.row(5));
 
 // check that there's a result and act on it
 QueryResult result = response.getResult();
@@ -139,17 +139,17 @@ for (ColumnItem column : response.getColumns()) {
 
 `QueryResult` objects contain:
 
-* `getBitmap` method to retrieve a bitmap result,
+* `getRow` method to retrieve a row result,
 * `getCountItems` method to retrieve column count per row ID entries returned from `TopN` queries,
 * `getCount` method to retrieve the number of rows per the given row ID returned from `Count` queries.
 * `getValue` method to retrieve the result of `Min`, `Max` or `Sum` queries.
-* `isChanged` method returns whether a `SetBit` or `ClearBit` query changed a bit.
+* `isChanged` method returns whether a `SetBit` or `ClearBit` query changed a column.
 
 ```java
 QueryResult result = response.getResult();
-BitmapResult bitmap = result.getBitmap();
-List<Long> bits = bitmap.getBits();
-Map<String, Object> attributes = bitmap.getAttributes();
+RowResult row = result.getRow();
+List<Long> columns = row.getColumns();
+Map<String, Object> attributes = row.getAttributes();
 
 List<CountResultItem> countItems = result.getCountItems();
 

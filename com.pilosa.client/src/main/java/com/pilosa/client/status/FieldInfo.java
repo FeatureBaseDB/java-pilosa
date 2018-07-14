@@ -36,11 +36,13 @@ package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pilosa.client.TimeQuantum;
+import com.pilosa.client.exceptions.ValidationException;
 import com.pilosa.client.orm.CacheType;
-import com.pilosa.client.orm.FrameOptions;
+import com.pilosa.client.orm.FieldOptions;
+import com.pilosa.client.orm.FieldType;
 
-public class FrameInfo implements IFrameInfo {
-    public FrameOptions getOptions() {
+public class FieldInfo implements IFieldInfo {
+    public FieldOptions getOptions() {
         return this.meta.getOptions();
     }
 
@@ -54,22 +56,28 @@ public class FrameInfo implements IFrameInfo {
     }
 
     @JsonProperty("options")
-    void setMeta(FrameMeta meta) {
+    void setMeta(FieldMeta meta) {
         this.meta = meta;
     }
 
     private String name;
-    private FrameMeta meta = new FrameMeta();
+    private FieldMeta meta = new FieldMeta();
 }
 
-final class FrameMeta {
-    FrameOptions getOptions() {
-        return FrameOptions.builder()
-                .setInverseEnabled(this.inverseEnabled)
-                .setTimeQuantum(this.timeQuantum)
-                .setCacheType(this.cacheType)
-                .setCacheSize(this.cacheSize)
-                .build();
+final class FieldMeta {
+    FieldOptions getOptions() {
+        FieldOptions.Builder builder = FieldOptions.builder();
+        switch (this.fieldType) {
+            case SET:
+                builder = builder.fieldSet(this.cacheType, this.cacheSize);
+                break;
+            case INT:
+                builder = builder.fieldInt(this.min, this.max);
+                break;
+            case TIME:
+                builder = builder.fieldTime(this.timeQuantum);
+        }
+        return builder.build();
     }
 
     @JsonProperty("timeQuantum")
@@ -77,14 +85,14 @@ final class FrameMeta {
         this.timeQuantum = TimeQuantum.fromString(s);
     }
 
-    @JsonProperty("inverseEnabled")
-    void setInverseEnabled(boolean inverseEnabled) {
-        this.inverseEnabled = inverseEnabled;
-    }
-
     @JsonProperty("cacheType")
     void setCacheType(String s) {
-        this.cacheType = CacheType.fromString(s);
+        try {
+            this.cacheType = CacheType.fromString(s);
+        } catch (ValidationException ex) {
+            // pass
+        }
+
     }
 
     @JsonProperty("cacheSize")
@@ -92,8 +100,25 @@ final class FrameMeta {
         this.cacheSize = cacheSize;
     }
 
+    @JsonProperty("type")
+    void setFieldType(String fieldType) {
+        this.fieldType = FieldType.fromString(fieldType);
+    }
+
+    @JsonProperty("min")
+    void setMin(long min) {
+        this.min = min;
+    }
+
+    @JsonProperty("max")
+    void setMax(long max) {
+        this.max = max;
+    }
+
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
-    private boolean inverseEnabled = false;
     private CacheType cacheType = CacheType.DEFAULT;
     private int cacheSize = 0;
+    private FieldType fieldType = FieldType.DEFAULT;
+    private long min = 0;
+    private long max = 0;
 }

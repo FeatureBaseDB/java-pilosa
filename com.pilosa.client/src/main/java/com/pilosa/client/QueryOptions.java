@@ -44,7 +44,7 @@ import com.pilosa.client.orm.PqlQuery;
  * <pre>
  *  <code>
  *     QueryOptions options = QueryOptions.builder()
- *         .setColumns(true)
+ *         .setColumnAttributes(true)
  *         .build();
  *  </code>
  * </pre>
@@ -57,29 +57,29 @@ public class QueryOptions {
         }
 
         /**
-         * Enables returning column data from bitmap queries.
+         * Enables returning column data from row queries.
          *
          * @param columns set to <code>true</code> for returning column data
          * @return QueryOptions builder
          */
-        public Builder setColumns(boolean columns) {
+        public Builder setColumnAttributes(boolean columns) {
             this.columns = columns;
             return this;
         }
 
         /**
-         * Disables returning bits from bitmap queries.
+         * Disables returning columns from row queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) bits
          * @return QueryOptions builder
          */
-        public Builder setExcludeBits(boolean exclude) {
-            this.excludeBits = exclude;
+        public Builder setExcludeColumns(boolean exclude) {
+            this.excludeColumns = exclude;
             return this;
         }
 
         /**
-         * Disables returning attributes from bitmap queries.
+         * Disables returning attributes from row queries.
          *
          * @param exclude set to <code>true</code> for excluding (not returning) attributes
          * @return QueryOptions builder
@@ -90,13 +90,13 @@ public class QueryOptions {
         }
 
         /**
-         * Restricts query to a subset of slices.
+         * Restricts query to a subset of shards.
          *
-         * @param slices set to a list of slices to restrict query to.
+         * @param shards set to a list of shards to restrict query to.
          * @return QueryOptions builder
          */
-        public Builder setSlices(Long... slices) {
-            this.slices = slices;
+        public Builder setShards(Long... shards) {
+            this.shards = shards;
             return this;
         }
 
@@ -106,13 +106,13 @@ public class QueryOptions {
          * @return QueryOptions object
          */
         public QueryOptions build() {
-            return new QueryOptions(this.columns, this.excludeBits, this.excludeAttributes, this.slices);
+            return new QueryOptions(this.columns, this.excludeColumns, this.excludeAttributes, this.shards);
         }
 
         private boolean columns = false;
-        private boolean excludeBits;
+        private boolean excludeColumns;
         private boolean excludeAttributes;
-        private Long slices[] = {};
+        private Long shards[] = {};
     }
 
     /**
@@ -129,16 +129,16 @@ public class QueryOptions {
         return this.columns;
     }
 
-    public boolean isExcludeBits() {
-        return this.excludeBits;
+    public boolean isExcludeColumns() {
+        return this.excludeColumns;
     }
 
     public boolean isExcludeAttributes() {
         return this.excludeAttributes;
     }
 
-    public Long[] getSlices() {
-        return this.slices;
+    public Long[] getShards() {
+        return this.shards;
     }
 
     /**
@@ -149,15 +149,15 @@ public class QueryOptions {
         return new Builder();
     }
 
-    private QueryOptions(boolean columns, boolean excludeBits, boolean excludeAttributes, Long[] slices) {
+    private QueryOptions(boolean columns, boolean excludeColumns, boolean excludeAttributes, Long[] shards) {
         this.columns = columns;
-        this.excludeBits = excludeBits;
+        this.excludeColumns = excludeColumns;
         this.excludeAttributes = excludeAttributes;
-        this.slices = slices;
+        this.shards = shards;
     }
 
     private final boolean columns;
-    private final boolean excludeBits;
+    private final boolean excludeColumns;
     private final boolean excludeAttributes;
-    private final Long[] slices;
+    private final Long[] shards;
 }

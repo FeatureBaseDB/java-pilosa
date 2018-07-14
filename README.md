@@ -8,7 +8,7 @@
 
 <img src="https://www.pilosa.com/img/ee.svg" style="float: right" align="right" height="301">
 
-Java client for Pilosa high performance distributed bitmap index.
+Java client for Pilosa high performance distributed index.
 
 ## What's New?
 
@@ -49,32 +49,32 @@ Schema schema = client.readSchema();
 // Create an Index object
 Index myindex = schema.index("myindex");
 
-// Create a Frame object
-Frame myframe = myindex.frame("myframe");
+// Create a Field object
+Field myfield = myindex.field("myfield");
 
-// make sure the index and frame exists on the server
+// make sure the index and field exists on the server
 client.syncSchema(schema);
 
 // Send a SetBit query. PilosaException is thrown if execution of the query fails.
-client.query(myframe.setBit(5, 42));
+client.query(myfield.setBit(5, 42));
 
-// Send a Bitmap query. PilosaException is thrown if execution of the query fails.
-QueryResponse response = client.query(myframe.bitmap(5));
+// Send a Row query. PilosaException is thrown if execution of the query fails.
+QueryResponse response = client.query(myfield.row(5));
 
 // Get the result
 QueryResult result = response.getResult();
 
 // Act on the result
 if (result != null) {
-    List<Long> bits = result.getBitmap().getBits();
-    System.out.println("Got bits: " + bits);
+    List<Long> columns = result.getRow().getColumns();
+    System.out.println("Got columns: " + columns);
 }
 
 // You can batch queries to improve throughput
 response = client.query(
     myindex.batchQuery(
-        myframe.bitmap(5),
-        myframe.bitmap(10)
+        myfield.row(5),
+        myfield.row(10)
     )    
 );
 for (Object r : response.getResults()) {

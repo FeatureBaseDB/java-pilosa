@@ -39,15 +39,15 @@ import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
 public class QueryOptionsTest {
     @Test
     public void testCreateQueryOptions() {
         QueryOptions options = QueryOptions.builder()
-                .setColumns(true)
+                .setColumnAttributes(true)
                 .build();
-        assertEquals(true, options.isColumns());
+        assertTrue(options.isColumns());
     }
 }

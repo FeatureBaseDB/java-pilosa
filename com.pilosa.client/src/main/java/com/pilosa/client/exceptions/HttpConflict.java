@@ -32,15 +32,7 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client.exceptions;
 
-@SuppressWarnings("WeakerAccess")
-public class PqlBitmapQuery extends PqlBaseQuery {
-    PqlBitmapQuery(String pql) {
-        super(pql);
-    }
-
-    PqlBitmapQuery(String pql, Index index) {
-        super(pql, index);
-    }
+public class HttpConflict extends PilosaException {
 }

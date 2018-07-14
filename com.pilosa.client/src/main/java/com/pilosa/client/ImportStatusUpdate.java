@@ -39,8 +39,8 @@ public class ImportStatusUpdate {
         return this.threadID;
     }
 
-    public long getSlice() {
-        return this.slice;
+    public long getShard() {
+        return this.shard;
     }
 
     public long getImportedCount() {
@@ -52,19 +52,19 @@ public class ImportStatusUpdate {
     }
 
     public String toString() {
-        return String.format("thread:%d imported:%d bits for slice:%d in:%d ms",
-                this.threadID, this.importedCount, this.slice, this.timeMs);
+        return String.format("thread:%d imported:%d columns for shard:%d in:%d ms",
+                this.threadID, this.importedCount, this.shard, this.timeMs);
     }
 
-    ImportStatusUpdate(final long threadID, final long slice, final long importedCount, final long timeMs) {
+    ImportStatusUpdate(final long threadID, final long shard, final long importedCount, final long timeMs) {
         this.threadID = threadID;
-        this.slice = slice;
+        this.shard = shard;
         this.importedCount = importedCount;
         this.timeMs = timeMs;
     }
 
     private final long threadID;
-    private final long slice;
+    private final long shard;
     private final long importedCount;
     private final long timeMs;
 }

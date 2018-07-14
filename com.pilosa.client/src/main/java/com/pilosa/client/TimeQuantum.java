@@ -37,7 +37,7 @@ package com.pilosa.client;
 import com.pilosa.client.exceptions.ValidationException;
 
 /**
- * Valid time quantum values for frames having support for that.
+ * Valid time quantum values for fields having support for that.
  *
  * @see <a href="https://www.pilosa.com/docs/data-model/">Data Model</a>
  */

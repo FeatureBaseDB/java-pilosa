@@ -32,10 +32,18 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.exceptions;
+package com.pilosa.client.status;
 
-public class FrameExistsException extends PilosaException {
-    public FrameExistsException() {
-        super("Frame already exists");
+import com.pilosa.client.UnitTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+@Category(UnitTest.class)
+public class FieldInfoTest {
+    @Test
+    public void testFieldMeta() {
+        FieldMeta meta = new FieldMeta();
+        // setCacheType ignores the validation error
+        meta.setCacheType("foo");
     }
 }

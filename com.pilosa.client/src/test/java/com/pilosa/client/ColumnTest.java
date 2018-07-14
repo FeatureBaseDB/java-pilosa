@@ -32,10 +32,39 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.exceptions;
+package com.pilosa.client;
 
-public class IndexExistsException extends PilosaException {
-    public IndexExistsException() {
-        super("Index already exists");
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import static org.junit.Assert.*;
+
+@Category(UnitTest.class)
+public class ColumnTest {
+    @Test
+    public void hashCodeTest() {
+        Column column1 = Column.create(1, 10, 65000);
+        Column column2 = Column.create(1, 10, 65000);
+        assertEquals(column1.hashCode(), column2.hashCode());
+        assertNotEquals(column1.hashCode(), Column.DEFAULT.hashCode());
+    }
+
+    @Test
+    public void equalsSameObjectTest() {
+        Column column = Column.create(5, 7, 100000);
+        assertTrue(column.equals(column));
+    }
+
+    @Test
+    public void notEqualTest() {
+        Column column = Column.create(15, 2, 50000);
+        assertFalse(column.equals(5));
+    }
+
+    @Test
+    public void toStringTest() {
+        Column column = Column.create(15, 2, 50000);
+        assertEquals("15:2[50000]", column.toString());
+        assertEquals("(default column)", Column.DEFAULT.toString());
     }
 }

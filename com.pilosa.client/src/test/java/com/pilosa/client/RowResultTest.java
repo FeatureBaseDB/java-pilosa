@@ -47,19 +47,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class BitmapResultTest {
+public class RowResultTest {
     @Test
-    public void testCreateBitmapResult() {
-        BitmapResult result = createSampleResult();
+    public void testCreateRowResult() {
+        RowResult result = createSampleResult();
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
         assertEquals(0, result.getKeys().size());
-        List<Long> bits = result.getBits();
+        List<Long> bits = result.getColumns();
         assertEquals(2, bits.size());
         assertEquals(42, (long) bits.get(0));
         assertEquals(45, (long) bits.get(1));
-        assertEquals(QueryResultType.BITMAP, result.getType());
+        assertEquals(QueryResultType.ROW, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
@@ -67,17 +67,17 @@ public class BitmapResultTest {
     }
 
     @Test
-    public void testCreateBitmapResultEnterprise() {
-        BitmapResult result = createSampleEnterpriseResult();
+    public void testCreateRowResultEnterprise() {
+        RowResult result = createSampleEnterpriseResult();
         Map<String, Object> attrs = result.getAttributes();
         assertEquals(1, attrs.size());
         assertEquals("blue", attrs.get("color"));
-        assertEquals(0, result.getBits().size());
+        assertEquals(0, result.getColumns().size());
         List<String> keys = result.getKeys();
         assertEquals(2, keys.size());
         assertEquals("2a84a392-529e-4603-ab25-fe2ceea3167e", keys.get(0));
         assertEquals("ad76b92c-2fd0-472a-8b7f-ef6daf5a3305", keys.get(1));
-        assertEquals(QueryResultType.BITMAP, result.getType());
+        assertEquals(QueryResultType.ROW, result.getType());
         assertEquals(TopNResult.defaultItems(), result.getCountItems());
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
@@ -85,16 +85,16 @@ public class BitmapResultTest {
     }
 
     @Test
-    public void testBitmapResultToString() {
-        BitmapResult result = createSampleResult();
+    public void testRowResultToString() {
+        RowResult result = createSampleResult();
         String s = result.toString();
-        assertEquals("BitmapResult(attrs={color=blue}, bits=[42, 45], keys=[])", s);
+        assertEquals("RowResult(attrs={color=blue}, columns=[42, 45], keys=[])", s);
     }
 
     @Test
     public void testEquals() {
-        BitmapResult result1 = createSampleResult();
-        BitmapResult result2 = createSampleResult();
+        RowResult result1 = createSampleResult();
+        RowResult result2 = createSampleResult();
         boolean e = result1.equals(result2);
         assertTrue(e);
     }
@@ -102,38 +102,38 @@ public class BitmapResultTest {
     @Test
     public void testEqualsFailsWithOtherObject() {
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = BitmapResult.defaultResult().equals(0);
+        boolean e = RowResult.defaultResult().equals(0);
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        BitmapResult result = createSampleResult();
+        RowResult result = createSampleResult();
         assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        BitmapResult result1 = createSampleResult();
-        BitmapResult result2 = createSampleResult();
+        RowResult result1 = createSampleResult();
+        RowResult result2 = createSampleResult();
         assertEquals(result1.hashCode(), result2.hashCode());
     }
 
-    private BitmapResult createSampleResult() {
+    private RowResult createSampleResult() {
         Map<String, Object> attrs = new HashMap<>(1);
         attrs.put("color", "blue");
         List<Long> bits = new ArrayList<>(2);
         bits.add(42L);
         bits.add(45L);
-        return BitmapResult.create(attrs, bits, null);
+        return RowResult.create(attrs, bits, null);
     }
 
-    private BitmapResult createSampleEnterpriseResult() {
+    private RowResult createSampleEnterpriseResult() {
         Map<String, Object> attrs = new HashMap<>(1);
         attrs.put("color", "blue");
         List<String> keys = new ArrayList<>(2);
         keys.add("2a84a392-529e-4603-ab25-fe2ceea3167e");
         keys.add("ad76b92c-2fd0-472a-8b7f-ef6daf5a3305");
-        return BitmapResult.create(attrs, null, keys);
+        return RowResult.create(attrs, null, keys);
     }
 }

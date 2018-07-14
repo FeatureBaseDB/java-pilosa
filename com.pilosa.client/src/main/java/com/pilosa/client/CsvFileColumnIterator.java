@@ -46,18 +46,18 @@ import java.util.Scanner;
 import java.util.TimeZone;
 
 /**
- * Iterates over a CSV of bitmaps.
+ * Iterates over a CSV of rows.
  * <p>
- * This class is used for iterating over bitmaps for a import operation.
+ * This class is used for iterating over rows for a import operation.
  * <p>
  * The CSV file should not have a header and should have the following structure:
  * <pre>
- *     BITMAP_ID,PROFILE_ID[,TIMESTAMP]
+ *     ROW_ID,COLUMN_ID[,TIMESTAMP]
  * </pre>
  * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
  */
-public class CsvFileBitIterator implements BitIterator {
-    private CsvFileBitIterator(SimpleDateFormat timestampFormat) {
+public class CsvFileColumnIterator implements ColumnIterator {
+    private CsvFileColumnIterator(SimpleDateFormat timestampFormat) {
         this.timestampFormat = timestampFormat;
         if (this.timestampFormat != null) {
             this.timestampFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -84,7 +84,7 @@ public class CsvFileBitIterator implements BitIterator {
      * @return bit iterator
      * @throws FileNotFoundException if the path does not exist
      */
-    public static CsvFileBitIterator fromPath(String path) throws FileNotFoundException {
+    public static CsvFileColumnIterator fromPath(String path) throws FileNotFoundException {
         return fromStream(new FileInputStream(path));
     }
 
@@ -96,7 +96,7 @@ public class CsvFileBitIterator implements BitIterator {
      * @return bit iterator
      * @throws FileNotFoundException if the path does not exist
      */
-    public static CsvFileBitIterator fromPath(String path, SimpleDateFormat timestampFormat) throws FileNotFoundException {
+    public static CsvFileColumnIterator fromPath(String path, SimpleDateFormat timestampFormat) throws FileNotFoundException {
         return fromStream(new FileInputStream(path), timestampFormat);
     }
 
@@ -107,7 +107,7 @@ public class CsvFileBitIterator implements BitIterator {
      * @return bit iterator
      */
     @SuppressWarnings("WeakerAccess")
-    public static CsvFileBitIterator fromStream(InputStream stream) {
+    public static CsvFileColumnIterator fromStream(InputStream stream) {
         return fromStream(stream, null);
     }
 
@@ -119,8 +119,8 @@ public class CsvFileBitIterator implements BitIterator {
      * @return bit iterator
      */
     @SuppressWarnings("WeakerAccess")
-    public static CsvFileBitIterator fromStream(InputStream stream, SimpleDateFormat timestampFormat) {
-        CsvFileBitIterator iterator = new CsvFileBitIterator(timestampFormat);
+    public static CsvFileColumnIterator fromStream(InputStream stream, SimpleDateFormat timestampFormat) {
+        CsvFileColumnIterator iterator = new CsvFileColumnIterator(timestampFormat);
         iterator.scanner = new Scanner(stream);
         return iterator;
     }
@@ -147,13 +147,13 @@ public class CsvFileBitIterator implements BitIterator {
         if (fields.length > 2) {
             timestamp = parseTimestamp(fields[2]);
         }
-        this.nextBit = Bit.create(rowID, columnID, timestamp);
+        this.nextColumn = Column.create(rowID, columnID, timestamp);
         return true;
     }
 
     @Override
-    public Bit next() {
-        return this.nextBit;
+    public Column next() {
+        return this.nextColumn;
     }
 
     @Override
@@ -162,7 +162,7 @@ public class CsvFileBitIterator implements BitIterator {
     }
 
     private Scanner scanner = null;
-    private Bit nextBit = null;
+    private Column nextColumn = null;
     private SimpleDateFormat timestampFormat;
     private final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 }

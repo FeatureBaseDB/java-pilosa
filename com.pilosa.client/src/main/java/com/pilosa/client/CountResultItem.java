@@ -34,11 +34,12 @@
 
 package com.pilosa.client;
 
+import com.pilosa.client.orm.Field;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Represents a result from {@link com.pilosa.client.orm.Frame#topN(long)} call.
+ * Represents a result from {@link Field#topN(long)} call.
  *
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
@@ -62,9 +63,9 @@ public final class CountResultItem {
     }
 
     /**
-     * Returns the count of column IDs where this bitmap item is 1.
+     * Returns the count of column IDs where this row item is 1.
      *
-     * @return count of column IDs where this bitmap item is 1
+     * @return count of column IDs where this row item is 1
      */
     public long getCount() {
         return this.count;

@@ -34,48 +34,55 @@
 
 package com.pilosa.client.orm;
 
+import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
+import com.pilosa.client.exceptions.ValidationException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @Category(UnitTest.class)
-public class RangeFieldTest {
+public class FieldTest {
+
+    @Before
+    public void setUp() {
+        Schema schema = Schema.defaultSchema();
+        this.index = schema.index("test-index");
+    }
+
+    @Test(expected = ValidationException.class)
+    public void checkValidatorWasCalledTest() {
+        Field field = this.index.field("a:b");
+    }
 
     @Test
     public void testEqualsFailsWithOtherObject() {
-        RangeField field = frame.field("myfield");
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = field.equals("foo");
+        boolean e = this.index.field("foo").equals("foo");
         assertFalse(e);
     }
 
     @Test
     public void testEqualsSameObject() {
-        RangeField field = frame.field("myfield");
+        Field field = this.index.field("some-field");
         assertEquals(field, field);
     }
 
     @Test
-    public void testEquals() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = new RangeField(frame, "myfield");
-        assertTrue(field1.equals(field2));
-    }
-
-    @Test
     public void testHashCode() {
-        RangeField field1 = frame.field("myfield");
-        RangeField field2 = frame.field("myfield");
+        FieldOptions options1 = FieldOptions.builder()
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
+                .build();
+        FieldOptions options2 = FieldOptions.builder()
+                .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
+                .build();
+        Field field1 = this.index.field("field1", options1);
+        Field field2 = this.index.field("field2", options2);
         assertEquals(field1.hashCode(), field2.hashCode());
     }
 
-    static {
-        Schema schema = Schema.defaultSchema();
-        Index index = schema.index("myindex");
-        frame = index.frame("myframe");
-    }
-
-    private static Frame frame;
+    private Index index;
 }

@@ -36,6 +36,7 @@ package com.pilosa.client.orm;
 
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
+import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -92,6 +93,13 @@ public class FieldOptionsTest {
         compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
         String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+    }
+
+    @Test(expected = PilosaException.class)
+    public void testFieldOptionsJsonProcessingException() {
+        FieldOptions options = FieldOptions.builder().build();
+        options.setExtra(new SerializeThis());
+        String s = options.toString();
     }
 
     @Test
@@ -161,4 +169,7 @@ public class FieldOptionsTest {
         Arrays.sort(arr);
         return arr;
     }
+}
+
+class SerializeThis {
 }

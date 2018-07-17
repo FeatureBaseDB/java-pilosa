@@ -98,7 +98,7 @@ public class FieldOptionsTest {
     @Test(expected = PilosaException.class)
     public void testFieldOptionsJsonProcessingException() {
         FieldOptions options = FieldOptions.builder().build();
-        options.setExtra(new ClassThatJacksonCannotSerialize());
+        options.setExtra(new SerializeThis());
         String s = options.toString();
     }
 
@@ -171,5 +171,5 @@ public class FieldOptionsTest {
     }
 }
 
-class ClassThatJacksonCannotSerialize {
+class SerializeThis {
 }

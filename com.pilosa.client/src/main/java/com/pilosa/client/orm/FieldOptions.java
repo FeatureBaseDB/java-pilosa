@@ -207,6 +207,10 @@ public final class FieldOptions {
         }
         Map<String, Object> optionsRoot = new HashMap<>(1);
         optionsRoot.put("options", options);
+        if (this.extra != null) {
+            // this code is only used to be able to throw JsonProcessingException in tests
+            optionsRoot.put("extra", this.extra);
+        }
         try {
             return mapper.writeValueAsString(optionsRoot);
         } catch (JsonProcessingException e) {
@@ -257,6 +261,11 @@ public final class FieldOptions {
         this.max = max;
     }
 
+    void setExtra(Object e) {
+        // This method is required only for test coverage
+        this.extra = e;
+    }
+
     static {
         ObjectMapper m = new ObjectMapper();
         m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -270,4 +279,5 @@ public final class FieldOptions {
     private final FieldType fieldType;
     private final long min;
     private final long max;
+    private Object extra;
 }

@@ -67,14 +67,14 @@ public class ImportOptions {
         }
 
         public Builder setStrategy(Strategy strategy) {
-            this.strategy = (strategy == Strategy.DEFAULT) ? Strategy.TIMEOUT : strategy;
+            this.strategy = (strategy == Strategy.DEFAULT) ? Strategy.BATCH : strategy;
             return this;
         }
 
         private int threadCount = 1;
         private long timeoutMs = 100;
-        private int batchSize = 10000;
-        private Strategy strategy = Strategy.TIMEOUT;
+        private int batchSize = 100000;
+        private Strategy strategy = Strategy.BATCH;
     }
 
     private ImportOptions(int threadCount,

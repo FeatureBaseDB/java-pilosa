@@ -54,7 +54,7 @@ public class IndexOptionsTest {
 
     @Test
     public void testEqualsFailsWithOtherObject() {
-        FieldOptions options = FieldOptions.builder().build();
+        IndexOptions options = IndexOptions.builder().build();
         @SuppressWarnings("EqualsBetweenInconvertibleTypes")
         boolean e = options.equals("foo");
         assertFalse(e);
@@ -64,6 +64,19 @@ public class IndexOptionsTest {
     public void testEqualsSameObject() {
         IndexOptions options = IndexOptions.builder().build();
         assertEquals(options, options);
+    }
+
+    @Test
+    public void testEquals() {
+        IndexOptions options1, options2;
+
+        options1 = IndexOptions.builder()
+                .keys(true)
+                .build();
+        options2 = IndexOptions.builder()
+                .keys(true)
+                .build();
+        assertEquals(options1, options2);
     }
 
     @Test

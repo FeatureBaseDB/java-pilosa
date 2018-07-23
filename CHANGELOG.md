@@ -12,7 +12,7 @@
         * Integer fields to store an integer in the given range.
         * Time fields which can store timestamps.
     * Added `keys` field option.
-    * Experimental: Import strategies are experimental an may be removed in later versions.
+    * Experimental: Import strategies are experimental and may be removed in later versions.
     * Removed all deprecated code.
     * Removed `Field` type and renamed `Frame` to `Field`.
 

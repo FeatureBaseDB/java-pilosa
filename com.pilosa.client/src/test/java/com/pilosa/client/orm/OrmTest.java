@@ -47,13 +47,13 @@ import static org.junit.Assert.assertEquals;
 
 @Category(UnitTest.class)
 public class OrmTest {
-    private Index sampleIndex = Index.withName("sample-db");
+    private Index sampleIndex = Index.create("sample-db");
     private Field sampleField = sampleIndex.field("sample-field");
     private Index projectIndex;
     private Field collabField;
 
     {
-        this.projectIndex = Index.withName("project-db");
+        this.projectIndex = Index.create("project-db");
         FieldOptions collabFieldOptions = FieldOptions.withDefaults();
         this.collabField = projectIndex.field("collaboration", collabFieldOptions);
     }
@@ -123,7 +123,7 @@ public class OrmTest {
 
         PqlQuery qry3 = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
-                "Set(some_id,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
+                "Set('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
                 qry3.serialize());
 
     }
@@ -432,6 +432,9 @@ public class OrmTest {
         PqlQuery q = collabField.setValue(10, 20);
         assertEquals(
                 "Set(10, collaboration=20)",
+                q.serialize());
+        q = collabField.setValue("foo", 100);
+        assertEquals("Set('foo', collaboration=100)",
                 q.serialize());
     }
 }

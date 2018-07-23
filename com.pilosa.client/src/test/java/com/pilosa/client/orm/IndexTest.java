@@ -55,7 +55,7 @@ public class IndexTest {
 
     @Test(expected = ValidationException.class)
     public void checkValidatorWasCalledTest() {
-        Index.withName("a:b");
+        Index.create("a:b");
     }
 
     @Test
@@ -106,13 +106,13 @@ public class IndexTest {
     @Test
     public void testHashCode() {
         Index index1 = this.schema.index("foo");
-        Index index2 = Index.withName("foo");
+        Index index2 = Index.create("foo");
         assertEquals(index1.hashCode(), index2.hashCode());
     }
 
     private boolean checkArguments(String methodName, int count)
             throws NoSuchMethodException, IllegalAccessException {
-        Index index = Index.withName("my-index");
+        Index index = Index.create("my-index");
         Field field = index.field("my-field");
         Method m = index.getClass().getMethod(methodName, PqlRowQuery[].class);
         PqlRowQuery queries[] = new PqlRowQuery[count];

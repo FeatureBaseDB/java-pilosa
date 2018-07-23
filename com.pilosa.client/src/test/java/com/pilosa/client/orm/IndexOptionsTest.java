@@ -32,31 +32,50 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
-import com.pilosa.client.orm.Index;
+import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class QueryRequestTest {
+public class IndexOptionsTest {
     @Test
-    public void testProtobuf() {
-        QueryRequest qr = QueryRequest.withIndex(Index.create("somedb"));
-        qr.setQuery("Range(id=1, field='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')");
-        qr.setRetrieveColumnAttributes(true);
-        Internal.QueryRequest request = qr.toProtobuf();
-        assertEquals("Range(id=1, field='foo', start='2016-01-01T13:00', end='2017-01-01T14:00')", request.getQuery());
-        assertTrue(request.getColumnAttrs());
+    public void testOptions() {
+        IndexOptions options = IndexOptions.builder().build();
+        assertFalse(options.isKeys());
+        options = IndexOptions.builder()
+                .keys(true)
+                .build();
+        assertTrue(options.isKeys());
     }
 
     @Test
-    public void testGetQuery() {
-        QueryRequest qr = QueryRequest.withIndex(Index.create("mydb"));
-        qr.setQuery("SetBit(id=1, field='the-field', col_id=556");
-        assertEquals("SetBit(id=1, field='the-field', col_id=556", qr.getQuery());
+    public void testEqualsFailsWithOtherObject() {
+        FieldOptions options = FieldOptions.builder().build();
+        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
+        boolean e = options.equals("foo");
+        assertFalse(e);
+    }
+
+    @Test
+    public void testEqualsSameObject() {
+        IndexOptions options = IndexOptions.builder().build();
+        assertEquals(options, options);
+    }
+
+    @Test
+    public void testHashCode() {
+        IndexOptions options1, options2;
+
+        options1 = IndexOptions.builder()
+                .keys(true)
+                .build();
+        options2 = IndexOptions.builder()
+                .keys(true)
+                .build();
+        assertEquals(options1.hashCode(), options2.hashCode());
     }
 }

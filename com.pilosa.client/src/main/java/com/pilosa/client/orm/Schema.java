@@ -51,15 +51,27 @@ public class Schema {
     /**
      * Returns an index with a name.
      *
-     * @param name    index name
+     * @param name index name
      * @return a Index object
      * @throws ValidationException if the passed index name is not valid
      */
     public Index index(String name) {
+        return index(name, IndexOptions.withDefaults());
+    }
+
+    /**
+     * Returns an index with a name.
+     *
+     * @param name    index name
+     * @param options index options
+     * @return a Index object
+     * @throws ValidationException if the passed index name is not valid
+     */
+    public Index index(String name, IndexOptions options) {
         if (this.indexes.containsKey(name)) {
             return this.indexes.get(name);
         }
-        Index index = Index.withName(name);
+        Index index = Index.create(name, options);
         this.indexes.put(name, index);
         return index;
     }
@@ -89,7 +101,7 @@ public class Schema {
                 result.indexes.put(indexName, new Index(indexEntry.getValue()));
             } else {
                 // the index exists in the other schema; check the fields
-                Index resultIndex = Index.withName(indexName);
+                Index resultIndex = Index.create(indexName);
                 Index otherIndex = other.indexes.get(indexName);
                 Map<String, Field> otherIndexFields = otherIndex.getFields();
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {

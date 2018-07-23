@@ -48,7 +48,7 @@ import java.util.List;
  *     Usage
  * <pre>
  * <code>
- *     Index repo = Index.withName("repository");
+ *     Index repo = Index.create("repository");
  *     Field stargazer = repo.field("stargazer");
  *     PqlBatchQuery query = repo.batchQuery(
  *          stargazer.row(5),

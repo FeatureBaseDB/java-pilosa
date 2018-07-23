@@ -58,9 +58,22 @@ public class Index {
      * @return a Index object
      * @throws ValidationException if the passed index name is not valid
      */
-    public static Index withName(String name) {
+    public static Index create(String name) {
+        return create(name, IndexOptions.withDefaults());
+    }
+
+    /**
+     * Creates an index with a name and options.
+     *
+     * @param name    index name
+     * @param options index options
+     * @return a Index object
+     * @throws ValidationException if the passed index name is not valid
+     */
+    public static Index create(String name, IndexOptions options) {
         Validator.ensureValidIndexName(name);
-        return new Index(name);
+        return new Index(name, options);
+
     }
 
     public String getName() {
@@ -283,6 +296,10 @@ public class Index {
         return this.fields;
     }
 
+    public IndexOptions getOptions() {
+        return this.options;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Index)) {
@@ -313,7 +330,7 @@ public class Index {
     }
 
     Index(Index index) {
-        this(index.name);
+        this(index.name, index.options);
         for (Map.Entry<String, Field> entry : index.fields.entrySet()) {
             // we don't copy field options, since FieldOptions has no mutating methods
             this.field(entry.getKey(), entry.getValue().getOptions());
@@ -333,11 +350,13 @@ public class Index {
         return pqlRowQuery(String.format("%s(%s)", name, builder.toString()));
     }
 
-    private Index(String name) {
+    private Index(String name, IndexOptions options) {
         this.name = name;
+        this.options = options;
     }
 
     private String name;
+    private IndexOptions options;
     private static ObjectMapper mapper = new ObjectMapper();
     private Map<String, Field> fields = new HashMap<>();
 }

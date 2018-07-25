@@ -65,6 +65,7 @@ public class PilosaClientIT {
     private Schema schema;
     private Index colIndex;
     private Index index;
+    private Index keyIndex;
     private Field field;
 
     @Before
@@ -80,6 +81,12 @@ public class PilosaClientIT {
             this.colIndex = schema.index(this.index.getName() + "-opts");
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
+
+            IndexOptions indexOptions = IndexOptions.builder()
+                    .keys(true)
+                    .build();
+            this.keyIndex = schema.index("key-index", indexOptions);
+
             client.syncSchema(this.schema);
         }
     }
@@ -89,6 +96,7 @@ public class PilosaClientIT {
         try (PilosaClient client = getClient()) {
             client.deleteIndex(this.index);
             client.deleteIndex(this.colIndex);
+            client.deleteIndex(this.keyIndex);
         } catch (PilosaException ex) {
             // pass
         }
@@ -209,15 +217,15 @@ public class PilosaClientIT {
 
     @Test
     public void protobufCreateIndexDeleteIndexTest() throws IOException {
-        final Index dbname = Index.withName("to-be-deleted-" + this.index.getName());
-        Field field = dbname.field("delfield");
+        final Index indexName = Index.create("to-be-deleted-" + this.index.getName());
+        Field field = indexName.field("delfield");
         try (PilosaClient client = getClient()) {
             try {
-                client.createIndex(dbname);
+                client.createIndex(indexName);
                 client.createField(field);
                 client.query(field.set(1, 2));
             } finally {
-                client.deleteIndex(dbname);
+                client.deleteIndex(indexName);
             }
         }
     }
@@ -309,8 +317,8 @@ public class PilosaClientIT {
     @Test
     public void testTopN() throws IOException, InterruptedException {
         try (PilosaClient client = getClient()) {
-            client.ensureField(this.field);
             Field field = this.index.field("topn_test");
+            client.ensureField(field);
             client.query(this.index.batchQuery(
                     field.set(10, 5),
                     field.set(10, 10),
@@ -326,6 +334,22 @@ public class PilosaClientIT {
             CountResultItem item = items.get(0);
             assertEquals(10, item.getID());
             assertEquals(3, item.getCount());
+        }
+    }
+
+    @Test
+    public void testKeys() throws IOException {
+        try (PilosaClient client = getClient()) {
+            FieldOptions options = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field = this.keyIndex.field("keys-test", options);
+            client.syncSchema(this.schema);
+            client.query(field.set("stringRow", "stringCol"));
+            QueryResponse response = client.query(field.row("stringRow"));
+            List<String> target = new ArrayList<>();
+            target.add("stringCol");
+            assertEquals(target, response.getResult().getRow().getKeys());
         }
     }
 
@@ -354,14 +378,14 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void failedDeleteIndexTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("http://non-existent-sub.pilosa.com:22222")) {
-            client.deleteIndex(Index.withName("non-existent"));
+            client.deleteIndex(Index.create("non-existent"));
         }
     }
 
     @Test
     public void ensureIndexExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Index index = Index.withName(this.index.getName() + "-ensure");
+            final Index index = Index.create(this.index.getName() + "-ensure");
             client.ensureIndex(index);
             client.createField(index.field("frm"));
             client.ensureIndex(index);  // shouldn't throw an exception
@@ -372,7 +396,7 @@ public class PilosaClientIT {
     @Test
     public void ensureFieldExistsTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            final Index index = Index.withName(this.index.getName() + "-ensure-field");
+            final Index index = Index.create(this.index.getName() + "-ensure-field");
             try {
                 client.createIndex(index);
                 final Field field = index.field("field");
@@ -601,14 +625,15 @@ public class PilosaClientIT {
         try (PilosaClient client = this.getClient()) {
             client.deleteIndex(this.index);
             client.deleteIndex(this.colIndex);
+            client.deleteIndex(this.keyIndex);
             Schema schema = client.readSchema();
-            assertTrue(schema.getIndexes().size() == 0);
+            assertEquals(0, schema.getIndexes().size());
         }
     }
 
     @Test
     public void syncSchemaTest() throws IOException {
-        Index remoteIndex = Index.withName("remote-index-1");
+        Index remoteIndex = Index.create("remote-index-1");
         Field remoteField = remoteIndex.field("remote-field-1");
         Schema schema1 = Schema.defaultSchema();
         Index index11 = schema1.index("diff-index1");
@@ -787,7 +812,7 @@ public class PilosaClientIT {
         HttpServer server = runContent0HttpServer("/index/foo", 304);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
-                client.createIndex(Index.withName("foo"));
+                client.createIndex(Index.create("foo"));
             } finally {
                 if (server != null) {
                     server.stop(0);

@@ -111,9 +111,28 @@ public final class FieldOptions {
             return this;
         }
 
+        /**
+         * Adds a time field to the field options
+         *
+         * @param timeQuantum The time quantum for this field.
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
         public Builder fieldTime(TimeQuantum timeQuantum) {
             this.fieldType = FieldType.TIME;
             this.timeQuantum = timeQuantum;
+            return this;
+        }
+
+        /**
+         * Sets whether field uses string keys.
+         *
+         * @param enable Enables string keys for this field if set to true.
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
+        public Builder keys(boolean enable) {
+            this.keys = enable;
             return this;
         }
 
@@ -128,7 +147,8 @@ public final class FieldOptions {
                     this.cacheSize,
                     this.fieldType,
                     this.min,
-                    this.max);
+                    this.max,
+                    this.keys);
         }
 
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
@@ -137,6 +157,7 @@ public final class FieldOptions {
         private FieldType fieldType = FieldType.DEFAULT;
         private long min = 0;
         private long max = 0;
+        private boolean keys = false;
 
     }
 
@@ -183,6 +204,10 @@ public final class FieldOptions {
         return this.max;
     }
 
+    public boolean isKeys() {
+        return this.keys;
+    }
+
     @Override
     public String toString() {
         Map<String, Object> options = new HashMap<>();
@@ -204,6 +229,9 @@ public final class FieldOptions {
                 break;
             case TIME:
                 options.put("timeQuantum", this.timeQuantum.toString());
+        }
+        if (this.keys) {
+            options.put("keys", true);
         }
         Map<String, Object> optionsRoot = new HashMap<>(1);
         optionsRoot.put("options", options);
@@ -232,7 +260,8 @@ public final class FieldOptions {
                 rhs.cacheSize == this.cacheSize &&
                 rhs.fieldType == this.fieldType &&
                 rhs.min == this.min &&
-                rhs.max == this.max;
+                rhs.max == this.max &&
+                rhs.keys == this.keys;
     }
 
     @Override
@@ -244,6 +273,7 @@ public final class FieldOptions {
                 .append(this.fieldType)
                 .append(this.min)
                 .append(this.max)
+                .append(this.keys)
                 .toHashCode();
     }
 
@@ -252,13 +282,15 @@ public final class FieldOptions {
                          final int cacheSize,
                          final FieldType fieldType,
                          final long min,
-                         final long max) {
+                         final long max,
+                         final boolean keys) {
         this.timeQuantum = timeQuantum;
         this.cacheType = cacheType;
         this.cacheSize = cacheSize;
         this.fieldType = fieldType;
         this.min = min;
         this.max = max;
+        this.keys = keys;
     }
 
     void setExtra(Object e) {
@@ -279,5 +311,6 @@ public final class FieldOptions {
     private final FieldType fieldType;
     private final long min;
     private final long max;
+    private final boolean keys;
     private Object extra;
 }

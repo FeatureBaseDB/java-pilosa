@@ -2,17 +2,19 @@
 
 * **v1.0.0** (2018-06-28)
     * Compatible with Pilosa 1.0.
-    * Removed all deprecated code.
     * Following terminology was changed:
         * frame to field
         * bitmap to row
         * bit to column
         * slice to shard
-    * Removed `Field` type and renamed `Frame` to `Field`.
     * There are three types of fields:
         * Set fields to store boolean values (default)
         * Integer fields to store an integer in the given range.
         * Time fields which can store timestamps.
+    * Added `keys` field option.
+    * Experimental: Import strategies are experimental and may be removed in later versions.
+    * Removed all deprecated code.
+    * Removed `Field` type and renamed `Frame` to `Field`.
 
 * **v0.9.0** (2018-05-08)
     * Compatible with Pilosa 0.9.

@@ -55,9 +55,10 @@ public class FieldOptionsTest {
 
         options = FieldOptions.builder()
                 .fieldSet(CacheType.RANKED, 1000)
+                .keys(true)
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
-        target = "{\"options\":{\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"keys\":true,\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
@@ -93,6 +94,14 @@ public class FieldOptionsTest {
         compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
         String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+    }
+
+    @Test
+    public void testKeysOption() {
+        FieldOptions options = FieldOptions.builder()
+                .keys(true)
+                .build();
+        assertTrue(options.isKeys());
     }
 
     @Test(expected = PilosaException.class)

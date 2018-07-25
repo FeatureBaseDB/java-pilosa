@@ -45,6 +45,7 @@ import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.PqlQuery;
 import com.pilosa.client.orm.Schema;
+import com.pilosa.client.status.FieldInfo;
 import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
@@ -86,7 +87,7 @@ import java.util.concurrent.*;
  *     // Create a PilosaClient instance
  *     PilosaClient client = PilosaClient.defaultClient();
  *     // Create an Index instance
- *     Index index = Index.withName("repository");
+ *     Index index = Index.create("repository");
  *     Field stargazer = index.field("stargazer");
  *     QueryResponse response = client.query(stargazer.row(5));
  *     // Act on the result
@@ -194,7 +195,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public void createIndex(Index index) {
         String path = String.format("/index/%s", index.getName());
-        String body = "";
+        String body = index.getOptions().toString();
         ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
         clientExecute("POST", path, data, null, "Error while creating index");
     }
@@ -345,8 +346,11 @@ public class PilosaClient implements AutoCloseable {
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
             Index index = result.index(indexInfo.getName());
-            for (IFieldInfo fieldInfo : indexInfo.getFields()) {
-                index.field(fieldInfo.getName(), fieldInfo.getOptions());
+            List<FieldInfo> fields = indexInfo.getFields();
+            if (fields != null) {
+                for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                    index.field(fieldInfo.getName(), fieldInfo.getOptions());
+                }
             }
         }
         return result;

@@ -58,26 +58,6 @@ import java.util.Map;
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public class Field {
-    private Field(Index index, String name, FieldOptions options) {
-        this.index = index;
-        this.name = name;
-        this.options = options;
-    }
-
-    /**
-     * Creates a field.
-     *
-     * @param index   the index this field belongs to
-     * @param name    name of the field
-     * @param options field options
-     * @return a Field object
-     * @throws ValidationException if an invalid field name is passed
-     */
-    static Field create(Index index, String name, FieldOptions options) {
-        Validator.ensureValidFieldName(name);
-        return new Field(index, name, options);
-    }
-
     public Index getIndex() {
         return this.index;
     }
@@ -151,7 +131,7 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery set(String rowKey, String columnKey) {
-        return this.index.pqlQuery(String.format("Set(%s,%s='%s')",
+        return this.index.pqlQuery(String.format("Set('%s',%s='%s')",
                 columnKey, name, rowKey));
     }
 
@@ -570,6 +550,20 @@ public class Field {
         return this.index.pqlQuery(qry);
     }
 
+    /**
+     * Creates a SetFieldValue query.
+     *
+     * @param columnKey column key
+     * @param value     the value to assign to the field
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
+     */
+    public PqlBaseQuery setValue(String columnKey, long value) {
+        String qry = String.format("Set('%s', %s=%d)",
+                columnKey, this.name, value);
+        return this.index.pqlQuery(qry);
+    }
+
     private PqlRowQuery binaryOperation(String op, long n) {
         String qry = String.format("Range(%s %s %d)", this.name, op, n);
         return this.index.pqlRowQuery(qry);
@@ -605,6 +599,26 @@ public class Field {
                 .append(this.index.getName())
                 .append(this.options)
                 .toHashCode();
+    }
+
+    /**
+     * Creates a field.
+     *
+     * @param index   the index this field belongs to
+     * @param name    name of the field
+     * @param options field options
+     * @return a Field object
+     * @throws ValidationException if an invalid field name is passed
+     */
+    static Field create(Index index, String name, FieldOptions options) {
+        Validator.ensureValidFieldName(name);
+        return new Field(index, name, options);
+    }
+
+    private Field(Index index, String name, FieldOptions options) {
+        this.index = index;
+        this.name = name;
+        this.options = options;
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

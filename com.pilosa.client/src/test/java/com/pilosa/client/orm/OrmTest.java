@@ -116,16 +116,25 @@ public class OrmTest {
 
     @Test
     public void setTest() {
-        PqlQuery qry1 = collabField.set(5, 10);
+        PqlQuery qry = collabField.set(5, 10);
         assertEquals(
                 "Set(10,collaboration=5)",
-                qry1.serialize());
+                qry.serialize());
 
-        PqlQuery qry3 = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        qry = collabField.set(5, "some_id");
+        assertEquals(
+                "Set('some_id',collaboration=5)",
+                qry.serialize());
+
+        qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
+        assertEquals(
+                "Set(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
+                qry.serialize());
+
+        qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
                 "Set('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry3.serialize());
-
+                qry.serialize());
     }
 
     @Test
@@ -136,23 +145,44 @@ public class OrmTest {
         assertEquals(
                 "Set(20,collaboration=10,2017-04-24T12:14)",
                 qry.serialize());
-        PqlQuery qry2 = collabField.set("myrow", "mycol", timestamp.getTime());
+
+        qry = collabField.set(10, "mycol", timestamp.getTime());
+        assertEquals(
+                "Set('mycol',collaboration=10,2017-04-24T12:14)",
+                qry.serialize());
+
+        qry = collabField.set("myrow", 20, timestamp.getTime());
+        assertEquals(
+                "Set(20,collaboration='myrow',2017-04-24T12:14)",
+                qry.serialize());
+
+        qry = collabField.set("myrow", "mycol", timestamp.getTime());
         assertEquals(
                 "Set('mycol',collaboration='myrow',2017-04-24T12:14)",
-                qry2.serialize());
+                qry.serialize());
     }
 
     @Test
     public void clearTest() {
-        PqlQuery qry1 = collabField.clear(5, 10);
+        PqlQuery qry = collabField.clear(5, 10);
         assertEquals(
                 "Clear(10,collaboration=5)",
-                qry1.serialize());
+                qry.serialize());
 
-        PqlQuery qry2 = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        qry = collabField.clear(5, "some_id");
+        assertEquals(
+                "Clear('some_id',collaboration=5)",
+                qry.serialize());
+
+        qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
+        assertEquals(
+                "Clear(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
+                qry.serialize());
+
+        qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
                 "Clear('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry2.serialize());
+                qry.serialize());
     }
 
     @Test

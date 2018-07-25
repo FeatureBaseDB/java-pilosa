@@ -120,7 +120,39 @@ public class Field {
     }
 
     /**
-     * Creates a Set query. (Enterprise version)
+     * Creates a Set query.
+     * <p>
+     * Set assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     *
+     * @param rowID     row ID
+     * @param columnKey column key
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     */
+    public PqlBaseQuery set(long rowID, String columnKey) {
+        return this.index.pqlQuery(String.format("Set('%s',%s=%d)",
+                columnKey, name, rowID));
+    }
+
+    /**
+     * Creates a Set query.
+     * <p>
+     * Set assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     *
+     * @param rowKey   row key
+     * @param columnID column ID
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     */
+    public PqlBaseQuery set(String rowKey, long columnID) {
+        return this.index.pqlQuery(String.format("Set(%d,%s='%s')",
+                columnID, name, rowKey));
+    }
+
+    /**
+     * Creates a Set query.
      * <p>
      *  Set assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
@@ -135,7 +167,6 @@ public class Field {
                 columnKey, name, rowKey));
     }
 
-    /**
      /**
      * Creates a Set query.
      * <p>
@@ -160,8 +191,51 @@ public class Field {
     }
 
     /**
-     /**
-     * Creates a Set query. (Enterprise version)
+     * Creates a Set query.
+     * <p>
+     * Set, assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     * <p>
+     * This variant supports providing a timestamp.
+     *
+     * @param rowID     row ID
+     * @param columnKey column key
+     * @param timestamp timestamp of the bit
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery set(long rowID, String columnKey, Date timestamp) {
+        String qry = String.format("Set('%s',%s=%d,%sT%s)",
+                columnKey, name, rowID,
+                fmtDate.format(timestamp), fmtTime.format(timestamp));
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
+     * Creates a Set query.
+     * <p>
+     * Set, assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     * <p>
+     * This variant supports providing a timestamp.
+     *
+     * @param rowKey    row key
+     * @param columnID  column ID
+     * @param timestamp timestamp of the bit
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery set(String rowKey, long columnID, Date timestamp) {
+        String qry = String.format("Set(%d,%s='%s',%sT%s)",
+                columnID, name, rowKey,
+                fmtDate.format(timestamp), fmtTime.format(timestamp));
+        return this.index.pqlQuery(qry);
+    }
+
+    /**
+     * Creates a Set query.
      * <p>
      *  Set, assigns a value of 1 to a column in the binary matrix,
      *  thus associating the given row in the given field with the given column.
@@ -201,7 +275,41 @@ public class Field {
     }
 
     /**
-     * Creates a Clear query. (Enterprise version)
+     * Creates a Clear query.
+     * <p>
+     *     Clear assigns a value of 0 to a column in the binary matrix,
+     *     thus disassociating the given row in the given field from the given column.
+     *
+     * @param rowID    row ID
+     * @param columnKey column key
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery clear(long rowID, String columnKey) {
+        return this.index.pqlQuery(String.format("Clear('%s',%s=%d)",
+                columnKey, name, rowID));
+    }
+
+    /**
+     * Creates a Clear query.
+     * <p>
+     * Clear assigns a value of 0 to a column in the binary matrix,
+     * thus disassociating the given row in the given field from the given column.
+     *
+     * @param rowKey   row key
+     * @param columnID column ID
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery clear(String rowKey, long columnID) {
+        return this.index.pqlQuery(String.format("Clear(%d,%s='%s')",
+                columnID, name, rowKey));
+    }
+
+    /**
+     * Creates a Clear query.
      * <p>
      *     Clear assigns a value of 0 to a column in the binary matrix,
      *     thus disassociating the given row in the given field from the given column.

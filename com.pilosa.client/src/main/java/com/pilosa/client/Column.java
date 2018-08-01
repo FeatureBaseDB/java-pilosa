@@ -34,21 +34,42 @@
 
 package com.pilosa.client;
 
+import com.pilosa.client.orm.Record;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Column {
+public class Column implements Record {
     public static final Column DEFAULT = Column.defaultColumn();
 
     public static Column create(long rowID, long columnID) {
-        return Column.create(rowID, columnID, 0);
+        return create(rowID, columnID, "", "", 0);
     }
 
     public static Column create(long rowID, long columnID, long timestamp) {
-        Column column = new Column();
-        column.rowID = rowID;
-        column.columnID = columnID;
-        column.timestamp = timestamp;
-        return column;
+        return create(rowID, columnID, "", "", timestamp);
+    }
+
+    public static Column create(long rowID, String columnKey) {
+        return create(rowID, 0, columnKey, "", 0);
+    }
+
+    public static Column create(long rowID, String columnKey, long timestamp) {
+        return create(rowID, 0, columnKey, "", timestamp);
+    }
+
+    public static Column create(String rowKey, long columnID) {
+        return create(0, columnID, rowKey, "", 0);
+    }
+
+    public static Column create(String rowKey, long columnID, long timestamp) {
+        return create(0, columnID, rowKey, "", timestamp);
+    }
+
+    public static Column create(String rowKey, String columnKey) {
+        return create(0, 0, rowKey, columnKey, 0);
+    }
+
+    public static Column create(String rowKey, String columnKey, long timestamp) {
+        return create(0, 0, rowKey, columnKey, timestamp);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -62,11 +83,39 @@ public class Column {
     }
 
     @SuppressWarnings("WeakerAccess")
+    public String getRowKey() {
+        return this.rowKey;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public String getColumnKey() {
+        return this.columnKey;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public long getTimestamp() {
         return this.timestamp;
     }
 
-    public boolean isDefaultColumn() {
+    @Override
+    public long shard(long shardWidth) {
+        return this.columnID / shardWidth;
+    }
+
+    @Override
+    public int compareTo(Record other) {
+        Column column = (Column) other;
+        // TODO: check column
+        if (this.rowID == column.rowID) {
+            if (this.columnID == column.columnID) {
+                return 0;
+            }
+            return (this.columnID < column.columnID) ? -1 : 1;
+        } else return (this.rowID < column.rowID) ? -1 : 1;
+    }
+
+    @Override
+    public boolean isDefault() {
         return this.defaultColumn;
     }
 
@@ -84,6 +133,8 @@ public class Column {
         return this.defaultColumn == column.defaultColumn ||
                 this.rowID == column.rowID &&
                         this.columnID == column.columnID &&
+                        this.rowKey.equals(column.rowKey) &&
+                        this.columnKey.equals(column.columnKey) &&
                         this.timestamp == column.timestamp;
     }
 
@@ -95,6 +146,8 @@ public class Column {
         return new HashCodeBuilder(31, 47)
                 .append(this.rowID)
                 .append(this.columnID)
+                .append(this.rowKey)
+                .append(this.columnKey)
                 .append(this.timestamp)
                 .toHashCode();
     }
@@ -104,7 +157,8 @@ public class Column {
         if (this.defaultColumn) {
             return "(default column)";
         }
-        return String.format("%d:%d[%d]", this.rowID, this.columnID, this.timestamp);
+        return String.format("%d:%d %s:%s [%d]",
+                this.rowID, this.columnID, this.rowKey, this.columnKey, this.timestamp);
     }
 
     private Column() {
@@ -116,8 +170,20 @@ public class Column {
         return column;
     }
 
+    private static Column create(long rowID, long columnID, String rowKey, String columnKey, long timestamp) {
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnID = columnID;
+        column.rowKey = rowKey;
+        column.columnKey = columnKey;
+        column.timestamp = timestamp;
+        return column;
+    }
+
     long rowID = 0;
     long columnID = 0;
+    String rowKey = "";
+    String columnKey = "";
     long timestamp = 0;
     boolean defaultColumn = false;
 }

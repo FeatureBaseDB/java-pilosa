@@ -42,6 +42,31 @@ import static org.junit.Assert.*;
 @Category(UnitTest.class)
 public class ColumnTest {
     @Test
+    public void createTest() {
+        Column column;
+
+        column = Column.create(1, 100);
+        compare(column, 1, 100, "", "", 0);
+        column = Column.create(1, 100, 65000);
+        compare(column, 1, 100, "", "", 65000);
+
+        column = Column.create(1, "bar");
+        compare(column, 1, 0, "bar", "", 0);
+        column = Column.create(1, "bar", 65000);
+        compare(column, 1, 0, "bar", "", 65000);
+
+        column = Column.create("foo", 100);
+        compare(column, 0, 100, "foo", "", 0);
+        column = Column.create("foo", 100, 65000);
+        compare(column, 0, 100, "foo", "", 65000);
+
+        column = Column.create("foo", "bar");
+        compare(column, 0, 0, "foo", "bar", 0);
+        column = Column.create("foo", "bar", 65000);
+        compare(column, 0, 0, "foo", "bar", 65000);
+    }
+
+    @Test
     public void hashCodeTest() {
         Column column1 = Column.create(1, 10, 65000);
         Column column2 = Column.create(1, 10, 65000);
@@ -50,9 +75,16 @@ public class ColumnTest {
     }
 
     @Test
+    public void equalsTest() {
+        Column a = Column.create(5, 7, 100000);
+        Column b = Column.create(5, 7, 100000);
+        assertEquals(a, b);
+    }
+
+    @Test
     public void equalsSameObjectTest() {
         Column column = Column.create(5, 7, 100000);
-        assertTrue(column.equals(column));
+        assertEquals(column, column);
     }
 
     @Test
@@ -64,7 +96,15 @@ public class ColumnTest {
     @Test
     public void toStringTest() {
         Column column = Column.create(15, 2, 50000);
-        assertEquals("15:2[50000]", column.toString());
+        assertEquals("15:2 : [50000]", column.toString());
         assertEquals("(default column)", Column.DEFAULT.toString());
+    }
+
+    private void compare(Column column, long rowID, long columnID, String rowKey, String columnKey, long timestamp) {
+        assertEquals(rowID, column.getRowID());
+        assertEquals(columnID, column.getColumnID());
+        assertEquals(rowKey, column.getRowKey());
+        assertEquals(columnKey, column.getColumnKey());
+        assertEquals(timestamp, column.getTimestamp());
     }
 }

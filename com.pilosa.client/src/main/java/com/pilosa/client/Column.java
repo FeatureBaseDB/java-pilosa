@@ -130,12 +130,12 @@ public class Column implements Record {
         }
 
         Column column = (Column) o;
-        return this.defaultColumn == column.defaultColumn ||
+        return this.defaultColumn == column.defaultColumn &&
                 this.rowID == column.rowID &&
-                        this.columnID == column.columnID &&
-                        this.rowKey.equals(column.rowKey) &&
-                        this.columnKey.equals(column.columnKey) &&
-                        this.timestamp == column.timestamp;
+                this.columnID == column.columnID &&
+                this.rowKey.equals(column.rowKey) &&
+                this.columnKey.equals(column.columnKey) &&
+                this.timestamp == column.timestamp;
     }
 
     @Override

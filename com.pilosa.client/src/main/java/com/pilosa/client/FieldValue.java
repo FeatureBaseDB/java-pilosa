@@ -48,21 +48,6 @@ public class FieldValue implements Record {
         return create(0, columnKey, value);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.columnID;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public String getColumnKey() {
-        return this.columnKey;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public long getValue() {
-        return this.value;
-    }
-
     @Override
     public long shard(long shardWidth) {
         return this.columnID / shardWidth;
@@ -75,8 +60,10 @@ public class FieldValue implements Record {
 
     @Override
     public int compareTo(Record record) {
+        // NOTE: This is supposed to be used only during importing !!!
         FieldValue fieldValue = (FieldValue) record;
         // TODO: check field value
+        // We check only the columnID, since columnKey is not used for sorting during import.
         if (this.columnID == fieldValue.columnID) {
             return 0;
         }
@@ -94,7 +81,7 @@ public class FieldValue implements Record {
         }
 
         FieldValue other = (FieldValue) o;
-        return this.defaultFieldValue == other.defaultFieldValue ||
+        return this.defaultFieldValue == other.defaultFieldValue &&
                 this.columnID == other.columnID &&
                         this.columnKey.equals(other.columnKey) &&
                         this.value == other.value;

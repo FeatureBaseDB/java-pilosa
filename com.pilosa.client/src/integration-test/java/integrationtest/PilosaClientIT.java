@@ -460,14 +460,13 @@ public class PilosaClientIT {
             );
             QueryResponse response = client.query(bq);
 
-//
-//            List<String> target = Arrays.asList("three", "one", "five");
-//            List<QueryResult> results = response.getResults();
-//            for (int i = 0; i < results.size(); i++) {
-//                RowResult br = results.get(i).getRow();
-//                System.out.println(br.getColumns().size());
-//                assertEquals(target.get(i), br.getColumns().get(0));
-//            }
+            List<String> target = Arrays.asList("three", "one", "five");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(1, br.getKeys().size());
+                assertEquals(target.get(i), br.getKeys().get(0));
+            }
         }
     }
 
@@ -476,25 +475,62 @@ public class PilosaClientIT {
         try (PilosaClient client = this.getClient()) {
             RecordIterator iterator = StaticColumnIterator.fieldValuesWithIDs();
             FieldOptions options = FieldOptions.builder()
-                    .fieldInt(-10, 100)
+                    .fieldInt(0, 100)
                     .build();
-            Field field = this.index.field("importfield-int", options);
+            Field field = this.index.field("importvaluefield", options);
             client.ensureField(field);
             client.importField(field, iterator);
-            PqlBatchQuery bq = index.batchQuery(
+            PqlBatchQuery bq = this.index.batchQuery(
                     field.row(2),
                     field.row(7),
                     field.row(10)
             );
-            QueryResponse response = client.query(bq);
+            client.query(bq);
 
-            List<Long> target = Arrays.asList(3L, 1L, -5L);
-            List<QueryResult> results = response.getResults();
-            for (int i = 0; i < results.size(); i++) {
-                RowResult br = results.get(i).getRow();
-//                System.out.println(br.getValue());
-//                assertEquals((long) target.get(i), br.getValue());
-            }
+            Field field2 = this.index.field("importvaluefield-set");
+            client.ensureField(field2);
+            bq = this.index.batchQuery(
+                    field2.set(1, 10),
+                    field2.set(1, 7)
+            );
+            client.query(bq);
+
+            QueryResponse response = client.query(field.sum(field2.row(1)));
+            assertEquals(8, response.getResult().getValue());
+        }
+    }
+
+    @Test
+    public void importFieldValuesWithKeysTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIterator.fieldValuesWithIDs();
+            FieldOptions options = FieldOptions.builder()
+                    .fieldInt(0, 100)
+                    .keys(true)
+                    .build();
+            Field field = this.keyIndex.field("importvaluefieldkeys", options);
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
+                    field.row("two"),
+                    field.row("seven"),
+                    field.row("ten")
+            );
+            client.query(bq);
+
+            FieldOptions options2 = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field2 = this.keyIndex.field("importvaluefieldkeys-set", options2);
+            client.ensureField(field2);
+            bq = this.keyIndex.batchQuery(
+                    field2.set("one", "ten"),
+                    field2.set("one", "seven")
+            );
+            client.query(bq);
+
+            QueryResponse response = client.query(field.sum(field2.row("one")));
+            assertEquals(8, response.getResult().getValue());
         }
     }
 
@@ -535,7 +571,7 @@ public class PilosaClientIT {
                 while (true) {
                     try {
                         ImportStatusUpdate statusUpdate = this.statusQueue.take();
-                        assertEquals(String.format("thread:%d imported:%d records for shard:%d in:%d ms",
+                        assertEquals(String.format("thread:%d imported:%d columns for shard:%d in:%d ms",
                                 statusUpdate.getThreadID(), statusUpdate.getImportedCount(), statusUpdate.getShard(), statusUpdate.getTimeMs()),
                                 statusUpdate.toString()); // for coverage
                     } catch (InterruptedException e) {
@@ -1170,8 +1206,7 @@ class StaticColumnIterator implements RecordIterator {
         this.records = new ArrayList<>(3);
         if (keys) {
             if (intValues) {
-                this.records.add(FieldValue.create("ten", -5));
-                this.records.add(FieldValue.create("two", 3));
+                this.records.add(FieldValue.create("ten", 7));
                 this.records.add(FieldValue.create("seven", 1));
             } else {
                 this.records.add(Column.create("ten", "five"));
@@ -1181,8 +1216,7 @@ class StaticColumnIterator implements RecordIterator {
             }
         } else {
             if (intValues) {
-                this.records.add(FieldValue.create(10, -5));
-                this.records.add(FieldValue.create(2, 3));
+                this.records.add(FieldValue.create(10, 7));
                 this.records.add(FieldValue.create(7, 1));
             } else {
                 this.records.add(Column.create(10, 5));

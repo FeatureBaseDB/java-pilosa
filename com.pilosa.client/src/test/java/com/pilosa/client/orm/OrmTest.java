@@ -95,6 +95,27 @@ public class OrmTest {
                 b.serialize());
     }
 
+    @Test
+    public void nestedBatchTest() {
+        PqlBatchQuery b1 = projectIndex.batchQuery(collabFrame.bitmap(2));
+        PqlBatchQuery b2 = projectIndex.batchQuery(collabFrame.setBit(20, 40));
+        PqlBatchQuery b = projectIndex.batchQuery(b1, b2, collabFrame.topN(2));
+        assertEquals(
+                "Bitmap(project=2, frame='collaboration')" +
+                        "SetBit(project=20, frame='collaboration', user=40)" +
+                        "TopN(frame='collaboration', n=2, inverse=false)",
+                b.serialize());
+    }
+
+    @Test
+    public void batchSizeTest() {
+        PqlBatchQuery b = projectIndex.batchQuery();
+        assertEquals(0, b.size());
+
+        b.add(collabFrame.bitmap(2));
+        assertEquals(1, b.size());
+    }
+
     @Test(expected = PilosaException.class)
     public void batchAddFailsForDifferentDbsTest() {
         PqlBatchQuery b = projectIndex.batchQuery();

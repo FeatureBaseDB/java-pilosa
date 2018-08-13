@@ -480,16 +480,10 @@ public class PilosaClientIT {
             Field field = this.index.field("importvaluefield", options);
             client.ensureField(field);
             client.importField(field, iterator);
-            PqlBatchQuery bq = this.index.batchQuery(
-                    field.row(2),
-                    field.row(7),
-                    field.row(10)
-            );
-            client.query(bq);
 
             Field field2 = this.index.field("importvaluefield-set");
             client.ensureField(field2);
-            bq = this.index.batchQuery(
+            PqlBatchQuery bq = this.index.batchQuery(
                     field2.set(1, 10),
                     field2.set(1, 7)
             );
@@ -503,7 +497,7 @@ public class PilosaClientIT {
     @Test
     public void importFieldValuesWithKeysTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            RecordIterator iterator = StaticColumnIterator.fieldValuesWithIDs();
+            RecordIterator iterator = StaticColumnIterator.fieldValuesWithKeys();
             FieldOptions options = FieldOptions.builder()
                     .fieldInt(0, 100)
                     .keys(true)
@@ -511,19 +505,13 @@ public class PilosaClientIT {
             Field field = this.keyIndex.field("importvaluefieldkeys", options);
             client.ensureField(field);
             client.importField(field, iterator);
-            PqlBatchQuery bq = this.keyIndex.batchQuery(
-                    field.row("two"),
-                    field.row("seven"),
-                    field.row("ten")
-            );
-            client.query(bq);
 
             FieldOptions options2 = FieldOptions.builder()
                     .keys(true)
                     .build();
             Field field2 = this.keyIndex.field("importvaluefieldkeys-set", options2);
             client.ensureField(field2);
-            bq = this.keyIndex.batchQuery(
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
                     field2.set("one", "ten"),
                     field2.set("one", "seven")
             );
@@ -1198,7 +1186,7 @@ class StaticColumnIterator implements RecordIterator {
         return new StaticColumnIterator(false, true);
     }
 
-    public static StaticColumnIterator fieldValuesWithKeyss() {
+    public static StaticColumnIterator fieldValuesWithKeys() {
         return new StaticColumnIterator(true, true);
     }
 

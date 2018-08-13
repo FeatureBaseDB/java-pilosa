@@ -32,22 +32,47 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.status;
 
-import com.pilosa.client.orm.Record;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public interface ShardRecords {
-    long getShard();
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
-    String getIndexName();
+public class StatusInfo {
+    public static StatusInfo fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, StatusInfo.class);
+    }
 
-    boolean isIndexKeys();
 
-    int size();
+    @JsonProperty("nodes")
+    public List<StatusNodeInfo> getNodes() {
+        return this.nodes;
+    }
 
-    void add(Record record);
+    public void setNodes(List<StatusNodeInfo> nodes) {
+        this.nodes = nodes;
+    }
 
-    void clear();
+    public StatusNodeInfo getCoordinatorNode() {
+        for (StatusNodeInfo node : this.nodes) {
+            if (node.isCoordinator()) {
+                return node;
+            }
+        }
+        return null;
+    }
 
-    ImportRequest toImportRequest();
+    static {
+        ObjectMapper m = new ObjectMapper();
+        m.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper = m;
+    }
+
+
+    private final static ObjectMapper mapper;
+    private List<StatusNodeInfo> nodes;
 }

@@ -32,22 +32,40 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.status;
 
-import com.pilosa.client.orm.Record;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public interface ShardRecords {
-    long getShard();
+public class StatusNodeURIInfo {
 
-    String getIndexName();
+    @JsonProperty("scheme")
+    public String getScheme() {
+        return this.scheme;
+    }
 
-    boolean isIndexKeys();
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
-    int size();
+    @JsonProperty("host")
+    public String getHost() {
+        return this.host;
+    }
 
-    void add(Record record);
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-    void clear();
+    @JsonProperty("port")
+    public int getPort() {
+        return this.port;
+    }
 
-    ImportRequest toImportRequest();
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    private String scheme;
+    private String host;
+    private int port;
 }

@@ -63,7 +63,7 @@ public class PilosaClientTest {
     @Test(expected = PilosaException.class)
     public void fetchFieldNodesTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("non-existent-domain-555.com:19000")) {
-            client.fetchFieldNodes("foo", 0);
+            client.fetchFragmentNodes("foo", 0);
         }
     }
 

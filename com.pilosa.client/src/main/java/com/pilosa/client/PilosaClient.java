@@ -42,10 +42,7 @@ import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import com.pilosa.client.orm.*;
-import com.pilosa.client.status.FieldInfo;
-import com.pilosa.client.status.IFieldInfo;
-import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.SchemaInfo;
+import com.pilosa.client.status.*;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -581,7 +578,14 @@ public class PilosaClient implements AutoCloseable {
 
     void importColumns(ShardRecords records) {
         String indexName = records.getIndexName();
-        List<IFragmentNode> nodes = fetchFieldNodes(indexName, records.getShard());
+        List<IFragmentNode> nodes;
+        if (records.isIndexKeys()) {
+            nodes = new ArrayList<>();
+            IFragmentNode node = fetchCoordinatorNode();
+            nodes.add(node);
+        } else {
+            nodes = fetchFragmentNodes(indexName, records.getShard());
+        }
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
@@ -590,7 +594,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    List<IFragmentNode> fetchFieldNodes(String indexName, long shard) {
+    List<IFragmentNode> fetchFragmentNodes(String indexName, long shard) {
         String key = String.format("%s%d", indexName, shard);
         List<IFragmentNode> nodes;
 
@@ -617,6 +621,35 @@ public class PilosaClient implements AutoCloseable {
                 // Cache the nodes
                 this.fragmentNodeCache.put(key, nodes);
                 return nodes;
+            }
+            throw new PilosaException("Server returned empty response");
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
+        }
+    }
+
+    IFragmentNode fetchCoordinatorNode() {
+        try {
+            CloseableHttpResponse response = clientExecute("GET", "/status", null, null,
+                    "Error while fetch the coordinator node",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (InputStream src = response.getEntity().getContent()) {
+                    StatusInfo statusInfo = StatusInfo.fromInputStream(src);
+                    StatusNodeInfo coordinatorNode = statusInfo.getCoordinatorNode();
+                    if (coordinatorNode == null) {
+                        throw new PilosaException("Coordinator node not found");
+                    }
+                    FragmentNode node = new FragmentNode();
+                    StatusNodeURIInfo uri = coordinatorNode.getUri();
+                    FragmentNodeURI nodeURI = new FragmentNodeURI();
+                    nodeURI.setScheme(uri.getScheme());
+                    nodeURI.setHost(uri.getHost());
+                    nodeURI.setPort(uri.getPort());
+                    node.setURI(nodeURI);
+                    return node;
+                }
             }
             throw new PilosaException("Server returned empty response");
         } catch (IOException ex) {

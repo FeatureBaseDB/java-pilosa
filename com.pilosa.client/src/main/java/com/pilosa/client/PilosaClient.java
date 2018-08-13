@@ -579,7 +579,7 @@ public class PilosaClient implements AutoCloseable {
     void importColumns(ShardRecords records) {
         String indexName = records.getIndexName();
         List<IFragmentNode> nodes;
-        if (records.isIndexKeys()) {
+        if (records.isIndexKeys() || records.isFieldKeys()) {
             nodes = new ArrayList<>();
             IFragmentNode node = fetchCoordinatorNode();
             nodes.add(node);

@@ -62,6 +62,11 @@ class ShardColumns implements ShardRecords {
     }
 
     @Override
+    public boolean isFieldKeys() {
+        return this.field.getOptions().isKeys();
+    }
+
+    @Override
     public void add(Record record) {
         Column column = (Column) record;
         // TODO: check column

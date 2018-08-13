@@ -43,6 +43,8 @@ public interface ShardRecords {
 
     boolean isIndexKeys();
 
+    boolean isFieldKeys();
+
     int size();
 
     void add(Record record);

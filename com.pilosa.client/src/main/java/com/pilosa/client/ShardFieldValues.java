@@ -62,6 +62,11 @@ public class ShardFieldValues implements ShardRecords {
     }
 
     @Override
+    public boolean isFieldKeys() {
+        return this.field.getOptions().isKeys();
+    }
+
+    @Override
     public int size() {
         return this.fieldValues.size();
     }

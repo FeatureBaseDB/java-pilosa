@@ -98,6 +98,9 @@ import java.util.concurrent.*;
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
 public class PilosaClient implements AutoCloseable {
+
+    public static String PQL_VERSION = "1.0";
+
     /**
      * Creates a client with the default address and options.
      *
@@ -503,6 +506,10 @@ public class PilosaClient implements AutoCloseable {
         if (response == null) {
             throw new PilosaException(String.format("Tried %s hosts, still failing", MAX_HOSTS));
         }
+        Header warningHeader = response.getFirstHeader("warning");
+        if (warningHeader != null) {
+            logger.warn(warningHeader.getValue());
+        }
         try {
             if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
                 int statusCode = response.getStatusLine().getStatusCode();
@@ -660,7 +667,8 @@ public class PilosaClient implements AutoCloseable {
 
         protobufHeaders = new Header[]{
                 new BasicHeader("Content-Type", "application/x-protobuf"),
-                new BasicHeader("Accept", "application/x-protobuf")
+                new BasicHeader("Accept", "application/x-protobuf"),
+                new BasicHeader("PQL-Version", PQL_VERSION)
         };
     }
 

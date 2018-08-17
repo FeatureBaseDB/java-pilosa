@@ -35,7 +35,7 @@
 package com.pilosa.client.orm;
 
 public class PqlBaseQuery implements PqlQuery {
-    private String pql;
+    SerializedQuery query;
     private Index index = null;
 
     PqlBaseQuery(String pql) {
@@ -43,7 +43,8 @@ public class PqlBaseQuery implements PqlQuery {
     }
 
     PqlBaseQuery(String pql, Index index) {
-        this.pql = pql;
+        boolean hasKeys = (index == null) ? false : index.getOptions().isKeys();
+        this.query = new SerializedQuery(pql, hasKeys);
         this.index = index;
     }
 
@@ -51,7 +52,7 @@ public class PqlBaseQuery implements PqlQuery {
         return this.index;
     }
 
-    public String serialize() {
-        return this.pql;
+    public SerializedQuery serialize() {
+        return this.query;
     }
 }

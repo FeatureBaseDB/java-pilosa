@@ -34,11 +34,32 @@
 
 package com.pilosa.client.orm;
 
-public interface PqlQuery {
-    Index getIndex();
+public class SerializedQuery {
+    public SerializedQuery(String query, boolean keys) {
+        this.query = query;
+        this.keys = keys;
+    }
 
-    /**
-     * @return the query in a form consumable by {@link com.pilosa.client.PilosaClient}
-     */
-    SerializedQuery serialize();
+    public static SerializedQuery withQuery(String query) {
+        return new SerializedQuery(query, false);
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public boolean isKeys() {
+        return this.keys;
+    }
+
+    public void setKeys(boolean keys) {
+        this.keys = keys;
+    }
+
+    private String query;
+    private boolean keys;
 }

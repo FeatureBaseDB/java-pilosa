@@ -41,10 +41,7 @@ import com.pilosa.client.exceptions.HttpConflict;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
-import com.pilosa.client.orm.Field;
-import com.pilosa.client.orm.Index;
-import com.pilosa.client.orm.PqlQuery;
-import com.pilosa.client.orm.Schema;
+import com.pilosa.client.orm.*;
 import com.pilosa.client.status.FieldInfo;
 import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
@@ -181,7 +178,6 @@ public class PilosaClient implements AutoCloseable {
         request.setExcludeRowAttributes(options.isExcludeAttributes());
         request.setExcludeColumns(options.isExcludeColumns());
         request.setShards(options.getShards());
-        request.setQuery(query.serialize());
         return queryPath(request);
     }
 
@@ -684,6 +680,7 @@ class QueryRequest {
     private boolean excludeColumns = false;
     private boolean excludeRowAttributes = false;
     private Long[] shards = {};
+    private boolean useCoordinator;
 
     private QueryRequest(Index index) {
         this.index = index;
@@ -695,7 +692,9 @@ class QueryRequest {
 
     static QueryRequest withQuery(PqlQuery query) {
         QueryRequest request = QueryRequest.withIndex(query.getIndex());
-        request.setQuery(query.serialize());
+        SerializedQuery q = query.serialize();
+        request.setQuery(q.getQuery());
+        request.useCoordinator = q.isKeys();
         return request;
     }
 

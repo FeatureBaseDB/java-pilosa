@@ -163,7 +163,10 @@ public class Index {
      * @return a Pql query
      */
     public PqlBaseQuery rawQuery(String query) {
-        return new PqlBaseQuery(query, this);
+        PqlBaseQuery q = new PqlBaseQuery(query, this);
+        // raw queries are always assumed to have keys
+        q.query.setKeys(true);
+        return q;
     }
 
     /**
@@ -242,7 +245,7 @@ public class Index {
      * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */
     public PqlBaseQuery count(PqlRowQuery rows) {
-        return pqlQuery(String.format("Count(%s)", rows.serialize()));
+        return pqlQuery(String.format("Count(%s)", rows.serialize().getQuery()), false);
     }
 
     /**
@@ -265,7 +268,7 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(%d,%s)", id, attributesString));
+        return pqlQuery(String.format("SetColumnAttrs(%d,%s)", id, attributesString), false);
     }
 
     /**
@@ -288,8 +291,8 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(String key, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs('%s',%s)",
-                key, attributesString));
+        String text = String.format("SetColumnAttrs('%s',%s)", key, attributesString);
+        return pqlQuery(text, this.getOptions().isKeys());
     }
 
     public Map<String, Field> getFields() {
@@ -321,12 +324,20 @@ public class Index {
                 .toHashCode();
     }
 
-    PqlBaseQuery pqlQuery(String query) {
-        return new PqlBaseQuery(query, this);
+    PqlBaseQuery pqlQuery(String query, boolean hasKeys) {
+        PqlBaseQuery q = new PqlBaseQuery(query, this);
+        if (hasKeys) {
+            q.query.setKeys(true);
+        }
+        return q;
     }
 
-    PqlRowQuery pqlRowQuery(String query) {
-        return new PqlRowQuery(query, this);
+    PqlRowQuery pqlRowQuery(String query, boolean hasKeys) {
+        PqlRowQuery q = new PqlRowQuery(query, this);
+        if (hasKeys) {
+            q.query.setKeys(true);
+        }
+        return q;
     }
 
     Index(Index index) {
@@ -339,15 +350,20 @@ public class Index {
 
     private PqlRowQuery rowOperation(String name, PqlRowQuery... rows) {
         if (rows.length == 0) {
-            return pqlRowQuery(String.format("%s()", name));
+            return pqlRowQuery(String.format("%s()", name), this.getOptions().isKeys());
         }
         StringBuilder builder = new StringBuilder(rows.length - 1);
-        builder.append(rows[0].serialize());
+        SerializedQuery q = rows[0].serialize();
+        builder.append(q.getQuery());
+        boolean hasKeys = q.isKeys();
         for (int i = 1; i < rows.length; i++) {
             builder.append(",");
-            builder.append(rows[i].serialize());
+            q = rows[i].serialize();
+            builder.append(q.getQuery());
+            hasKeys = hasKeys || q.isKeys();
         }
-        return pqlRowQuery(String.format("%s(%s)", name, builder.toString()));
+        String text = String.format("%s(%s)", name, builder.toString());
+        return pqlRowQuery(text, hasKeys);
     }
 
     private Index(String name, IndexOptions options) {

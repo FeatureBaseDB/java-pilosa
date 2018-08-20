@@ -42,10 +42,7 @@ import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import com.pilosa.client.orm.*;
-import com.pilosa.client.status.FieldInfo;
-import com.pilosa.client.status.IFieldInfo;
-import com.pilosa.client.status.IndexInfo;
-import com.pilosa.client.status.SchemaInfo;
+import com.pilosa.client.status.*;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -267,7 +264,7 @@ public class PilosaClient implements AutoCloseable {
      * @param iterator     specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
-    public void importField(Field field, ColumnIterator iterator) {
+    public void importField(Field field, RecordIterator iterator) {
         importField(field, iterator, ImportOptions.builder().build(), null);
     }
 
@@ -284,7 +281,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importField(Field field, ColumnIterator iterator, ImportOptions options) {
+    public void importField(Field field, RecordIterator iterator, ImportOptions options) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, null);
     }
@@ -303,7 +300,7 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public void importField(Field field, ColumnIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void importField(Field field, RecordIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         BitImportManager manager = new BitImportManager(options);
         manager.run(this, field, iterator, statusQueue);
     }
@@ -318,7 +315,7 @@ public class PilosaClient implements AutoCloseable {
         String path = "/schema";
         try {
             try (CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while reading schema",
-                    ReturnClientResponse.ERROR_CHECKED_RESPONSE)) {
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE, false)) {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     try (InputStream src = entity.getContent()) {
@@ -418,7 +415,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public CloseableHttpResponse httpRequest(final String method, final String path, final ByteArrayEntity data,
                                              Header[] headers) {
-        return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE);
+        return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE, false);
     }
 
     protected PilosaClient(Cluster cluster, ClientOptions options) {
@@ -474,18 +471,19 @@ public class PilosaClient implements AutoCloseable {
 
     private void clientExecute(final String method, final String path, final ByteArrayEntity data,
                                Header[] headers, String errorMessage) {
-        clientExecute(method, path, data, headers, errorMessage, ReturnClientResponse.NO_RESPONSE);
+        clientExecute(method, path, data, headers, errorMessage, ReturnClientResponse.NO_RESPONSE, false);
     }
 
     private CloseableHttpResponse clientExecute(final String method, final String path, final ByteArrayEntity data,
-                                                Header[] headers, String errorMessage, ReturnClientResponse returnResponse) {
+                                                Header[] headers, String errorMessage, ReturnClientResponse returnResponse,
+                                                boolean useCoordinator) {
         if (this.client == null) {
             connect();
         }
         CloseableHttpResponse response = null;
         // try at most MAX_HOSTS non-failed hosts; protect against broken cluster.removeHost
         for (int i = 0; i < MAX_HOSTS; i++) {
-            HttpRequestBase request = makeRequest(method, path, data, headers);
+            HttpRequestBase request = makeRequest(method, path, data, headers, useCoordinator);
             logger.debug("Request: {} {}", request.getMethod(), request.getURI());
             try {
                 response = client.execute(request);
@@ -532,9 +530,16 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers) {
+    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers, boolean useCoordinator) {
         HttpRequestBase request;
-        String uri = this.getAddress() + path;
+        String uri;
+        if (useCoordinator) {
+            IFragmentNode node = fetchCoordinatorNode();
+            uri = node.toURI().getNormalized() + path;
+        } else {
+            uri = this.getAddress() + path;
+        }
+
         switch (method) {
             case "GET":
                 request = new HttpGet(uri);
@@ -561,7 +566,7 @@ public class PilosaClient implements AutoCloseable {
         ByteArrayEntity body = new ByteArrayEntity(qr.toByteArray());
         try {
             CloseableHttpResponse response = clientExecute("POST", path, body, protobufHeaders, "Error while posting query",
-                    ReturnClientResponse.RAW_RESPONSE);
+                    ReturnClientResponse.RAW_RESPONSE, request.isUseCoordinator());
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream src = entity.getContent()) {
@@ -578,18 +583,25 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    void importColumns(ShardColumns shardColumns) {
-        String indexName = shardColumns.getIndex().getName();
-        List<IFragmentNode> nodes = fetchFieldNodes(indexName, shardColumns.getShard());
+    void importColumns(ShardRecords records) {
+        String indexName = records.getIndexName();
+        List<IFragmentNode> nodes;
+        if (records.isIndexKeys() || records.isFieldKeys()) {
+            nodes = new ArrayList<>();
+            IFragmentNode node = fetchCoordinatorNode();
+            nodes.add(node);
+        } else {
+            nodes = fetchFragmentNodes(indexName, records.getShard());
+        }
         for (IFragmentNode node : nodes) {
             Cluster cluster = Cluster.withHost(node.toURI());
             PilosaClient client = this.newClientInstance(cluster, this.options);
-            Internal.ImportRequest importRequest = shardColumns.convertToImportRequest();
+            ImportRequest importRequest = records.toImportRequest();
             client.importNode(importRequest);
         }
     }
 
-    List<IFragmentNode> fetchFieldNodes(String indexName, long shard) {
+    List<IFragmentNode> fetchFragmentNodes(String indexName, long shard) {
         String key = String.format("%s%d", indexName, shard);
         List<IFragmentNode> nodes;
 
@@ -606,7 +618,7 @@ public class PilosaClient implements AutoCloseable {
         String path = String.format("/internal/fragment/nodes?index=%s&shard=%d", indexName, shard);
         try {
             CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while fetching fragment nodes",
-                    ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE, false);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try (InputStream src = response.getEntity().getContent()) {
@@ -623,10 +635,38 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    void importNode(Internal.ImportRequest importRequest) {
-        ByteArrayEntity body = new ByteArrayEntity(importRequest.toByteArray());
-        String path = String.format("/index/%s/field/%s/import", importRequest.getIndex(), importRequest.getField());
-        clientExecute("POST", path, body, protobufHeaders, "Error while importing");
+    IFragmentNode fetchCoordinatorNode() {
+        try {
+            CloseableHttpResponse response = clientExecute("GET", "/status", null, null,
+                    "Error while fetch the coordinator node",
+                    ReturnClientResponse.ERROR_CHECKED_RESPONSE, false);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (InputStream src = response.getEntity().getContent()) {
+                    StatusInfo statusInfo = StatusInfo.fromInputStream(src);
+                    StatusNodeInfo coordinatorNode = statusInfo.getCoordinatorNode();
+                    if (coordinatorNode == null) {
+                        throw new PilosaException("Coordinator node not found");
+                    }
+                    FragmentNode node = new FragmentNode();
+                    StatusNodeURIInfo uri = coordinatorNode.getUri();
+                    FragmentNodeURI nodeURI = new FragmentNodeURI();
+                    nodeURI.setScheme(uri.getScheme());
+                    nodeURI.setHost(uri.getHost());
+                    nodeURI.setPort(uri.getPort());
+                    node.setURI(nodeURI);
+                    return node;
+                }
+            }
+            throw new PilosaException("Server returned empty response");
+        } catch (IOException ex) {
+            throw new PilosaException("Error while reading response", ex);
+        }
+    }
+
+    void importNode(ImportRequest request) {
+        ByteArrayEntity entity = new ByteArrayEntity(request.getPayload());
+        clientExecute("POST", request.getPath(), entity, protobufHeaders, "Error while importing");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -706,6 +746,10 @@ class QueryRequest {
         return this.index;
     }
 
+    public boolean isUseCoordinator() {
+        return this.useCoordinator;
+    }
+
     void setQuery(String query) {
         this.query = query;
     }
@@ -778,27 +822,17 @@ class FragmentNodeURI {
     private int port;
 }
 
-class BitComparator implements Comparator<Column> {
-    @Override
-    public int compare(Column column, Column other) {
-        // The maximum ingestion speed is accomplished by sorting columns by row ID and then column ID
-        int bitCmp = Long.signum(column.rowID - other.rowID);
-        int prfCmp = Long.signum(column.columnID - other.columnID);
-        return (bitCmp == 0) ? prfCmp : bitCmp;
-    }
-}
-
 class BitImportManager {
-    public void run(final PilosaClient client, final Field field, final ColumnIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public void run(final PilosaClient client, final Field field, final RecordIterator iterator, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         final long shardWidth = this.options.getShardWidth();
         final int threadCount = this.options.getThreadCount();
         final int batchSize = this.options.getBatchSize();
-        List<BlockingQueue<Column>> queues = new ArrayList<>(threadCount);
+        List<BlockingQueue<Record>> queues = new ArrayList<>(threadCount);
         List<Future> workers = new ArrayList<>(threadCount);
 
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            BlockingQueue<Column> q = new LinkedBlockingDeque<>(batchSize);
+            BlockingQueue<Record> q = new LinkedBlockingDeque<>(batchSize);
             queues.add(q);
             Runnable worker = new BitImportWorker(client, field, q, statusQueue, this.options);
             workers.add(service.submit(worker));
@@ -807,13 +841,13 @@ class BitImportManager {
         try {
             // Push columns from the iterator
             while (iterator.hasNext()) {
-                Column nextColumn = iterator.next();
-                long shard = nextColumn.columnID / shardWidth;
-                queues.get((int) (shard % threadCount)).put(nextColumn);
+                Record record = iterator.next();
+                long shard = record.shard(shardWidth);
+                queues.get((int) (shard % threadCount)).put(record);
             }
 
             // Signal the threads to stop
-            for (BlockingQueue<Column> q : queues) {
+            for (BlockingQueue<Record> q : queues) {
                 q.put(Column.DEFAULT);
             }
 
@@ -843,7 +877,7 @@ class BitImportManager {
 class BitImportWorker implements Runnable {
     BitImportWorker(final PilosaClient client,
                     final Field field,
-                    final BlockingQueue<Column> queue,
+                    final BlockingQueue<Record> queue,
                     final BlockingQueue<ImportStatusUpdate> statusQueue,
                     final ImportOptions options) {
         this.client = client;
@@ -863,29 +897,33 @@ class BitImportWorker implements Runnable {
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                Column column = this.queue.take();
-                if (column.isDefaultColumn()) {
+                Record record = this.queue.take();
+                if (record.isDefault()) {
                     break;
                 }
-                long shard = column.getColumnID() / shardWidth;
-                ShardColumns shardColumns = shardGroup.get(shard);
-                if (shardColumns == null) {
-                    shardColumns = ShardColumns.create(this.field, shard);
-                    shardGroup.put(shard, shardColumns);
+                long shard = record.shard(shardWidth);
+                ShardRecords shardRecords = shardGroup.get(shard);
+                if (shardRecords == null) {
+                    if (this.field.getOptions().getFieldType() == FieldType.INT) {
+                        shardRecords = ShardFieldValues.create(this.field, shard);
+                    } else {
+                        shardRecords = ShardColumns.create(this.field, shard);
+                    }
+                    shardGroup.put(shard, shardRecords);
                 }
-                shardColumns.add(column);
+                shardRecords.add(record);
                 batchCountDown -= 1;
                 if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
-                    for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
-                        shardColumns = entry.getValue();
-                        if (shardColumns.getColumns().size() > 0) {
-                            importColumns(entry.getValue());
+                    for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
+                        shardRecords = entry.getValue();
+                        if (shardRecords.size() > 0) {
+                            importRecords(entry.getValue());
                         }
                     }
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
-                    importColumns(shardGroup.get(largestShard()));
+                    importRecords(shardGroup.get(largestShard()));
                     batchCountDown = this.options.getBatchSize();
                     tic = System.currentTimeMillis();
                 }
@@ -894,11 +932,11 @@ class BitImportWorker implements Runnable {
             }
         }
         // The thread is shutting down, import remaining columns in the batch
-        for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
-            ShardColumns shardColumns = entry.getValue();
-            if (shardColumns.getColumns().size() > 0) {
+        for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
+            ShardRecords records = entry.getValue();
+            if (records.size() > 0) {
                 try {
-                    importColumns(entry.getValue());
+                    importRecords(entry.getValue());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -909,9 +947,9 @@ class BitImportWorker implements Runnable {
     private long largestShard() {
         long largestCount = 0;
         long largestShard = -1;
-        for (Map.Entry<Long, ShardColumns> entry : this.shardGroup.entrySet()) {
-            ShardColumns shardColumns = entry.getValue();
-            int shardBitCount = shardColumns.getColumns().size();
+        for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
+            ShardRecords records = entry.getValue();
+            int shardBitCount = records.size();
             if (shardBitCount > largestCount) {
                 largestCount = shardBitCount;
                 largestShard = entry.getKey();
@@ -920,22 +958,22 @@ class BitImportWorker implements Runnable {
         return largestShard;
     }
 
-    private void importColumns(ShardColumns shardColumns) throws InterruptedException {
+    private void importRecords(ShardRecords records) throws InterruptedException {
         long tic = System.currentTimeMillis();
-        this.client.importColumns(shardColumns);
+        this.client.importColumns(records);
         if (this.statusQueue != null) {
             long tac = System.currentTimeMillis();
             ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
-                    shardColumns.getShard(), shardColumns.getColumns().size(), tac - tic);
+                    records.getShard(), records.size(), tac - tic);
             this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
         }
-        shardColumns.clear();
+        records.clear();
     }
 
     private final PilosaClient client;
     private final Field field;
-    private final BlockingQueue<Column> queue;
+    private final BlockingQueue<Record> queue;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
-    private Map<Long, ShardColumns> shardGroup = new HashMap<>();
+    private Map<Long, ShardRecords> shardGroup = new HashMap<>();
 }

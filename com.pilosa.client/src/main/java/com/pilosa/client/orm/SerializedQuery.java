@@ -35,31 +35,23 @@
 package com.pilosa.client.orm;
 
 public class SerializedQuery {
-    public SerializedQuery(String query, boolean keys) {
+    public SerializedQuery(String query, boolean writeKeys) {
         this.query = query;
-        this.keys = keys;
-    }
-
-    public static SerializedQuery withQuery(String query) {
-        return new SerializedQuery(query, false);
+        this.writeKeys = writeKeys;
     }
 
     public String getQuery() {
         return this.query;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public boolean isWriteKeys() {
+        return this.writeKeys;
     }
 
-    public boolean isKeys() {
-        return this.keys;
-    }
-
-    public void setKeys(boolean keys) {
-        this.keys = keys;
+    public void setWriteKeys(boolean writeKeys) {
+        this.writeKeys = writeKeys;
     }
 
     private String query;
-    private boolean keys;
+    private boolean writeKeys;
 }

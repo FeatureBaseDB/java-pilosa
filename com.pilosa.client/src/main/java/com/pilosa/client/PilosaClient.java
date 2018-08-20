@@ -694,7 +694,7 @@ class QueryRequest {
         QueryRequest request = QueryRequest.withIndex(query.getIndex());
         SerializedQuery q = query.serialize();
         request.setQuery(q.getQuery());
-        request.useCoordinator = q.isKeys();
+        request.useCoordinator = q.isWriteKeys();
         return request;
     }
 

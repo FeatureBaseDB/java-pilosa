@@ -84,7 +84,7 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(long rowID) {
-        return this.index.pqlRowQuery(String.format("Row(%s=%d)", this.name, rowID), false);
+        return this.index.pqlRowQuery(String.format("Row(%s=%d)", this.name, rowID));
     }
 
     /**
@@ -100,7 +100,7 @@ public class Field {
      */
     public PqlRowQuery row(String rowKey) {
         return this.index.pqlRowQuery(String.format("Row(%s='%s')",
-                this.name, rowKey), false);
+                this.name, rowKey));
     }
 
     /**
@@ -424,7 +424,7 @@ public class Field {
         String text = String.format("Range(%s=%d,%sT%s,%sT%s)",
                 this.name, rowID, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end));
-        return this.index.pqlRowQuery(text, false);
+        return this.index.pqlRowQuery(text);
     }
 
     /**
@@ -444,7 +444,7 @@ public class Field {
         String text = String.format("Range(%s='%s',%sT%s,%sT%s)",
                 this.name, rowKey, fmtDate.format(start),
                 fmtTime.format(start), fmtDate.format(end), fmtTime.format(end));
-        return this.index.pqlRowQuery(text, false);
+        return this.index.pqlRowQuery(text);
     }
 
     /**
@@ -564,7 +564,7 @@ public class Field {
      */
     public PqlRowQuery notNull() {
         String qry = String.format("Range(%s != null)", this.name);
-        return this.index.pqlRowQuery(qry, false);
+        return this.index.pqlRowQuery(qry);
     }
 
     /**
@@ -576,7 +576,7 @@ public class Field {
      */
     public PqlRowQuery between(long a, long b) {
         String qry = String.format("Range(%s >< [%d,%d])", this.name, a, b);
-        return this.index.pqlRowQuery(qry, false);
+        return this.index.pqlRowQuery(qry);
     }
 
     /**
@@ -692,7 +692,7 @@ public class Field {
 
     private PqlRowQuery binaryOperation(String op, long n) {
         String qry = String.format("Range(%s %s %d)", this.name, op, n);
-        return this.index.pqlRowQuery(qry, false);
+        return this.index.pqlRowQuery(qry);
     }
 
     private PqlBaseQuery valueQuery(String op, PqlRowQuery row) {

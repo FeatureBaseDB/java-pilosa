@@ -126,7 +126,7 @@ public class PqlBatchQuery implements PqlQuery {
         for (PqlQuery query : this.queries) {
             SerializedQuery q = query.serialize();
             builder.append(q.getQuery());
-            hasKeys = hasKeys || q.isKeys();
+            hasKeys = hasKeys || q.isWriteKeys();
         }
         return new SerializedQuery(builder.toString(), hasKeys);
     }

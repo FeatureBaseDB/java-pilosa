@@ -43,8 +43,7 @@ public class PqlBaseQuery implements PqlQuery {
     }
 
     PqlBaseQuery(String pql, Index index) {
-        boolean hasKeys = (index == null) ? false : index.getOptions().isKeys();
-        this.query = new SerializedQuery(pql, hasKeys);
+        this.query = new SerializedQuery(pql, false);
         this.index = index;
     }
 

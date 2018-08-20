@@ -165,7 +165,7 @@ public class Index {
     public PqlBaseQuery rawQuery(String query) {
         PqlBaseQuery q = new PqlBaseQuery(query, this);
         // raw queries are always assumed to have keys
-        q.query.setKeys(true);
+        q.query.setWriteKeys(true);
         return q;
     }
 
@@ -268,7 +268,8 @@ public class Index {
      */
     public PqlBaseQuery setColumnAttrs(long id, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(mapper, attributes);
-        return pqlQuery(String.format("SetColumnAttrs(%d,%s)", id, attributesString), false);
+        boolean hasKeys = this.getOptions().isKeys();
+        return pqlQuery(String.format("SetColumnAttrs(%d,%s)", id, attributesString), hasKeys);
     }
 
     /**
@@ -327,17 +328,13 @@ public class Index {
     PqlBaseQuery pqlQuery(String query, boolean hasKeys) {
         PqlBaseQuery q = new PqlBaseQuery(query, this);
         if (hasKeys) {
-            q.query.setKeys(true);
+            q.query.setWriteKeys(true);
         }
         return q;
     }
 
-    PqlRowQuery pqlRowQuery(String query, boolean hasKeys) {
-        PqlRowQuery q = new PqlRowQuery(query, this);
-        if (hasKeys) {
-            q.query.setKeys(true);
-        }
-        return q;
+    PqlRowQuery pqlRowQuery(String query) {
+        return new PqlRowQuery(query, this);
     }
 
     Index(Index index) {
@@ -350,20 +347,18 @@ public class Index {
 
     private PqlRowQuery rowOperation(String name, PqlRowQuery... rows) {
         if (rows.length == 0) {
-            return pqlRowQuery(String.format("%s()", name), this.getOptions().isKeys());
+            return pqlRowQuery(String.format("%s()", name));
         }
         StringBuilder builder = new StringBuilder(rows.length - 1);
         SerializedQuery q = rows[0].serialize();
         builder.append(q.getQuery());
-        boolean hasKeys = q.isKeys();
         for (int i = 1; i < rows.length; i++) {
             builder.append(",");
             q = rows[i].serialize();
             builder.append(q.getQuery());
-            hasKeys = hasKeys || q.isKeys();
         }
         String text = String.format("%s(%s)", name, builder.toString());
-        return pqlRowQuery(text, hasKeys);
+        return pqlRowQuery(text);
     }
 
     private Index(String name, IndexOptions options) {

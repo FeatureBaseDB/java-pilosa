@@ -51,11 +51,16 @@ public class OrmTest {
     private Field sampleField = sampleIndex.field("sample-field");
     private Index projectIndex;
     private Field collabField;
+    private Field projectKeyField;
 
     {
         this.projectIndex = Index.create("project-db");
-        FieldOptions collabFieldOptions = FieldOptions.withDefaults();
-        this.collabField = projectIndex.field("collaboration", collabFieldOptions);
+        FieldOptions fieldOptions = FieldOptions.withDefaults();
+        this.collabField = projectIndex.field("collaboration", fieldOptions);
+        fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        this.projectKeyField = projectIndex.field("key", fieldOptions);
     }
 
     @Test
@@ -108,9 +113,9 @@ public class OrmTest {
                 "Row(collaboration=5)",
                 qry1.serialize().getQuery());
 
-        PqlBaseQuery qry2 = collabField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        PqlBaseQuery qry2 = projectKeyField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Row(collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
+                "Row(key='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
                 qry2.serialize().getQuery());
     }
 

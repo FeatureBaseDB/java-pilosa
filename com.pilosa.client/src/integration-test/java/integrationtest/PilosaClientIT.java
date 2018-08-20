@@ -844,6 +844,22 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void warningResponseTest() throws IOException, InterruptedException {
+        String path = String.format("/index/%s/query", this.colIndex.getName());
+        String msg = "299 pilosa/2.0 \"Deprecated PQL version: PQL v2 will remove support for SetBit() in Pilosa 2.1. Please update your client to support Set() (See https://docs.pilosa.com/pql#versioning).\" \"Sat, 25 Aug 2019 23:34:45 GMT\"";
+        HttpServer server = warningResponseHttpServer(path, msg);
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.field.row(1));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
@@ -1104,6 +1120,20 @@ public class PilosaClientIT {
         return null;
     }
 
+    private HttpServer warningResponseHttpServer(String path, String warningMessage) {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext(path, new WarningResponseHandler(warningMessage));
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
     static class FragmentNodesHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange r) throws IOException {
@@ -1160,6 +1190,26 @@ public class PilosaClientIT {
             }
             r.close();
         }
+    }
+
+    static class WarningResponseHandler implements HttpHandler {
+        WarningResponseHandler(String warningHeader) {
+            super();
+            this.warningHeader = warningHeader;
+        }
+
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            try (OutputStream os = r.getResponseBody()) {
+                r.getResponseHeaders().set("warning", warningHeader);
+                byte[] responseBytes = {0x12, 0x04, 0x0a, 0x00, 0x30, 0x01};
+                r.sendResponseHeaders(200, responseBytes.length);
+                os.write(responseBytes);
+            }
+            r.close();
+        }
+
+        private String warningHeader;
     }
 
     private Index findIndex(Schema schema, Index target) {

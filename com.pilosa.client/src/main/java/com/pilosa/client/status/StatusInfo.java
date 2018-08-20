@@ -49,10 +49,6 @@ public class StatusInfo {
 
 
     @JsonProperty("nodes")
-    public List<StatusNodeInfo> getNodes() {
-        return this.nodes;
-    }
-
     public void setNodes(List<StatusNodeInfo> nodes) {
         this.nodes = nodes;
     }

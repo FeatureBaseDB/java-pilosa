@@ -67,6 +67,7 @@ public class PilosaClientIT {
     private Index index;
     private Index keyIndex;
     private Field field;
+    private Field keyField;
 
     @Before
     public void setUp() throws IOException {
@@ -81,6 +82,10 @@ public class PilosaClientIT {
             this.colIndex = schema.index(this.index.getName() + "-opts");
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
+            fieldOptions = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            this.keyField = this.index.field("index-key-field", fieldOptions);
 
             IndexOptions indexOptions = IndexOptions.builder()
                     .keys(true)
@@ -247,7 +252,8 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void parseErrorTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.index.rawQuery("SetBit(id=5, field=\"test\", col_id:=10)"));
+            QueryResponse response = client.query(this.index.rawQuery("SetBit(id=5, field=\"test\", col_id:=10)"));
+            System.out.println(response);
         }
     }
 
@@ -1007,6 +1013,20 @@ public class PilosaClientIT {
         }
     }
 
+    @Test(expected = PilosaException.class)
+    public void failNoCoordinatorTest() throws IOException {
+        HttpServer server = runNoCoordinatorHttpServer();
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set(1, "foo"));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
 
     private static int counter = 0;
 
@@ -1070,6 +1090,20 @@ public class PilosaClientIT {
         return null;
     }
 
+    private HttpServer runNoCoordinatorHttpServer() {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/status", new NoCoordinatorHandler());
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
     static class FragmentNodesHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange r) throws IOException {
@@ -1114,6 +1148,18 @@ public class PilosaClientIT {
         }
 
         private int statusCode;
+    }
+
+    static class NoCoordinatorHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            String response = "{\"state\":\"NORMAL\",\"nodes\":[{\"id\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\",\"uri\":{\"scheme\":\"http\",\"host\":\"localhost\",\"port\":10101}}],\"localID\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\"}";
+            r.sendResponseHeaders(200, response.getBytes().length);
+            try (OutputStream os = r.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+            r.close();
+        }
     }
 
     private Index findIndex(Schema schema, Index target) {

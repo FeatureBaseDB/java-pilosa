@@ -83,8 +83,8 @@ public class FieldValue implements Record {
         FieldValue other = (FieldValue) o;
         return this.defaultFieldValue == other.defaultFieldValue &&
                 this.columnID == other.columnID &&
-                        this.columnKey.equals(other.columnKey) &&
-                        this.value == other.value;
+                this.columnKey.equals(other.columnKey) &&
+                this.value == other.value;
     }
 
     @Override

@@ -35,7 +35,10 @@
 package com.pilosa.client;
 
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.FieldOptions;
+import com.pilosa.client.orm.Index;
+import com.pilosa.client.orm.Schema;
 import com.pilosa.client.status.IFieldInfo;
 import com.pilosa.client.status.IndexInfo;
 import com.pilosa.client.status.SchemaInfo;
@@ -60,14 +63,17 @@ public class PilosaClientTest {
     @Test(expected = PilosaException.class)
     public void fetchFieldNodesTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("non-existent-domain-555.com:19000")) {
-            client.fetchFieldNodes("foo", 0);
+            client.fetchFragmentNodes("foo", 0);
         }
     }
 
     @Test(expected = PilosaException.class)
     public void importNodeTest() throws IOException {
         try (PilosaClient client = PilosaClient.withAddress("non-existent-domain-555.com:19000")) {
-            Internal.ImportRequest request = Internal.ImportRequest.newBuilder().build();
+            Schema schema = Schema.defaultSchema();
+            Index index = schema.index("foo");
+            Field field = index.field("bar");
+            ImportRequest request = new ImportRequest(field, new byte[]{0});
             client.importNode(request);
         }
     }

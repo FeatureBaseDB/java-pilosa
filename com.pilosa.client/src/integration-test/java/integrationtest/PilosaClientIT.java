@@ -269,12 +269,15 @@ public class PilosaClientIT {
     @Test
     public void newOrmTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.field.set(10, 20));
+            client.query(this.colIndex.batchQuery(
+                    this.field.set(5, 20),
+                    this.field.set(10, 20),
+                    this.field.set(10, 30)));
             QueryResponse response1 = client.query(this.field.row(10));
             assertEquals(0, response1.getColumns().size());
             RowResult row1 = response1.getResult().getRow();
             assertEquals(0, row1.getAttributes().size());
-            assertEquals(1, row1.getColumns().size());
+            assertEquals(2, row1.getColumns().size());
             assertEquals(20, (long) row1.getColumns().get(0));
 
             Map<String, Object> columnAttrs = new HashMap<>(1);
@@ -296,12 +299,14 @@ public class PilosaClientIT {
             client.query(this.field.setRowAttrs(10, rowAttrs));
             QueryResponse response3 = client.query(this.field.row(10));
             RowResult row = response3.getResult().getRow();
-            assertEquals(1, row.getColumns().size());
+            assertEquals(2, row.getColumns().size());
             assertEquals(4, row.getAttributes().size());
             assertEquals(true, row.getAttributes().get("active"));
             assertEquals(5L, row.getAttributes().get("unsigned"));
             assertEquals(1.81, row.getAttributes().get("height"));
             assertEquals("Mr. Pi", row.getAttributes().get("name"));
+
+            client.httpRequest("POST", "/recalculate-caches");
 
             Field topnField = this.index.field("topn_test");
             client.query(topnField.set(155, 551));
@@ -311,6 +316,12 @@ public class PilosaClientIT {
             CountResultItem item = items.get(0);
             assertEquals(155, item.getID());
             assertEquals(1, item.getCount());
+
+            QueryResponse response5 = client.query(this.field.topN(10, null, "name", "Mr. Pi"));
+            items = response5.getResult().getCountItems();
+            assertEquals(1, items.size());
+            assertEquals(10, items.get(0).getID());
+            assertEquals(2, items.get(0).getCount());
         }
     }
 

@@ -953,6 +953,34 @@ public class PilosaClientIT {
     }
 
     @Test(expected = PilosaException.class)
+    public void failFetchCoordinatorNodeEmptyResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/status", 204);
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set("foo", 1));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failFetchCoordinator200Test() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer("/status");
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set("foo", 1));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
     public void failSchemaEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/schema", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {

@@ -34,24 +34,8 @@
 
 package com.pilosa.client.orm;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
+public interface Record extends Comparable<Record> {
+    long shard(final long shardWidth);
 
-    PqlBaseQuery(String pql) {
-        this(pql, null);
-    }
-
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
-    }
-
-    public Index getIndex() {
-        return this.index;
-    }
-
-    public SerializedQuery serialize() {
-        return this.query;
-    }
+    boolean isDefault();
 }

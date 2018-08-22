@@ -40,5 +40,5 @@ public interface PqlQuery {
     /**
      * @return the query in a form consumable by {@link com.pilosa.client.PilosaClient}
      */
-    String serialize();
+    SerializedQuery serialize();
 }

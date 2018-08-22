@@ -32,26 +32,40 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client.status;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    PqlBaseQuery(String pql) {
-        this(pql, null);
+public class StatusNodeURIInfo {
+
+    @JsonProperty("scheme")
+    public String getScheme() {
+        return this.scheme;
     }
 
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 
-    public Index getIndex() {
-        return this.index;
+    @JsonProperty("host")
+    public String getHost() {
+        return this.host;
     }
 
-    public SerializedQuery serialize() {
-        return this.query;
+    public void setHost(String host) {
+        this.host = host;
     }
+
+    @JsonProperty("port")
+    public int getPort() {
+        return this.port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    private String scheme;
+    private String host;
+    private int port;
 }

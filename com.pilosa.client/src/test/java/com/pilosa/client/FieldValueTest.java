@@ -34,77 +34,83 @@
 
 package com.pilosa.client;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
-public class ColumnTest {
+public class FieldValueTest {
     @Test
     public void createTest() {
-        Column column;
+        FieldValue fieldValue;
 
-        column = Column.create(1, 100);
-        compare(column, 1, 100, "", "", 0);
-        column = Column.create(1, 100, 65000);
-        compare(column, 1, 100, "", "", 65000);
+        fieldValue = FieldValue.create(1, 100);
+        compare(fieldValue, 1, "", 100);
 
-        column = Column.create(1, "bar");
-        compare(column, 1, 0, "bar", "", 0);
-        column = Column.create(1, "bar", 65000);
-        compare(column, 1, 0, "bar", "", 65000);
-
-        column = Column.create("foo", 100);
-        compare(column, 0, 100, "foo", "", 0);
-        column = Column.create("foo", 100, 65000);
-        compare(column, 0, 100, "foo", "", 65000);
-
-        column = Column.create("foo", "bar");
-        compare(column, 0, 0, "foo", "bar", 0);
-        column = Column.create("foo", "bar", 65000);
-        compare(column, 0, 0, "foo", "bar", 65000);
+        fieldValue = FieldValue.create("one", 100);
+        compare(fieldValue, 0, "one", 100);
     }
 
     @Test
     public void hashCodeTest() {
-        Column column1 = Column.create(1, 10, 65000);
-        Column column2 = Column.create(1, 10, 65000);
-        assertEquals(column1.hashCode(), column2.hashCode());
-        assertNotEquals(column1.hashCode(), Column.DEFAULT.hashCode());
+        FieldValue a = FieldValue.create(1, -100);
+        FieldValue b = FieldValue.create(1, -100);
+        assertEquals(a.hashCode(), b.hashCode());
+        assertNotEquals(a.hashCode(), FieldValue.DEFAULT.hashCode());
     }
 
     @Test
     public void equalsTest() {
-        Column a = Column.create(5, 7, 100000);
-        Column b = Column.create(5, 7, 100000);
+        FieldValue a = FieldValue.create(1, 100000);
+        FieldValue b = FieldValue.create(1, 100000);
         assertEquals(a, b);
+
+        FieldValue c = FieldValue.create("foo", 100);
+        FieldValue d = FieldValue.create("foo", 100);
+        assertEquals(c, d);
+        assertNotEquals(a, c);
     }
 
     @Test
     public void equalsSameObjectTest() {
-        Column column = Column.create(5, 7, 100000);
-        assertEquals(column, column);
+        FieldValue a = FieldValue.create(1, 100000);
+        assertEquals(a, a);
     }
 
     @Test
     public void notEqualTest() {
-        Column column = Column.create(15, 2, 50000);
-        assertFalse(column.equals(5));
+        FieldValue a = FieldValue.create(15, 50000);
+        assertFalse(a.equals(5));
     }
 
     @Test
     public void toStringTest() {
-        Column column = Column.create(15, 2, 50000);
-        assertEquals("15:2 : [50000]", column.toString());
-        assertEquals("(default column)", Column.DEFAULT.toString());
+        FieldValue a = FieldValue.create(15, 50000);
+        assertEquals("15  = 50000", a.toString());
+        assertEquals("(default field value)", FieldValue.DEFAULT.toString());
     }
 
-    private void compare(Column column, long rowID, long columnID, String rowKey, String columnKey, long timestamp) {
-        assertEquals(rowID, column.getRowID());
-        assertEquals(columnID, column.getColumnID());
-        assertEquals(rowKey, column.getRowKey());
-        assertEquals(columnKey, column.getColumnKey());
-        assertEquals(timestamp, column.getTimestamp());
+
+    @Test
+    public void compareToTest() {
+        FieldValue v1 = FieldValue.create(10, 5);
+        FieldValue v2 = FieldValue.create(5, 7);
+        FieldValue v3 = FieldValue.create(5, 3);
+        List<FieldValue> fieldValueList = Arrays.asList(v1, v2, v3);
+        Collections.sort(fieldValueList);
+        assertEquals(fieldValueList.get(0), v2);
+        assertEquals(fieldValueList.get(1), v3);
+        assertEquals(fieldValueList.get(2), v1);
+    }
+
+    private void compare(FieldValue fieldValue, long columnID, String columnKey, long value) {
+        assertEquals(columnID, fieldValue.columnID);
+        assertEquals(columnKey, fieldValue.columnKey);
+        assertEquals(value, fieldValue.value);
     }
 }

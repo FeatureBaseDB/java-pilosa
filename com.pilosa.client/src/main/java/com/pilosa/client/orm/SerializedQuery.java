@@ -34,24 +34,24 @@
 
 package com.pilosa.client.orm;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
-
-    PqlBaseQuery(String pql) {
-        this(pql, null);
+public class SerializedQuery {
+    public SerializedQuery(String query, boolean writeKeys) {
+        this.query = query;
+        this.writeKeys = writeKeys;
     }
 
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
-    }
-
-    public Index getIndex() {
-        return this.index;
-    }
-
-    public SerializedQuery serialize() {
+    public String getQuery() {
         return this.query;
     }
+
+    public boolean isWriteKeys() {
+        return this.writeKeys;
+    }
+
+    public void setWriteKeys(boolean writeKeys) {
+        this.writeKeys = writeKeys;
+    }
+
+    private String query;
+    private boolean writeKeys;
 }

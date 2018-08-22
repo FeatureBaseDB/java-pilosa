@@ -51,24 +51,29 @@ public class OrmTest {
     private Field sampleField = sampleIndex.field("sample-field");
     private Index projectIndex;
     private Field collabField;
+    private Field projectKeyField;
 
     {
         this.projectIndex = Index.create("project-db");
-        FieldOptions collabFieldOptions = FieldOptions.withDefaults();
-        this.collabField = projectIndex.field("collaboration", collabFieldOptions);
+        FieldOptions fieldOptions = FieldOptions.withDefaults();
+        this.collabField = projectIndex.field("collaboration", fieldOptions);
+        fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        this.projectKeyField = projectIndex.field("key", fieldOptions);
     }
 
     @Test
     public void pqlQueryCreate() {
         PqlBaseQuery pql = new PqlBaseQuery("Bitmap(field='foo', row=10)");
-        assertEquals("Bitmap(field='foo', row=10)", pql.serialize());
+        assertEquals("Bitmap(field='foo', row=10)", pql.serialize().getQuery());
         assertEquals(null, pql.getIndex());
     }
 
     @Test
     public void pqlRowQueryCreate() {
         PqlRowQuery pql = new PqlRowQuery("Bitmap(field='foo', row=10)");
-        assertEquals("Bitmap(field='foo', row=10)", pql.serialize());
+        assertEquals("Bitmap(field='foo', row=10)", pql.serialize().getQuery());
         assertEquals(null, pql.getIndex());
     }
 
@@ -79,7 +84,7 @@ public class OrmTest {
         b.add(sampleField.row(10101));
         assertEquals(
                 "Row(sample-field=44)Row(sample-field=10101)",
-                b.serialize());
+                b.serialize().getQuery());
     }
 
     @Test
@@ -92,7 +97,7 @@ public class OrmTest {
                 "Row(collaboration=2)" +
                         "Set(40,collaboration=20)" +
                         "TopN(collaboration,n=2)",
-                b.serialize());
+                b.serialize().getQuery());
     }
 
     @Test(expected = PilosaException.class)
@@ -106,12 +111,12 @@ public class OrmTest {
         PqlBaseQuery qry1 = collabField.row(5);
         assertEquals(
                 "Row(collaboration=5)",
-                qry1.serialize());
+                qry1.serialize().getQuery());
 
-        PqlBaseQuery qry2 = collabField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        PqlBaseQuery qry2 = projectKeyField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
         assertEquals(
-                "Row(collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry2.serialize());
+                "Row(key='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
+                qry2.serialize().getQuery());
     }
 
     @Test
@@ -119,22 +124,22 @@ public class OrmTest {
         PqlQuery qry = collabField.set(5, 10);
         assertEquals(
                 "Set(10,collaboration=5)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set(5, "some_id");
         assertEquals(
                 "Set('some_id',collaboration=5)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
         assertEquals(
                 "Set(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
                 "Set('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize());
+                qry.serialize().getQuery());
     }
 
     @Test
@@ -144,22 +149,22 @@ public class OrmTest {
         PqlQuery qry = collabField.set(10, 20, timestamp.getTime());
         assertEquals(
                 "Set(20,collaboration=10,2017-04-24T12:14)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set(10, "mycol", timestamp.getTime());
         assertEquals(
                 "Set('mycol',collaboration=10,2017-04-24T12:14)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set("myrow", 20, timestamp.getTime());
         assertEquals(
                 "Set(20,collaboration='myrow',2017-04-24T12:14)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.set("myrow", "mycol", timestamp.getTime());
         assertEquals(
                 "Set('mycol',collaboration='myrow',2017-04-24T12:14)",
-                qry.serialize());
+                qry.serialize().getQuery());
     }
 
     @Test
@@ -167,22 +172,22 @@ public class OrmTest {
         PqlQuery qry = collabField.clear(5, 10);
         assertEquals(
                 "Clear(10,collaboration=5)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.clear(5, "some_id");
         assertEquals(
                 "Clear('some_id',collaboration=5)",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
         assertEquals(
                 "Clear(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize());
+                qry.serialize().getQuery());
 
         qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
         assertEquals(
                 "Clear('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize());
+                qry.serialize().getQuery());
     }
 
     @Test
@@ -195,29 +200,29 @@ public class OrmTest {
         PqlBaseQuery q1 = sampleIndex.union(b1, b2);
         assertEquals(
                 "Union(Row(sample-field=10),Row(sample-field=20))",
-                q1.serialize());
+                q1.serialize().getQuery());
 
         PqlBaseQuery q2 = sampleIndex.union(b1, b2, b3);
         assertEquals(
                 "Union(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
-                q2.serialize());
+                q2.serialize().getQuery());
 
         PqlBaseQuery q3 = sampleIndex.union(b1, b4);
         assertEquals(
                 "Union(Row(sample-field=10),Row(collaboration=2))",
-                q3.serialize());
+                q3.serialize().getQuery());
     }
 
     @Test
     public void union0Test() {
         PqlRowQuery q = sampleIndex.union();
-        assertEquals("Union()", q.serialize());
+        assertEquals("Union()", q.serialize().getQuery());
     }
 
     @Test
     public void union1Test() {
         PqlRowQuery q = sampleIndex.union(sampleField.row(10));
-        assertEquals("Union(Row(sample-field=10))", q.serialize());
+        assertEquals("Union(Row(sample-field=10))", q.serialize().getQuery());
     }
 
     @Test
@@ -230,17 +235,17 @@ public class OrmTest {
         PqlBaseQuery q1 = sampleIndex.intersect(b1, b2);
         assertEquals(
                 "Intersect(Row(sample-field=10),Row(sample-field=20))",
-                q1.serialize());
+                q1.serialize().getQuery());
 
         PqlBaseQuery q2 = sampleIndex.intersect(b1, b2, b3);
         assertEquals(
                 "Intersect(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
-                q2.serialize());
+                q2.serialize().getQuery());
 
         PqlBaseQuery q3 = sampleIndex.intersect(b1, b4);
         assertEquals(
                 "Intersect(Row(sample-field=10),Row(collaboration=2))",
-                q3.serialize());
+                q3.serialize().getQuery());
     }
 
     @Test
@@ -253,17 +258,17 @@ public class OrmTest {
         PqlBaseQuery q1 = sampleIndex.difference(b1, b2);
         assertEquals(
                 "Difference(Row(sample-field=10),Row(sample-field=20))",
-                q1.serialize());
+                q1.serialize().getQuery());
 
         PqlBaseQuery q2 = sampleIndex.difference(b1, b2, b3);
         assertEquals(
                 "Difference(Row(sample-field=10),Row(sample-field=20),Row(sample-field=42))",
-                q2.serialize());
+                q2.serialize().getQuery());
 
         PqlBaseQuery q3 = sampleIndex.difference(b1, b4);
         assertEquals(
                 "Difference(Row(sample-field=10),Row(collaboration=2))",
-                q3.serialize());
+                q3.serialize().getQuery());
     }
 
     @Test
@@ -273,7 +278,7 @@ public class OrmTest {
         PqlBaseQuery q1 = sampleIndex.xor(b1, b2);
         assertEquals(
                 "Xor(Row(sample-field=10),Row(sample-field=20))",
-                q1.serialize());
+                q1.serialize().getQuery());
     }
 
     @Test
@@ -282,7 +287,7 @@ public class OrmTest {
         PqlQuery q = projectIndex.count(b);
         assertEquals(
                 "Count(Row(collaboration=42))",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -290,22 +295,22 @@ public class OrmTest {
         PqlQuery q1 = collabField.topN(27);
         assertEquals(
                 "TopN(collaboration,n=27)",
-                q1.serialize());
+                q1.serialize().getQuery());
 
         PqlQuery q2 = collabField.topN(10, collabField.row(3));
         assertEquals(
                 "TopN(collaboration,Row(collaboration=3),n=10)",
-                q2.serialize());
+                q2.serialize().getQuery());
 
         PqlBaseQuery q3 = sampleField.topN(12, collabField.row(7), "category", 80, 81);
         assertEquals(
                 "TopN(sample-field,Row(collaboration=7),n=12,field='category',filters=[80,81])",
-                q3.serialize());
+                q3.serialize().getQuery());
 
         PqlBaseQuery q4 = sampleField.topN(12, null, "category", 80, 81);
         assertEquals(
                 "TopN(sample-field,n=12,field='category',filters=[80,81])",
-                q4.serialize());
+                q4.serialize().getQuery());
     }
 
     @Test(expected = PilosaException.class)
@@ -323,11 +328,11 @@ public class OrmTest {
         PqlBaseQuery q = collabField.range(10, start.getTime(), end.getTime());
         assertEquals(
                 "Range(collaboration=10,1970-01-01T00:00,2000-02-02T03:04)",
-                q.serialize());
+                q.serialize().getQuery());
         q = collabField.range("foo", start.getTime(), end.getTime());
         assertEquals(
                 "Range(collaboration='foo',1970-01-01T00:00,2000-02-02T03:04)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -338,11 +343,11 @@ public class OrmTest {
         PqlQuery q = collabField.setRowAttrs(5, attrsMap);
         assertEquals(
                 "SetRowAttrs(collaboration,5,active=true,quote=\"\\\"Don't worry, be happy\\\"\")",
-                q.serialize());
+                q.serialize().getQuery());
         q = collabField.setRowAttrs("foo", attrsMap);
         assertEquals(
                 "SetRowAttrs('collaboration','foo',active=true,quote=\"\\\"Don't worry, be happy\\\"\")",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test(expected = PilosaException.class)
@@ -361,11 +366,11 @@ public class OrmTest {
         PqlQuery q = projectIndex.setColumnAttrs(5, attrsMap);
         assertEquals(
                 "SetColumnAttrs(5,happy=true,quote=\"\\\"Don't worry, be happy\\\"\")",
-                q.serialize());
+                q.serialize().getQuery());
         q = projectIndex.setColumnAttrs("b7feb014-8ea7-49a8-9cd8-19709161ab63", attrsMap);
         assertEquals(
                 "SetColumnAttrs('b7feb014-8ea7-49a8-9cd8-19709161ab63',happy=true,quote=\"\\\"Don't worry, be happy\\\"\")",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test(expected = PilosaException.class)
@@ -381,7 +386,7 @@ public class OrmTest {
         PqlQuery q = collabField.lessThan(10);
         assertEquals(
                 "Range(collaboration < 10)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -389,7 +394,7 @@ public class OrmTest {
         PqlQuery q = collabField.lessThanOrEqual(10);
         assertEquals(
                 "Range(collaboration <= 10)",
-                q.serialize());
+                q.serialize().getQuery());
 
     }
 
@@ -398,7 +403,7 @@ public class OrmTest {
         PqlQuery q = collabField.greaterThan(10);
         assertEquals(
                 "Range(collaboration > 10)",
-                q.serialize());
+                q.serialize().getQuery());
 
     }
 
@@ -407,7 +412,7 @@ public class OrmTest {
         PqlQuery q = collabField.greaterThanOrEqual(10);
         assertEquals(
                 "Range(collaboration >= 10)",
-                q.serialize());
+                q.serialize().getQuery());
 
     }
 
@@ -416,7 +421,7 @@ public class OrmTest {
         PqlQuery q = collabField.equals(10);
         assertEquals(
                 "Range(collaboration == 10)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -424,7 +429,7 @@ public class OrmTest {
         PqlQuery q = collabField.notEquals(10);
         assertEquals(
                 "Range(collaboration != 10)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -432,7 +437,7 @@ public class OrmTest {
         PqlQuery q = collabField.notNull();
         assertEquals(
                 "Range(collaboration != null)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 
     @Test
@@ -440,7 +445,7 @@ public class OrmTest {
         PqlQuery q = collabField.between(10, 20);
         assertEquals(
                 "Range(collaboration >< [10,20])",
-                q.serialize());
+                q.serialize().getQuery());
 
     }
 
@@ -449,11 +454,11 @@ public class OrmTest {
         PqlQuery q = collabField.sum(collabField.row(10));
         assertEquals(
                 "Sum(Row(collaboration=10),field='collaboration')",
-                q.serialize());
+                q.serialize().getQuery());
         q = collabField.sum();
         assertEquals(
                 "Sum(field='collaboration')",
-                q.serialize()
+                q.serialize().getQuery()
         );
     }
 
@@ -462,9 +467,9 @@ public class OrmTest {
         PqlQuery q = collabField.setValue(10, 20);
         assertEquals(
                 "Set(10, collaboration=20)",
-                q.serialize());
+                q.serialize().getQuery());
         q = collabField.setValue("foo", 100);
         assertEquals("Set('foo', collaboration=100)",
-                q.serialize());
+                q.serialize().getQuery());
     }
 }

@@ -32,26 +32,25 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
+import com.pilosa.client.orm.Field;
 
-    PqlBaseQuery(String pql) {
-        this(pql, null);
+class ImportRequest {
+    ImportRequest(final Field field, final byte[] payload) {
+        this.path = String.format("/index/%s/field/%s/import", field.getIndex().getName(), field.getName());
+        this.payload = payload;
     }
 
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
+    String getPath() {
+        return this.path;
     }
 
-    public Index getIndex() {
-        return this.index;
+    byte[] getPayload() {
+        return this.payload;
     }
 
-    public SerializedQuery serialize() {
-        return this.query;
-    }
+    private final String path;
+    private final byte[] payload;
+
 }

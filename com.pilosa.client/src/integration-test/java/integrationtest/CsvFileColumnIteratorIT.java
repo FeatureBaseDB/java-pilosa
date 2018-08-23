@@ -109,9 +109,9 @@ public class CsvFileColumnIteratorIT {
 
     private List<Column> getTargetRows() {
         List<List<Long>> targetValues = Arrays.asList(
-                Arrays.asList(1L, 10L, 683804000L),
-                Arrays.asList(5L, 20L, 683804100L),
-                Arrays.asList(3L, 41L, 683804185L));
+                Arrays.asList(1L, 10L, 683793200L),
+                Arrays.asList(5L, 20L, 683793300L),
+                Arrays.asList(3L, 41L, 683793385L));
         List<Column> target = new ArrayList<>(3);
         for (List<Long> item : targetValues) {
             target.add(Column.create(item.get(0), item.get(1), item.get(2)));

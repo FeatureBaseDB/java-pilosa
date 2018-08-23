@@ -41,9 +41,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ShardColumns implements ShardRecords {
-    public static ShardColumns create(final Field field, final long shard) {
-        return new ShardColumns(field, shard);
+public class ShardFieldValues implements ShardRecords {
+    public static ShardFieldValues create(final Field field, final long shard) {
+        return new ShardFieldValues(field, shard);
     }
 
     @Override
@@ -53,7 +53,7 @@ class ShardColumns implements ShardRecords {
 
     @Override
     public String getIndexName() {
-        return null;
+        return this.field.getIndex().getName();
     }
 
     @Override
@@ -67,79 +67,70 @@ class ShardColumns implements ShardRecords {
     }
 
     @Override
-    public void add(Record record) {
-        Column column = (Column) record;
-        // TODO: check column
-        this.columns.add(column);
+    public int size() {
+        return this.fieldValues.size();
     }
 
     @Override
-    public int size() {
-        return this.columns.size();
+    public void add(Record record) {
+        FieldValue fieldValue = (FieldValue) record;
+        // TODO: check fieldValue
+        this.fieldValues.add(fieldValue);
     }
 
     @Override
     public void clear() {
-        this.columns.clear();
+        this.fieldValues.clear();
     }
 
     @Override
     public ImportRequest toImportRequest() {
         if (!this.sorted) {
-            Collections.sort(this.columns);
+            Collections.sort(this.fieldValues);
             this.sorted = true;
         }
 
-        int columnCount = this.columns.size();
+        int fieldValueCount = this.fieldValues.size();
 
-        List<Long> timestamps = new ArrayList<>(columnCount);
-        Internal.ImportRequest.Builder requestBuilder = Internal.ImportRequest.newBuilder()
+        List<Long> values = new ArrayList<>(fieldValueCount);
+        Internal.ImportValueRequest.Builder requestBuilder = Internal.ImportValueRequest.newBuilder()
                 .setIndex(this.field.getIndex().getName())
                 .setField(this.field.getName())
-                .setShard(this.shard);
+                .setShard(shard);
 
         if (this.field.getOptions().isKeys()) {
-            List<String> rowKeys = new ArrayList<>(columnCount);
-            List<String> columnKeys = new ArrayList<>(columnCount);
-            for (Column column : this.columns) {
-                rowKeys.add(column.rowKey);
-                columnKeys.add(column.columnKey);
-                timestamps.add(column.timestamp);
+            List<String> columnKeys = new ArrayList<>(fieldValueCount);
+            for (FieldValue fieldValue : this.fieldValues) {
+                columnKeys.add(fieldValue.columnKey);
+                values.add(fieldValue.value);
             }
-            requestBuilder
-                    .addAllRowKeys(rowKeys)
-                    .addAllColumnKeys(columnKeys);
-            rowKeys = null;
+            requestBuilder.addAllColumnKeys(columnKeys);
             columnKeys = null;
         } else {
-            List<Long> rowIDs = new ArrayList<>(columnCount);
-            List<Long> columnIDs = new ArrayList<>(columnCount);
-            for (Column column : columns) {
-                rowIDs.add(column.rowID);
-                columnIDs.add(column.columnID);
-                timestamps.add(column.timestamp);
+            List<Long> columnIDs = new ArrayList<>(fieldValueCount);
+            for (FieldValue fieldValue : this.fieldValues) {
+                columnIDs.add(fieldValue.columnID);
+                values.add(fieldValue.value);
             }
-            requestBuilder
-                    .addAllRowIDs(rowIDs)
-                    .addAllColumnIDs(columnIDs);
-            rowIDs = null;
+            requestBuilder.addAllColumnIDs(columnIDs);
             columnIDs = null;
         }
 
-        requestBuilder.addAllTimestamps(timestamps);
-        timestamps = null;
+        requestBuilder.addAllValues(values);
+        values = null;
 
         return new ImportRequest(this.field, requestBuilder.build().toByteArray());
     }
 
-    ShardColumns(final Field field, final long shard) {
+    ShardFieldValues(final Field field, final long shard) {
         this.field = field;
         this.shard = shard;
-        this.columns = new ArrayList<>();
+        this.fieldValues = new ArrayList<>();
     }
 
     private final Field field;
     private final long shard;
-    private List<Column> columns;
+    private List<FieldValue> fieldValues;
     private boolean sorted = false;
+
 }

@@ -115,8 +115,9 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery set(long rowID, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Set(%d,%s=%d)",
-                columnID, name, rowID));
+                columnID, name, rowID), hasKeys);
     }
 
     /**
@@ -131,8 +132,9 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery set(long rowID, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Set('%s',%s=%d)",
-                columnKey, name, rowID));
+                columnKey, name, rowID), hasKeys);
     }
 
     /**
@@ -147,8 +149,9 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery set(String rowKey, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Set(%d,%s='%s')",
-                columnID, name, rowKey));
+                columnID, name, rowKey), hasKeys);
     }
 
     /**
@@ -163,8 +166,9 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
      */
     public PqlBaseQuery set(String rowKey, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Set('%s',%s='%s')",
-                columnKey, name, rowKey));
+                columnKey, name, rowKey), hasKeys);
     }
 
      /**
@@ -187,7 +191,8 @@ public class Field {
         String qry = String.format("Set(%d,%s=%d,%sT%s)",
                 columnID, name, rowID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
-        return this.index.pqlQuery(qry);
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     /**
@@ -209,7 +214,8 @@ public class Field {
         String qry = String.format("Set('%s',%s=%d,%sT%s)",
                 columnKey, name, rowID,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
-        return this.index.pqlQuery(qry);
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     /**
@@ -231,7 +237,8 @@ public class Field {
         String qry = String.format("Set(%d,%s='%s',%sT%s)",
                 columnID, name, rowKey,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
-        return this.index.pqlQuery(qry);
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     /**
@@ -254,7 +261,8 @@ public class Field {
         String qry = String.format("Set('%s',%s='%s',%sT%s)",
                 columnKey, name, rowKey,
                 fmtDate.format(timestamp), fmtTime.format(timestamp));
-        return this.index.pqlQuery(qry);
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     /**
@@ -270,8 +278,9 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(long rowID, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Clear(%d,%s=%d)",
-                columnID, name, rowID));
+                columnID, name, rowID), hasKeys);
     }
 
     /**
@@ -287,8 +296,9 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(long rowID, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Clear('%s',%s=%d)",
-                columnKey, name, rowID));
+                columnKey, name, rowID), hasKeys);
     }
 
     /**
@@ -304,8 +314,9 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(String rowKey, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Clear(%d,%s='%s')",
-                columnID, name, rowKey));
+                columnID, name, rowKey), hasKeys);
     }
 
     /**
@@ -321,8 +332,9 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(String rowKey, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Clear('%s',%s='%s')",
-                columnKey, name, rowKey));
+                columnKey, name, rowKey), hasKeys);
     }
 
     /**
@@ -336,7 +348,7 @@ public class Field {
      */
     public PqlBaseQuery topN(long n) {
         String s = String.format("TopN(%s,n=%d)", this.name, n);
-        return this.index.pqlQuery(s);
+        return this.index.pqlQuery(s, false);
     }
 
     /**
@@ -386,10 +398,10 @@ public class Field {
 
         try {
             String valuesString = (attrValues == null || attrValues.length == 0) ? "" : String.format(",attrValues=%s", this.mapper.writeValueAsString(attrValues));
-            String rowString = (row == null) ? "" : String.format(",%s", row.serialize());
+            String rowString = (row == null) ? "" : String.format(",%s", row.serialize().getQuery());
             String s = String.format("TopN(%s%s,n=%d%s%s)",
                     this.name, rowString, n, fieldString, valuesString);
-            return this.index.pqlQuery(s);
+            return this.index.pqlQuery(s, false);
         } catch (JsonProcessingException ex) {
             throw new PilosaException("Error while converting values", ex);
         }
@@ -409,9 +421,10 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(long rowID, Date start, Date end) {
-        return this.index.pqlRowQuery(String.format("Range(%s=%d,%sT%s,%sT%s)",
+        String text = String.format("Range(%s=%d,%sT%s,%sT%s)",
                 this.name, rowID, fmtDate.format(start),
-                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
+                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end));
+        return this.index.pqlRowQuery(text);
     }
 
     /**
@@ -428,9 +441,10 @@ public class Field {
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(String rowKey, Date start, Date end) {
-        return this.index.pqlRowQuery(String.format("Range(%s='%s',%sT%s,%sT%s)",
+        String text = String.format("Range(%s='%s',%sT%s,%sT%s)",
                 this.name, rowKey, fmtDate.format(start),
-                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end)));
+                fmtTime.format(start), fmtDate.format(end), fmtTime.format(end));
+        return this.index.pqlRowQuery(text);
     }
 
     /**
@@ -453,8 +467,9 @@ public class Field {
      */
     public PqlBaseQuery setRowAttrs(long rowID, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs(%s,%d,%s)",
-                this.name, rowID, attributesString));
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        String text = String.format("SetRowAttrs(%s,%d,%s)", this.name, rowID, attributesString);
+        return this.index.pqlQuery(text, hasKeys);
     }
 
     /**
@@ -477,8 +492,9 @@ public class Field {
      */
     public PqlBaseQuery setRowAttrs(String rowKey, Map<String, Object> attributes) {
         String attributesString = Util.createAttributesString(this.mapper, attributes);
-        return this.index.pqlQuery(String.format("SetRowAttrs('%s','%s',%s)",
-                this.name, rowKey, attributesString));
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        String text = String.format("SetRowAttrs('%s','%s',%s)", this.name, rowKey, attributesString);
+        return this.index.pqlQuery(text, hasKeys);
     }
 
     /**
@@ -653,9 +669,10 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
      */
     public PqlBaseQuery setValue(long columnID, long value) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         String qry = String.format("Set(%d, %s=%d)",
                 columnID, this.name, value);
-        return this.index.pqlQuery(qry);
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     /**
@@ -667,9 +684,10 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#setfieldvalue">SetFieldValue Query</a>
      */
     public PqlBaseQuery setValue(String columnKey, long value) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         String qry = String.format("Set('%s', %s=%d)",
                 columnKey, this.name, value);
-        return this.index.pqlQuery(qry);
+        return this.index.pqlQuery(qry, hasKeys);
     }
 
     private PqlRowQuery binaryOperation(String op, long n) {
@@ -681,11 +699,11 @@ public class Field {
         String qry;
         if (row != null) {
             qry = String.format("%s(%s,field='%s')",
-                    op, row.serialize(), this.name);
+                    op, row.serialize().getQuery(), this.name);
         } else {
             qry = String.format("%s(field='%s')", op, this.name);
         }
-        return this.index.pqlQuery(qry);
+        return this.index.pqlQuery(qry, false);
     }
 
     @Override

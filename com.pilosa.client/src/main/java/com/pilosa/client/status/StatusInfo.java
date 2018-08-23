@@ -32,26 +32,43 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client.status;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    PqlBaseQuery(String pql) {
-        this(pql, null);
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+public class StatusInfo {
+    public static StatusInfo fromInputStream(InputStream src) throws IOException {
+        return mapper.readValue(src, StatusInfo.class);
     }
 
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
+
+    @JsonProperty("nodes")
+    public void setNodes(List<StatusNodeInfo> nodes) {
+        this.nodes = nodes;
     }
 
-    public Index getIndex() {
-        return this.index;
+    public StatusNodeInfo getCoordinatorNode() {
+        for (StatusNodeInfo node : this.nodes) {
+            if (node.isCoordinator()) {
+                return node;
+            }
+        }
+        return null;
     }
 
-    public SerializedQuery serialize() {
-        return this.query;
+    static {
+        ObjectMapper m = new ObjectMapper();
+        m.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper = m;
     }
+
+
+    private final static ObjectMapper mapper;
+    private List<StatusNodeInfo> nodes;
 }

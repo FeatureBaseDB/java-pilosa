@@ -67,6 +67,7 @@ public class PilosaClientIT {
     private Index index;
     private Index keyIndex;
     private Field field;
+    private Field keyField;
 
     @Before
     public void setUp() throws IOException {
@@ -81,6 +82,10 @@ public class PilosaClientIT {
             this.colIndex = schema.index(this.index.getName() + "-opts");
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
+            fieldOptions = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            this.keyField = this.index.field("index-key-field", fieldOptions);
 
             IndexOptions indexOptions = IndexOptions.builder()
                     .keys(true)
@@ -247,7 +252,8 @@ public class PilosaClientIT {
     @Test(expected = PilosaException.class)
     public void parseErrorTest() throws IOException {
         try (PilosaClient client = getClient()) {
-            client.query(this.index.rawQuery("SetBit(id=5, field=\"test\", col_id:=10)"));
+            QueryResponse response = client.query(this.index.rawQuery("SetBit(id=5, field=\"test\", col_id:=10)"));
+            System.out.println(response);
         }
     }
 
@@ -434,7 +440,7 @@ public class PilosaClientIT {
     @Test
     public void importTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             Field field = this.index.field("importfield");
             client.ensureField(field);
             client.importField(field, iterator);
@@ -455,9 +461,88 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importWithKeysTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIterator.columnsWithKeys();
+            FieldOptions options = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field = this.keyIndex.field("importfield-keys", options);
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = keyIndex.batchQuery(
+                    field.row("two"),
+                    field.row("seven"),
+                    field.row("ten")
+            );
+            QueryResponse response = client.query(bq);
+
+            List<String> target = Arrays.asList("three", "one", "five");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(1, br.getKeys().size());
+                assertEquals(target.get(i), br.getKeys().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importFieldValuesTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIterator.fieldValuesWithIDs();
+            FieldOptions options = FieldOptions.builder()
+                    .fieldInt(0, 100)
+                    .build();
+            Field field = this.index.field("importvaluefield", options);
+            client.ensureField(field);
+            client.importField(field, iterator);
+
+            Field field2 = this.index.field("importvaluefield-set");
+            client.ensureField(field2);
+            PqlBatchQuery bq = this.index.batchQuery(
+                    field2.set(1, 10),
+                    field2.set(1, 7)
+            );
+            client.query(bq);
+
+            QueryResponse response = client.query(field.sum(field2.row(1)));
+            assertEquals(8, response.getResult().getValue());
+        }
+    }
+
+    @Test
+    public void importFieldValuesWithKeysTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIterator.fieldValuesWithKeys();
+            FieldOptions options = FieldOptions.builder()
+                    .fieldInt(0, 100)
+                    .keys(true)
+                    .build();
+            Field field = this.keyIndex.field("importvaluefieldkeys", options);
+            client.ensureField(field);
+            client.importField(field, iterator);
+
+            FieldOptions options2 = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field2 = this.keyIndex.field("importvaluefieldkeys-set", options2);
+            client.ensureField(field2);
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
+                    field2.set("one", "ten"),
+                    field2.set("one", "seven")
+            );
+            client.query(bq);
+
+            QueryResponse response = client.query(field.sum(field2.row("one")));
+            assertEquals(8, response.getResult().getValue());
+        }
+    }
+
+    @Test
     public void importTestWithBatch() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             Field field = this.index.field("importfield");
             client.ensureField(field);
             ImportOptions options = ImportOptions.builder().
@@ -517,7 +602,7 @@ public class PilosaClientIT {
             monitorThread.setDaemon(true);
             monitorThread.start();
 
-            ColumnIterator iterator = new XColumnIterator(maxID, maxColumns);
+            RecordIterator iterator = new XColumnIterator(maxID, maxColumns);
 
             Field field = this.index.field("importfield2");
             client.ensureField(field);
@@ -543,7 +628,7 @@ public class PilosaClientIT {
 
             @Override
             public void run() {
-                ColumnIterator iterator = new XColumnIterator(1_000, 1_000);
+                RecordIterator iterator = new XColumnIterator(1_000, 1_000);
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
@@ -586,11 +671,11 @@ public class PilosaClientIT {
 
             @Override
             public void run() {
-                ColumnIterator iterator = new XColumnIterator(1_000, 1_500);
+                RecordIterator iterator = new XColumnIterator(1_000, 1_500);
                 // There should be 10_000/3_000 == 3 batch status updates
-                // And another one for the remaining columns
+                // And another one for the remaining records
                 // Block after the 3 so we have a chance to interrupt the worker thread
-                //  while importing remaining columns...
+                //  while importing remaining records...
                 BlockingQueue<ImportStatusUpdate> statusQueue = new LinkedBlockingDeque<>(1);
 
                 Field field = this.field;
@@ -722,7 +807,7 @@ public class PilosaClientIT {
             QueryResponse response;
             QueryOptions options;
 
-            // test exclude columns.
+            // test exclude records.
             options = QueryOptions.builder()
                     .setExcludeColumns(true)
                     .build();
@@ -790,7 +875,7 @@ public class PilosaClientIT {
     public void importFailNot200() throws IOException {
         HttpServer server = runImportFailsHttpServer();
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             try {
                 client.importField(this.index.field("importfield"), iterator);
             } finally {
@@ -805,7 +890,7 @@ public class PilosaClientIT {
     public void importFail200Test() throws IOException {
         HttpServer server = runContentSizeLyingHttpServer("/internal/fragment/nodes");
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             try {
                 client.importField(this.index.field("importfield"), iterator);
             } catch (PilosaException ex) {
@@ -867,9 +952,37 @@ public class PilosaClientIT {
     public void failFetchFieldNodesEmptyResponseTest() throws IOException {
         HttpServer server = runContent0HttpServer("/internal/fragment/nodes", 204);
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             try {
                 client.importField(this.index.field("importfield"), iterator);
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failFetchCoordinatorNodeEmptyResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/status", 204);
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set("foo", 1));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failFetchCoordinator200Test() throws IOException {
+        HttpServer server = runContentSizeLyingHttpServer("/status");
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set("foo", 1));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -935,7 +1048,7 @@ public class PilosaClientIT {
         Cluster cluster = Cluster.withHost(URI.address(getBindAddress()));
         ClientOptions options = ClientOptions.builder().build();
         try (PilosaClient client = new InvalidPilosaClient(cluster, options)) {
-            StaticColumnIterator iterator = new StaticColumnIterator();
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
             Field field = this.index.field("importfield");
             client.importField(field, iterator);
         }
@@ -947,6 +1060,20 @@ public class PilosaClientIT {
         try (PilosaClient client = PilosaClient.withAddress(":15999")) {
             try {
                 client.readServerSchema();
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failNoCoordinatorTest() throws IOException {
+        HttpServer server = runNoCoordinatorHttpServer();
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                client.query(this.keyField.set(1, "foo"));
             } finally {
                 if (server != null) {
                     server.stop(0);
@@ -1018,6 +1145,20 @@ public class PilosaClientIT {
         return null;
     }
 
+    private HttpServer runNoCoordinatorHttpServer() {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/status", new NoCoordinatorHandler());
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
     private HttpServer warningResponseHttpServer(String path, String warningMessage) {
         final int port = 15999;
         try {
@@ -1076,6 +1217,18 @@ public class PilosaClientIT {
         }
 
         private int statusCode;
+    }
+
+    static class NoCoordinatorHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            String response = "{\"state\":\"NORMAL\",\"nodes\":[{\"id\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\",\"uri\":{\"scheme\":\"http\",\"host\":\"localhost\",\"port\":10101}}],\"localID\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\"}";
+            r.sendResponseHeaders(200, response.getBytes().length);
+            try (OutputStream os = r.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+            r.close();
+        }
     }
 
     static class WarningResponseHandler implements HttpHandler {
@@ -1152,25 +1305,58 @@ public class PilosaClientIT {
     }
 }
 
-class StaticColumnIterator implements ColumnIterator {
-    private List<Column> columns;
+class StaticColumnIterator implements RecordIterator {
+    private List<Record> records;
     private int index = 0;
 
-    StaticColumnIterator() {
-        this.columns = new ArrayList<>(3);
-        this.columns.add(Column.create(10, 5));
-        this.columns.add(Column.create(2, 3));
-        this.columns.add(Column.create(7, 1));
+    public static StaticColumnIterator columnsWithIDs() {
+        return new StaticColumnIterator(false, false);
+    }
+
+    public static StaticColumnIterator columnsWithKeys() {
+        return new StaticColumnIterator(true, false);
+    }
+
+    public static StaticColumnIterator fieldValuesWithIDs() {
+        return new StaticColumnIterator(false, true);
+    }
+
+    public static StaticColumnIterator fieldValuesWithKeys() {
+        return new StaticColumnIterator(true, true);
+    }
+
+    private StaticColumnIterator(boolean keys, boolean intValues) {
+        this.records = new ArrayList<>(3);
+        if (keys) {
+            if (intValues) {
+                this.records.add(FieldValue.create("ten", 7));
+                this.records.add(FieldValue.create("seven", 1));
+            } else {
+                this.records.add(Column.create("ten", "five"));
+                this.records.add(Column.create("two", "three"));
+                this.records.add(Column.create("seven", "one"));
+
+            }
+        } else {
+            if (intValues) {
+                this.records.add(FieldValue.create(10, 7));
+                this.records.add(FieldValue.create(7, 1));
+            } else {
+                this.records.add(Column.create(10, 5));
+                this.records.add(Column.create(2, 3));
+                this.records.add(Column.create(7, 1));
+            }
+        }
     }
 
     @Override
     public boolean hasNext() {
-        return this.index < this.columns.size();
+        return this.index < this.records.size();
     }
 
     @Override
-    public Column next() {
-        return this.columns.get(index++);
+    public Record next() {
+        return this.records.get(index++);
     }
 
     @Override
@@ -1185,7 +1371,7 @@ class InvalidPilosaClient extends InsecurePilosaClientIT {
     }
 }
 
-class XColumnIterator implements ColumnIterator {
+class XColumnIterator implements RecordIterator {
 
     XColumnIterator(long maxID, long maxColumns) {
         this.maxID = maxID;

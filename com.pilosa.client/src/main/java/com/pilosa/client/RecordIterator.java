@@ -32,26 +32,11 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client;
 
-public class PqlBaseQuery implements PqlQuery {
-    SerializedQuery query;
-    private Index index = null;
+import com.pilosa.client.orm.Record;
 
-    PqlBaseQuery(String pql) {
-        this(pql, null);
-    }
+import java.util.Iterator;
 
-    PqlBaseQuery(String pql, Index index) {
-        this.query = new SerializedQuery(pql, false);
-        this.index = index;
-    }
-
-    public Index getIndex() {
-        return this.index;
-    }
-
-    public SerializedQuery serialize() {
-        return this.query;
-    }
+public interface RecordIterator extends Iterator<Record> {
 }

@@ -304,12 +304,12 @@ public class OrmTest {
 
         PqlBaseQuery q3 = sampleField.topN(12, collabField.row(7), "category", 80, 81);
         assertEquals(
-                "TopN(sample-field,Row(collaboration=7),n=12,field='category',filters=[80,81])",
+                "TopN(sample-field,Row(collaboration=7),n=12,attrName='category',attrValues=[80,81])",
                 q3.serialize().getQuery());
 
         PqlBaseQuery q4 = sampleField.topN(12, null, "category", 80, 81);
         assertEquals(
-                "TopN(sample-field,n=12,field='category',filters=[80,81])",
+                "TopN(sample-field,n=12,attrName='category',attrValues=[80,81])",
                 q4.serialize().getQuery());
     }
 

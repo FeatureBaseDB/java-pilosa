@@ -372,32 +372,32 @@ public class Field {
      * Creates a TopN query.
      * <p>
      *     Return the id and count of the top n rows (by count of bits) in the field.
-     *     The field and filters arguments work together to only return rows
-     *     which have the attribute specified by field with one of the values specified
-     *     in filters.
+     *     The attrName and attrValues arguments work together to only return rows
+     *     which have the attribute specified by attrName with one of the values specified
+     *     in attrValues.
      *
      * @param n      number of items to return
      * @param row the row query
-     * @param field  field name
-     * @param values filter values to be matched against the field
+     * @param attrName  attribute name
+     * @param attrValues filter values to be matched against the attribute name
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#topn">TopN Query</a>
      */
     @SuppressWarnings("WeakerAccess")
-    public PqlBaseQuery topN(long n, PqlRowQuery row, String field, Object... values) {
-        return _topN(n, row, field, values);
+    public PqlBaseQuery topN(long n, PqlRowQuery row, String attrName, Object... attrValues) {
+        return _topN(n, row, attrName, attrValues);
     }
 
-    private PqlBaseQuery _topN(long n, PqlRowQuery row, String field, Object[] values) {
+    private PqlBaseQuery _topN(long n, PqlRowQuery row, String attrName, Object[] attrValues) {
         // TOOD: make field use its own validator
         String fieldString = "";
-        if (field != null) {
-            Validator.ensureValidLabel(field);
-            fieldString = String.format(",field='%s'", field);
+        if (attrName != null) {
+            Validator.ensureValidLabel(attrName);
+            fieldString = String.format(",attrName='%s'", attrName);
         }
 
         try {
-            String valuesString = (values == null || values.length == 0) ? "" : String.format(",filters=%s", this.mapper.writeValueAsString(values));
+            String valuesString = (attrValues == null || attrValues.length == 0) ? "" : String.format(",attrValues=%s", this.mapper.writeValueAsString(attrValues));
             String rowString = (row == null) ? "" : String.format(",%s", row.serialize().getQuery());
             String s = String.format("TopN(%s%s,n=%d%s%s)",
                     this.name, rowString, n, fieldString, valuesString);

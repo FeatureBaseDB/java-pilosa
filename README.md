@@ -56,7 +56,7 @@ Field myfield = myindex.field("myfield");
 client.syncSchema(schema);
 
 // Send a SetBit query. PilosaException is thrown if execution of the query fails.
-client.query(myfield.setBit(5, 42));
+client.query(myfield.set(5, 42));
 
 // Send a Row query. PilosaException is thrown if execution of the query fails.
 QueryResponse response = client.query(myfield.row(5));

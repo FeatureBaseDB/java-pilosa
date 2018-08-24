@@ -113,8 +113,8 @@ public class PqlBatchQuery implements PqlQuery {
      * @param query the query to be added
      */
     public void add(PqlQuery query) {
-        if (query.getIndex() != this.getIndex()) {
-            throw new PilosaException("Query index should be the same as PqlBatchQuery index");
+        if (!query.getIndex().getName().equals(this.getIndex().getName())) {
+            throw new PilosaException("Query index name should be the same as PqlBatchQuery index");
         }
         this.queries.add(query);
     }

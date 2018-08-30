@@ -1037,10 +1037,26 @@ public class PilosaClientIT {
     public void failOverTest() {
         Cluster c = Cluster.defaultCluster();
         for (int i = 0; i < 20; i++) {
-            c.addHost(URI.address(String.format("n%d.nonexistent-improbable.net:5000", i)));
+            c.addHost(URI.address(String.format("n%d.nonexistent-improbable:5000", i)));
         }
         PilosaClient client = PilosaClient.withCluster(c);
         client.readServerSchema();
+    }
+
+    @Test(expected = PilosaException.class)
+    public void failOverCoordinatorTest() throws IOException, InterruptedException {
+        HttpServer server = runNonexistentCoordinatorHttpServer();
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                Map<String, Object> attrs = new HashMap<>(1);
+                attrs.put("foo", "bar");
+                client.query(this.keyIndex.setColumnAttrs("foo", attrs));
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
     }
 
     @Test(expected = RuntimeException.class)
@@ -1159,6 +1175,20 @@ public class PilosaClientIT {
         return null;
     }
 
+    private HttpServer runNonexistentCoordinatorHttpServer() {
+        final int port = 15999;
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            server.createContext("/status", new NonexistentCoordinatorHandler());
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        return null;
+    }
+
     private HttpServer warningResponseHttpServer(String path, String warningMessage) {
         final int port = 15999;
         try {
@@ -1223,6 +1253,18 @@ public class PilosaClientIT {
         @Override
         public void handle(HttpExchange r) throws IOException {
             String response = "{\"state\":\"NORMAL\",\"nodes\":[{\"id\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\",\"uri\":{\"scheme\":\"http\",\"host\":\"localhost\",\"port\":10101}}],\"localID\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\"}";
+            r.sendResponseHeaders(200, response.getBytes().length);
+            try (OutputStream os = r.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+            r.close();
+        }
+    }
+
+    static class NonexistentCoordinatorHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange r) throws IOException {
+            String response = "{\"state\":\"NORMAL\",\"nodes\":[{\"isCoordinator\":true, \"id\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\",\"uri\":{\"scheme\":\"http\",\"host\":\"nonexistent\",\"port\":4444}}],\"localID\":\"0f5c2ffc-1244-47d0-a83d-f5a25abba9bc\"}";
             r.sendResponseHeaders(200, response.getBytes().length);
             try (OutputStream os = r.getResponseBody()) {
                 os.write(response.getBytes());

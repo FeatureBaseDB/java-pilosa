@@ -492,9 +492,14 @@ public class PilosaClient implements AutoCloseable {
                 response = client.execute(request);
                 break;
             } catch (IOException ex) {
-                this.cluster.removeHost(this.currentAddress);
-                logger.warn("Removed {} from the cluster due to {}", this.currentAddress, ex);
-                this.currentAddress = null;
+                if (useCoordinator) {
+                    logger.warn("Removed coordinator {} due to {}", this.coordinatorAddress, ex);
+                    this.coordinatorAddress = null;
+                } else {
+                    this.cluster.removeHost(this.currentAddress);
+                    logger.warn("Removed {} from the cluster due to {}", this.currentAddress, ex);
+                    this.currentAddress = null;
+                }
             }
         }
         if (response == null) {
@@ -541,8 +546,8 @@ public class PilosaClient implements AutoCloseable {
         HttpRequestBase request;
         String uri;
         if (useCoordinator) {
-            IFragmentNode node = fetchCoordinatorNode();
-            uri = node.toURI().getNormalized() + path;
+            updateCoordinatorAddress();
+            uri = this.coordinatorAddress.getNormalized() + path;
         } else {
             uri = this.getAddress() + path;
         }
@@ -690,6 +695,13 @@ public class PilosaClient implements AutoCloseable {
         return String.format("java-pilosa/%s", Version.getVersion());
     }
 
+    private synchronized void updateCoordinatorAddress() {
+        if (this.coordinatorAddress == null) {
+            IFragmentNode node = fetchCoordinatorNode();
+            this.coordinatorAddress = node.toURI();
+        }
+    }
+
     private enum ReturnClientResponse {
         RAW_RESPONSE,
         ERROR_CHECKED_RESPONSE,
@@ -719,6 +731,7 @@ public class PilosaClient implements AutoCloseable {
     private CloseableHttpClient client = null;
     private ClientOptions options;
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
+    private URI coordinatorAddress;
 }
 
 class QueryRequest {

@@ -1,5 +1,12 @@
 ## Change Log
 
+* **v1.0.1** (2018-09-12)
+    * Compatible with Pilosa 1.0.
+    * Added key import support.
+    * Fixed: https://github.com/pilosa/java-pilosa/issues/108
+    * Fixed: https://github.com/pilosa/java-pilosa/issues/112
+    * Fixed: https://github.com/pilosa/java-pilosa/issues/117
+
 * **v1.0.0** (2018-06-28)
     * Compatible with Pilosa 1.0.
     * Following terminology was changed:

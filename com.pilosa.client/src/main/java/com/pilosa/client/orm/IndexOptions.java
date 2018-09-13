@@ -61,14 +61,26 @@ public final class IndexOptions {
         }
 
         /**
-         * Sets whether field uses string keys.
+         * Sets whether the index uses string keys.
          *
          * @param enable Enables string keys for this field if set to true.
-         * @return FieldOptions builder
-         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         * @return IndexOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#index">Pilosa Data Model: Index</a>
          */
         public Builder keys(boolean enable) {
             this.keys = enable;
+            return this;
+        }
+
+        /**
+         * Enables keeping track of existence which is required for Not query
+         *
+         * @param enable
+         * @return IndexOptions builder
+         */
+
+        public Builder trackExistence(boolean enable) {
+            this.trackExistence = enable;
             return this;
         }
 
@@ -78,10 +90,11 @@ public final class IndexOptions {
          * @return FieldOptions object
          */
         public IndexOptions build() {
-            return new IndexOptions(this.keys);
+            return new IndexOptions(this.keys, this.trackExistence);
         }
 
         private boolean keys = false;
+        private boolean trackExistence = false;
 
     }
 
@@ -108,12 +121,20 @@ public final class IndexOptions {
         return this.keys;
     }
 
+    public boolean isTrackExistence() {
+        return this.trackExistence;
+    }
+
     @Override
     public String toString() {
-        if (this.keys) {
-            return "{\"options\":{\"keys\":true}}";
-        }
-        return "";
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\"options\":{");
+        builder.append("\"keys\":");
+        builder.append(this.keys ? "true" : "false");
+        builder.append(",\"trackExistence\":");
+        builder.append(this.trackExistence ? "true" : "false");
+        builder.append("}}");
+        return builder.toString();
     }
 
     @Override
@@ -135,8 +156,9 @@ public final class IndexOptions {
                 .toHashCode();
     }
 
-    private IndexOptions(final boolean keys) {
+    private IndexOptions(final boolean keys, boolean trackExistence) {
         this.keys = keys;
+        this.trackExistence = trackExistence;
     }
 
     static {
@@ -147,4 +169,5 @@ public final class IndexOptions {
 
     private static final ObjectMapper mapper;
     private final boolean keys;
+    private final boolean trackExistence;
 }

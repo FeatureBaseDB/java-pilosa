@@ -48,8 +48,10 @@ public class IndexOptionsTest {
         assertFalse(options.isKeys());
         options = IndexOptions.builder()
                 .keys(true)
+                .trackExistence(true)
                 .build();
         assertTrue(options.isKeys());
+        assertTrue(options.isTrackExistence());
     }
 
     @Test

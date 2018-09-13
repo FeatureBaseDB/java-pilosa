@@ -235,6 +235,10 @@ public class Index {
         return rowOperation("Xor", rows);
     }
 
+    public PqlRowQuery not(PqlRowQuery row) {
+        return pqlRowQuery(String.format("Not(%s)", row.serialize().getQuery()));
+    }
+
     /**
      * Creates a Count query.
      * <p>

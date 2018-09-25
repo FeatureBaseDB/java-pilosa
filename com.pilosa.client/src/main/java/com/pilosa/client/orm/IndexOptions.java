@@ -94,7 +94,7 @@ public final class IndexOptions {
         }
 
         private boolean keys = false;
-        private boolean trackExistence = false;
+        private Boolean trackExistence = null;
 
     }
 
@@ -131,8 +131,10 @@ public final class IndexOptions {
         builder.append("{\"options\":{");
         builder.append("\"keys\":");
         builder.append(this.keys ? "true" : "false");
-        builder.append(",\"trackExistence\":");
-        builder.append(this.trackExistence ? "true" : "false");
+        if (this.trackExistence != null) {
+            builder.append(",\"trackExistence\":");
+            builder.append(this.trackExistence ? "true" : "false");
+        }
         builder.append("}}");
         return builder.toString();
     }
@@ -156,7 +158,7 @@ public final class IndexOptions {
                 .toHashCode();
     }
 
-    private IndexOptions(final boolean keys, boolean trackExistence) {
+    private IndexOptions(final boolean keys, Boolean trackExistence) {
         this.keys = keys;
         this.trackExistence = trackExistence;
     }
@@ -169,5 +171,5 @@ public final class IndexOptions {
 
     private static final ObjectMapper mapper;
     private final boolean keys;
-    private final boolean trackExistence;
+    private final Boolean trackExistence;
 }

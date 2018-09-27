@@ -489,6 +489,32 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importRoaringTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
+            Field field = this.index.field("importfield-roaring");
+            client.ensureField(field);
+            ImportOptions importOptions = ImportOptions.builder()
+                    .setRoaring(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(3L, 1L, 5L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
     public void importWithKeysTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             RecordIterator iterator = StaticColumnIterator.columnsWithKeys();

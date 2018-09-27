@@ -35,11 +35,27 @@
 package com.pilosa.client;
 
 import com.pilosa.client.orm.Field;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
+
+import static com.pilosa.client.PilosaClient.PQL_VERSION;
 
 class ImportRequest {
-    ImportRequest(final Field field, final byte[] payload) {
-        this.path = String.format("/index/%s/field/%s/import", field.getIndex().getName(), field.getName());
+    ImportRequest(final String path, final byte[] payload, final String contentType) {
+        this.path = path;
         this.payload = payload;
+        this.contentType = contentType;
+    }
+
+    static ImportRequest createCSVImport(final Field field, final byte[] payload) {
+        String path = String.format("/index/%s/field/%s/import", field.getIndex().getName(), field.getName());
+        return new ImportRequest(path, payload, "application/x-protobuf");
+    }
+
+    static ImportRequest createRoaringImport(final Field field, long shard, final byte[] payload) {
+        String path = String.format("/index/%s/field/%s/import-roaring/%d",
+                field.getIndex().getName(), field.getName(), shard);
+        return new ImportRequest(path, payload, "application/x-binary");
     }
 
     String getPath() {
@@ -50,7 +66,15 @@ class ImportRequest {
         return this.payload;
     }
 
-    private final String path;
-    private final byte[] payload;
+    Header[] getHeaders() {
+        return new Header[]{
+                new BasicHeader("Content-Type", this.contentType),
+                new BasicHeader("Accept", "application/x-protobuf"),
+                new BasicHeader("PQL-Version", PQL_VERSION)
+        };
+    }
 
+    protected final String path;
+    protected final String contentType;
+    protected final byte[] payload;
 }

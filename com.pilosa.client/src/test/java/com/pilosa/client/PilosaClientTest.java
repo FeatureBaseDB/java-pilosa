@@ -73,7 +73,7 @@ public class PilosaClientTest {
             Schema schema = Schema.defaultSchema();
             Index index = schema.index("foo");
             Field field = index.field("bar");
-            ImportRequest request = new ImportRequest(field, new byte[]{0});
+            ImportRequest request = ImportRequest.createCSVImport(field, new byte[]{0});
             client.importNode(request);
         }
     }

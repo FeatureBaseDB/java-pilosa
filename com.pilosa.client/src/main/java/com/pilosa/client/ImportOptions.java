@@ -48,7 +48,8 @@ public class ImportOptions {
 
         public ImportOptions build() {
             return new ImportOptions(this.threadCount,
-                    this.timeoutMs, this.batchSize, this.strategy);
+                    this.timeoutMs, this.batchSize, this.strategy,
+                    this.roaring);
         }
 
         public Builder setThreadCount(int threadCount) {
@@ -71,20 +72,28 @@ public class ImportOptions {
             return this;
         }
 
+        public Builder setRoaring(boolean roaring) {
+            this.roaring = roaring;
+            return this;
+        }
+
         private int threadCount = 1;
         private long timeoutMs = 100;
         private int batchSize = 100000;
         private Strategy strategy = Strategy.BATCH;
+        private boolean roaring = false;
     }
 
     private ImportOptions(int threadCount,
                           long timeoutMs,
                           int batchSize,
-                          Strategy strategy) {
+                          Strategy strategy,
+                          boolean roaring) {
         this.threadCount = threadCount;
         this.timeoutMs = timeoutMs;
         this.batchSize = batchSize;
         this.strategy = strategy;
+        this.roaring = roaring;
     }
 
     public static Builder builder() {
@@ -111,8 +120,13 @@ public class ImportOptions {
         return ClientOptions.DEFAULT_SHARD_WIDTH;
     }
 
+    public boolean isRoaring() {
+        return this.roaring;
+    }
+
     final private int threadCount;
     final private long timeoutMs;
     final private int batchSize;
     final private Strategy strategy;
+    final private boolean roaring;
 }

@@ -282,6 +282,15 @@ public class OrmTest {
     }
 
     @Test
+    public void notTest() {
+        PqlRowQuery row = sampleField.row(10);
+        PqlBaseQuery q = sampleIndex.not(sampleField.row(1));
+        assertEquals(
+                "Not(Row(sample-field=1))",
+                q.serialize().getQuery());
+    }
+
+    @Test
     public void countTest() {
         PqlRowQuery b = collabField.row(42);
         PqlQuery q = projectIndex.count(b);

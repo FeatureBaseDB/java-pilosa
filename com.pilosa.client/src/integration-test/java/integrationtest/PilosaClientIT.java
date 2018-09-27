@@ -370,6 +370,34 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void testNot() throws IOException {
+        IndexOptions options = IndexOptions.builder()
+                .trackExistence(true)
+                .build();
+        Index index = this.schema.index("not-test", options);
+        Field field = index.field("f1");
+        try (PilosaClient client = getClient()) {
+            client.syncSchema(this.schema);
+            try {
+                client.query(index.batchQuery(
+                        field.set(1, 10),
+                        field.set(1, 11),
+                        field.set(2, 11),
+                        field.set(2, 12),
+                        field.set(2, 13)
+                ));
+                QueryResponse response = client.query(index.not(field.row(1)));
+                List<Long> target = new ArrayList<>();
+                target.add(12L);
+                target.add(13L);
+                assertEquals(target, response.getResult().getRow().getColumns());
+            } finally {
+                client.deleteIndex(index);
+            }
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void queryFailsWithError() throws IOException {
         try (PilosaClient client = getClient()) {

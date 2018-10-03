@@ -2,7 +2,8 @@
 
 * **master**
     * Added `trackExistence` index option.
-    * Added `not` index method to support `Not` queries. The corresponding index must be created with `trackExistence=true` option.  
+    * Added `not` index method to support `Not` queries. The corresponding index must be created with `trackExistence=true` option. This feature requires Pilosa on master branch. 
+    * Added support for roaring imports which can speed up the import process by %30 for non-key column imports. Pass `setRoaring(true)`` to `ImportOptions.builder()` to enable it. This feature requires Pilosa on master branch.   
 
 * **v1.0.1** (2018-09-12)
     * Compatible with Pilosa 1.0.

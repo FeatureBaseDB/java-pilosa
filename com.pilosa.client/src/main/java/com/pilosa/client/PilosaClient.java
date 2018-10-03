@@ -678,7 +678,7 @@ public class PilosaClient implements AutoCloseable {
 
     void importNode(ImportRequest request) {
         ByteArrayEntity entity = new ByteArrayEntity(request.getPayload());
-        clientExecute("POST", request.getPath(), entity, protobufHeaders, "Error while importing");
+        clientExecute("POST", request.getPath(), entity, request.getHeaders(), "Error while importing");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -928,7 +928,7 @@ class BitImportWorker implements Runnable {
                     if (this.field.getOptions().getFieldType() == FieldType.INT) {
                         shardRecords = ShardFieldValues.create(this.field, shard);
                     } else {
-                        shardRecords = ShardColumns.create(this.field, shard);
+                        shardRecords = ShardColumns.create(this.field, shard, shardWidth, options.isRoaring());
                     }
                     shardGroup.put(shard, shardRecords);
                 }

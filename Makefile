@@ -1,5 +1,5 @@
 
-.PHONY: build clean doc generate-proto test test-all
+.PHONY: build clean doc generate test test-all release
 
 build:
 	mvn -f com.pilosa.client/pom.xml clean package

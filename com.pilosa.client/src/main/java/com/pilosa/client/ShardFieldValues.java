@@ -119,7 +119,7 @@ public class ShardFieldValues implements ShardRecords {
         requestBuilder.addAllValues(values);
         values = null;
 
-        return new ImportRequest(this.field, requestBuilder.build().toByteArray());
+        return ImportRequest.createCSVImport(this.field, requestBuilder.build().toByteArray());
     }
 
     ShardFieldValues(final Field field, final long shard) {

@@ -36,14 +36,15 @@ package com.pilosa.client;
 
 import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Record;
+import com.pilosa.roaring.Bitmap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 class ShardColumns implements ShardRecords {
-    public static ShardColumns create(final Field field, final long shard) {
-        return new ShardColumns(field, shard);
+    public static ShardColumns create(final Field field, long shard, long shardWidth, boolean roaring) {
+        return new ShardColumns(field, shard, shardWidth, roaring);
     }
 
     @Override
@@ -85,6 +86,13 @@ class ShardColumns implements ShardRecords {
 
     @Override
     public ImportRequest toImportRequest() {
+        if (this.roaring && !isIndexKeys() && !isFieldKeys()) {
+            return toRoaringImportRequest();
+        }
+        return toCSVImportRequest();
+    }
+
+    public ImportRequest toCSVImportRequest() {
         if (!this.sorted) {
             Collections.sort(this.columns);
             this.sorted = true;
@@ -129,17 +137,31 @@ class ShardColumns implements ShardRecords {
         requestBuilder.addAllTimestamps(timestamps);
         timestamps = null;
 
-        return new ImportRequest(this.field, requestBuilder.build().toByteArray());
+        return ImportRequest.createCSVImport(this.field, requestBuilder.build().toByteArray());
     }
 
-    ShardColumns(final Field field, final long shard) {
+    ImportRequest toRoaringImportRequest() {
+        long shardWidth = this.shardWidth;
+        Bitmap bmp = new Bitmap();
+        for (Column b : this.columns) {
+            bmp.add(b.rowID * shardWidth + (b.columnID % shardWidth));
+        }
+        return ImportRequest.createRoaringImport(this.field, this.shard, bmp.serialize().array());
+
+    }
+
+    ShardColumns(final Field field, long shard, long shardWidth, boolean roaring) {
         this.field = field;
         this.shard = shard;
+        this.shardWidth = shardWidth;
         this.columns = new ArrayList<>();
+        this.roaring = roaring;
     }
 
     private final Field field;
     private final long shard;
+    private final long shardWidth;
     private List<Column> columns;
     private boolean sorted = false;
+    private final boolean roaring;
 }

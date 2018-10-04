@@ -498,6 +498,30 @@ public class Field {
     }
 
     /**
+     * Store writes the result of the row query to the specified row. If the row already exists, it will be replaced. The destination field must be of field type set.
+     *
+     * @param rowQuery row query to read the result from
+     * @param rowID    row ID
+     * @return a PQL query
+     */
+    public PqlBaseQuery store(PqlRowQuery rowQuery, long rowID) {
+        String text = String.format("Store(%s,%s=%d)", rowQuery.serialize().getQuery(), this.name, rowID);
+        return this.index.pqlQuery(text, false);
+    }
+
+    /**
+     * Store writes the result of the row query to the specified row. If the row already exists, it will be replaced. The destination field must be of field type set.
+     *
+     * @param rowQuery row query to read the result from
+     * @param rowKey   row key
+     * @return a PQL query
+     */
+    public PqlBaseQuery store(PqlRowQuery rowQuery, String rowKey) {
+        String text = String.format("Store(%s,%s='%s')", rowQuery.serialize().getQuery(), this.name, rowKey);
+        return this.index.pqlQuery(text, false);
+    }
+
+    /**
      * Creates a Range query with less than (<) condition.
      *
      * @param n The value to compare

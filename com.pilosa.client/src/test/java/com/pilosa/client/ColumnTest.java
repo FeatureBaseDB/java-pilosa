@@ -51,9 +51,9 @@ public class ColumnTest {
         compare(column, 1, 100, "", "", 65000);
 
         column = Column.create(1, "bar");
-        compare(column, 1, 0, "bar", "", 0);
+        compare(column, 1, 0, "", "bar", 0);
         column = Column.create(1, "bar", 65000);
-        compare(column, 1, 0, "bar", "", 65000);
+        compare(column, 1, 0, "", "bar", 65000);
 
         column = Column.create("foo", 100);
         compare(column, 0, 100, "foo", "", 0);

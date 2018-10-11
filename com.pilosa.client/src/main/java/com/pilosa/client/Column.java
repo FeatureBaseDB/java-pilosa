@@ -49,11 +49,11 @@ public class Column implements Record {
     }
 
     public static Column create(long rowID, String columnKey) {
-        return create(rowID, 0, columnKey, "", 0);
+        return create(rowID, 0, "", columnKey, 0);
     }
 
     public static Column create(long rowID, String columnKey, long timestamp) {
-        return create(rowID, 0, columnKey, "", timestamp);
+        return create(rowID, 0, "", columnKey, timestamp);
     }
 
     public static Column create(String rowKey, long columnID) {

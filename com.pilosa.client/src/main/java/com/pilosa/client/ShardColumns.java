@@ -34,13 +34,13 @@
 
 package com.pilosa.client;
 
-import com.pilosa.client.orm.Field;
-import com.pilosa.client.orm.Record;
-import com.pilosa.roaring.Bitmap;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.pilosa.client.orm.Field;
+import com.pilosa.client.orm.Record;
+import com.pilosa.roaring.Bitmap;
 
 class ShardColumns implements ShardRecords {
     public static ShardColumns create(final Field field, long shard, long shardWidth, boolean roaring) {
@@ -93,51 +93,45 @@ class ShardColumns implements ShardRecords {
     }
 
     public ImportRequest toCSVImportRequest() {
-        if (!this.sorted) {
-            Collections.sort(this.columns);
-            this.sorted = true;
+        if (!sorted) {
+            Collections.sort(columns);
+            sorted = true;
         }
 
-        int columnCount = this.columns.size();
-
-        List<Long> timestamps = new ArrayList<>(columnCount);
         Internal.ImportRequest.Builder requestBuilder = Internal.ImportRequest.newBuilder()
-                .setIndex(this.field.getIndex().getName())
-                .setField(this.field.getName())
-                .setShard(this.shard);
+                .setIndex(field.getIndex().getName())
+                .setField(field.getName())
+                .setShard(shard);
 
-        if (this.field.getOptions().isKeys()) {
-            List<String> rowKeys = new ArrayList<>(columnCount);
-            List<String> columnKeys = new ArrayList<>(columnCount);
-            for (Column column : this.columns) {
-                rowKeys.add(column.rowKey);
-                columnKeys.add(column.columnKey);
-                timestamps.add(column.timestamp);
+        if (isIndexKeys() && isFieldKeys()) {
+            for (Column column : columns){
+                requestBuilder.addRowKeys(column.rowKey);
+                requestBuilder.addColumnKeys(column.columnKey);
+                requestBuilder.addTimestamps(column.timestamp);
             }
-            requestBuilder
-                    .addAllRowKeys(rowKeys)
-                    .addAllColumnKeys(columnKeys);
-            rowKeys = null;
-            columnKeys = null;
-        } else {
-            List<Long> rowIDs = new ArrayList<>(columnCount);
-            List<Long> columnIDs = new ArrayList<>(columnCount);
-            for (Column column : columns) {
-                rowIDs.add(column.rowID);
-                columnIDs.add(column.columnID);
-                timestamps.add(column.timestamp);
-            }
-            requestBuilder
-                    .addAllRowIDs(rowIDs)
-                    .addAllColumnIDs(columnIDs);
-            rowIDs = null;
-            columnIDs = null;
         }
-
-        requestBuilder.addAllTimestamps(timestamps);
-        timestamps = null;
-
-        return ImportRequest.createCSVImport(this.field, requestBuilder.build().toByteArray());
+        else if(!isIndexKeys() && isFieldKeys()) {
+            for (Column column : columns){
+                requestBuilder.addRowKeys(column.rowKey);
+                requestBuilder.addColumnIDs(column.columnID);
+                requestBuilder.addTimestamps(column.timestamp);
+            }
+        }
+        else if(isIndexKeys() && !isFieldKeys()){
+            for (Column column : columns){
+                requestBuilder.addRowIDs(column.rowID);
+                requestBuilder.addColumnKeys(column.columnKey);
+                requestBuilder.addTimestamps(column.timestamp);
+            }
+        }
+        else {
+            for (Column column : columns){
+                requestBuilder.addRowIDs(column.rowID);
+                requestBuilder.addColumnIDs(column.columnID);
+                requestBuilder.addTimestamps(column.timestamp);
+            }
+        }
+        return ImportRequest.createCSVImport(field, requestBuilder.build().toByteArray());
     }
 
     ImportRequest toRoaringImportRequest() {
@@ -147,7 +141,6 @@ class ShardColumns implements ShardRecords {
             bmp.add(b.rowID * shardWidth + (b.columnID % shardWidth));
         }
         return ImportRequest.createRoaringImport(this.field, this.shard, bmp.serialize().array());
-
     }
 
     ShardColumns(final Field field, long shard, long shardWidth, boolean roaring) {

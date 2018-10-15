@@ -49,6 +49,8 @@ public class FieldTypeTest {
         assertEquals(FieldType.SET, FieldType.fromString("set"));
         assertEquals(FieldType.INT, FieldType.fromString("int"));
         assertEquals(FieldType.TIME, FieldType.fromString("time"));
+        assertEquals(FieldType.MUTEX, FieldType.fromString("mutex"));
+        assertEquals(FieldType.BOOL, FieldType.fromString("bool"));
         assertEquals(FieldType.DEFAULT, FieldType.fromString(""));
     }
 

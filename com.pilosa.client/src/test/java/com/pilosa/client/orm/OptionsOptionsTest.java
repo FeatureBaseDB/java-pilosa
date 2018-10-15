@@ -34,42 +34,23 @@
 
 package com.pilosa.client.orm;
 
-import com.pilosa.client.exceptions.ValidationException;
+import org.junit.Test;
 
-public enum FieldType {
-    DEFAULT(""),
-    SET("set"),
-    TIME("time"),
-    INT("int"),
-    MUTEX("mutex"),
-    BOOL("bool");
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
-    FieldType(String value) {
-        this.value = value;
+public class OptionsOptionsTest {
+    @Test
+    public void testOptions() {
+        OptionsOptions opts = OptionsOptions.builder()
+                .setColumnAttrs(true)
+                .setExcludeColumns(true)
+                .setExcludeRowAttrs(true)
+                .setShards(5, 10)
+                .build();
+        assertTrue(opts.isColumnAttrs());
+        assertTrue(opts.isExcludeColumns());
+        assertTrue(opts.isExcludeRowAttrs());
+        assertArrayEquals(new long[]{5, 10}, opts.getShards());
     }
-
-    public static FieldType fromString(String s) {
-        switch (s) {
-            case "":
-                return FieldType.DEFAULT;
-            case "set":
-                return FieldType.SET;
-            case "time":
-                return FieldType.TIME;
-            case "int":
-                return FieldType.INT;
-            case "mutex":
-                return FieldType.MUTEX;
-            case "bool":
-                return FieldType.BOOL;
-        }
-        throw new ValidationException(String.format("Invalid field type string: %s", s));
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
-
-    private final String value;
 }

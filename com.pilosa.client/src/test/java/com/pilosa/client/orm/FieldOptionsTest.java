@@ -97,6 +97,45 @@ public class FieldOptionsTest {
     }
 
     @Test
+    public void testMutexFieldOptions() {
+        FieldOptions options;
+        String target;
+
+        options = FieldOptions.builder()
+                .fieldMutex(CacheType.RANKED, 1000)
+                .keys(true)
+                .build();
+        compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
+        target = "{\"options\":{\"keys\":true,\"type\":\"mutex\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        options = FieldOptions.builder()
+                .fieldMutex(CacheType.RANKED)
+                .build();
+        compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
+        target = "{\"options\":{\"type\":\"mutex\",\"cacheType\":\"ranked\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        options = FieldOptions.builder()
+                .fieldMutex()
+                .build();
+        compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
+        target = "{\"options\":{\"type\":\"mutex\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+    }
+
+    @Test
+    public void testBoolFieldOptions() {
+        FieldOptions options = FieldOptions.builder()
+                .fieldBool()
+                .build();
+        compare(options, FieldType.BOOL, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
+        String target = "{\"options\":{\"type\":\"bool\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+    }
+
+
+    @Test
     public void testKeysOption() {
         FieldOptions options = FieldOptions.builder()
                 .keys(true)

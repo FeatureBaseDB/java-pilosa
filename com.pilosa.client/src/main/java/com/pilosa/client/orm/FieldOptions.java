@@ -67,6 +67,8 @@ public final class FieldOptions {
         }
 
         /**
+         * Adds a set field to the field options.
+         *
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
@@ -75,6 +77,8 @@ public final class FieldOptions {
         }
 
         /**
+         * Adds a set field to the field options.
+         *
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
@@ -84,6 +88,8 @@ public final class FieldOptions {
         }
 
         /**
+         * Adds a set field to the field options.
+         *
          * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
          * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
          * @return FieldOptions builder
@@ -97,7 +103,43 @@ public final class FieldOptions {
         }
 
         /**
-         * Adds an integer field to the field options
+         * Adds a mutex field to the field options.
+         *
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
+        public Builder fieldMutex() {
+            return fieldMutex(CacheType.DEFAULT, 0);
+        }
+
+        /**
+         * Adds a mutex field to the field options.
+         *
+         * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
+        public Builder fieldMutex(CacheType cacheType) {
+            return fieldMutex(cacheType, 0);
+        }
+
+        /**
+         * Adds a mutex field to the field options.
+         *
+         * @param cacheType CacheType.DEFAULT, CacheType.LRU or CacheType.RANKED
+         * @param cacheSize Values greater than 0 sets the cache size. Otherwise uses the default cache size.
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
+        public Builder fieldMutex(CacheType cacheType, int cacheSize) {
+            this.fieldType = FieldType.MUTEX;
+            this.cacheType = cacheType;
+            this.cacheSize = cacheSize;
+            return this;
+        }
+
+        /**
+         * Adds an integer field to the field options.
          *
          * @param min  Minimum value this field can represent.
          * @param max  Maximum value this field can represent.
@@ -112,7 +154,7 @@ public final class FieldOptions {
         }
 
         /**
-         * Adds a time field to the field options
+         * Adds a time field to the field options.
          *
          * @param timeQuantum The time quantum for this field.
          * @return FieldOptions builder
@@ -121,6 +163,17 @@ public final class FieldOptions {
         public Builder fieldTime(TimeQuantum timeQuantum) {
             this.fieldType = FieldType.TIME;
             this.timeQuantum = timeQuantum;
+            return this;
+        }
+
+        /**
+         * Adds a bool field to the field options.
+         *
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         */
+        public Builder fieldBool() {
+            this.fieldType = FieldType.BOOL;
             return this;
         }
 
@@ -216,6 +269,7 @@ public final class FieldOptions {
         }
         switch (this.fieldType) {
             case SET:
+            case MUTEX:
                 if (!this.cacheType.equals(CacheType.DEFAULT)) {
                     options.put("cacheType", this.cacheType.toString());
                 }

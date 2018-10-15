@@ -1,5 +1,10 @@
 ## Change Log
 
+* **master**
+    * Supports RowID/ColumnKey and RowID/ColumnID imports
+    * Added support for mutex and bool fields
+    * Added `index.Options`, `field.ClearRow` and `field.Store` functions to support the corresponding PQL calls. 
+
 * **v1.0.2** (2018-10-12)
     * Added `trackExistence` index option.
     * Added `not` index method to support `Not` queries. The corresponding index must be created with `trackExistence=true` option. This feature requires Pilosa on master branch. 

@@ -33,16 +33,15 @@
  */
 package com.pilosa.client;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.pilosa.client.orm.FieldOptions;
 import com.pilosa.client.orm.Index;
 import com.pilosa.client.orm.IndexOptions;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.pilosa.client.Internal.ImportRequest.parseFrom;
 import static org.junit.Assert.assertEquals;
@@ -50,83 +49,83 @@ import static org.junit.Assert.assertEquals;
 @Category(UnitTest.class)
 public class ShardColumnsTest {
 
-  private static final String INDEX_NAME = "test-index";
-  private static final String FIELD_NAME = "test-field";
+    private static final String INDEX_NAME = "test-index";
+    private static final String FIELD_NAME = "test-field";
 
-  @Test
-  public void testToImportRequestCsvIndexAndFieldKeys() throws InvalidProtocolBufferException {
-    List<Column> columns = Arrays.asList(Column.create("row-a", "column-a"),
-        Column.create("row-b", "column-b"));
-    ShardColumns shardColumns = buildShardColumns(true, true, false, columns);
-    Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
-    for (int i = 0; i < columns.size(); i++) {
-      assertEquals(internalImportRequest.getRowKeys(i), columns.get(i).getRowKey());
-      assertEquals(internalImportRequest.getColumnKeys(i), columns.get(i).getColumnKey());
+    @Test
+    public void testToImportRequestCsvIndexAndFieldKeys() throws InvalidProtocolBufferException {
+        List<Column> columns = Arrays.asList(Column.create("row-a", "column-a"),
+                Column.create("row-b", "column-b"));
+        ShardColumns shardColumns = buildShardColumns(true, true, false, columns);
+        Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
+        for (int i = 0; i < columns.size(); i++) {
+            assertEquals(internalImportRequest.getRowKeys(i), columns.get(i).getRowKey());
+            assertEquals(internalImportRequest.getColumnKeys(i), columns.get(i).getColumnKey());
+        }
+        assertEquals(FIELD_NAME, internalImportRequest.getField());
+        assertEquals(INDEX_NAME, internalImportRequest.getIndex());
     }
-    assertEquals(FIELD_NAME, internalImportRequest.getField());
-    assertEquals(INDEX_NAME, internalImportRequest.getIndex());
-  }
 
-  @Test
-  public void testToImportRequestCsvIndexKeysNoFieldKeys() throws InvalidProtocolBufferException {
-    List<Column> columns = Arrays.asList(Column.create(1L, "column-a"),
-        Column.create(2L, "column-b"));
-    ShardColumns shardColumns = buildShardColumns(true, false, false, columns);
-    Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
-    for (int i = 0; i < columns.size(); i++) {
-      assertEquals(internalImportRequest.getRowIDs(i), columns.get(i).getRowID());
-      assertEquals(internalImportRequest.getColumnKeys(i), columns.get(i).getColumnKey());
+    @Test
+    public void testToImportRequestCsvIndexKeysNoFieldKeys() throws InvalidProtocolBufferException {
+        List<Column> columns = Arrays.asList(Column.create(1L, "column-a"),
+                Column.create(2L, "column-b"));
+        ShardColumns shardColumns = buildShardColumns(true, false, false, columns);
+        Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
+        for (int i = 0; i < columns.size(); i++) {
+            assertEquals(internalImportRequest.getRowIDs(i), columns.get(i).getRowID());
+            assertEquals(internalImportRequest.getColumnKeys(i), columns.get(i).getColumnKey());
+        }
+        assertEquals(FIELD_NAME, internalImportRequest.getField());
+        assertEquals(INDEX_NAME, internalImportRequest.getIndex());
     }
-    assertEquals(FIELD_NAME, internalImportRequest.getField());
-    assertEquals(INDEX_NAME, internalImportRequest.getIndex());
-  }
 
-  @Test
-  public void testToImportRequestCsvNoIndexKeysWithFieldKeys() throws InvalidProtocolBufferException {
-    List<Column> columns = Arrays.asList(Column.create("row-a", 100L),
-        Column.create("row-b", 101L));
-    ShardColumns shardColumns = buildShardColumns(false, true, false, columns);
-    Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
-    for (int i = 0; i < columns.size(); i++) {
-      assertEquals(internalImportRequest.getRowKeys(i), columns.get(i).getRowKey());
-      assertEquals(internalImportRequest.getColumnIDs(i), columns.get(i).getColumnID());
+    @Test
+    public void testToImportRequestCsvNoIndexKeysWithFieldKeys() throws InvalidProtocolBufferException {
+        List<Column> columns = Arrays.asList(Column.create("row-a", 100L),
+                Column.create("row-b", 101L));
+        ShardColumns shardColumns = buildShardColumns(false, true, false, columns);
+        Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
+        for (int i = 0; i < columns.size(); i++) {
+            assertEquals(internalImportRequest.getRowKeys(i), columns.get(i).getRowKey());
+            assertEquals(internalImportRequest.getColumnIDs(i), columns.get(i).getColumnID());
+        }
+        assertEquals(FIELD_NAME, internalImportRequest.getField());
+        assertEquals(INDEX_NAME, internalImportRequest.getIndex());
     }
-    assertEquals(FIELD_NAME, internalImportRequest.getField());
-    assertEquals(INDEX_NAME, internalImportRequest.getIndex());
-  }
 
-  @Test
-  public void testToImportRequestCsvWithNoKeys() throws InvalidProtocolBufferException {
-    List<Column> columns = Arrays.asList(Column.create(1L, 100L),
-        Column.create(2L, 101L));
-    ShardColumns shardColumns = buildShardColumns(false, false, false, columns);
-    Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
-    for (int i = 0; i < columns.size(); i++) {
-      assertEquals(internalImportRequest.getRowIDs(i), columns.get(i).getRowID());
-      assertEquals(internalImportRequest.getColumnIDs(i), columns.get(i).getColumnID());
+    @Test
+    public void testToImportRequestCsvWithNoKeys() throws InvalidProtocolBufferException {
+        List<Column> columns = Arrays.asList(Column.create(1L, 100L),
+                Column.create(2L, 101L));
+        ShardColumns shardColumns = buildShardColumns(false, false, false, columns);
+        Internal.ImportRequest internalImportRequest = toShardColumnsInternalImportRequest(shardColumns);
+        for (int i = 0; i < columns.size(); i++) {
+            assertEquals(internalImportRequest.getRowIDs(i), columns.get(i).getRowID());
+            assertEquals(internalImportRequest.getColumnIDs(i), columns.get(i).getColumnID());
+        }
+        assertEquals(FIELD_NAME, internalImportRequest.getField());
+        assertEquals(INDEX_NAME, internalImportRequest.getIndex());
     }
-    assertEquals(FIELD_NAME, internalImportRequest.getField());
-    assertEquals(INDEX_NAME, internalImportRequest.getIndex());
-  }
 
-  private static ShardColumns buildShardColumns(boolean indexKeys, boolean fieldKeys,
-      boolean isRoaring, List<Column> columns) {
-    return addColumns(ShardColumns.create(
-        Index.create(INDEX_NAME, IndexOptions.builder().keys(indexKeys).build())
-            .field(FIELD_NAME, FieldOptions.builder().keys(fieldKeys).build()),
-        1L,
-        ClientOptions.DEFAULT_SHARD_WIDTH,
-        isRoaring), columns);
-  }
-
-  private static ShardColumns addColumns(ShardColumns shardColumns, List<Column> columns) {
-    for (Column column : columns) {
-      shardColumns.add(column);
+    private static ShardColumns buildShardColumns(boolean indexKeys, boolean fieldKeys,
+                                                  boolean isRoaring, List<Column> columns) {
+        return addColumns(ShardColumns.create(
+                Index.create(INDEX_NAME, IndexOptions.builder().keys(indexKeys).build())
+                        .field(FIELD_NAME, FieldOptions.builder().keys(fieldKeys).build()),
+                1L,
+                ClientOptions.DEFAULT_SHARD_WIDTH,
+                isRoaring), columns);
     }
-    return shardColumns;
-  }
 
-  private static Internal.ImportRequest toShardColumnsInternalImportRequest(ShardColumns shardColumns) throws InvalidProtocolBufferException {
-    return parseFrom(shardColumns.toImportRequest().payload);
-  }
+    private static ShardColumns addColumns(ShardColumns shardColumns, List<Column> columns) {
+        for (Column column : columns) {
+            shardColumns.add(column);
+        }
+        return shardColumns;
+    }
+
+    private static Internal.ImportRequest toShardColumnsInternalImportRequest(ShardColumns shardColumns) throws InvalidProtocolBufferException {
+        return parseFrom(shardColumns.toImportRequest().payload);
+    }
 }

@@ -55,9 +55,9 @@ public class CsvFileColumnIteratorIT {
     @Test
     public void readFromCsvTest() throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL uri = loader.getResource("sample1.csv");
+        URL uri = loader.getResource("row_id-column_id-timestamp.csv");
         if (uri == null) {
-            fail("sample1.csv not found");
+            fail("row_id-column_id-timestamp not found");
         }
         CsvFileColumnIterator iterator = CsvFileColumnIterator.fromPath(uri.getPath());
         List<Column> columns = new ArrayList<>(3);
@@ -76,9 +76,9 @@ public class CsvFileColumnIteratorIT {
     @Test
     public void readFromCsvWithCustomTimestampTest() throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL uri = loader.getResource("sample2.csv");
+        URL uri = loader.getResource("row_id-column_id-custom_timestamp.csv");
         if (uri == null) {
-            fail("sample2.csv not found");
+            fail("row_id-column_id-custom_timestamp.csv not found");
         }
         SimpleDateFormat timestampFormat = CsvFileColumnIterator.getDefaultTimestampFormat();
         CsvFileColumnIterator iterator = CsvFileColumnIterator.fromPath(uri.getPath(), timestampFormat);
@@ -94,9 +94,9 @@ public class CsvFileColumnIteratorIT {
     @Test(expected = PilosaException.class)
     public void readFromCsvWithCustomTimestampFailTest() throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        URL uri = loader.getResource("sample2.csv");
+        URL uri = loader.getResource("row_id-column_id-custom_timestamp.csv");
         if (uri == null) {
-            fail("sample2.csv not found");
+            fail("row_id-column_id-custom_timestamp.csv not found");
         }
         // timestamp format that doesn't match sample2.csv
         SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'TX'hh:mm");

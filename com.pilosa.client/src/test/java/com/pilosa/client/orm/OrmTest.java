@@ -481,4 +481,16 @@ public class OrmTest {
         assertEquals("Set('foo', collaboration=100)",
                 q.serialize().getQuery());
     }
+
+    @Test
+    public void fieldStoreTest() {
+        PqlQuery q = sampleField.store(collabField.row(5), 10);
+        assertEquals(
+                "Store(Row(collaboration=5),sample-field=10)",
+                q.serialize().getQuery());
+        q = sampleField.store(collabField.row("five"), "ten");
+        assertEquals(
+                "Store(Row(collaboration='five'),sample-field='ten')",
+                q.serialize().getQuery());
+    }
 }

@@ -64,6 +64,10 @@ public abstract class LineUnserializer {
         }
     }
 
+    public LineUnserializer() {
+        this.setTimestampFormat(defaultTimestampFormat);
+    }
+
     protected final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-    protected SimpleDateFormat timestampFormat = defaultTimestampFormat;
+    protected SimpleDateFormat timestampFormat = null;
 }

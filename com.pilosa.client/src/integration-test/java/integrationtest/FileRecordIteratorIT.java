@@ -71,7 +71,7 @@ public class FileRecordIteratorIT {
 
     @Test
     public void csvRowIDColumnKeyTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnIDUnserializer();
+        LineUnserializer unserializer = new RowIDColumnKeyUnserializer();
         unserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_id-column_key-timestamp.csv",
@@ -81,7 +81,7 @@ public class FileRecordIteratorIT {
 
     @Test
     public void csvRowKeyColumnIDTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnIDUnserializer();
+        LineUnserializer unserializer = new RowKeyColumnIDUnserializer();
         unserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_id-timestamp.csv",
@@ -91,7 +91,7 @@ public class FileRecordIteratorIT {
 
     @Test
     public void csvRowKeyColumnKeyTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnIDUnserializer();
+        LineUnserializer unserializer = new RowKeyColumnKeyUnserializer();
         unserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_key-timestamp.csv",

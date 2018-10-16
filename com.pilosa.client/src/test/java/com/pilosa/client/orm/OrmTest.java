@@ -404,37 +404,6 @@ public class OrmTest {
     }
 
     @Test
-    public void storeTest() {
-        PqlQuery q = sampleField.store(collabField.row(5), 10);
-        assertEquals(
-                "Store(Row(collaboration=5),sample-field=10)",
-                q.serialize().getQuery());
-
-        q = sampleField.store(collabField.row(5), "ten");
-        assertEquals(
-                "Store(Row(collaboration=5),sample-field='ten')",
-                q.serialize().getQuery());
-    }
-
-    @Test
-    public void clearRowTest() {
-        PqlQuery q = collabField.clearRow(5);
-        assertEquals(
-                "ClearRow(collaboration=5)",
-                q.serialize().getQuery());
-
-        q = collabField.clearRow("five");
-        assertEquals(
-                "ClearRow(collaboration='five')",
-                q.serialize().getQuery());
-
-        q = collabField.clearRow(true);
-        assertEquals(
-                "ClearRow(collaboration=true)",
-                q.serialize().getQuery());
-    }
-
-    @Test
     public void optionsTest() {
         OptionsOptions opts = OptionsOptions.builder()
                 .build();
@@ -590,6 +559,24 @@ public class OrmTest {
         q = sampleField.store(collabField.row("five"), "ten");
         assertEquals(
                 "Store(Row(collaboration='five'),sample-field='ten')",
+                q.serialize().getQuery());
+    }
+
+    @Test
+    public void fieldClearRowTest() {
+        PqlQuery q = collabField.clearRow(5);
+        assertEquals(
+                "ClearRow(collaboration=5)",
+                q.serialize().getQuery());
+
+        q = collabField.clearRow("five");
+        assertEquals(
+                "ClearRow(collaboration='five')",
+                q.serialize().getQuery());
+
+        q = collabField.clearRow(true);
+        assertEquals(
+                "ClearRow(collaboration=true)",
                 q.serialize().getQuery());
     }
 }

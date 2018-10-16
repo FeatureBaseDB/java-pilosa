@@ -34,6 +34,7 @@
 
 package com.pilosa.client.orm;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -158,7 +159,8 @@ public final class IndexOptions {
                 .toHashCode();
     }
 
-    private IndexOptions(final boolean keys, Boolean trackExistence) {
+    private IndexOptions(@JsonProperty("keys") final boolean keys,
+        @JsonProperty("trackExistence") Boolean trackExistence) {
         this.keys = keys;
         this.trackExistence = trackExistence;
     }
@@ -170,6 +172,6 @@ public final class IndexOptions {
     }
 
     private static final ObjectMapper mapper;
-    private final boolean keys;
-    private final Boolean trackExistence;
+    private  boolean keys;
+    private  Boolean trackExistence;
 }

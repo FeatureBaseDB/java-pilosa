@@ -35,6 +35,7 @@
 package com.pilosa.client.status;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pilosa.client.orm.IndexOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,12 @@ public class IndexInfo {
         this.fields = fields;
     }
 
+    @JsonProperty("options")
+    public IndexOptions getIndexOptions(){
+        return this.indexOptions;
+    }
+
     private String name;
     private List<FieldInfo> fields = new ArrayList<>();
+    private IndexOptions indexOptions;
 }

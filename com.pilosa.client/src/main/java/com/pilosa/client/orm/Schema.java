@@ -83,7 +83,7 @@ public class Schema {
      * @return copied index
      */
     public Index index(Index other) {
-        Index index = this.index(other.getName());
+        Index index = this.index(other.getName(), other.getOptions());
         for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
             Field field = fieldEntry.getValue();
             index.field(field.getName(), field.getOptions());
@@ -101,8 +101,8 @@ public class Schema {
                 result.indexes.put(indexName, new Index(indexEntry.getValue()));
             } else {
                 // the index exists in the other schema; check the fields
-                Index resultIndex = Index.create(indexName);
                 Index otherIndex = other.indexes.get(indexName);
+                Index resultIndex = Index.create(indexName, otherIndex.getOptions());
                 Map<String, Field> otherIndexFields = otherIndex.getFields();
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
                     String fieldName = fieldEntry.getKey();

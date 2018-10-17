@@ -34,15 +34,15 @@
 
 package com.pilosa.client.csv;
 
+import com.pilosa.client.RecordIterator;
 import com.pilosa.client.orm.Record;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Scanner;
 
-public class FileRecordIterator implements Iterator<Record> {
+public class FileRecordIterator implements RecordIterator {
     public static FileRecordIterator fromPath(String path, LineUnserializer unserializer)
             throws FileNotFoundException {
         return fromStream(new FileInputStream(path), unserializer);

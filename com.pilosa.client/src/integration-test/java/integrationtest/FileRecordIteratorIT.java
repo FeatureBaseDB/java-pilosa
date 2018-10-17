@@ -38,6 +38,7 @@ import com.pilosa.client.Column;
 import com.pilosa.client.FieldValue;
 import com.pilosa.client.IntegrationTest;
 import com.pilosa.client.csv.*;
+import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.Record;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -52,21 +53,47 @@ import static org.junit.Assert.*;
 @Category(IntegrationTest.class)
 public class FileRecordIteratorIT {
     @Test
+    public void csvRowIDColumnIDDefaultTimestampFormatTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_id-column_id-custom_timestamp.csv",
+                new RowIDColumnIDUnserializer(),
+                getTargetRowIDColumnIDTimestamp());
+    }
+
+    @Test(expected = PilosaException.class)
+    public void csvRowIDColumnIDTimestampFailTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_id-column_id-timestamp.csv",
+                new RowIDColumnIDUnserializer(),
+                getTargetRowIDColumnIDTimestamp());
+    }
+
+    @Test
+    public void csvRowIDColumnIDTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_id-column_id.csv",
+                new RowIDColumnIDUnserializer(),
+                getTargetRowIDColumnID());
+    }
+
+    @Test
     public void csvRowIDColumnIDTimestampTest() throws FileNotFoundException {
         LineUnserializer unserializer = new RowIDColumnIDUnserializer();
         unserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_id-column_id-timestamp.csv",
                 unserializer,
-                getTargetRowIDColumnID());
+                getTargetRowIDColumnIDTimestamp());
     }
 
     @Test
-    public void csvRowIDColumnIDDefaultTimestampFormatTest() throws FileNotFoundException {
+    public void csvRowIDColumnKeyTest() throws FileNotFoundException {
+        LineUnserializer unserializer = new RowIDColumnKeyUnserializer();
+        unserializer.setTimestampFormat(null);
         readCompareFromCSV(
-                "row_id-column_id-custom_timestamp.csv",
-                new RowIDColumnIDUnserializer(),
-                getTargetRowIDColumnID());
+                "row_id-column_key.csv",
+                unserializer,
+                getTargetRowIDColumnKey());
     }
 
     @Test
@@ -76,7 +103,17 @@ public class FileRecordIteratorIT {
         readCompareFromCSV(
                 "row_id-column_key-timestamp.csv",
                 unserializer,
-                getTargetRowIDColumnKey());
+                getTargetRowIDColumnKeyTimestamp());
+    }
+
+    @Test
+    public void csvRowKeyColumnIDTest() throws FileNotFoundException {
+        LineUnserializer unserializer = new RowKeyColumnIDUnserializer();
+        unserializer.setTimestampFormat(null);
+        readCompareFromCSV(
+                "row_key-column_id.csv",
+                unserializer,
+                getTargetRowKeyColumnID());
     }
 
     @Test
@@ -86,17 +123,61 @@ public class FileRecordIteratorIT {
         readCompareFromCSV(
                 "row_key-column_id-timestamp.csv",
                 unserializer,
-                getTargetRowKeyColumnID());
+                getTargetRowKeyColumnIDTimestamp());
     }
 
     @Test
     public void csvRowKeyColumnKeyTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_key-column_key.csv",
+                new RowKeyColumnKeyUnserializer(),
+                getTargetRowKeyColumnKey());
+    }
+
+    @Test
+    public void csvRowKeyColumnKeyTimestampTest() throws FileNotFoundException {
         LineUnserializer unserializer = new RowKeyColumnKeyUnserializer();
         unserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_key-timestamp.csv",
                 unserializer,
-                getTargetRowKeyColumnKey());
+                getTargetRowKeyColumnKeyTimestamp());
+    }
+
+    @Test
+    public void csvRowBoolColumnIDTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_bool-column_id.csv",
+                new RowBoolColumnIDUnserializer(),
+                getTargetRowBoolColumnID());
+    }
+
+    @Test
+    public void csvRowBoolColumnIDTimestampTest() throws FileNotFoundException {
+        LineUnserializer unserializer = new RowBoolColumnIDUnserializer();
+        unserializer.setTimestampFormat(null);
+        readCompareFromCSV(
+                "row_bool-column_id-timestamp.csv",
+                unserializer,
+                getTargetRowBoolColumnIDTimestamp());
+    }
+
+    @Test
+    public void csvRowBoolColumnKeyTest() throws FileNotFoundException {
+        readCompareFromCSV(
+                "row_bool-column_key.csv",
+                new RowBoolColumnKeyUnserializer(),
+                getTargetRowBoolColumnKey());
+    }
+
+    @Test
+    public void csvRowBoolColumnKeyTimestampTest() throws FileNotFoundException {
+        LineUnserializer unserializer = new RowBoolColumnKeyUnserializer();
+        unserializer.setTimestampFormat(null);
+        readCompareFromCSV(
+                "row_bool-column_key-timestamp.csv",
+                unserializer,
+                getTargetRowBoolColumnKeyTimestamp());
     }
 
     @Test
@@ -117,6 +198,14 @@ public class FileRecordIteratorIT {
 
     private List<Record> getTargetRowIDColumnID() {
         List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(1L, 10L));
+        target.add(Column.create(5L, 20L));
+        target.add(Column.create(3L, 41L));
+        return target;
+    }
+
+    private List<Record> getTargetRowIDColumnIDTimestamp() {
+        List<Record> target = new ArrayList<>(3);
         target.add(Column.create(1L, 10L, 683793200L));
         target.add(Column.create(5L, 20L, 683793300L));
         target.add(Column.create(3L, 41L, 683793385L));
@@ -124,6 +213,14 @@ public class FileRecordIteratorIT {
     }
 
     private List<Record> getTargetRowIDColumnKey() {
+        List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(1L, "ten"));
+        target.add(Column.create(5L, "twenty"));
+        target.add(Column.create(3L, "forty-one"));
+        return target;
+    }
+
+    private List<Record> getTargetRowIDColumnKeyTimestamp() {
         List<Record> target = new ArrayList<>(3);
         target.add(Column.create(1L, "ten", 683793200L));
         target.add(Column.create(5L, "twenty", 683793300L));
@@ -133,6 +230,14 @@ public class FileRecordIteratorIT {
 
     private List<Record> getTargetRowKeyColumnID() {
         List<Record> target = new ArrayList<>(3);
+        target.add(Column.create("one", 10L));
+        target.add(Column.create("five", 20L));
+        target.add(Column.create("three", 41L));
+        return target;
+    }
+
+    private List<Record> getTargetRowKeyColumnIDTimestamp() {
+        List<Record> target = new ArrayList<>(3);
         target.add(Column.create("one", 10L, 683793200L));
         target.add(Column.create("five", 20L, 683793300L));
         target.add(Column.create("three", 41L, 683793385L));
@@ -141,9 +246,49 @@ public class FileRecordIteratorIT {
 
     private List<Record> getTargetRowKeyColumnKey() {
         List<Record> target = new ArrayList<>(3);
+        target.add(Column.create("one", "ten"));
+        target.add(Column.create("five", "twenty"));
+        target.add(Column.create("three", "forty-one"));
+        return target;
+    }
+
+    private List<Record> getTargetRowKeyColumnKeyTimestamp() {
+        List<Record> target = new ArrayList<>(3);
         target.add(Column.create("one", "ten", 683793200L));
         target.add(Column.create("five", "twenty", 683793300L));
         target.add(Column.create("three", "forty-one", 683793385L));
+        return target;
+    }
+
+    private List<Record> getTargetRowBoolColumnID() {
+        List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(true, 10L));
+        target.add(Column.create(false, 20L));
+        target.add(Column.create(true, 41L));
+        return target;
+    }
+
+    private List<Record> getTargetRowBoolColumnIDTimestamp() {
+        List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(true, 10, 683793200L));
+        target.add(Column.create(false, 20, 683793300L));
+        target.add(Column.create(true, 41, 683793385L));
+        return target;
+    }
+
+    private List<Record> getTargetRowBoolColumnKey() {
+        List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(true, "ten"));
+        target.add(Column.create(false, "twenty"));
+        target.add(Column.create(true, "forty-one"));
+        return target;
+    }
+
+    private List<Record> getTargetRowBoolColumnKeyTimestamp() {
+        List<Record> target = new ArrayList<>(3);
+        target.add(Column.create(true, "ten", 683793200L));
+        target.add(Column.create(false, "twenty", 683793300L));
+        target.add(Column.create(true, "forty-one", 683793385L));
         return target;
     }
 

@@ -40,7 +40,7 @@ import com.pilosa.client.orm.Record;
 public class RowBoolColumnIDUnserializer extends LineUnserializer {
     @Override
     Record unserialize(String[] fields) {
-        boolean rowBool = Boolean.valueOf(fields[0]);
+        boolean rowBool = Long.valueOf(fields[0]) == 1;
         long columnID = Long.valueOf(fields[1]);
         if (fields.length < 3) {
             return Column.create(rowBool, columnID);

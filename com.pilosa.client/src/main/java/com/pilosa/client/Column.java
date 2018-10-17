@@ -103,14 +103,14 @@ public class Column implements Record {
 
     public static Column create(boolean rowBool, long columnID) {
         Column column = new Column();
-        column.rowBool = rowBool;
+        column.rowID = rowBool ? 1 : 0;
         column.columnID = columnID;
         return column;
     }
 
     public static Column create(boolean rowBool, long columnID, long timestamp) {
         Column column = new Column();
-        column.rowBool = rowBool;
+        column.rowID = rowBool ? 1 : 0;
         column.columnID = columnID;
         column.timestamp = timestamp;
         return column;
@@ -118,14 +118,14 @@ public class Column implements Record {
 
     public static Column create(boolean rowBool, String columnKey) {
         Column column = new Column();
-        column.rowBool = rowBool;
+        column.rowID = rowBool ? 1 : 0;
         column.columnKey = columnKey;
         return column;
     }
 
     public static Column create(boolean rowBool, String columnKey, long timestamp) {
         Column column = new Column();
-        column.rowBool = rowBool;
+        column.rowID = rowBool ? 1 : 0;
         column.columnKey = columnKey;
         column.timestamp = timestamp;
         return column;
@@ -139,8 +139,8 @@ public class Column implements Record {
         return this.rowKey;
     }
 
-    public Boolean getRowBool() {
-        return this.rowBool;
+    public boolean getRowBool() {
+        return this.rowID == 1;
     }
 
     public long getColumnID() {
@@ -230,7 +230,6 @@ public class Column implements Record {
 
     long rowID = 0;
     String rowKey = "";
-    Boolean rowBool = null;
     long columnID = 0;
     String columnKey = "";
     long timestamp = 0;

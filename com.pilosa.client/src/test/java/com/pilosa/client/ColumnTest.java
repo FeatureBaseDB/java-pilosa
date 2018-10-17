@@ -46,34 +46,34 @@ public class ColumnTest {
         Column column;
 
         column = Column.create(1, 100);
-        compare(column, 1, 100, "", "", null, 0);
+        compare(column, 1, 100, "", "", true, 0);
         column = Column.create(1, 100, 65000);
-        compare(column, 1, 100, "", "", null, 65000);
+        compare(column, 1, 100, "", "", true, 65000);
 
         column = Column.create(1, "bar");
-        compare(column, 1, 0, "", "bar", null, 0);
+        compare(column, 1, 0, "", "bar", true, 0);
         column = Column.create(1, "bar", 65000);
-        compare(column, 1, 0, "", "bar", null, 65000);
+        compare(column, 1, 0, "", "bar", true, 65000);
 
         column = Column.create("foo", 100);
-        compare(column, 0, 100, "foo", "", null, 0);
+        compare(column, 0, 100, "foo", "", false, 0);
         column = Column.create("foo", 100, 65000);
-        compare(column, 0, 100, "foo", "", null, 65000);
+        compare(column, 0, 100, "foo", "", false, 65000);
 
         column = Column.create("foo", "bar");
-        compare(column, 0, 0, "foo", "bar", null, 0);
+        compare(column, 0, 0, "foo", "bar", false, 0);
         column = Column.create("foo", "bar", 65000);
-        compare(column, 0, 0, "foo", "bar", null, 65000);
+        compare(column, 0, 0, "foo", "bar", false, 65000);
 
         column = Column.create(true, 100);
-        compare(column, 0, 100, "", "", true, 0);
+        compare(column, 1, 100, "", "", true, 0);
         column = Column.create(true, 100, 65000);
-        compare(column, 0, 100, "", "", true, 65000);
+        compare(column, 1, 100, "", "", true, 65000);
 
         column = Column.create(true, "bar");
-        compare(column, 0, 0, "", "bar", true, 0);
+        compare(column, 1, 0, "", "bar", true, 0);
         column = Column.create(true, "bar", 65000);
-        compare(column, 0, 0, "", "bar", true, 65000);
+        compare(column, 1, 0, "", "bar", true, 65000);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ColumnTest {
         assertEquals("(default column)", Column.DEFAULT.toString());
     }
 
-    private void compare(Column column, long rowID, long columnID, String rowKey, String columnKey, Boolean rowBool, long timestamp) {
+    private void compare(Column column, long rowID, long columnID, String rowKey, String columnKey, boolean rowBool, long timestamp) {
         assertEquals(rowID, column.getRowID());
         assertEquals(columnID, column.getColumnID());
         assertEquals(rowKey, column.getRowKey());

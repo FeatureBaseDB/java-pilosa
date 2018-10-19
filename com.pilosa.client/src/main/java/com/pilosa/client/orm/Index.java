@@ -318,7 +318,8 @@ public class Index {
         }
         Index rhs = (Index) obj;
         return rhs.name.equals(this.name) &&
-                rhs.fields.equals(this.fields);
+                rhs.fields.equals(this.fields) &&
+                rhs.getOptions().equals(this.options);
     }
 
     @Override

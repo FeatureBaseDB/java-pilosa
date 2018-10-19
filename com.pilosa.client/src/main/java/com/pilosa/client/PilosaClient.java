@@ -341,7 +341,7 @@ public class PilosaClient implements AutoCloseable {
         Schema result = Schema.defaultSchema();
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
-            Index index = result.index(indexInfo.getName());
+            Index index = result.index(indexInfo.getName(), indexInfo.getIndexOptions());
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {

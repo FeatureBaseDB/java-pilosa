@@ -12,7 +12,10 @@
             "timeQuantum": "YMD"
           }
         }
-      ]
+      ],
+      "options": {
+        "keys": true
+      }
     },
     {
       "name": "mix"

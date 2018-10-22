@@ -63,7 +63,7 @@ public class IndexInfo {
     }
 
     @JsonProperty("options")
-    public IndexOptions getIndexOptions(){
+    public IndexOptions getIndexOptions() {
         return this.indexOptions;
     }
 

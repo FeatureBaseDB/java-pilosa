@@ -617,6 +617,26 @@ public class PilosaClientIT {
                 RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getColumns().get(0));
             }
+
+            // test clear import
+            iterator = StaticColumnIterator.columnsWithIDs();
+            importOptions = ImportOptions.builder()
+                    .setRoaring(true)
+                    .setClear(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
+            bq = index.batchQuery(
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
+            );
+            response = client.query(bq);
+            target = new ArrayList<>(0);
+            results = response.getResults();
+            for (QueryResult result : results) {
+                RowResult br = result.getRow();
+                assertEquals(target, br.getColumns());
+            }
         }
     }
 
@@ -642,6 +662,15 @@ public class PilosaClientIT {
 
             QueryResponse response = client.query(field.sum(field2.row(1)));
             assertEquals(8, response.getResult().getValue());
+
+            // test clear import
+            iterator = StaticColumnIterator.fieldValuesWithIDs();
+            ImportOptions importOptions = ImportOptions.builder()
+                    .setClear(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
+            response = client.query(field.sum(field2.row(1)));
+            assertEquals(0, response.getResult().getValue());
         }
     }
 
@@ -698,6 +727,25 @@ public class PilosaClientIT {
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getColumns().get(0));
+            }
+
+            // test clear imports
+            options = ImportOptions.builder()
+                    .setClear(true)
+                    .build();
+            iterator = StaticColumnIterator.columnsWithIDs();
+            client.importField(field, iterator, options);
+            bq = index.batchQuery(
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
+            );
+            response = client.query(bq);
+            results = response.getResults();
+            target = new ArrayList<>(0);
+            for (QueryResult result : results) {
+                RowResult br = result.getRow();
+                assertEquals(target, br.getColumns());
             }
         }
     }

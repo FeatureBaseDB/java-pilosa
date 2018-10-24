@@ -47,14 +47,16 @@ class ImportRequest {
         this.contentType = contentType;
     }
 
-    static ImportRequest createCSVImport(final Field field, final byte[] payload) {
-        String path = String.format("/index/%s/field/%s/import", field.getIndex().getName(), field.getName());
+    static ImportRequest createCSVImport(final Field field, final byte[] payload, boolean clear) {
+        String clearStr = clear ? "?clear=true" : "";
+        String path = String.format("/index/%s/field/%s/import%s", field.getIndex().getName(), field.getName(), clearStr);
         return new ImportRequest(path, payload, "application/x-protobuf");
     }
 
-    static ImportRequest createRoaringImport(final Field field, long shard, final byte[] payload) {
-        String path = String.format("/index/%s/field/%s/import-roaring/%d",
-                field.getIndex().getName(), field.getName(), shard);
+    static ImportRequest createRoaringImport(final Field field, long shard, final byte[] payload, boolean clear) {
+        String clearStr = clear ? "?clear=true" : "";
+        String path = String.format("/index/%s/field/%s/import-roaring/%d%s",
+                field.getIndex().getName(), field.getName(), shard, clearStr);
         return new ImportRequest(path, payload, "application/x-binary");
     }
 

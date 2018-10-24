@@ -49,7 +49,7 @@ public class ImportOptions {
         public ImportOptions build() {
             return new ImportOptions(this.threadCount,
                     this.timeoutMs, this.batchSize, this.strategy,
-                    this.roaring);
+                    this.roaring, this.clear);
         }
 
         public Builder setThreadCount(int threadCount) {
@@ -77,23 +77,31 @@ public class ImportOptions {
             return this;
         }
 
+        public Builder setClear(boolean clear) {
+            this.clear = clear;
+            return this;
+        }
+
         private int threadCount = 1;
         private long timeoutMs = 100;
         private int batchSize = 100000;
         private Strategy strategy = Strategy.BATCH;
         private boolean roaring = false;
+        private boolean clear = false;
     }
 
     private ImportOptions(int threadCount,
                           long timeoutMs,
                           int batchSize,
                           Strategy strategy,
-                          boolean roaring) {
+                          boolean roaring,
+                          boolean clear) {
         this.threadCount = threadCount;
         this.timeoutMs = timeoutMs;
         this.batchSize = batchSize;
         this.strategy = strategy;
         this.roaring = roaring;
+        this.clear = clear;
     }
 
     public static Builder builder() {
@@ -124,9 +132,14 @@ public class ImportOptions {
         return this.roaring;
     }
 
+    public boolean isClear() {
+        return this.clear;
+    }
+
     final private int threadCount;
     final private long timeoutMs;
     final private int batchSize;
     final private Strategy strategy;
     final private boolean roaring;
+    final private boolean clear;
 }

@@ -110,12 +110,13 @@ public class ShardColumnsTest {
 
     private static ShardColumns buildShardColumns(boolean indexKeys, boolean fieldKeys,
                                                   boolean isRoaring, List<Column> columns) {
+        ImportOptions options = ImportOptions.builder()
+                .setRoaring(isRoaring)
+                .build();
         return addColumns(ShardColumns.create(
                 Index.create(INDEX_NAME, IndexOptions.builder().keys(indexKeys).build())
                         .field(FIELD_NAME, FieldOptions.builder().keys(fieldKeys).build()),
-                1L,
-                ClientOptions.DEFAULT_SHARD_WIDTH,
-                isRoaring), columns);
+                1L, ClientOptions.DEFAULT_SHARD_WIDTH, options), columns);
     }
 
     private static ShardColumns addColumns(ShardColumns shardColumns, List<Column> columns) {

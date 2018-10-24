@@ -56,7 +56,7 @@ public class FileRecordIteratorIT {
     public void csvRowIDColumnIDDefaultTimestampFormatTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_id-column_id-custom_timestamp.csv",
-                new RowIDColumnIDUnserializer(),
+                new RowIDColumnIDDeserializer(),
                 getTargetRowIDColumnIDTimestamp());
     }
 
@@ -64,7 +64,7 @@ public class FileRecordIteratorIT {
     public void csvRowIDColumnIDTimestampFailTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_id-column_id-timestamp.csv",
-                new RowIDColumnIDUnserializer(),
+                new RowIDColumnIDDeserializer(),
                 getTargetRowIDColumnIDTimestamp());
     }
 
@@ -72,57 +72,57 @@ public class FileRecordIteratorIT {
     public void csvRowIDColumnIDTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_id-column_id.csv",
-                new RowIDColumnIDUnserializer(),
+                new RowIDColumnIDDeserializer(),
                 getTargetRowIDColumnID());
     }
 
     @Test
     public void csvRowIDColumnIDTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnIDUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowIDColumnIDDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_id-column_id-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowIDColumnIDTimestamp());
     }
 
     @Test
     public void csvRowIDColumnKeyTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnKeyUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_id-column_key.csv",
-                unserializer,
+                deserializer,
                 getTargetRowIDColumnKey());
     }
 
     @Test
     public void csvRowIDColumnKeyTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowIDColumnKeyUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_id-column_key-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowIDColumnKeyTimestamp());
     }
 
     @Test
     public void csvRowKeyColumnIDTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowKeyColumnIDUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_id.csv",
-                unserializer,
+                deserializer,
                 getTargetRowKeyColumnID());
     }
 
     @Test
     public void csvRowKeyColumnIDTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowKeyColumnIDUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_id-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowKeyColumnIDTimestamp());
     }
 
@@ -130,17 +130,17 @@ public class FileRecordIteratorIT {
     public void csvRowKeyColumnKeyTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_key-column_key.csv",
-                new RowKeyColumnKeyUnserializer(),
+                new RowKeyColumnKeyDeserializer(),
                 getTargetRowKeyColumnKey());
     }
 
     @Test
     public void csvRowKeyColumnKeyTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowKeyColumnKeyUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_key-column_key-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowKeyColumnKeyTimestamp());
     }
 
@@ -148,17 +148,17 @@ public class FileRecordIteratorIT {
     public void csvRowBoolColumnIDTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_bool-column_id.csv",
-                new RowBoolColumnIDUnserializer(),
+                new RowBoolColumnIDDeserializer(),
                 getTargetRowBoolColumnID());
     }
 
     @Test
     public void csvRowBoolColumnIDTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowBoolColumnIDUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowBoolColumnIDDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_bool-column_id-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowBoolColumnIDTimestamp());
     }
 
@@ -166,17 +166,17 @@ public class FileRecordIteratorIT {
     public void csvRowBoolColumnKeyTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "row_bool-column_key.csv",
-                new RowBoolColumnKeyUnserializer(),
+                new RowBoolColumnKeyDeserializer(),
                 getTargetRowBoolColumnKey());
     }
 
     @Test
     public void csvRowBoolColumnKeyTimestampTest() throws FileNotFoundException {
-        LineUnserializer unserializer = new RowBoolColumnKeyUnserializer();
-        unserializer.setTimestampFormat(null);
+        LineDeserializer deserializer = new RowBoolColumnKeyDeserializer();
+        deserializer.setTimestampFormat(null);
         readCompareFromCSV(
                 "row_bool-column_key-timestamp.csv",
-                unserializer,
+                deserializer,
                 getTargetRowBoolColumnKeyTimestamp());
     }
 
@@ -184,7 +184,7 @@ public class FileRecordIteratorIT {
     public void csvColumnIDValueTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "column_id-value.csv",
-                new ColumnIDValueUnserializer(),
+                new ColumnIDValueDeserializer(),
                 getTargetColumnIDValue());
     }
 
@@ -192,7 +192,7 @@ public class FileRecordIteratorIT {
     public void csvColumnKeyValueTest() throws FileNotFoundException {
         readCompareFromCSV(
                 "column_key-value.csv",
-                new ColumnKeyValueUnserializer(),
+                new ColumnKeyValueDeserializer(),
                 getTargetColumnKeyValue());
     }
 
@@ -308,14 +308,14 @@ public class FileRecordIteratorIT {
         return target;
     }
 
-    private void readCompareFromCSV(String path, LineUnserializer unserializer, List<Record> target)
+    private void readCompareFromCSV(String path, LineDeserializer deserializer, List<Record> target)
             throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         URL uri = loader.getResource(path);
         if (uri == null) {
             fail(String.format("%s not found", path));
         }
-        FileRecordIterator iterator = FileRecordIterator.fromPath(uri.getPath(), unserializer);
+        FileRecordIterator iterator = FileRecordIterator.fromPath(uri.getPath(), deserializer);
         List<Record> records = new ArrayList<>(3);
         while (iterator.hasNext()) {
             records.add(iterator.next());

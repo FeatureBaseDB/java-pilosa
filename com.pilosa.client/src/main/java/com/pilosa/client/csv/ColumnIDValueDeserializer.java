@@ -37,11 +37,11 @@ package com.pilosa.client.csv;
 import com.pilosa.client.FieldValue;
 import com.pilosa.client.orm.Record;
 
-public class ColumnKeyValueUnserializer extends LineUnserializer {
+public class ColumnIDValueDeserializer extends LineDeserializer {
     @Override
-    Record unserialize(String[] fields) {
-        String columnKey = fields[0];
+    Record deserialize(String[] fields) {
+        long columnID = Long.valueOf(fields[0]);
         long value = Long.valueOf(fields[1]);
-        return FieldValue.create(columnKey, value);
+        return FieldValue.create(columnID, value);
     }
 }

@@ -43,13 +43,13 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class FileRecordIterator implements RecordIterator {
-    public static FileRecordIterator fromPath(String path, LineUnserializer unserializer)
+    public static FileRecordIterator fromPath(String path, LineDeserializer deserializer)
             throws FileNotFoundException {
-        return fromStream(new FileInputStream(path), unserializer);
+        return fromStream(new FileInputStream(path), deserializer);
     }
 
-    public static FileRecordIterator fromStream(InputStream stream, LineUnserializer unserializer) {
-        return new FileRecordIterator(new Scanner(stream), unserializer);
+    public static FileRecordIterator fromStream(InputStream stream, LineDeserializer deserializer) {
+        return new FileRecordIterator(new Scanner(stream), deserializer);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class FileRecordIterator implements RecordIterator {
             this.scanner = null;
             return false;
         }
-        this.nextRecord = unserializer.unserialize(line.split(","));
+        this.nextRecord = deserializer.deserialize(line.split(","));
         return true;
     }
 
@@ -77,12 +77,12 @@ public class FileRecordIterator implements RecordIterator {
         // JDK 7 compatibility
     }
 
-    private FileRecordIterator(Scanner scanner, LineUnserializer unserializer) {
+    private FileRecordIterator(Scanner scanner, LineDeserializer deserializer) {
         this.scanner = scanner;
-        this.unserializer = unserializer;
+        this.deserializer = deserializer;
     }
 
-    private LineUnserializer unserializer = null;
+    private LineDeserializer deserializer = null;
     private Scanner scanner = null;
     private Record nextRecord = null;
 }

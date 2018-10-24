@@ -495,8 +495,8 @@ public class PilosaClientIT {
     @Test
     public void importRowIDColumnIDTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            LineUnserializer unserializer = new RowIDColumnIDUnserializer();
-            RecordIterator iterator = csvRecordIterator("row_id-column_id.csv", unserializer);
+            LineDeserializer deserializer = new RowIDColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_id.csv", deserializer);
             Field field = this.index.field("importfield-rowid-colid");
             client.ensureField(field);
             client.importField(field, iterator);
@@ -519,8 +519,8 @@ public class PilosaClientIT {
     @Test
     public void importRowIDColumnKeyTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            LineUnserializer unserializer = new RowIDColumnKeyUnserializer();
-            RecordIterator iterator = csvRecordIterator("row_id-column_key.csv", unserializer);
+            LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_key.csv", deserializer);
             Field field = this.keyIndex.field("importfield-rowid-colkey");
             client.ensureField(field);
             client.importField(field, iterator);
@@ -543,8 +543,8 @@ public class PilosaClientIT {
     @Test
     public void importRowKeyColumnIDTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            LineUnserializer unserializer = new RowKeyColumnIDUnserializer();
-            RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", unserializer);
+            LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
             FieldOptions fieldOptions = FieldOptions.builder()
                     .keys(true)
                     .build();
@@ -570,8 +570,8 @@ public class PilosaClientIT {
     @Test
     public void importRowKeyColumnKeyTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            LineUnserializer unserializer = new RowKeyColumnKeyUnserializer();
-            RecordIterator iterator = csvRecordIterator("row_key-column_key.csv", unserializer);
+            LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_key.csv", deserializer);
             FieldOptions options = FieldOptions.builder()
                     .keys(true)
                     .build();
@@ -1480,14 +1480,14 @@ public class PilosaClientIT {
         return (shardWidthStr == null) ? 0 : Long.parseLong(shardWidthStr);
     }
 
-    private RecordIterator csvRecordIterator(String path, LineUnserializer unserializer)
+    private RecordIterator csvRecordIterator(String path, LineDeserializer deserializer)
             throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         URL uri = loader.getResource(path);
         if (uri == null) {
             fail(String.format("%s not found", path));
         }
-        return FileRecordIterator.fromPath(uri.getPath(), unserializer);
+        return FileRecordIterator.fromPath(uri.getPath(), deserializer);
     }
 
 }

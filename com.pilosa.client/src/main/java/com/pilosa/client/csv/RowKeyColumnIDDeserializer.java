@@ -37,9 +37,9 @@ package com.pilosa.client.csv;
 import com.pilosa.client.Column;
 import com.pilosa.client.orm.Record;
 
-public class RowKeyColumnIDUnserializer extends LineUnserializer {
+public class RowKeyColumnIDDeserializer extends LineDeserializer {
     @Override
-    Record unserialize(String[] fields) {
+    Record deserialize(String[] fields) {
         String rowKey = fields[0];
         long columnID = Long.valueOf(fields[1]);
         if (fields.length < 3) {

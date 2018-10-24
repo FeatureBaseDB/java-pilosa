@@ -37,14 +37,14 @@ package com.pilosa.client.csv;
 import com.pilosa.client.Column;
 import com.pilosa.client.orm.Record;
 
-public class RowIDColumnKeyUnserializer extends LineUnserializer {
+public class RowBoolColumnIDDeserializer extends LineDeserializer {
     @Override
-    Record unserialize(String[] fields) {
-        long rowID = Long.valueOf(fields[0]);
-        String columnKey = fields[1];
+    Record deserialize(String[] fields) {
+        boolean rowBool = Long.valueOf(fields[0]) == 1;
+        long columnID = Long.valueOf(fields[1]);
         if (fields.length < 3) {
-            return Column.create(rowID, columnKey);
+            return Column.create(rowBool, columnID);
         }
-        return Column.create(rowID, columnKey, parseTimestamp(fields[2]));
+        return Column.create(rowBool, columnID, parseTimestamp(fields[2]));
     }
 }

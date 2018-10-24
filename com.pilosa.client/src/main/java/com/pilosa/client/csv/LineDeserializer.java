@@ -34,14 +34,40 @@
 
 package com.pilosa.client.csv;
 
-import com.pilosa.client.FieldValue;
+import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.Record;
 
-public class ColumnIDValueUnserializer extends LineUnserializer {
-    @Override
-    Record unserialize(String[] fields) {
-        long columnID = Long.valueOf(fields[0]);
-        long value = Long.valueOf(fields[1]);
-        return FieldValue.create(columnID, value);
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+public abstract class LineDeserializer {
+    abstract Record deserialize(String[] fields);
+
+    public void setTimestampFormat(SimpleDateFormat format) {
+        this.timestampFormat = format;
+        if (this.timestampFormat != null) {
+            this.timestampFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
     }
+
+    protected long parseTimestamp(final String s) {
+        if (this.timestampFormat == null) {
+            return Long.parseLong(s);
+        }
+        try {
+            Date date = this.timestampFormat.parse(s);
+            return date.getTime() / 1000;
+        } catch (ParseException ex) {
+            throw new PilosaException(String.format("Error parsing timestamp: %s", s), ex);
+        }
+    }
+
+    public LineDeserializer() {
+        this.setTimestampFormat(defaultTimestampFormat);
+    }
+
+    protected final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+    protected SimpleDateFormat timestampFormat = null;
 }

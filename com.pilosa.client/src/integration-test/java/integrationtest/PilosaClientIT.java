@@ -35,6 +35,7 @@
 package integrationtest;
 
 import com.pilosa.client.*;
+import com.pilosa.client.csv.*;
 import com.pilosa.client.exceptions.HttpConflict;
 import com.pilosa.client.exceptions.PilosaException;
 import com.pilosa.client.orm.*;
@@ -46,9 +47,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -490,24 +493,103 @@ public class PilosaClientIT {
     }
 
     @Test
-    public void importTest() throws IOException {
+    public void importRowIDColumnIDTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
-            Field field = this.index.field("importfield");
+            LineDeserializer deserializer = new RowIDColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_id.csv", deserializer);
+            Field field = this.index.field("importfield-rowid-colid");
             client.ensureField(field);
             client.importField(field, iterator);
             PqlBatchQuery bq = index.batchQuery(
-                    field.row(2),
-                    field.row(7),
-                    field.row(10)
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
             );
             QueryResponse response = client.query(bq);
 
-            List<Long> target = Arrays.asList(3L, 1L, 5L);
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importRowIDColumnKeyTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_key.csv", deserializer);
+            Field field = this.keyIndex.field("importfield-rowid-colkey");
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<String> target = Arrays.asList("ten", "twenty", "forty-one");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getKeys().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importRowKeyColumnIDTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field = this.index.field("importfield-rowkey-colid", fieldOptions);
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row("one"),
+                    field.row("five"),
+                    field.row("three")
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importRowKeyColumnKeyTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_key.csv", deserializer);
+            FieldOptions options = FieldOptions.builder()
+                    .keys(true)
+                    .build();
+            Field field = this.keyIndex.field("importfield-rowkey-columnkey", options);
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = keyIndex.batchQuery(
+                    field.row("one"),
+                    field.row("five"),
+                    field.row("three")
+            );
+            QueryResponse response = client.query(bq);
+
+            List<String> target = Arrays.asList("ten", "twenty", "forty-one");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getKeys().get(0));
             }
         }
     }
@@ -538,32 +620,6 @@ public class PilosaClientIT {
         }
     }
 
-    @Test
-    public void importWithKeysTest() throws IOException {
-        try (PilosaClient client = this.getClient()) {
-            RecordIterator iterator = StaticColumnIterator.columnsWithKeys();
-            FieldOptions options = FieldOptions.builder()
-                    .keys(true)
-                    .build();
-            Field field = this.keyIndex.field("importfield-keys", options);
-            client.ensureField(field);
-            client.importField(field, iterator);
-            PqlBatchQuery bq = keyIndex.batchQuery(
-                    field.row("two"),
-                    field.row("seven"),
-                    field.row("ten")
-            );
-            QueryResponse response = client.query(bq);
-
-            List<String> target = Arrays.asList("three", "one", "five");
-            List<QueryResult> results = response.getResults();
-            for (int i = 0; i < results.size(); i++) {
-                RowResult br = results.get(i).getRow();
-                assertEquals(1, br.getKeys().size());
-                assertEquals(target.get(i), br.getKeys().get(0));
-            }
-        }
-    }
 
     @Test
     public void importFieldValuesTest() throws IOException {
@@ -1423,6 +1479,17 @@ public class PilosaClientIT {
         String shardWidthStr = System.getenv("SHARD_WIDTH");
         return (shardWidthStr == null) ? 0 : Long.parseLong(shardWidthStr);
     }
+
+    private RecordIterator csvRecordIterator(String path, LineDeserializer deserializer)
+            throws FileNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL uri = loader.getResource(path);
+        if (uri == null) {
+            fail(String.format("%s not found", path));
+        }
+        return FileRecordIterator.fromPath(uri.getPath(), deserializer);
+    }
+
 }
 
 class StaticColumnIterator implements RecordIterator {

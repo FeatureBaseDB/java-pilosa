@@ -32,42 +32,42 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client.csv;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pilosa.client.orm.IndexOptions;
+import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.orm.Record;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
-public class IndexInfo {
-    IndexInfo() {
+public abstract class LineDeserializer {
+    abstract Record deserialize(String[] fields);
+
+    public void setTimestampFormat(SimpleDateFormat format) {
+        this.timestampFormat = format;
+        if (this.timestampFormat != null) {
+            this.timestampFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
     }
 
-    @JsonProperty("name")
-    public String getName() {
-        return this.name;
+    protected long parseTimestamp(final String s) {
+        if (this.timestampFormat == null) {
+            return Long.parseLong(s);
+        }
+        try {
+            Date date = this.timestampFormat.parse(s);
+            return date.getTime() / 1000;
+        } catch (ParseException ex) {
+            throw new PilosaException(String.format("Error parsing timestamp: %s", s), ex);
+        }
     }
 
-    void setName(String name) {
-        this.name = name;
+    public LineDeserializer() {
+        this.setTimestampFormat(defaultTimestampFormat);
     }
 
-    @JsonProperty("fields")
-    public List<FieldInfo> getFields() {
-        return this.fields;
-    }
-
-    public void setFields(List<FieldInfo> fields) {
-        this.fields = fields;
-    }
-
-    @JsonProperty("options")
-    public IndexOptions getIndexOptions() {
-        return this.indexOptions;
-    }
-
-    private String name;
-    private List<FieldInfo> fields = new ArrayList<>();
-    private IndexOptions indexOptions;
+    protected final static SimpleDateFormat defaultTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+    protected SimpleDateFormat timestampFormat = null;
 }

@@ -49,7 +49,7 @@ public class SchemaTest {
         index11.field("field1-1");
         index11.field("field1-2");
         Index index12 = schema1.index("diff-index2",
-            IndexOptions.builder().keys(true).build());
+                IndexOptions.builder().keys(true).build());
         index12.field("field2-1");
 
         Schema schema2 = Schema.defaultSchema();
@@ -61,7 +61,7 @@ public class SchemaTest {
         targetIndex1.field("field1-1");
         targetIndex1.field("field1-2");
         Index targetIndex2 = targetDiff12.index("diff-index2",
-            IndexOptions.builder().keys(true).build());
+                IndexOptions.builder().keys(true).build());
         targetIndex2.field("field2-1");
 
         Schema diff12 = schema1.diff(schema2);

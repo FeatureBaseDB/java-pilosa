@@ -40,7 +40,9 @@ public enum FieldType {
     DEFAULT(""),
     SET("set"),
     TIME("time"),
-    INT("int");
+    INT("int"),
+    MUTEX("mutex"),
+    BOOL("bool");
 
     FieldType(String value) {
         this.value = value;
@@ -56,6 +58,10 @@ public enum FieldType {
                 return FieldType.TIME;
             case "int":
                 return FieldType.INT;
+            case "mutex":
+                return FieldType.MUTEX;
+            case "bool":
+                return FieldType.BOOL;
         }
         throw new ValidationException(String.format("Invalid field type string: %s", s));
     }

@@ -32,42 +32,57 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client.csv;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pilosa.client.orm.IndexOptions;
+import com.pilosa.client.RecordIterator;
+import com.pilosa.client.orm.Record;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Scanner;
 
-public class IndexInfo {
-    IndexInfo() {
+public class FileRecordIterator implements RecordIterator {
+    public static FileRecordIterator fromPath(String path, LineDeserializer deserializer)
+            throws FileNotFoundException {
+        return fromStream(new FileInputStream(path), deserializer);
     }
 
-    @JsonProperty("name")
-    public String getName() {
-        return this.name;
+    public static FileRecordIterator fromStream(InputStream stream, LineDeserializer deserializer) {
+        return new FileRecordIterator(new Scanner(stream), deserializer);
     }
 
-    void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean hasNext() {
+        if (this.scanner == null || !this.scanner.hasNextLine()) {
+            return false;
+        }
+        String line = this.scanner.nextLine();
+        if (line.isEmpty()) {
+            this.scanner.close();
+            this.scanner = null;
+            return false;
+        }
+        this.nextRecord = deserializer.deserialize(line.split(","));
+        return true;
     }
 
-    @JsonProperty("fields")
-    public List<FieldInfo> getFields() {
-        return this.fields;
+    @Override
+    public Record next() {
+        return this.nextRecord;
     }
 
-    public void setFields(List<FieldInfo> fields) {
-        this.fields = fields;
+    @Override
+    public void remove() {
+        // JDK 7 compatibility
     }
 
-    @JsonProperty("options")
-    public IndexOptions getIndexOptions() {
-        return this.indexOptions;
+    private FileRecordIterator(Scanner scanner, LineDeserializer deserializer) {
+        this.scanner = scanner;
+        this.deserializer = deserializer;
     }
 
-    private String name;
-    private List<FieldInfo> fields = new ArrayList<>();
-    private IndexOptions indexOptions;
+    private LineDeserializer deserializer = null;
+    private Scanner scanner = null;
+    private Record nextRecord = null;
 }

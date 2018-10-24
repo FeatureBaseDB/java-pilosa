@@ -108,86 +108,122 @@ public class OrmTest {
 
     @Test
     public void rowTest() {
-        PqlBaseQuery qry1 = collabField.row(5);
+        PqlBaseQuery q = collabField.row(5);
         assertEquals(
                 "Row(collaboration=5)",
-                qry1.serialize().getQuery());
+                q.serialize().getQuery());
 
-        PqlBaseQuery qry2 = projectKeyField.row("b7feb014-8ea7-49a8-9cd8-19709161ab63");
+        q = projectKeyField.row("some_id");
         assertEquals(
-                "Row(key='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry2.serialize().getQuery());
+                "Row(key='some_id')",
+                q.serialize().getQuery());
+
+        q = collabField.row(true);
+        assertEquals(
+                "Row(collaboration=true)",
+                q.serialize().getQuery());
     }
 
     @Test
     public void setTest() {
-        PqlQuery qry = collabField.set(5, 10);
+        PqlQuery q = collabField.set(5, 10);
         assertEquals(
                 "Set(10,collaboration=5)",
-                qry.serialize().getQuery());
+                q.serialize().getQuery());
 
-        qry = collabField.set(5, "some_id");
+        q = collabField.set(5, "ten");
         assertEquals(
-                "Set('some_id',collaboration=5)",
-                qry.serialize().getQuery());
+                "Set('ten',collaboration=5)",
+                q.serialize().getQuery());
 
-        qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
+        q = collabField.set("five", 10);
         assertEquals(
-                "Set(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize().getQuery());
+                "Set(10,collaboration='five')",
+                q.serialize().getQuery());
 
-        qry = collabField.set("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        q = collabField.set("five", "10");
         assertEquals(
-                "Set('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize().getQuery());
+                "Set('10',collaboration='five')",
+                q.serialize().getQuery());
+
+        q = collabField.set(true, 10);
+        assertEquals(
+                "Set(10,collaboration=true)",
+                q.serialize().getQuery());
+
+        q = collabField.set(true, "ten");
+        assertEquals(
+                "Set('ten',collaboration=true)",
+                q.serialize().getQuery());
     }
 
     @Test
     public void setWithTimestampTest() {
         Calendar timestamp = Calendar.getInstance();
         timestamp.set(2017, Calendar.APRIL, 24, 12, 14);
-        PqlQuery qry = collabField.set(10, 20, timestamp.getTime());
+        PqlQuery q = collabField.set(10, 20, timestamp.getTime());
         assertEquals(
                 "Set(20,collaboration=10,2017-04-24T12:14)",
-                qry.serialize().getQuery());
+                q.serialize().getQuery());
 
-        qry = collabField.set(10, "mycol", timestamp.getTime());
+        q = collabField.set(10, "twenty", timestamp.getTime());
         assertEquals(
-                "Set('mycol',collaboration=10,2017-04-24T12:14)",
-                qry.serialize().getQuery());
+                "Set('twenty',collaboration=10,2017-04-24T12:14)",
+                q.serialize().getQuery());
 
-        qry = collabField.set("myrow", 20, timestamp.getTime());
+        q = collabField.set("ten", 20, timestamp.getTime());
         assertEquals(
-                "Set(20,collaboration='myrow',2017-04-24T12:14)",
-                qry.serialize().getQuery());
+                "Set(20,collaboration='ten',2017-04-24T12:14)",
+                q.serialize().getQuery());
 
-        qry = collabField.set("myrow", "mycol", timestamp.getTime());
+        q = collabField.set("ten", "twenty", timestamp.getTime());
         assertEquals(
-                "Set('mycol',collaboration='myrow',2017-04-24T12:14)",
-                qry.serialize().getQuery());
+                "Set('twenty',collaboration='ten',2017-04-24T12:14)",
+                q.serialize().getQuery());
+
+        q = collabField.set(true, 20, timestamp.getTime());
+        assertEquals(
+                "Set(20,collaboration=true,2017-04-24T12:14)",
+                q.serialize().getQuery());
+
+        q = collabField.set(true, "twenty", timestamp.getTime());
+        assertEquals(
+                "Set('twenty',collaboration=true,2017-04-24T12:14)",
+                q.serialize().getQuery());
+
     }
 
     @Test
     public void clearTest() {
-        PqlQuery qry = collabField.clear(5, 10);
+        PqlQuery q = collabField.clear(5, 10);
         assertEquals(
                 "Clear(10,collaboration=5)",
-                qry.serialize().getQuery());
+                q.serialize().getQuery());
 
-        qry = collabField.clear(5, "some_id");
+        q = collabField.clear(5, "ten");
         assertEquals(
-                "Clear('some_id',collaboration=5)",
-                qry.serialize().getQuery());
+                "Clear('ten',collaboration=5)",
+                q.serialize().getQuery());
 
-        qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", 10);
+        q = collabField.clear("five", 10);
         assertEquals(
-                "Clear(10,collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize().getQuery());
+                "Clear(10,collaboration='five')",
+                q.serialize().getQuery());
 
-        qry = collabField.clear("b7feb014-8ea7-49a8-9cd8-19709161ab63", "some_id");
+        q = collabField.clear("five", "10");
         assertEquals(
-                "Clear('some_id',collaboration='b7feb014-8ea7-49a8-9cd8-19709161ab63')",
-                qry.serialize().getQuery());
+                "Clear('10',collaboration='five')",
+                q.serialize().getQuery());
+
+        q = collabField.clear(true, 10);
+        assertEquals(
+                "Clear(10,collaboration=true)",
+                q.serialize().getQuery());
+
+        q = collabField.clear(true, "ten");
+        assertEquals(
+                "Clear('ten',collaboration=true)",
+                q.serialize().getQuery());
     }
 
     @Test
@@ -368,6 +404,38 @@ public class OrmTest {
     }
 
     @Test
+    public void optionsTest() {
+        OptionsOptions opts = OptionsOptions.builder()
+                .build();
+        PqlQuery q = projectIndex.options(collabField.row(5), opts);
+        assertEquals(
+                "Options(Row(collaboration=5),columnAttrs=false,excludeColumns=false,excludeRowAttrs=false)",
+                q.serialize().getQuery());
+
+        opts = OptionsOptions.builder()
+                .setColumnAttrs(true)
+                .setExcludeColumns(true)
+                .setExcludeRowAttrs(true)
+                .build();
+        q = projectIndex.options(collabField.row(5), opts);
+        assertEquals(
+                "Options(Row(collaboration=5),columnAttrs=true,excludeColumns=true,excludeRowAttrs=true)",
+                q.serialize().getQuery());
+
+        opts = OptionsOptions.builder()
+                .setColumnAttrs(true)
+                .setExcludeColumns(true)
+                .setExcludeRowAttrs(true)
+                .setShards(1, 3)
+                .build();
+        q = projectIndex.options(collabField.row(5), opts);
+        assertEquals(
+                "Options(Row(collaboration=5),columnAttrs=true,excludeColumns=true,excludeRowAttrs=true,shards=[1,3])",
+                q.serialize().getQuery());
+    }
+
+
+    @Test
     public void setColumnAttrsTest() {
         Map<String, Object> attrsMap = new TreeMap<>();
         attrsMap.put("quote", "\"Don't worry, be happy\"");
@@ -491,6 +559,24 @@ public class OrmTest {
         q = sampleField.store(collabField.row("five"), "ten");
         assertEquals(
                 "Store(Row(collaboration='five'),sample-field='ten')",
+                q.serialize().getQuery());
+    }
+
+    @Test
+    public void fieldClearRowTest() {
+        PqlQuery q = collabField.clearRow(5);
+        assertEquals(
+                "ClearRow(collaboration=5)",
+                q.serialize().getQuery());
+
+        q = collabField.clearRow("five");
+        assertEquals(
+                "ClearRow(collaboration='five')",
+                q.serialize().getQuery());
+
+        q = collabField.clearRow(true);
+        assertEquals(
+                "ClearRow(collaboration=true)",
                 q.serialize().getQuery());
     }
 }

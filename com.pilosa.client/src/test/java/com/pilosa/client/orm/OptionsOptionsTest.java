@@ -32,42 +32,25 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client.orm;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pilosa.client.orm.IndexOptions;
+import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
-public class IndexInfo {
-    IndexInfo() {
+public class OptionsOptionsTest {
+    @Test
+    public void testOptions() {
+        OptionsOptions opts = OptionsOptions.builder()
+                .setColumnAttrs(true)
+                .setExcludeColumns(true)
+                .setExcludeRowAttrs(true)
+                .setShards(5, 10)
+                .build();
+        assertTrue(opts.isColumnAttrs());
+        assertTrue(opts.isExcludeColumns());
+        assertTrue(opts.isExcludeRowAttrs());
+        assertArrayEquals(new long[]{5, 10}, opts.getShards());
     }
-
-    @JsonProperty("name")
-    public String getName() {
-        return this.name;
-    }
-
-    void setName(String name) {
-        this.name = name;
-    }
-
-    @JsonProperty("fields")
-    public List<FieldInfo> getFields() {
-        return this.fields;
-    }
-
-    public void setFields(List<FieldInfo> fields) {
-        this.fields = fields;
-    }
-
-    @JsonProperty("options")
-    public IndexOptions getIndexOptions() {
-        return this.indexOptions;
-    }
-
-    private String name;
-    private List<FieldInfo> fields = new ArrayList<>();
-    private IndexOptions indexOptions;
 }

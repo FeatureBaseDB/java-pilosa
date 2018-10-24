@@ -160,7 +160,7 @@ public final class IndexOptions {
     }
 
     private IndexOptions(@JsonProperty("keys") final boolean keys,
-        @JsonProperty("trackExistence") Boolean trackExistence) {
+                         @JsonProperty("trackExistence") Boolean trackExistence) {
         this.keys = keys;
         this.trackExistence = trackExistence;
     }
@@ -172,6 +172,6 @@ public final class IndexOptions {
     }
 
     private static final ObjectMapper mapper;
-    private  boolean keys;
-    private  Boolean trackExistence;
+    private boolean keys;
+    private Boolean trackExistence;
 }

@@ -41,58 +41,116 @@ public class Column implements Record {
     public static final Column DEFAULT = Column.defaultColumn();
 
     public static Column create(long rowID, long columnID) {
-        return create(rowID, columnID, "", "", 0);
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnID = columnID;
+        return column;
     }
 
     public static Column create(long rowID, long columnID, long timestamp) {
-        return create(rowID, columnID, "", "", timestamp);
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnID = columnID;
+        column.timestamp = timestamp;
+        return column;
+
     }
 
     public static Column create(long rowID, String columnKey) {
-        return create(rowID, 0, "", columnKey, 0);
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnKey = columnKey;
+        return column;
     }
 
     public static Column create(long rowID, String columnKey, long timestamp) {
-        return create(rowID, 0, "", columnKey, timestamp);
+        Column column = new Column();
+        column.rowID = rowID;
+        column.columnKey = columnKey;
+        column.timestamp = timestamp;
+        return column;
     }
 
     public static Column create(String rowKey, long columnID) {
-        return create(0, columnID, rowKey, "", 0);
+        Column column = new Column();
+        column.rowKey = rowKey;
+        column.columnID = columnID;
+        return column;
     }
 
     public static Column create(String rowKey, long columnID, long timestamp) {
-        return create(0, columnID, rowKey, "", timestamp);
+        Column column = new Column();
+        column.rowKey = rowKey;
+        column.columnID = columnID;
+        column.timestamp = timestamp;
+        return column;
     }
 
     public static Column create(String rowKey, String columnKey) {
-        return create(0, 0, rowKey, columnKey, 0);
+        Column column = new Column();
+        column.rowKey = rowKey;
+        column.columnKey = columnKey;
+        return column;
     }
 
     public static Column create(String rowKey, String columnKey, long timestamp) {
-        return create(0, 0, rowKey, columnKey, timestamp);
+        Column column = new Column();
+        column.rowKey = rowKey;
+        column.columnKey = columnKey;
+        column.timestamp = timestamp;
+        return column;
     }
 
-    @SuppressWarnings("WeakerAccess")
+    public static Column create(boolean rowBool, long columnID) {
+        Column column = new Column();
+        column.rowID = rowBool ? 1 : 0;
+        column.columnID = columnID;
+        return column;
+    }
+
+    public static Column create(boolean rowBool, long columnID, long timestamp) {
+        Column column = new Column();
+        column.rowID = rowBool ? 1 : 0;
+        column.columnID = columnID;
+        column.timestamp = timestamp;
+        return column;
+    }
+
+    public static Column create(boolean rowBool, String columnKey) {
+        Column column = new Column();
+        column.rowID = rowBool ? 1 : 0;
+        column.columnKey = columnKey;
+        return column;
+    }
+
+    public static Column create(boolean rowBool, String columnKey, long timestamp) {
+        Column column = new Column();
+        column.rowID = rowBool ? 1 : 0;
+        column.columnKey = columnKey;
+        column.timestamp = timestamp;
+        return column;
+    }
+
     public long getRowID() {
         return this.rowID;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public long getColumnID() {
-        return this.columnID;
-    }
-
-    @SuppressWarnings("WeakerAccess")
     public String getRowKey() {
         return this.rowKey;
     }
 
-    @SuppressWarnings("WeakerAccess")
+    public boolean getRowBool() {
+        return this.rowID == 1;
+    }
+
+    public long getColumnID() {
+        return this.columnID;
+    }
+
     public String getColumnKey() {
         return this.columnKey;
     }
 
-    @SuppressWarnings("WeakerAccess")
     public long getTimestamp() {
         return this.timestamp;
     }
@@ -170,19 +228,9 @@ public class Column implements Record {
         return column;
     }
 
-    private static Column create(long rowID, long columnID, String rowKey, String columnKey, long timestamp) {
-        Column column = new Column();
-        column.rowID = rowID;
-        column.columnID = columnID;
-        column.rowKey = rowKey;
-        column.columnKey = columnKey;
-        column.timestamp = timestamp;
-        return column;
-    }
-
     long rowID = 0;
-    long columnID = 0;
     String rowKey = "";
+    long columnID = 0;
     String columnKey = "";
     long timestamp = 0;
     boolean defaultColumn = false;

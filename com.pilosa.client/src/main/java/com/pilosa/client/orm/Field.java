@@ -88,7 +88,7 @@ public class Field {
     }
 
     /**
-     * Creates a Row query. (Enterprise version)
+     * Creates a Row query.
      * <p>
      *     Row retrieves the indices of all columns in a row
      *     based on whether the row label or column label is given in the query.
@@ -104,6 +104,22 @@ public class Field {
     }
 
     /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowBool true or false
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(boolean rowBool) {
+        return this.index.pqlRowQuery(String.format("Row(%s=%b)",
+                this.name, rowBool));
+    }
+
+    /**
      * Creates a Set query.
      * <p>
      *  Set assigns a value of 1 to a column in the binary matrix,
@@ -112,7 +128,7 @@ public class Field {
      * @param rowID    row ID
      * @param columnID column ID
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     public PqlBaseQuery set(long rowID, long columnID) {
         boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
@@ -129,7 +145,7 @@ public class Field {
      * @param rowID     row ID
      * @param columnKey column key
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     public PqlBaseQuery set(long rowID, String columnKey) {
         boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
@@ -146,7 +162,7 @@ public class Field {
      * @param rowKey   row key
      * @param columnID column ID
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     public PqlBaseQuery set(String rowKey, long columnID) {
         boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
@@ -163,7 +179,7 @@ public class Field {
      * @param rowKey    row key
      * @param columnKey column key
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     public PqlBaseQuery set(String rowKey, String columnKey) {
         boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
@@ -171,7 +187,42 @@ public class Field {
                 columnKey, name, rowKey), hasKeys);
     }
 
-     /**
+    /**
+     * Creates a Set query.
+     * <p>
+     *  Set assigns a value of 1 to a column in the binary matrix,
+     *  thus associating the given row in the given field with the given column.
+     *
+     * @param rowBool true or false
+     * @param columnID column ID
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
+     */
+    public PqlBaseQuery set(boolean rowBool, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(String.format("Set(%d,%s=%b)",
+                columnID, name, rowBool), hasKeys);
+    }
+
+    /**
+     * Creates a Set query.
+     * <p>
+     * Set assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     *
+     * @param rowBool   true or false
+     * @param columnKey column key
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
+     */
+    public PqlBaseQuery set(boolean rowBool, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(String.format("Set('%s',%s=%b)",
+                columnKey, name, rowBool), hasKeys);
+    }
+
+
+    /**
      * Creates a Set query.
      * <p>
      *  Set, assigns a value of 1 to a column in the binary matrix,
@@ -184,7 +235,7 @@ public class Field {
      * @param columnID  column ID
      * @param timestamp timestamp of the bit
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery set(long rowID, long columnID, Date timestamp) {
@@ -207,7 +258,7 @@ public class Field {
      * @param columnKey column key
      * @param timestamp timestamp of the bit
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery set(long rowID, String columnKey, Date timestamp) {
@@ -230,7 +281,7 @@ public class Field {
      * @param columnID  column ID
      * @param timestamp timestamp of the bit
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery set(String rowKey, long columnID, Date timestamp) {
@@ -254,7 +305,7 @@ public class Field {
      * @param columnKey  column key
      * @param timestamp timestamp of the bit
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#setbit">SetBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery set(String rowKey, String columnKey, Date timestamp) {
@@ -266,6 +317,54 @@ public class Field {
     }
 
     /**
+     * Creates a Set query.
+     * <p>
+     *  Set, assigns a value of 1 to a column in the binary matrix,
+     *  thus associating the given row in the given field with the given column.
+     * <p>
+     *      This variant supports providing a timestamp.
+     *
+     *
+     * @param rowBool true or false
+     * @param columnID  column ID
+     * @param timestamp timestamp of the bit
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery set(boolean rowBool, long columnID, Date timestamp) {
+        String qry = String.format("Set(%d,%s=%b,%sT%s)",
+                columnID, name, rowBool,
+                fmtDate.format(timestamp), fmtTime.format(timestamp));
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
+    }
+
+    /**
+     * Creates a Set query.
+     * <p>
+     * Set, assigns a value of 1 to a column in the binary matrix,
+     * thus associating the given row in the given field with the given column.
+     * <p>
+     * This variant supports providing a timestamp.
+     *
+     * @param rowBool   true or false
+     * @param columnKey column key
+     * @param timestamp timestamp of the bit
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#set">Set Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery set(boolean rowBool, String columnKey, Date timestamp) {
+        String qry = String.format("Set('%s',%s=%b,%sT%s)",
+                columnKey, name, rowBool,
+                fmtDate.format(timestamp), fmtTime.format(timestamp));
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(qry, hasKeys);
+    }
+
+
+    /**
      * Creates a Clear query.
      * <p>
      *     Clear assigns a value of 0 to a column in the binary matrix,
@@ -274,7 +373,7 @@ public class Field {
      * @param rowID    row ID
      * @param columnID column ID
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(long rowID, long columnID) {
@@ -292,7 +391,7 @@ public class Field {
      * @param rowID    row ID
      * @param columnKey column key
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(long rowID, String columnKey) {
@@ -310,7 +409,7 @@ public class Field {
      * @param rowKey   row key
      * @param columnID column ID
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(String rowKey, long columnID) {
@@ -328,13 +427,49 @@ public class Field {
      * @param rowKey    row key
      * @param columnKey column key
      * @return a PQL query
-     * @see <a href="https://www.pilosa.com/docs/query-language/#clearbit">ClearBit Query</a>
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
      */
     @SuppressWarnings("WeakerAccess")
     public PqlBaseQuery clear(String rowKey, String columnKey) {
         boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
         return this.index.pqlQuery(String.format("Clear('%s',%s='%s')",
                 columnKey, name, rowKey), hasKeys);
+    }
+
+    /**
+     * Creates a Clear query.
+     * <p>
+     * Clear assigns a value of 0 to a column in the binary matrix,
+     * thus disassociating the given row in the given field from the given column.
+     *
+     * @param rowBool true or false
+     * @param columnID column ID
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery clear(boolean rowBool, long columnID) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(String.format("Clear(%d,%s=%b)",
+                columnID, name, rowBool), hasKeys);
+    }
+
+    /**
+     * Creates a Clear query.
+     * <p>
+     * Clear assigns a value of 0 to a column in the binary matrix,
+     * thus disassociating the given row in the given field from the given column.
+     *
+     * @param rowBool   true or false
+     * @param columnKey column key
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#clear">Clear Query</a>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public PqlBaseQuery clear(boolean rowBool, String columnKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        return this.index.pqlQuery(String.format("Clear('%s',%s=%b)",
+                columnKey, name, rowBool), hasKeys);
     }
 
     /**
@@ -498,26 +633,94 @@ public class Field {
     }
 
     /**
-     * Store writes the result of the row query to the specified row. If the row already exists, it will be replaced. The destination field must be of field type set.
-     *
-     * @param rowQuery row query to read the result from
-     * @param rowID    row ID
+     * Creates a Store query.
+     * <p>
+     *     Store writes the result of the row query to the specified row. If the row already exists, it will be replaced. The destination field must be of field type set.
+     * </p>
+     * @param row row query
+     * @param rowID row ID
      * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#store">Store Query</a>
      */
-    public PqlBaseQuery store(PqlRowQuery rowQuery, long rowID) {
-        String text = String.format("Store(%s,%s=%d)", rowQuery.serialize().getQuery(), this.name, rowID);
+    public PqlBaseQuery store(PqlRowQuery row, long rowID) {
+        String text = String.format("Store(%s,%s=%d)", row.serialize().getQuery(), this.name, rowID);
         return this.index.pqlQuery(text, false);
     }
 
     /**
+     * Creates a Store query.
+     * <p>
      * Store writes the result of the row query to the specified row. If the row already exists, it will be replaced. The destination field must be of field type set.
+     * </p>
      *
-     * @param rowQuery row query to read the result from
-     * @param rowKey   row key
+     * @param row    row query
+     * @param rowKey row key
      * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#store">Store Query</a>
      */
-    public PqlBaseQuery store(PqlRowQuery rowQuery, String rowKey) {
-        String text = String.format("Store(%s,%s='%s')", rowQuery.serialize().getQuery(), this.name, rowKey);
+    public PqlBaseQuery store(PqlRowQuery row, String rowKey) {
+        boolean hasKeys = this.index.getOptions().isKeys() || this.getOptions().isKeys();
+        String text = String.format("Store(%s,%s='%s')", row.serialize().getQuery(), this.name, rowKey);
+        return this.index.pqlQuery(text, hasKeys);
+    }
+
+    /*
+    // ClearRow creates a ClearRow query.
+// ClearRow sets all bits to 0 in a given row of the binary matrix, thus disassociating the given row in the given field from all columns.
+func (f *Field) ClearRow(rowIDOrKey interface{}) *PQLBaseQuery {
+	rowStr, err := formatIDKeyBool(rowIDOrKey)
+	if err != nil {
+		return NewPQLBaseQuery("", f.index, err)
+	}
+	text := fmt.Sprintf("ClearRow(%s=%s)", f.name, rowStr)
+	q := NewPQLBaseQuery(text, f.index, nil)
+	return q
+}
+
+     */
+
+    /**
+     * Creates a ClearRow query.
+     * <p>
+     * ClearRow sets all bits to 0 in a given row of the binary matrix, thus disassociating the given row in the given field from all columns.
+     * </p>
+     *
+     * @param rowID row ID
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#store">Store Query</a>
+     */
+    public PqlBaseQuery clearRow(long rowID) {
+        String text = String.format("ClearRow(%s=%d)", this.name, rowID);
+        return this.index.pqlQuery(text, false);
+    }
+
+    /**
+     * Creates a ClearRow query.
+     * <p>
+     * ClearRow sets all bits to 0 in a given row of the binary matrix, thus disassociating the given row in the given field from all columns.
+     * </p>
+     *
+     * @param rowKey row key
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#store">Store Query</a>
+     */
+    public PqlBaseQuery clearRow(String rowKey) {
+        String text = String.format("ClearRow(%s='%s')", this.name, rowKey);
+        return this.index.pqlQuery(text, false);
+    }
+
+    /**
+     * Creates a ClearRow query.
+     * <p>
+     * ClearRow sets all bits to 0 in a given row of the binary matrix, thus disassociating the given row in the given field from all columns.
+     * </p>
+     *
+     * @param rowBool true or false
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#store">Store Query</a>
+     */
+    public PqlBaseQuery clearRow(boolean rowBool) {
+        String text = String.format("ClearRow(%s=%b)", this.name, rowBool);
         return this.index.pqlQuery(text, false);
     }
 

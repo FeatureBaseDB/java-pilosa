@@ -32,42 +32,19 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.status;
+package com.pilosa.client.csv;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pilosa.client.orm.IndexOptions;
+import com.pilosa.client.Column;
+import com.pilosa.client.orm.Record;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class IndexInfo {
-    IndexInfo() {
+public class RowKeyColumnKeyDeserializer extends LineDeserializer {
+    @Override
+    Record deserialize(String[] fields) {
+        String rowKey = fields[0];
+        String columnKey = fields[1];
+        if (fields.length < 3) {
+            return Column.create(rowKey, columnKey);
+        }
+        return Column.create(rowKey, columnKey, parseTimestamp(fields[2]));
     }
-
-    @JsonProperty("name")
-    public String getName() {
-        return this.name;
-    }
-
-    void setName(String name) {
-        this.name = name;
-    }
-
-    @JsonProperty("fields")
-    public List<FieldInfo> getFields() {
-        return this.fields;
-    }
-
-    public void setFields(List<FieldInfo> fields) {
-        this.fields = fields;
-    }
-
-    @JsonProperty("options")
-    public IndexOptions getIndexOptions() {
-        return this.indexOptions;
-    }
-
-    private String name;
-    private List<FieldInfo> fields = new ArrayList<>();
-    private IndexOptions indexOptions;
 }

@@ -244,12 +244,12 @@ public class Index {
      * <p>
      * Count returns the number of set bits in the ROW_CALL passed in.
      *
-     * @param rows the row query
+     * @param row the row query
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#count">Count Query</a>
      */
-    public PqlBaseQuery count(PqlRowQuery rows) {
-        return pqlQuery(String.format("Count(%s)", rows.serialize().getQuery()), false);
+    public PqlBaseQuery count(PqlRowQuery row) {
+        return pqlQuery(String.format("Count(%s)", row.serialize().getQuery()), false);
     }
 
     /**
@@ -298,6 +298,11 @@ public class Index {
         String attributesString = Util.createAttributesString(mapper, attributes);
         String text = String.format("SetColumnAttrs('%s',%s)", key, attributesString);
         return pqlQuery(text, this.getOptions().isKeys());
+    }
+
+    public PqlBaseQuery options(PqlRowQuery row, OptionsOptions opts) {
+        String text = String.format("Options(%s,%s)", row.serialize().getQuery(), opts.serialize());
+        return pqlQuery(text, false);
     }
 
     public Map<String, Field> getFields() {

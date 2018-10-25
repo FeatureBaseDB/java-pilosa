@@ -34,17 +34,17 @@
 
 package com.pilosa.client;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.pilosa.client.orm.Field;
 import com.pilosa.client.orm.Record;
 import com.pilosa.roaring.Bitmap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 class ShardColumns implements ShardRecords {
-    public static ShardColumns create(final Field field, long shard, long shardWidth, boolean roaring) {
-        return new ShardColumns(field, shard, shardWidth, roaring);
+    public static ShardColumns create(final Field field, long shard, long shardWidth, ImportOptions options) {
+        return new ShardColumns(field, shard, shardWidth, options.isRoaring(), options.isClear());
     }
 
     @Override
@@ -131,7 +131,7 @@ class ShardColumns implements ShardRecords {
                 requestBuilder.addTimestamps(column.timestamp);
             }
         }
-        return ImportRequest.createCSVImport(field, requestBuilder.build().toByteArray());
+        return ImportRequest.createCSVImport(field, requestBuilder.build().toByteArray(), this.clear_);
     }
 
     ImportRequest toRoaringImportRequest() {
@@ -140,15 +140,16 @@ class ShardColumns implements ShardRecords {
         for (Column b : this.columns) {
             bmp.add(b.rowID * shardWidth + (b.columnID % shardWidth));
         }
-        return ImportRequest.createRoaringImport(this.field, this.shard, bmp.serialize().array());
+        return ImportRequest.createRoaringImport(this.field, this.shard, bmp.serialize().array(), this.clear_);
     }
 
-    ShardColumns(final Field field, long shard, long shardWidth, boolean roaring) {
+    ShardColumns(final Field field, long shard, long shardWidth, boolean roaring, boolean clear) {
         this.field = field;
         this.shard = shard;
         this.shardWidth = shardWidth;
         this.columns = new ArrayList<>();
         this.roaring = roaring;
+        this.clear_ = clear;
     }
 
     private final Field field;
@@ -157,4 +158,5 @@ class ShardColumns implements ShardRecords {
     private List<Column> columns;
     private boolean sorted = false;
     private final boolean roaring;
+    private final boolean clear_;
 }

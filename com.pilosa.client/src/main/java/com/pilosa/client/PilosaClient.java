@@ -926,9 +926,9 @@ class BitImportWorker implements Runnable {
                 ShardRecords shardRecords = shardGroup.get(shard);
                 if (shardRecords == null) {
                     if (this.field.getOptions().getFieldType() == FieldType.INT) {
-                        shardRecords = ShardFieldValues.create(this.field, shard);
+                        shardRecords = ShardFieldValues.create(this.field, shard, this.options);
                     } else {
-                        shardRecords = ShardColumns.create(this.field, shard, shardWidth, options.isRoaring());
+                        shardRecords = ShardColumns.create(this.field, shard, shardWidth, this.options);
                     }
                     shardGroup.put(shard, shardRecords);
                 }

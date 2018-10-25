@@ -42,8 +42,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class ShardFieldValues implements ShardRecords {
-    public static ShardFieldValues create(final Field field, final long shard) {
-        return new ShardFieldValues(field, shard);
+    public static ShardFieldValues create(final Field field, final long shard, ImportOptions options) {
+        return new ShardFieldValues(field, shard, options.isClear());
     }
 
     @Override
@@ -119,18 +119,19 @@ public class ShardFieldValues implements ShardRecords {
         requestBuilder.addAllValues(values);
         values = null;
 
-        return ImportRequest.createCSVImport(this.field, requestBuilder.build().toByteArray());
+        return ImportRequest.createCSVImport(this.field, requestBuilder.build().toByteArray(), this.clear_);
     }
 
-    ShardFieldValues(final Field field, final long shard) {
+    ShardFieldValues(final Field field, final long shard, boolean clear) {
         this.field = field;
         this.shard = shard;
         this.fieldValues = new ArrayList<>();
+        this.clear_ = clear;
     }
 
     private final Field field;
     private final long shard;
     private List<FieldValue> fieldValues;
     private boolean sorted = false;
-
+    private boolean clear_ = false;
 }

@@ -37,14 +37,16 @@ package integrationtest;
 import com.pilosa.client.Column;
 import com.pilosa.client.FieldValue;
 import com.pilosa.client.IntegrationTest;
-import com.pilosa.client.csv.*;
+import com.pilosa.client.csv.FileRecordIterator;
 import com.pilosa.client.exceptions.PilosaException;
-import com.pilosa.client.orm.Record;
+import com.pilosa.client.orm.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,147 +54,194 @@ import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class FileRecordIteratorIT {
+    @Before
+    public void setup() {
+        Schema schema = Schema.defaultSchema();
+        this.index = schema.index("index");
+        IndexOptions indexOptions = IndexOptions.builder()
+                .keys(true)
+                .build();
+        this.keysIndex = schema.index("keys-index", indexOptions);
+    }
+
     @Test
     public void csvRowIDColumnIDDefaultTimestampFormatTest() throws FileNotFoundException {
+        Field field = this.index.field("field");
         readCompareFromCSV(
                 "row_id-column_id-custom_timestamp.csv",
-                new RowIDColumnIDDeserializer(),
+                field,
                 getTargetRowIDColumnIDTimestamp());
     }
 
     @Test(expected = PilosaException.class)
     public void csvRowIDColumnIDTimestampFailTest() throws FileNotFoundException {
+        Field field = this.index.field("field");
         readCompareFromCSV(
                 "row_id-column_id-timestamp.csv",
-                new RowIDColumnIDDeserializer(),
+                field,
                 getTargetRowIDColumnIDTimestamp());
     }
 
     @Test
     public void csvRowIDColumnIDTest() throws FileNotFoundException {
+        Field field = this.index.field("field");
         readCompareFromCSV(
                 "row_id-column_id.csv",
-                new RowIDColumnIDDeserializer(),
+                field,
                 getTargetRowIDColumnID());
     }
 
     @Test
     public void csvRowIDColumnIDTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowIDColumnIDDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        Field field = this.index.field("field");
+        readCompareFromCSVWithTimestamp(
                 "row_id-column_id-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowIDColumnIDTimestamp());
     }
 
     @Test
     public void csvRowIDColumnKeyTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
-        deserializer.setTimestampFormat(null);
+        Field field = this.keysIndex.field("field");
         readCompareFromCSV(
                 "row_id-column_key.csv",
-                deserializer,
+                field,
                 getTargetRowIDColumnKey());
     }
 
     @Test
     public void csvRowIDColumnKeyTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        Field field = this.keysIndex.field("field");
+        readCompareFromCSVWithTimestamp(
                 "row_id-column_key-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowIDColumnKeyTimestamp());
     }
 
     @Test
     public void csvRowKeyColumnIDTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
-        deserializer.setTimestampFormat(null);
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        Field field = this.index.field("field", fieldOptions);
         readCompareFromCSV(
                 "row_key-column_id.csv",
-                deserializer,
+                field,
                 getTargetRowKeyColumnID());
     }
 
     @Test
     public void csvRowKeyColumnIDTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        Field field = this.index.field("field", fieldOptions);
+        readCompareFromCSVWithTimestamp(
                 "row_key-column_id-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowKeyColumnIDTimestamp());
     }
 
     @Test
     public void csvRowKeyColumnKeyTest() throws FileNotFoundException {
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        Field field = this.keysIndex.field("field", fieldOptions);
         readCompareFromCSV(
                 "row_key-column_key.csv",
-                new RowKeyColumnKeyDeserializer(),
+                field,
                 getTargetRowKeyColumnKey());
     }
 
     @Test
     public void csvRowKeyColumnKeyTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .keys(true)
+                .build();
+        Field field = this.keysIndex.field("field", fieldOptions);
+        readCompareFromCSVWithTimestamp(
                 "row_key-column_key-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowKeyColumnKeyTimestamp());
     }
 
     @Test
     public void csvRowBoolColumnIDTest() throws FileNotFoundException {
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldBool()
+                .build();
+        Field field = this.index.field("field", fieldOptions);
         readCompareFromCSV(
                 "row_bool-column_id.csv",
-                new RowBoolColumnIDDeserializer(),
+                field,
                 getTargetRowBoolColumnID());
     }
 
     @Test
     public void csvRowBoolColumnIDTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowBoolColumnIDDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldBool()
+                .build();
+        Field field = this.index.field("field", fieldOptions);
+        readCompareFromCSVWithTimestamp(
                 "row_bool-column_id-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowBoolColumnIDTimestamp());
     }
 
     @Test
     public void csvRowBoolColumnKeyTest() throws FileNotFoundException {
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldBool()
+                .build();
+        Field field = this.keysIndex.field("field", fieldOptions);
         readCompareFromCSV(
                 "row_bool-column_key.csv",
-                new RowBoolColumnKeyDeserializer(),
+                field,
                 getTargetRowBoolColumnKey());
     }
 
     @Test
     public void csvRowBoolColumnKeyTimestampTest() throws FileNotFoundException {
-        LineDeserializer deserializer = new RowBoolColumnKeyDeserializer();
-        deserializer.setTimestampFormat(null);
-        readCompareFromCSV(
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldBool()
+                .build();
+        Field field = this.keysIndex.field("field", fieldOptions);
+        readCompareFromCSVWithTimestamp(
                 "row_bool-column_key-timestamp.csv",
-                deserializer,
+                field,
+                null,
                 getTargetRowBoolColumnKeyTimestamp());
     }
 
     @Test
     public void csvColumnIDValueTest() throws FileNotFoundException {
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldInt(-100, 200)
+                .build();
+        Field field = this.index.field("field", fieldOptions);
         readCompareFromCSV(
                 "column_id-value.csv",
-                new ColumnIDValueDeserializer(),
+                field,
                 getTargetColumnIDValue());
     }
 
     @Test
     public void csvColumnKeyValueTest() throws FileNotFoundException {
-        readCompareFromCSV(
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .fieldInt(-100, 200)
+                .build();
+        Field field = this.keysIndex.field("field", fieldOptions);
+        readCompareFromCSVWithTimestamp(
                 "column_key-value.csv",
-                new ColumnKeyValueDeserializer(),
+                field,
+                null,
                 getTargetColumnKeyValue());
     }
 
@@ -308,14 +357,29 @@ public class FileRecordIteratorIT {
         return target;
     }
 
-    private void readCompareFromCSV(String path, LineDeserializer deserializer, List<Record> target)
+    private void readCompareFromCSV(String path, Field field, List<Record> target)
             throws FileNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         URL uri = loader.getResource(path);
         if (uri == null) {
             fail(String.format("%s not found", path));
         }
-        FileRecordIterator iterator = FileRecordIterator.fromPath(uri.getPath(), deserializer);
+        FileRecordIterator iterator = FileRecordIterator.fromPath(uri.getPath(), field);
+        readCompare(iterator, target);
+    }
+
+    private void readCompareFromCSVWithTimestamp(String path, Field field, SimpleDateFormat timestampFormat, List<Record> target)
+            throws FileNotFoundException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL uri = loader.getResource(path);
+        if (uri == null) {
+            fail(String.format("%s not found", path));
+        }
+        FileRecordIterator iterator = FileRecordIterator.fromPath(uri.getPath(), field, timestampFormat);
+        readCompare(iterator, target);
+    }
+
+    private void readCompare(FileRecordIterator iterator, List<Record> target) {
         List<Record> records = new ArrayList<>(3);
         while (iterator.hasNext()) {
             records.add(iterator.next());
@@ -327,4 +391,7 @@ public class FileRecordIteratorIT {
         assertFalse(iterator.hasNext());
         iterator.remove();
     }
+
+    private Index index;
+    private Index keysIndex;
 }

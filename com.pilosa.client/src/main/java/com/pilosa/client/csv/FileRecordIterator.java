@@ -35,17 +35,40 @@
 package com.pilosa.client.csv;
 
 import com.pilosa.client.RecordIterator;
-import com.pilosa.client.orm.Record;
+import com.pilosa.client.orm.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class FileRecordIterator implements RecordIterator {
+    public static FileRecordIterator fromPath(String path, Field field) throws FileNotFoundException {
+        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
+        return FileRecordIterator.fromPath(path, deserializer);
+    }
+
+    public static FileRecordIterator fromPath(String path, Field field, SimpleDateFormat timestampFormat) throws FileNotFoundException {
+        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
+        deserializer.setTimestampFormat(timestampFormat);
+        return FileRecordIterator.fromPath(path, deserializer);
+    }
+
     public static FileRecordIterator fromPath(String path, LineDeserializer deserializer)
             throws FileNotFoundException {
         return fromStream(new FileInputStream(path), deserializer);
+    }
+
+    public static FileRecordIterator fromStream(InputStream stream, Field field) {
+        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
+        return new FileRecordIterator(new Scanner(stream), deserializer);
+    }
+
+    public static FileRecordIterator fromStream(InputStream stream, Field field, SimpleDateFormat timestampFormat) {
+        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
+        deserializer.setTimestampFormat(timestampFormat);
+        return new FileRecordIterator(new Scanner(stream), deserializer);
     }
 
     public static FileRecordIterator fromStream(InputStream stream, LineDeserializer deserializer) {
@@ -80,6 +103,33 @@ public class FileRecordIterator implements RecordIterator {
     private FileRecordIterator(Scanner scanner, LineDeserializer deserializer) {
         this.scanner = scanner;
         this.deserializer = deserializer;
+    }
+
+    private static LineDeserializer findDeserializer(Field field) {
+        FieldOptions fieldOptions = field.getOptions();
+        IndexOptions indexOptions = field.getIndex().getOptions();
+        if (indexOptions.isKeys()) {
+            // column key
+            if (fieldOptions.getFieldType() == FieldType.BOOL) {
+                return new RowBoolColumnKeyDeserializer();
+            }
+            if (fieldOptions.getFieldType() == FieldType.INT) {
+                return new ColumnKeyValueDeserializer();
+            }
+            return fieldOptions.isKeys() ?
+                    new RowKeyColumnKeyDeserializer()
+                    : new RowIDColumnKeyDeserializer();
+        }
+        // column ID
+        if (fieldOptions.getFieldType() == FieldType.BOOL) {
+            return new RowBoolColumnIDDeserializer();
+        }
+        if (fieldOptions.getFieldType() == FieldType.INT) {
+            return new ColumnIDValueDeserializer();
+        }
+        return fieldOptions.isKeys() ?
+                new RowKeyColumnIDDeserializer()
+                : new RowIDColumnIDDeserializer();
     }
 
     private LineDeserializer deserializer = null;

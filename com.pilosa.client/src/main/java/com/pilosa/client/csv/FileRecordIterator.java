@@ -45,14 +45,11 @@ import java.util.Scanner;
 
 public class FileRecordIterator implements RecordIterator {
     public static FileRecordIterator fromPath(String path, Field field) throws FileNotFoundException {
-        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
-        return FileRecordIterator.fromPath(path, deserializer);
+        return FileRecordIterator.fromStream(new FileInputStream(path), field);
     }
 
     public static FileRecordIterator fromPath(String path, Field field, SimpleDateFormat timestampFormat) throws FileNotFoundException {
-        LineDeserializer deserializer = FileRecordIterator.findDeserializer(field);
-        deserializer.setTimestampFormat(timestampFormat);
-        return FileRecordIterator.fromPath(path, deserializer);
+        return FileRecordIterator.fromStream(new FileInputStream(path), field, timestampFormat);
     }
 
     public static FileRecordIterator fromPath(String path, LineDeserializer deserializer)

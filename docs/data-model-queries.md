@@ -29,7 +29,7 @@ You can pass custom options to fields:
 
 ```java
 FieldOptions stargazerOptions = FieldOptions.builder()
-    .setTimeQuantum(TimeQuantum.YEAR_MONTH_DAY)
+    .fieldTime(TimeQuantum.YEAR_MONTH_DAY)
     .setKeys(true)
     .build();
 
@@ -43,7 +43,7 @@ Once you have indexes and field objects created, you can create queries for them
 For instance, `Row` queries work on rows; use a field object to create those queries:
 
 ```java
-PqlRowQuery rowQuery = stargazer.row(1);  // corresponds to PQL: Row(field='stargazer', row=1)
+PqlRowQuery rowQuery = stargazer.row(1);  // corresponds to PQL: Row(stargazer=1)
 ```
 
 `Union` queries work on columns; use the index object to create them:
@@ -61,9 +61,9 @@ PqlQuery query = repository.batchQuery(
 );
 ```
 
-Note that the recommended way of posting large amounts of data is importing them instead of many `Set` or `Clear` queries. See [imports] to learn more.
+Note that the recommended way of posting large amounts of data is importing them instead of many `Set` or `Clear` queries. See [imports](imports.md) to learn more.
 
-The recommended way of creating query objects is, using dedicated methods attached to index and field objects. But sometimes it would be desirable to send raw queries to Pilosa. You can use `index.rawQuery` method for that. The recommended way of creating query objects is, using dedicated methods attached to index and field objects. But sometimes it would be desirable to send raw queries to Pilosa. You can use the `index.raw_query` method for that. Note that, the query string is not validated before sending to the server. Also, raw queries may be less efficient than the corresponding ORM query, since they are only sent to the coordinator node.
+Sometimes it would be desirable to send raw queries to Pilosa. You can use `index.rawQuery` method for that. Note that the query string is not validated before sending to the server. Also, raw queries may be less efficient than the corresponding ORM query, since they are only sent to the coordinator node.
 
 ```java
 PqlQuery query = repository.rawQuery("Row(stargazer=5)");
@@ -71,9 +71,19 @@ PqlQuery query = repository.rawQuery("Row(stargazer=5)");
 
 This client supports [Range encoded fields](https://www.pilosa.com/docs/latest/query-language/#range-bsi). Read [Range Encoded Bitmaps](https://www.pilosa.com/blog/range-encoded-bitmaps/) blog post for more information about the BSI implementation of range encoding in Pilosa.
 
-In order to use range encoded fields, an `int` field should be created with minimum and maxium values defined beforehand. Here's how you would do that using this library:
-
+In order to use range encoded fields, an `int` field should be created with a minimum and a maxium value:
 ```java
+long min = -100;
+long max = 200;
+FieldOptions options = FieldOptions.builder()
+        .fieldInt(min, max)
+        .build();
+Field field = index.field("some-field", options);
+```
+
+Below is a full sample of creating and populating a range field:
+ ```java
+ // Create the schema
 Index index = schema.index("animals");
 FieldOptions options = FieldOptions.builder()
         // minimum value that this field can contain is 0, and the maximum is 956
@@ -91,7 +101,7 @@ for (int i = 0; i < data.length; i++) {
 client.query(query);
 ```
 
-Let's write a range query:
+Let's write a range query that uses the data created above:
 ```java
 // Query for all animals with more than 100 specimens
 QueryResponse response = client.query(captivity.greaterThan(100));
@@ -104,17 +114,17 @@ System.out.println(response.getResult().getValue());
 
 It's possible to pass a row query to `sum`, so only columns where a row is set are filtered in:
 ```java
-// Let's run a few set queries first
+Field fieldMask = index.field("captivity-mask");
+// Let's run a few set queries
 client.query(index.batchQuery(
-        field.set(42, 3),
-        field.set(42, 392)));
-response = client.query(captivity.sum(field.row(42)));
+        fieldMask.set(42, 3),
+        fieldMask.set(42, 392)));
+// Sum values only from columns returned from row(42)
+response = client.query(captivity.sum(fieldMask.row(42)));
 System.out.println(response.getResult().getValue());
 ```
 
-See the *Field* functions further below for the list of functions that can be used with a `RangeField`.
-
-Please check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
+Check [Pilosa documentation](https://www.pilosa.com/docs) for PQL details. Here is a list of methods corresponding to PQL calls:
 
 Index:
 

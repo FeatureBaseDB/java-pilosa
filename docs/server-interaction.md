@@ -29,11 +29,11 @@ URI uri2 = URI.address("db1.pilosa.com:20202");
 
 // create a URI with the given host and port
 URI uri3 = URI.fromHostPort("db1.pilosa.com", 20202);
-``` 
+```
 
 ## Pilosa Client
 
-In order to interact with a Pilosa server, an instance of `com.pilosa.client.PilosaClient` should be created. The client is thread-safe and uses a pool of connections to the server, so we recommend creating a single instance of the client and share it with other objects when necessary.
+In order to interact with a Pilosa server, an instance of `com.pilosa.client.PilosaClient` should be created. The client is thread-safe and uses a pool of connections to the server, so we recommend creating a single instance of the client and reuse it when necessary.
 
 If the Pilosa server is running at the default address (`http://localhost:10101`) you can create the client with default options using:
 
@@ -166,9 +166,9 @@ Make sure the Pilosa server runs on a TLS address. [How To Set Up a Secure Clust
 
 In order to enable TLS support on the client side, the scheme of the address should be explicitly specified as `https`, e.g.: `https://01.pilosa.local:10501`
 
-This client library uses the [Apache HTTP Library](https://hc.apache.org). `ClientOptions` builder accepts a `javax.net.ssl.SSLContext` object, which is set to `org.apache.http.ssl.SSLContexts.createDefault()` by default. If the Pilosa server is using a certificate from a recognized authority, you can use the defaults. 
-  
-If you are using a self signed certificate, you need to derive from `PilosaClient` and override the `getRegistry` method: 
+This client library uses the [Apache HTTP Library](https://hc.apache.org). `ClientOptions` builder accepts a `javax.net.ssl.SSLContext` object, which is set to `org.apache.http.ssl.SSLContexts.createDefault()` by default. If the Pilosa server is using a certificate from a recognized authority, you can use the defaults.
+
+If you are using a self signed certificate, you need to derive from `PilosaClient` and override the `getRegistry` method:
 ```java
 public class InsecurePilosaClient extends PilosaClient {
 

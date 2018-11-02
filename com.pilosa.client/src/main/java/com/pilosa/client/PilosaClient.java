@@ -80,8 +80,10 @@ import java.util.concurrent.*;
  * <code>
  *     // Create a PilosaClient instance
  *     PilosaClient client = PilosaClient.defaultClient();
+ *     // Load a schema from the server or create it
+ *     Schema schema = client.readSchema();
  *     // Create an Index instance
- *     Index index = Index.create("repository");
+ *     Index index = schema.index("repository");
  *     Field stargazer = index.field("stargazer");
  *     QueryResponse response = client.query(stargazer.row(5));
  *     // Act on the result
@@ -106,7 +108,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a client with the given address and options.
+     * Creates a client with the given address.
      *
      * @param address of the Pilosa server
      * @return a PilosaClient
@@ -116,7 +118,8 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a client with the given server address.
+     * Creates a client with the given address.
+     *
      * @param uri address of the server
      * @throws PilosaURIException if the given address is malformed
      * @return a PilosaClient
@@ -126,7 +129,8 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Creates a client with the given cluster and default options.
+     * Creates a client with the given cluster.
+     *
      * @param cluster contains the addresses of the servers in the cluster
      * @return a PilosaClient
      */
@@ -136,6 +140,7 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Creates a client with the given cluster and options.
+     *
      * @param cluster contains the addresses of the servers in the cluster
      * @param options client options
      * @return a PilosaClient

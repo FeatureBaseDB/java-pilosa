@@ -57,7 +57,7 @@ class ImportRequest {
         String clearStr = clear ? "?clear=true" : "";
         String path = String.format("/index/%s/field/%s/import-roaring/%d%s",
                 field.getIndex().getName(), field.getName(), shard, clearStr);
-        return new ImportRequest(path, payload, "application/x-binary");
+        return new ImportRequest(path, payload, "application/x-protobuf");
     }
 
     String getPath() {

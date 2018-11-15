@@ -184,9 +184,21 @@ public final class FieldOptions {
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder keys(boolean enable) {
+        public Builder setKeys(boolean enable) {
             this.keys = enable;
             return this;
+        }
+
+        /**
+         * Sets whether field uses string keys.
+         *
+         * @param enable Enables string keys for this field if set to true.
+         * @return FieldOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
+         * @deprecated
+         */
+        public Builder keys(boolean enable) {
+            return setKeys(enable);
         }
 
         /**

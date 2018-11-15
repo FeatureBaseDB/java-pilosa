@@ -68,9 +68,21 @@ public final class IndexOptions {
          * @return IndexOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#index">Pilosa Data Model: Index</a>
          */
-        public Builder keys(boolean enable) {
+        public Builder setKeys(boolean enable) {
             this.keys = enable;
             return this;
+        }
+
+        /**
+         * Sets whether the index uses string keys.
+         *
+         * @param enable Enables string keys for this field if set to true.
+         * @return IndexOptions builder
+         * @see <a href="https://www.pilosa.com/docs/data-model/#index">Pilosa Data Model: Index</a>
+         * @deprecated
+         */
+        public Builder keys(boolean enable) {
+            return setKeys(enable);
         }
 
         /**

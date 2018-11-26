@@ -34,13 +34,14 @@
 
 package com.pilosa.client;
 
+import com.google.protobuf.ByteString;
 import com.pilosa.client.orm.Field;
+import com.pilosa.client.orm.FieldType;
 import com.pilosa.client.orm.Record;
 import com.pilosa.roaring.Bitmap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class ShardColumns implements ShardRecords {
     public static ShardColumns create(final Field field, long shard, long shardWidth, ImportOptions options) {
@@ -135,12 +136,26 @@ class ShardColumns implements ShardRecords {
     }
 
     ImportRequest toRoaringImportRequest() {
-        long shardWidth = this.shardWidth;
-        Bitmap bmp = new Bitmap();
-        for (Column b : this.columns) {
-            bmp.add(b.rowID * shardWidth + (b.columnID % shardWidth));
+        Map<String, Bitmap> views;
+        if (field.getOptions().getFieldType() == FieldType.TIME) {
+            views = columnsToBitmap(field.getOptions().getTimeQuantum());
         }
-        return ImportRequest.createRoaringImport(this.field, this.shard, bmp.serialize().array(), this.clear_);
+        else {
+            views = columnsToBitmap();
+        }
+        Internal.ImportRoaringRequest.Builder reqBuilder = Internal.ImportRoaringRequest.newBuilder();
+        for (Map.Entry<String, Bitmap> entry : views.entrySet()) {
+            byte[] bmpData = entry.getValue().serialize().array();
+            ByteString data = ByteString.copyFrom(bmpData);
+            Internal.ImportRoaringRequestView view = Internal.ImportRoaringRequestView.newBuilder()
+                    .setName(entry.getKey())
+                    .setData(data)
+                    .build();
+            reqBuilder.addViews(view);
+        }
+        reqBuilder.setClear(this.clear_);
+        byte[] payload = reqBuilder.build().toByteArray();
+        return ImportRequest.createRoaringImport(this.field, this.shard, payload, this.clear_);
     }
 
     ShardColumns(final Field field, long shard, long shardWidth, boolean roaring, boolean clear) {
@@ -150,6 +165,64 @@ class ShardColumns implements ShardRecords {
         this.columns = new ArrayList<>();
         this.roaring = roaring;
         this.clear_ = clear;
+    }
+
+    private Map<String, Bitmap> columnsToBitmap() {
+        long shardWidth = this.shardWidth;
+        Map<String, Bitmap> result = new HashMap<>(1);
+        Bitmap bmp = new Bitmap();
+        for (Column b : this.columns) {
+            bmp.add(b.rowID * shardWidth + (b.columnID % shardWidth));
+        }
+        result.put("", bmp);
+        return result;
+    }
+
+    private Map<String, Bitmap> columnsToBitmap(TimeQuantum timeQuantum) {
+        long shardWidth = this.shardWidth;
+        Map<String, Bitmap> views = new HashMap<>();
+        Bitmap standard = new Bitmap();
+        for (Column b : this.columns) {
+            long bit = b.rowID * shardWidth + (b.columnID % shardWidth);
+            standard.add(bit);
+            String[] viewNames = viewsByTime(b.timestamp, timeQuantum);
+            for (String viewName : viewNames) {
+                Bitmap bmp = views.get(viewName);
+                if (bmp == null) {
+                    bmp = new Bitmap();
+                    views.put(viewName, bmp);
+                }
+                bmp.add(bit);
+            }
+        }
+        views.put("", standard); // standard view
+        return views;
+    }
+
+    private String[] viewsByTime(long timestamp, TimeQuantum timeQuantum) {
+        String tqs = timeQuantum.toString();
+        String[] result = new String[tqs.length()];
+        for (int i = 0; i < tqs.length(); i++) {
+            result[i] = viewByTimeUnit(timestamp, tqs.charAt(i));
+        }
+        return result;
+    }
+
+    private String viewByTimeUnit(long timestamp, char c) {
+        SimpleDateFormat fmt = this.timeFormats.get(c);
+        if (fmt == null) {
+            return "";
+        }
+        return fmt.format(new Date(timestamp*1000));
+    }
+
+    private Map<Character, SimpleDateFormat> timeFormats = new HashMap<>(4);
+
+    {
+        timeFormats.put('Y', new SimpleDateFormat("yyyy"));
+        timeFormats.put('M', new SimpleDateFormat("MM"));
+        timeFormats.put('D', new SimpleDateFormat("dd"));
+        timeFormats.put('H', new SimpleDateFormat("mm"));
     }
 
     private final Field field;

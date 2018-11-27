@@ -36,6 +36,8 @@ package com.pilosa.client;
 
 import com.pilosa.client.orm.Record;
 
+import java.util.Map;
+
 public interface ShardRecords {
     long getShard();
 
@@ -50,6 +52,10 @@ public interface ShardRecords {
     void add(Record record);
 
     void clear();
+
+    boolean attemptTranslateKeys(PilosaClient client,
+                                 Map<String, Long> rowKeyToIDMap,
+                                 Map<String, Long> columnKeyToIDMap);
 
     ImportRequest toImportRequest();
 }

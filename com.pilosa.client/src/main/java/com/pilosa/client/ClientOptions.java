@@ -121,17 +121,6 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setSkipVersionCheck() {
-            this.skipVersionCheck = true;
-            return this;
-        }
-
-        public Builder setLegacyMode(boolean enable) {
-            this.legacyMode = enable;
-            this.skipVersionCheck = true;
-            return this;
-        }
-
         public Builder setImportThreadCount(int threadCount) {
             this.importThreadCount = threadCount;
             return this;
@@ -158,8 +147,6 @@ public final class ClientOptions {
         private int connectionPoolSizePerRoute = 10;
         private int connectionPoolTotalSize = 100;
         private SSLContext sslContext = SSLContexts.createDefault();
-        private boolean skipVersionCheck = false;
-        private boolean legacyMode = false;
         private int importThreadCount = Runtime.getRuntime().availableProcessors();
         private long shardWidth = DEFAULT_SHARD_WIDTH;
     }

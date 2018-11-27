@@ -60,12 +60,12 @@ class ShardColumns implements ShardRecords {
 
     @Override
     public boolean isIndexKeys() {
-        return this.field.getIndex().getOptions().isKeys();
+        return this._isIndexKeys;
     }
 
     @Override
     public boolean isFieldKeys() {
-        return this.field.getOptions().isKeys();
+        return this._isFieldKeys;
     }
 
     @Override
@@ -83,6 +83,44 @@ class ShardColumns implements ShardRecords {
     @Override
     public void clear() {
         this.columns.clear();
+    }
+
+    @Override
+    public boolean attemptTranslateKeys(PilosaClient client,
+                                        Map<String, Long> rowKeyToIDMap,
+                                        Map<String, Long> columnKeyToIDMap) {
+        if (!isFieldKeys() || isIndexKeys()) {
+            // Key translation is only supported for rowKeyColumnID data at the moment
+            return false;
+        }
+        if (rowKeyToIDMap == null) {
+            // We require an initial RowKey -> RowID map
+            return false;
+        }
+        List<String> missingKeys = new ArrayList<>();
+        for (Column column : this.columns) {
+            if (!rowKeyToIDMap.containsKey(column.getRowKey())) {
+                missingKeys.add(column.getRowKey());
+            }
+        }
+        // if there are missing keys in the cache, translate them
+        if (missingKeys.size() > 0) {
+            List<Long> ids = client.translateKeys(this.field, missingKeys);
+            for (int i = 0; i < ids.size(); i++) {
+                rowKeyToIDMap.put(missingKeys.get(i), ids.get(i));
+            }
+        }
+        // we can now exchange keys with IDs
+        for (int i = 0; i < this.columns.size(); i++) {
+            Column oldCol = this.columns.get(i);
+            long rowID = rowKeyToIDMap.get(oldCol.rowKey);
+            this.columns.set(i, Column.create(rowID, oldCol.columnID));
+        }
+
+        // the columns in this batch are RowIDColumnID type now
+        this._isFieldKeys = false;
+
+        return true;
     }
 
     @Override
@@ -160,6 +198,8 @@ class ShardColumns implements ShardRecords {
 
     ShardColumns(final Field field, long shard, long shardWidth, boolean roaring, boolean clear) {
         this.field = field;
+        this._isIndexKeys = field.getIndex().getOptions().isKeys();
+        this._isFieldKeys = field.getOptions().isKeys();
         this.shard = shard;
         this.shardWidth = shardWidth;
         this.columns = new ArrayList<>();
@@ -232,4 +272,6 @@ class ShardColumns implements ShardRecords {
     private boolean sorted = false;
     private final boolean roaring;
     private final boolean clear_;
+    private boolean _isIndexKeys;
+    private boolean _isFieldKeys;
 }

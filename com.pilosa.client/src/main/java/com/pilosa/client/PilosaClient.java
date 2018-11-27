@@ -601,8 +601,15 @@ public class PilosaClient implements AutoCloseable {
     }
 
     void importColumns(ShardRecords records) {
+        importColumns(records, null);
+    }
+
+    void importColumns(ShardRecords records, Map<String, Long> rowKeyToColumnIDMap) {
         String indexName = records.getIndexName();
         List<IFragmentNode> nodes;
+        // should we attempt to convert keys to IDs?
+        boolean success = records.attemptTranslateKeys(this, rowKeyToColumnIDMap, null);
+        // TODO: log success
         if (records.isIndexKeys() || records.isFieldKeys()) {
             nodes = new ArrayList<>();
             IFragmentNode node = fetchCoordinatorNode();
@@ -684,6 +691,36 @@ public class PilosaClient implements AutoCloseable {
     void importNode(ImportRequest request) {
         ByteArrayEntity entity = new ByteArrayEntity(request.getPayload());
         clientExecute("POST", request.getPath(), entity, request.getHeaders(), "Error while importing");
+    }
+
+    public List<Long> translateKeys(Field field, List<String> keys) {
+        Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder()
+                .addAllKeys(keys)
+                .setIndex(field.getIndex().getName());
+        // Setting the field indicates this is a row key translation request
+        if (field.getOptions().isKeys()) {
+            requestBuilder.setField(field.getName());
+        }
+        Internal.TranslateKeysRequest request = requestBuilder.build();
+        ByteArrayEntity data = new ByteArrayEntity(request.toByteArray());
+        CloseableHttpResponse response = clientExecute(
+                "POST",
+                "/internal/translate/keys",
+                data,
+                protobufHeaders,
+                "Error while translating keys",
+                ReturnClientResponse.ERROR_CHECKED_RESPONSE,
+                true);
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            try (InputStream src = response.getEntity().getContent()) {
+                Internal.TranslateKeysResponse keysResponse = Internal.TranslateKeysResponse.parseFrom(src);
+                return keysResponse.getIDsList();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        throw new PilosaException("Server returned empty response");
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -911,15 +948,15 @@ class BitImportWorker implements Runnable {
         this.queue = queue;
         this.statusQueue = statusQueue;
         this.options = options;
+        if (this.options.isTranslateKeys()) {
+            this.rowKeyToIDMap = new HashMap<>();
+        }
     }
 
     @Override
     public void run() {
         final long shardWidth = this.options.getShardWidth();
-        final ImportOptions.Strategy strategy = this.options.getStrategy();
-        final long timeout = this.options.getTimeoutMs();
         int batchCountDown = this.options.getBatchSize();
-        long tic = System.currentTimeMillis();
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -939,7 +976,7 @@ class BitImportWorker implements Runnable {
                 }
                 shardRecords.add(record);
                 batchCountDown -= 1;
-                if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
+                if (batchCountDown == 0) {
                     for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
                         shardRecords = entry.getValue();
                         if (shardRecords.size() > 0) {
@@ -947,11 +984,6 @@ class BitImportWorker implements Runnable {
                         }
                     }
                     batchCountDown = this.options.getBatchSize();
-                    tic = System.currentTimeMillis();
-                } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
-                    importRecords(shardGroup.get(largestShard()));
-                    batchCountDown = this.options.getBatchSize();
-                    tic = System.currentTimeMillis();
                 }
             } catch (InterruptedException e) {
                 break;
@@ -970,23 +1002,9 @@ class BitImportWorker implements Runnable {
         }
     }
 
-    private long largestShard() {
-        long largestCount = 0;
-        long largestShard = -1;
-        for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
-            ShardRecords records = entry.getValue();
-            int shardBitCount = records.size();
-            if (shardBitCount > largestCount) {
-                largestCount = shardBitCount;
-                largestShard = entry.getKey();
-            }
-        }
-        return largestShard;
-    }
-
     private void importRecords(ShardRecords records) throws InterruptedException {
         long tic = System.currentTimeMillis();
-        this.client.importColumns(records);
+        this.client.importColumns(records, this.rowKeyToIDMap);
         if (this.statusQueue != null) {
             long tac = System.currentTimeMillis();
             ImportStatusUpdate statusUpdate = new ImportStatusUpdate(Thread.currentThread().getId(),
@@ -1002,4 +1020,6 @@ class BitImportWorker implements Runnable {
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
     private Map<Long, ShardRecords> shardGroup = new HashMap<>();
+    private Map<String, Long> rowKeyToIDMap;
+
 }

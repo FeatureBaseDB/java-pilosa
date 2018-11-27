@@ -546,11 +546,42 @@ public class PilosaClientIT {
             LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
             RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
             FieldOptions fieldOptions = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.index.field("importfield-rowkey-colid", fieldOptions);
             client.ensureField(field);
             client.importField(field, iterator);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row("one"),
+                    field.row("five"),
+                    field.row("three")
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void fastImportRowKeyColumnIDTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .setKeys(true)
+                    .build();
+            Field field = this.index.field("importfield-rowkey-colid", fieldOptions);
+            client.ensureField(field);
+            ImportOptions importOptions = ImportOptions.builder()
+                    .setRoaring(true)
+                    .setTranslateKeys(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
             PqlBatchQuery bq = index.batchQuery(
                     field.row("one"),
                     field.row("five"),
@@ -644,7 +675,7 @@ public class PilosaClientIT {
     @Test
     public void importRoaringTimeFieldTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
+            RecordIterator iterator = StaticColumnIteratorWithTimestamp.columnsWithIDs();
             FieldOptions fieldOptions = FieldOptions.builder()
                     .fieldTime(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                     .build();
@@ -736,14 +767,14 @@ public class PilosaClientIT {
             RecordIterator iterator = StaticColumnIterator.fieldValuesWithKeys();
             FieldOptions options = FieldOptions.builder()
                     .fieldInt(0, 100)
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("importvaluefieldkeys", options);
             client.ensureField(field);
             client.importField(field, iterator);
 
             FieldOptions options2 = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field2 = this.keyIndex.field("importvaluefieldkeys-set", options2);
             client.ensureField(field2);
@@ -765,7 +796,6 @@ public class PilosaClientIT {
             Field field = this.index.field("importfield");
             client.ensureField(field);
             ImportOptions options = ImportOptions.builder().
-                    setStrategy(ImportOptions.Strategy.BATCH).
                     setBatchSize(3).
                     setThreadCount(1).
                     build();
@@ -848,8 +878,6 @@ public class PilosaClientIT {
             ImportOptions options = ImportOptions.builder()
                     .setBatchSize(100000)
                     .setThreadCount(2)
-                    .setStrategy(ImportOptions.Strategy.TIMEOUT)
-                    .setTimeoutMs(5)
                     .build();
             client.importField(field, iterator, options, statusQueue);
             monitorThread.interrupt();
@@ -873,7 +901,6 @@ public class PilosaClientIT {
                 this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
-                        .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(500)
                         .setThreadCount(1)
                         .build();
@@ -920,7 +947,6 @@ public class PilosaClientIT {
                 this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
-                        .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(1_000)
                         .setThreadCount(1)
                         .build();
@@ -1106,6 +1132,25 @@ public class PilosaClientIT {
                     server.stop(0);
                 }
             }
+        }
+    }
+
+    @Test
+    public void translateRowKeysTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            FieldOptions options = FieldOptions.builder()
+                    .setKeys(true)
+                    .build();
+            Field field = this.index.field("translate-rowkey-field", options);
+            client.syncSchema(this.schema);
+            client.query(this.index.batchQuery(
+                    field.set("key1", 10),
+                    field.set("key2", 1000)
+            ));
+
+            List<Long> rowIDs = client.translateKeys(field, Arrays.asList("key1", "key2"));
+            List<Long> target = Arrays.asList(1L, 2L);
+            assertEquals(target, rowIDs);
         }
     }
 
@@ -1556,9 +1601,6 @@ public class PilosaClientIT {
         String bindAddress = getBindAddress();
         Cluster cluster = Cluster.withHost(URI.address(bindAddress));
         ClientOptions.Builder optionsBuilder = ClientOptions.builder();
-        if (isLegacyModeOff()) {
-            optionsBuilder.setLegacyMode(false);
-        }
         long shardWidth = getShardWidth();
         if (shardWidth > 0) {
             optionsBuilder.setShardWidth(shardWidth);
@@ -1572,11 +1614,6 @@ public class PilosaClientIT {
             bindAddress = "http://:10101";
         }
         return bindAddress;
-    }
-
-    private boolean isLegacyModeOff() {
-        String legacyModeOffStr = System.getenv("LEGACY_MODE_OFF");
-        return legacyModeOffStr != null && legacyModeOffStr.equals("true");
     }
 
     private long getShardWidth() {
@@ -1617,6 +1654,66 @@ class StaticColumnIterator implements RecordIterator {
     }
 
     private StaticColumnIterator(boolean keys, boolean intValues) {
+        this.records = new ArrayList<>(3);
+        if (keys) {
+            if (intValues) {
+                this.records.add(FieldValue.create("ten", 7));
+                this.records.add(FieldValue.create("seven", 1));
+            } else {
+                this.records.add(Column.create("ten", "five"));
+                this.records.add(Column.create("two", "three"));
+                this.records.add(Column.create("seven", "one"));
+
+            }
+        } else {
+            if (intValues) {
+                this.records.add(FieldValue.create(10, 7));
+                this.records.add(FieldValue.create(7, 1));
+            } else {
+                this.records.add(Column.create(10, 5));
+                this.records.add(Column.create(2, 3));
+                this.records.add(Column.create(7, 1));
+            }
+        }
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.index < this.records.size();
+    }
+
+    @Override
+    public Record next() {
+        return this.records.get(index++);
+    }
+
+    @Override
+    public void remove() {
+        // We have this just to avoid compilation problems on JDK 7
+    }
+}
+
+class StaticColumnIteratorWithTimestamp implements RecordIterator {
+    private List<Record> records;
+    private int index = 0;
+
+    public static StaticColumnIteratorWithTimestamp columnsWithIDs() {
+        return new StaticColumnIteratorWithTimestamp(false, false);
+    }
+
+    public static StaticColumnIteratorWithTimestamp columnsWithKeys() {
+        return new StaticColumnIteratorWithTimestamp(true, false);
+    }
+
+    public static StaticColumnIteratorWithTimestamp fieldValuesWithIDs() {
+        return new StaticColumnIteratorWithTimestamp(false, true);
+    }
+
+    public static StaticColumnIteratorWithTimestamp fieldValuesWithKeys() {
+        return new StaticColumnIteratorWithTimestamp(true, true);
+    }
+
+    private StaticColumnIteratorWithTimestamp(boolean keys, boolean intValues) {
         this.records = new ArrayList<>(3);
         if (keys) {
             if (intValues) {

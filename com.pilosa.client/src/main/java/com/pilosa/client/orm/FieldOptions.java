@@ -223,7 +223,6 @@ public final class FieldOptions {
         private long min = 0;
         private long max = 0;
         private boolean keys = false;
-
     }
 
     /**
@@ -296,9 +295,9 @@ public final class FieldOptions {
             case TIME:
                 options.put("timeQuantum", this.timeQuantum.toString());
         }
-        if (this.keys) {
-            options.put("keys", true);
-        }
+
+        options.put("keys", this.keys);
+
         Map<String, Object> optionsRoot = new HashMap<>(1);
         optionsRoot.put("options", options);
         if (this.extra != null) {

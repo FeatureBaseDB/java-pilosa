@@ -993,25 +993,35 @@ public class PilosaClientIT {
 
     @Test
     public void syncSchemaTest() throws IOException {
-        Index remoteIndex = Index.create("remote-index-1");
-        Field remoteField = remoteIndex.field("remote-field-1");
-        Schema schema1 = Schema.defaultSchema();
-        Index index11 = schema1.index("diff-index1");
-        index11.field("field1-1");
-        index11.field("field1-2");
-        Index index12 = schema1.index("diff-index2");
-        index12.field("field2-1");
-        schema1.index(remoteIndex.getName());
-
+        Index index = null;
         try (PilosaClient client = this.getClient()) {
-            client.ensureIndex(remoteIndex);
-            client.ensureField(remoteField);
-            client.syncSchema(schema1);
+            Schema schema = client.readSchema();
+            IndexOptions indexOptions = IndexOptions.builder()
+                    .setKeys(true)
+                    .setTrackExistence(true)
+                    .build();
+            index = schema.index("index11", indexOptions);
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .setKeys(true)
+                    .fieldSet(CacheType.RANKED, 50000)
+                    .build();
+            index.field("index11-f1", fieldOptions);
+            client.syncSchema(schema);
+
+            Schema schema2 = client.readSchema();
+            Index index2 = schema2.index("index11");
+            assertEquals(index, index2);
+
+            Schema schema3 = Schema.defaultSchema();
+            client.syncSchema(schema3);
+            Index index3 = schema3.index("index11");
+            assertEquals(index, index3);
+
         } finally {
             try (PilosaClient client = this.getClient()) {
-                client.deleteIndex(remoteIndex);
-                client.deleteIndex(index11);
-                client.deleteIndex(index12);
+                if (index != null) {
+                    client.deleteIndex(index);
+                }
             }
         }
     }

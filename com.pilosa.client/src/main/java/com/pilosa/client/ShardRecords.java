@@ -51,7 +51,7 @@ public interface ShardRecords {
 
     void add(Record record);
 
-    void clear();
+    void reset();
 
     boolean attemptTranslateKeys(PilosaClient client,
                                  Map<String, Long> rowKeyToIDMap,

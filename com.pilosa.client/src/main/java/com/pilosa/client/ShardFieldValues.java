@@ -80,7 +80,7 @@ public class ShardFieldValues implements ShardRecords {
     }
 
     @Override
-    public void clear() {
+    public void reset() {
         this.fieldValues.clear();
     }
 

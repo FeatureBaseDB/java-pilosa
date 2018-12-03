@@ -939,6 +939,11 @@ public class Field {
                 .toHashCode();
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s(%s)", this.name, this.getOptions().toString());
+    }
+
     /**
      * Creates a field.
      *

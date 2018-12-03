@@ -121,11 +121,6 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setImportThreadCount(int threadCount) {
-            this.importThreadCount = threadCount;
-            return this;
-        }
-
         public Builder setShardWidth(long shardWidth) {
             this.shardWidth = shardWidth;
             return this;
@@ -185,10 +180,6 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public int getImportThreadCount() {
-        return this.importThreadCount;
-    }
-
     public long getShardWidth() {
         return this.shardWidth;
     }
@@ -203,7 +194,6 @@ public final class ClientOptions {
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.importThreadCount = importThreadCount;
         this.shardWidth = shardWidth;
     }
 
@@ -213,6 +203,5 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final int importThreadCount;
     private final long shardWidth;
 }

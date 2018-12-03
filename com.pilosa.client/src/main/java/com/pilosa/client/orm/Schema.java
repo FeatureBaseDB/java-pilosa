@@ -84,7 +84,7 @@ public class Schema {
      */
     public Index index(Index other) {
         Index index = this.index(other.getName(), other.getOptions());
-        for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+        for (Map.Entry<String, Field> fieldEntry : other.getFields().entrySet()) {
             Field field = fieldEntry.getValue();
             index.field(field.getName(), field.getOptions());
         }
@@ -141,6 +141,18 @@ public class Schema {
         return new HashCodeBuilder(31, 47)
                 .append(this.indexes)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ ");
+        for (Map.Entry<String, Index> entry : this.indexes.entrySet()) {
+            builder.append(entry.getValue().toString());
+            builder.append(' ');
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
     private Map<String, Index> indexes = new HashMap<>();

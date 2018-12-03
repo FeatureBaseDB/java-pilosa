@@ -81,8 +81,10 @@ class ShardColumns implements ShardRecords {
     }
 
     @Override
-    public void clear() {
+    public void reset() {
         this.columns.clear();
+        this._isIndexKeys = field.getIndex().getOptions().isKeys();
+        this._isFieldKeys = field.getOptions().isKeys();
     }
 
     @Override
@@ -113,8 +115,8 @@ class ShardColumns implements ShardRecords {
         // we can now exchange keys with IDs
         for (int i = 0; i < this.columns.size(); i++) {
             Column oldCol = this.columns.get(i);
-            long rowID = rowKeyToIDMap.get(oldCol.rowKey);
-            this.columns.set(i, Column.create(rowID, oldCol.columnID));
+            long rowID = rowKeyToIDMap.get(oldCol.getRowKey());
+            this.columns.set(i, Column.create(rowID, oldCol.getColumnID()));
         }
 
         // the columns in this batch are RowIDColumnID type now

@@ -350,6 +350,10 @@ public class PilosaClient implements AutoCloseable {
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldInfo.getName())) {
+                        continue;
+                    }
                     index.field(fieldInfo.getName(), fieldInfo.getOptions());
                 }
             }
@@ -392,6 +396,10 @@ public class PilosaClient implements AutoCloseable {
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldEntry.getKey())) {
+                        continue;
+                    }
                     localIndex.field(fieldEntry.getValue());
                 }
             }
@@ -760,6 +768,8 @@ public class PilosaClient implements AutoCloseable {
                 new BasicHeader("Accept", "application/x-protobuf"),
                 new BasicHeader("PQL-Version", PQL_VERSION)
         };
+
+        systemFields = Collections.singletonList("exists");
     }
 
     private static final ObjectMapper mapper;
@@ -768,6 +778,7 @@ public class PilosaClient implements AutoCloseable {
     private static final int MAX_HOSTS = 10;
     private static final Header[] protobufHeaders;
     private static final Logger logger = LoggerFactory.getLogger("pilosa");
+    private static List<String> systemFields;
     private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;
@@ -957,6 +968,7 @@ class BitImportWorker implements Runnable {
     public void run() {
         final long shardWidth = this.options.getShardWidth();
         int batchCountDown = this.options.getBatchSize();
+        Map<Long, ShardRecords> shardGroup = new HashMap<>();
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -976,8 +988,8 @@ class BitImportWorker implements Runnable {
                 }
                 shardRecords.add(record);
                 batchCountDown -= 1;
-                if (batchCountDown == 0) {
-                    for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
+                if (batchCountDown == 1) {
+                    for (Map.Entry<Long, ShardRecords> entry : shardGroup.entrySet()) {
                         shardRecords = entry.getValue();
                         if (shardRecords.size() > 0) {
                             importRecords(entry.getValue());
@@ -990,7 +1002,7 @@ class BitImportWorker implements Runnable {
             }
         }
         // The thread is shutting down, import remaining columns in the batch
-        for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
+        for (Map.Entry<Long, ShardRecords> entry : shardGroup.entrySet()) {
             ShardRecords records = entry.getValue();
             if (records.size() > 0) {
                 try {
@@ -1011,7 +1023,7 @@ class BitImportWorker implements Runnable {
                     records.getShard(), records.size(), tac - tic);
             this.statusQueue.offer(statusUpdate, 1, TimeUnit.SECONDS);
         }
-        records.clear();
+        records.reset();
     }
 
     private final PilosaClient client;
@@ -1019,7 +1031,7 @@ class BitImportWorker implements Runnable {
     private final BlockingQueue<Record> queue;
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
-    private Map<Long, ShardRecords> shardGroup = new HashMap<>();
+//    private Map<Long, ShardRecords> shardGroup = new HashMap<>();
     private Map<String, Long> rowKeyToIDMap;
 
 }

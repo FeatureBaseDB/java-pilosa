@@ -335,6 +335,18 @@ public class Index {
                 .toHashCode();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("%s[%s ", this.name, this.options.toString()));
+        for (Map.Entry<String, Field> entry : this.fields.entrySet()) {
+            builder.append(entry.getValue().toString());
+            builder.append(' ');
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
     PqlBaseQuery pqlQuery(String query, boolean hasKeys) {
         PqlBaseQuery q = new PqlBaseQuery(query, this);
         if (hasKeys) {

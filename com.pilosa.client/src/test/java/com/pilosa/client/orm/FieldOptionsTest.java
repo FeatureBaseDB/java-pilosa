@@ -65,14 +65,14 @@ public class FieldOptionsTest {
                 .fieldSet(CacheType.RANKED)
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
-        target = "{\"options\":{\"type\":\"set\",\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"keys\":false,\"type\":\"set\",\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
                 .fieldSet()
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        target = "{\"options\":{\"type\":\"set\"}}";
+        target = "{\"options\":{\"keys\":false,\"type\":\"set\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -82,7 +82,7 @@ public class FieldOptionsTest {
                 .fieldInt(-100, 500)
                 .build();
         compare(options, FieldType.INT, TimeQuantum.NONE, CacheType.DEFAULT, 0, -100, 500);
-        String target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
+        String target = "{\"options\":{\"keys\":false,\"type\":\"int\",\"min\":-100,\"max\":500}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -92,7 +92,7 @@ public class FieldOptionsTest {
                 .fieldTime(TimeQuantum.MONTH_DAY_HOUR)
                 .build();
         compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
-        String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
+        String target = "{\"keys\":false,\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -103,7 +103,7 @@ public class FieldOptionsTest {
 
         options = FieldOptions.builder()
                 .fieldMutex(CacheType.RANKED, 1000)
-                .keys(true)
+                .setKeys(true)
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
         target = "{\"options\":{\"keys\":true,\"type\":\"mutex\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
@@ -113,14 +113,14 @@ public class FieldOptionsTest {
                 .fieldMutex(CacheType.RANKED)
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
-        target = "{\"options\":{\"type\":\"mutex\",\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"keys\":false,\"type\":\"mutex\",\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
                 .fieldMutex()
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        target = "{\"options\":{\"type\":\"mutex\"}}";
+        target = "{\"keys\":false,\"options\":{\"type\":\"mutex\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -130,7 +130,7 @@ public class FieldOptionsTest {
                 .fieldBool()
                 .build();
         compare(options, FieldType.BOOL, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        String target = "{\"options\":{\"type\":\"bool\"}}";
+        String target = "{\"keys\":false,\"options\":{\"type\":\"bool\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -138,7 +138,7 @@ public class FieldOptionsTest {
     @Test
     public void testKeysOption() {
         FieldOptions options = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         assertTrue(options.isKeys());
     }

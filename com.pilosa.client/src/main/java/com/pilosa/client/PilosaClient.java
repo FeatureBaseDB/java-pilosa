@@ -618,10 +618,10 @@ public class PilosaClient implements AutoCloseable {
         // should we attempt to convert keys to IDs?
         boolean success = records.attemptTranslateKeys(this, rowKeyToColumnIDMap, null);
         // TODO: log success
-        if (records.isIndexKeys() || records.isFieldKeys()) {
+        if (success || records.isIndexKeys() || records.isFieldKeys()) {
             nodes = new ArrayList<>();
-            IFragmentNode node = fetchCoordinatorNode();
-            nodes.add(node);
+            updateCoordinatorAddress();
+            nodes.add(this.coordinatorNode);
         } else {
             nodes = fetchFragmentNodes(indexName, records.getShard());
         }
@@ -747,8 +747,8 @@ public class PilosaClient implements AutoCloseable {
 
     private synchronized void updateCoordinatorAddress() {
         if (this.coordinatorAddress == null) {
-            IFragmentNode node = fetchCoordinatorNode();
-            this.coordinatorAddress = node.toURI();
+            this.coordinatorNode = fetchCoordinatorNode();
+            this.coordinatorAddress = this.coordinatorNode.toURI();
         }
     }
 
@@ -784,7 +784,8 @@ public class PilosaClient implements AutoCloseable {
     private CloseableHttpClient client = null;
     private ClientOptions options;
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
-    private URI coordinatorAddress;
+    private URI coordinatorAddress = null;
+    private IFragmentNode coordinatorNode = null;
 }
 
 class QueryRequest {

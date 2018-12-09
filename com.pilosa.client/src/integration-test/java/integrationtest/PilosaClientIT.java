@@ -644,7 +644,7 @@ public class PilosaClientIT {
     @Test
     public void importRoaringTimeFieldTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
-            RecordIterator iterator = StaticColumnIterator.columnsWithIDs();
+            RecordIterator iterator = StaticColumnIteratorWithTimestamp.columnsWithIDs();
             FieldOptions fieldOptions = FieldOptions.builder()
                     .fieldTime(TimeQuantum.YEAR_MONTH_DAY_HOUR)
                     .build();
@@ -736,14 +736,14 @@ public class PilosaClientIT {
             RecordIterator iterator = StaticColumnIterator.fieldValuesWithKeys();
             FieldOptions options = FieldOptions.builder()
                     .fieldInt(0, 100)
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("importvaluefieldkeys", options);
             client.ensureField(field);
             client.importField(field, iterator);
 
             FieldOptions options2 = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field2 = this.keyIndex.field("importvaluefieldkeys-set", options2);
             client.ensureField(field2);
@@ -967,25 +967,34 @@ public class PilosaClientIT {
 
     @Test
     public void syncSchemaTest() throws IOException {
-        Index remoteIndex = Index.create("remote-index-1");
-        Field remoteField = remoteIndex.field("remote-field-1");
-        Schema schema1 = Schema.defaultSchema();
-        Index index11 = schema1.index("diff-index1");
-        index11.field("field1-1");
-        index11.field("field1-2");
-        Index index12 = schema1.index("diff-index2");
-        index12.field("field2-1");
-        schema1.index(remoteIndex.getName());
+        Index index = null;
 
         try (PilosaClient client = this.getClient()) {
-            client.ensureIndex(remoteIndex);
-            client.ensureField(remoteField);
-            client.syncSchema(schema1);
+            Schema schema = client.readSchema();
+            IndexOptions indexOptions = IndexOptions.builder()
+                    .setKeys(true)
+                    .setTrackExistence(true)
+                    .build();
+            index = schema.index("index11", indexOptions);
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .setKeys(true)
+                    .fieldSet(CacheType.RANKED, 50000)
+                    .build();
+            index.field("index11-f1", fieldOptions);
+            client.syncSchema(schema);
+            Schema schema2 = client.readSchema();
+            Index index2 = schema2.index("index11");
+            assertEquals(index, index2);
+            Schema schema3 = Schema.defaultSchema();
+            client.syncSchema(schema3);
+            Index index3 = schema3.index("index11");
+            assertEquals(index, index3);
+
         } finally {
             try (PilosaClient client = this.getClient()) {
-                client.deleteIndex(remoteIndex);
-                client.deleteIndex(index11);
-                client.deleteIndex(index12);
+                if (index != null) {
+                    client.deleteIndex(index);
+                }
             }
         }
     }
@@ -1617,6 +1626,65 @@ class StaticColumnIterator implements RecordIterator {
     }
 
     private StaticColumnIterator(boolean keys, boolean intValues) {
+        this.records = new ArrayList<>(3);
+        if (keys) {
+            if (intValues) {
+                this.records.add(FieldValue.create("ten", 7));
+                this.records.add(FieldValue.create("seven", 1));
+            } else {
+                this.records.add(Column.create("ten", "five"));
+                this.records.add(Column.create("two", "three"));
+                this.records.add(Column.create("seven", "one"));
+            }
+        } else {
+            if (intValues) {
+                this.records.add(FieldValue.create(10, 7));
+                this.records.add(FieldValue.create(7, 1));
+            } else {
+                this.records.add(Column.create(10, 5));
+                this.records.add(Column.create(2, 3));
+                this.records.add(Column.create(7, 1));
+            }
+        }
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.index < this.records.size();
+    }
+
+    @Override
+    public Record next() {
+        return this.records.get(index++);
+    }
+
+    @Override
+    public void remove() {
+        // We have this just to avoid compilation problems on JDK 7
+    }
+}
+
+class StaticColumnIteratorWithTimestamp implements RecordIterator {
+    private List<Record> records;
+    private int index = 0;
+
+    public static StaticColumnIteratorWithTimestamp columnsWithIDs() {
+        return new StaticColumnIteratorWithTimestamp(false, false);
+    }
+
+    public static StaticColumnIteratorWithTimestamp columnsWithKeys() {
+        return new StaticColumnIteratorWithTimestamp(true, false);
+    }
+
+    public static StaticColumnIteratorWithTimestamp fieldValuesWithIDs() {
+        return new StaticColumnIteratorWithTimestamp(false, true);
+    }
+
+    public static StaticColumnIteratorWithTimestamp fieldValuesWithKeys() {
+        return new StaticColumnIteratorWithTimestamp(true, true);
+    }
+
+    private StaticColumnIteratorWithTimestamp(boolean keys, boolean intValues) {
         this.records = new ArrayList<>(3);
         if (keys) {
             if (intValues) {

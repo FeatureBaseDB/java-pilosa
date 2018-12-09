@@ -84,7 +84,7 @@ public class Schema {
      */
     public Index index(Index other) {
         Index index = this.index(other.getName(), other.getOptions());
-        for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+        for (Map.Entry<String, Field> fieldEntry : other.getFields().entrySet()) {
             Field field = fieldEntry.getValue();
             index.field(field.getName(), field.getOptions());
         }

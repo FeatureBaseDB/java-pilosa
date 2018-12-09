@@ -350,6 +350,10 @@ public class PilosaClient implements AutoCloseable {
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldInfo.getName())) {
+                        continue;
+                    }
                     index.field(fieldInfo.getName(), fieldInfo.getOptions());
                 }
             }
@@ -392,6 +396,10 @@ public class PilosaClient implements AutoCloseable {
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldEntry.getKey())) {
+                        continue;
+                    }
                     localIndex.field(fieldEntry.getValue());
                 }
             }
@@ -723,6 +731,8 @@ public class PilosaClient implements AutoCloseable {
                 new BasicHeader("Accept", "application/x-protobuf"),
                 new BasicHeader("PQL-Version", PQL_VERSION)
         };
+
+        systemFields = Collections.singletonList("exists");
     }
 
     private static final ObjectMapper mapper;
@@ -731,6 +741,7 @@ public class PilosaClient implements AutoCloseable {
     private static final int MAX_HOSTS = 10;
     private static final Header[] protobufHeaders;
     private static final Logger logger = LoggerFactory.getLogger("pilosa");
+    private static List<String> systemFields;
     private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;

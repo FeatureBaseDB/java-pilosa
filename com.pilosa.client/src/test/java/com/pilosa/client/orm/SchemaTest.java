@@ -44,28 +44,68 @@ import static org.junit.Assert.*;
 public class SchemaTest {
     @Test
     public void diffTest() {
+        // Create schema1
+        /*
+            schema1
+                |___ index11
+                |       |___ index11-f1
+                |       |___ index11-f2 [keys]
+                |
+                |___ index12 [keys]
+                |       |___ index12-f1
+                |
+                |___ index13 [keys]
+                        |___ index13-f1 [keys]
+        */
         Schema schema1 = Schema.defaultSchema();
-        Index index11 = schema1.index("diff-index1");
-        index11.field("field1-1");
-        index11.field("field1-2");
-        Index index12 = schema1.index("diff-index2",
-                IndexOptions.builder().keys(true).build());
-        index12.field("field2-1");
+        Index index11 = makeIndex(schema1, "index11");
+        makeField(index11, "index11-f1");
+        makeField(index11, "index11-f2", true);
+        Index index12 = makeIndex(schema1,  "index12", true);
+        makeField(index12, "index12-f1");
+        Index index13 = makeIndex(schema1, "index13", true);
+        makeField(index13, "index13-f1", true);
 
+        // Create schema2
+        /*
+            schema2
+                |___ index21
+                |       |___ index21-f1
+                |
+                |___ index13 [keys]
+                        |___ index13-f2
+         */
         Schema schema2 = Schema.defaultSchema();
-        Index index21 = schema2.index("diff-index1");
-        index21.field("another-field");
+        Index index21 = makeIndex(schema2, "index21");
+        makeField(index21, "index21-f1");
 
-        Schema targetDiff12 = Schema.defaultSchema();
-        Index targetIndex1 = targetDiff12.index("diff-index1");
-        targetIndex1.field("field1-1");
-        targetIndex1.field("field1-2");
-        Index targetIndex2 = targetDiff12.index("diff-index2",
-                IndexOptions.builder().keys(true).build());
-        targetIndex2.field("field2-1");
+        Index s2Index13 = makeIndex(schema2, "index13", true);
+        makeField(s2Index13, "index13-f2");
 
-        Schema diff12 = schema1.diff(schema2);
-        assertEquals(targetDiff12, diff12);
+        // target schema1 - schema2
+        /*
+            target
+                |___ index11
+                |       |___ index11-f1
+                |       |___ index11-f2 [keys]
+                |
+                |___ index12 [keys]
+                |       |___ index12-f1
+                |
+                |___ index13 [keys]
+                        |___ index13-f1 [keys]
+         */
+        Schema target = Schema.defaultSchema();
+        Index targetIndex11 = makeIndex(target, "index11");
+        makeField(targetIndex11, "index11-f1");
+        makeField(targetIndex11, "index11-f2", true);
+        Index targetIndex12 = makeIndex(target, "index12", true);
+        makeField(targetIndex12, "index12-f1");
+        Index targetIndex13 = makeIndex(target, "index13", true);
+        makeField(targetIndex13, "index13-f1", true);
+        // schema1 - schema2
+        Schema diff = schema1.diff(schema2);
+        assertEquals(target, diff);
     }
 
     @Test
@@ -106,5 +146,24 @@ public class SchemaTest {
         Schema schema2 = Schema.defaultSchema();
         schema2.index("foo");
         assertEquals(schema1.hashCode(), schema2.hashCode());
+    }
+
+    private Index makeIndex(Schema schema, String name) {
+        return schema.index(name);
+    }
+    private Index makeIndex(Schema schema, String name, boolean hasKeys) {
+        IndexOptions options = IndexOptions.builder()
+                .setKeys(true)
+                .build();
+        return schema.index(name, options);
+    }
+    private Field makeField(Index index, String name) {
+        return index.field(name);
+    }
+    private Field makeField(Index index, String name, boolean hasKeys) {
+        FieldOptions options = FieldOptions.builder()
+                .setKeys(true)
+                .build();
+        return index.field(name, options);
     }
 }

@@ -132,11 +132,6 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setImportThreadCount(int threadCount) {
-            this.importThreadCount = threadCount;
-            return this;
-        }
-
         public Builder setShardWidth(long shardWidth) {
             this.shardWidth = shardWidth;
             return this;
@@ -149,7 +144,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.importThreadCount, this.shardWidth);
+                    this.sslContext, this.shardWidth);
         }
 
         private int socketTimeout = 300000;
@@ -198,17 +193,13 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public int getImportThreadCount() {
-        return this.importThreadCount;
-    }
-
     public long getShardWidth() {
         return this.shardWidth;
     }
 
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final int importThreadCount,
+                          final SSLContext sslContext,
                           final long shardWidth) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
@@ -216,7 +207,6 @@ public final class ClientOptions {
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.importThreadCount = importThreadCount;
         this.shardWidth = shardWidth;
     }
 
@@ -226,6 +216,5 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final int importThreadCount;
     private final long shardWidth;
 }

@@ -74,7 +74,7 @@ public class PilosaClientTest {
             Index index = schema.index("foo");
             Field field = index.field("bar");
             ImportRequest request = ImportRequest.createCSVImport(field, new byte[]{0}, false);
-            client.importNode(request);
+            client.importNode("non-existent-domain-555.com:19000", request);
         }
     }
 

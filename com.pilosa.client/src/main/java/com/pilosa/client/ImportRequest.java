@@ -41,23 +41,24 @@ import org.apache.http.message.BasicHeader;
 import static com.pilosa.client.PilosaClient.PQL_VERSION;
 
 class ImportRequest {
-    ImportRequest(final String path, final byte[] payload, final String contentType) {
+    ImportRequest(final String path, final byte[] payload, final String contentType, final boolean roaring) {
         this.path = path;
         this.payload = payload;
         this.contentType = contentType;
+        this.roaring = roaring;
     }
 
     static ImportRequest createCSVImport(final Field field, final byte[] payload, boolean clear) {
         String clearStr = clear ? "?clear=true" : "";
         String path = String.format("/index/%s/field/%s/import%s", field.getIndex().getName(), field.getName(), clearStr);
-        return new ImportRequest(path, payload, "application/x-protobuf");
+        return new ImportRequest(path, payload, "application/x-protobuf", false);
     }
 
     static ImportRequest createRoaringImport(final Field field, long shard, final byte[] payload, boolean clear) {
         String clearStr = clear ? "?clear=true" : "";
         String path = String.format("/index/%s/field/%s/import-roaring/%d%s",
                 field.getIndex().getName(), field.getName(), shard, clearStr);
-        return new ImportRequest(path, payload, "application/x-protobuf");
+        return new ImportRequest(path, payload, "application/x-protobuf", true);
     }
 
     String getPath() {
@@ -76,7 +77,12 @@ class ImportRequest {
         };
     }
 
+    public boolean isRoaring() {
+        return this.roaring;
+    }
+
     protected final String path;
     protected final String contentType;
     protected final byte[] payload;
+    protected final boolean roaring;
 }

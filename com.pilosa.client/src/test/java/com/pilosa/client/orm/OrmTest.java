@@ -58,7 +58,7 @@ public class OrmTest {
         FieldOptions fieldOptions = FieldOptions.withDefaults();
         this.collabField = projectIndex.field("collaboration", fieldOptions);
         fieldOptions = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         this.projectKeyField = projectIndex.field("key", fieldOptions);
     }

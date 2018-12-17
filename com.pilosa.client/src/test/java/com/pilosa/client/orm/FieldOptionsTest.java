@@ -55,7 +55,7 @@ public class FieldOptionsTest {
 
         options = FieldOptions.builder()
                 .fieldSet(CacheType.RANKED, 1000)
-                .keys(true)
+                .setKeys(true)
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
         target = "{\"options\":{\"keys\":true,\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";

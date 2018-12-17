@@ -183,7 +183,6 @@
             </plugin>
 
             <!-- create a fat JAR -->
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -194,10 +193,12 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <finalName>${uberjar.name}</finalName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            -->
 
             <!-- deploy -->
             <plugin>
@@ -238,14 +239,6 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
             </plugin>
-
-            <!-- docs -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
-            </plugin>
-
         </plugins>
 
         <!-- include version properties -->
@@ -297,7 +290,7 @@
         <dependency>
             <groupId>com.pilosa</groupId>
             <artifactId>roaring</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 
@@ -308,6 +301,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <uberjar.name>pilosa-client-${project.version}-uber</uberjar.name>
     </properties>
 
     <profiles>
@@ -342,7 +336,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
+                        <version>3.0.1</version>
                         <configuration>
                             <show>public</show>
                             <excludePackageNames>com.pilosa.client.status</excludePackageNames>

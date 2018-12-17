@@ -47,8 +47,8 @@ public class IndexOptionsTest {
         IndexOptions options = IndexOptions.builder().build();
         assertFalse(options.isKeys());
         options = IndexOptions.builder()
-                .keys(true)
-                .trackExistence(true)
+                .setKeys(true)
+                .setTrackExistence(true)
                 .build();
         assertTrue(options.isKeys());
         assertTrue(options.isTrackExistence());
@@ -73,10 +73,10 @@ public class IndexOptionsTest {
         IndexOptions options1, options2;
 
         options1 = IndexOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         options2 = IndexOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         assertEquals(options1, options2);
     }
@@ -86,10 +86,10 @@ public class IndexOptionsTest {
         IndexOptions options1, options2;
 
         options1 = IndexOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         options2 = IndexOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
     }

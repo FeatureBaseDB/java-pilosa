@@ -86,12 +86,12 @@ public class PilosaClientIT {
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
             fieldOptions = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             this.keyField = this.index.field("index-key-field", fieldOptions);
 
             IndexOptions indexOptions = IndexOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             this.keyIndex = schema.index("key-index", indexOptions);
 
@@ -361,7 +361,7 @@ public class PilosaClientIT {
     public void testKeys() throws IOException {
         try (PilosaClient client = getClient()) {
             FieldOptions options = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("keys-test", options);
             client.syncSchema(this.schema);
@@ -376,7 +376,7 @@ public class PilosaClientIT {
     @Test
     public void testNot() throws IOException {
         IndexOptions options = IndexOptions.builder()
-                .trackExistence(true)
+                .setTrackExistence(true)
                 .build();
         Index index = this.schema.index("not-test", options);
         Field field = index.field("f1");
@@ -546,7 +546,7 @@ public class PilosaClientIT {
             LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
             RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
             FieldOptions fieldOptions = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.index.field("importfield-rowkey-colid", fieldOptions);
             client.ensureField(field);
@@ -573,7 +573,7 @@ public class PilosaClientIT {
             LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
             RecordIterator iterator = csvRecordIterator("row_key-column_key.csv", deserializer);
             FieldOptions options = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("importfield-rowkey-columnkey", options);
             client.ensureField(field);

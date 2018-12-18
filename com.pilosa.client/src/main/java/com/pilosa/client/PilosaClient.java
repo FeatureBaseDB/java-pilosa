@@ -350,6 +350,10 @@ public class PilosaClient implements AutoCloseable {
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldInfo.getName())) {
+                        continue;
+                    }
                     index.field(fieldInfo.getName(), fieldInfo.getOptions());
                 }
             }
@@ -392,6 +396,10 @@ public class PilosaClient implements AutoCloseable {
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                    // do not read system indexes
+                    if (systemFields.contains(fieldEntry.getKey())) {
+                        continue;
+                    }
                     localIndex.field(fieldEntry.getValue());
                 }
             }
@@ -429,16 +437,6 @@ public class PilosaClient implements AutoCloseable {
     protected PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
-    }
-
-    protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {
-        // find the constructor with the correct arguments
-        try {
-            Constructor constructor = this.getClass().getDeclaredConstructor(Cluster.class, ClientOptions.class);
-            return (PilosaClient) constructor.newInstance(cluster, options);
-        } catch (Exception e) {
-            throw new RuntimeException("This PilosaClient descendant does not have the correct constructor");
-        }
     }
 
     protected Registry<ConnectionSocketFactory> getRegistry() {
@@ -494,7 +492,7 @@ public class PilosaClient implements AutoCloseable {
             HttpRequestBase request = makeRequest(method, path, data, headers, useCoordinator);
             logger.debug("Request: {} {}", request.getMethod(), request.getURI());
             try {
-                response = client.execute(request);
+                response = clientExecute(request, errorMessage, returnResponse);
                 break;
             } catch (IOException ex) {
                 if (useCoordinator) {
@@ -510,11 +508,19 @@ public class PilosaClient implements AutoCloseable {
         if (response == null) {
             throw new PilosaException(String.format("Tried %s hosts, still failing", MAX_HOSTS));
         }
-        Header warningHeader = response.getFirstHeader("warning");
-        if (warningHeader != null) {
-            logger.warn(warningHeader.getValue());
+        return response;
+    }
+
+    private CloseableHttpResponse clientExecute(HttpRequestBase request, String errorMessage, ReturnClientResponse returnResponse) throws IOException {
+        if (this.client == null) {
+            connect();
         }
         try {
+            CloseableHttpResponse response = client.execute(request);
+            Header warningHeader = response.getFirstHeader("warning");
+            if (warningHeader != null) {
+                logger.warn(warningHeader.getValue());
+            }
             if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode < 200 || statusCode >= 300) {
@@ -547,16 +553,29 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers, boolean useCoordinator) {
-        HttpRequestBase request;
+    HttpRequestBase makeRequest(final String method,
+                                final String path,
+                                final ByteArrayEntity data,
+                                final Header[] headers,
+                                boolean useCoordinator) {
         String uri;
         if (useCoordinator) {
             updateCoordinatorAddress();
-            uri = this.coordinatorAddress.getNormalized() + path;
+            uri = this.coordinatorAddress.getNormalized();
         } else {
-            uri = this.getAddress() + path;
+            uri = getAddress();
         }
+        return makeRequest(method, path, data, headers, uri);
+    }
 
+
+    HttpRequestBase makeRequest(final String method,
+                                final String path,
+                                final ByteArrayEntity data,
+                                final Header[] headers,
+                                String hostUri) {
+        HttpRequestBase request;
+        String uri = hostUri + path;
         switch (method) {
             case "GET":
                 request = new HttpGet(uri);
@@ -603,6 +622,7 @@ public class PilosaClient implements AutoCloseable {
     void importColumns(ShardRecords records) {
         String indexName = records.getIndexName();
         List<IFragmentNode> nodes;
+        ImportRequest importRequest = records.toImportRequest();
         if (records.isIndexKeys() || records.isFieldKeys()) {
             nodes = new ArrayList<>();
             IFragmentNode node = fetchCoordinatorNode();
@@ -611,10 +631,7 @@ public class PilosaClient implements AutoCloseable {
             nodes = fetchFragmentNodes(indexName, records.getShard());
         }
         for (IFragmentNode node : nodes) {
-            Cluster cluster = Cluster.withHost(node.toURI());
-            PilosaClient client = this.newClientInstance(cluster, this.options);
-            ImportRequest importRequest = records.toImportRequest();
-            client.importNode(importRequest);
+            importNode(node.toURI().getNormalized(), importRequest);
         }
     }
 
@@ -681,9 +698,14 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    void importNode(ImportRequest request) {
+    void importNode(String hostUri, ImportRequest request) {
         ByteArrayEntity entity = new ByteArrayEntity(request.getPayload());
-        clientExecute("POST", request.getPath(), entity, request.getHeaders(), "Error while importing");
+        HttpRequestBase httpRequest = makeRequest("POST", request.getPath(), entity, request.getHeaders(), hostUri);
+        try {
+            clientExecute(httpRequest, "Error while importing", ReturnClientResponse.ERROR_CHECKED_RESPONSE);
+        } catch (IOException e) {
+            throw new PilosaException(String.format("Error connecting to host: %s", hostUri));
+        }
     }
 
     private String readStream(InputStream stream) throws IOException {
@@ -702,8 +724,8 @@ public class PilosaClient implements AutoCloseable {
 
     private synchronized void updateCoordinatorAddress() {
         if (this.coordinatorAddress == null) {
-            IFragmentNode node = fetchCoordinatorNode();
-            this.coordinatorAddress = node.toURI();
+            this.coordinatorNode = fetchCoordinatorNode();
+            this.coordinatorAddress = this.coordinatorNode.toURI();
         }
     }
 
@@ -723,6 +745,8 @@ public class PilosaClient implements AutoCloseable {
                 new BasicHeader("Accept", "application/x-protobuf"),
                 new BasicHeader("PQL-Version", PQL_VERSION)
         };
+
+        systemFields = Collections.singletonList("exists");
     }
 
     private static final ObjectMapper mapper;
@@ -731,12 +755,14 @@ public class PilosaClient implements AutoCloseable {
     private static final int MAX_HOSTS = 10;
     private static final Header[] protobufHeaders;
     private static final Logger logger = LoggerFactory.getLogger("pilosa");
+    private static List<String> systemFields;
     private Cluster cluster;
     private URI currentAddress;
     private CloseableHttpClient client = null;
     private ClientOptions options;
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
-    private URI coordinatorAddress;
+    private URI coordinatorAddress = null;
+    private IFragmentNode coordinatorNode = null;
 }
 
 class QueryRequest {

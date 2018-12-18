@@ -137,7 +137,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>3.0.0-M1</version>
                 <configuration>
                     <!-- conditionally skip unit tests -->
                     <skipTests>${skip.unit.tests}</skipTests>
@@ -183,7 +183,6 @@
             </plugin>
 
             <!-- create a fat JAR -->
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -194,10 +193,12 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <finalName>${uberjar.name}</finalName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            -->
 
             <!-- deploy -->
             <plugin>
@@ -254,18 +255,6 @@
     </build>
 
     <dependencies>
-        <!--
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.8</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -297,16 +286,11 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.6.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
-        </dependency>
 
         <dependency>
             <groupId>com.pilosa</groupId>
             <artifactId>roaring</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 
@@ -317,6 +301,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <uberjar.name>pilosa-client-${project.version}-uber</uberjar.name>
     </properties>
 
     <profiles>
@@ -351,7 +336,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
+                        <version>3.0.1</version>
                         <configuration>
                             <show>public</show>
                             <excludePackageNames>com.pilosa.client.status</excludePackageNames>

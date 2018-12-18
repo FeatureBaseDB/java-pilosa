@@ -71,12 +71,22 @@ final class FieldMeta {
             case SET:
                 builder = builder.fieldSet(this.cacheType, this.cacheSize);
                 break;
+            case MUTEX:
+                builder = builder.fieldMutex(this.cacheType, this.cacheSize);
+                break;
+            case BOOL:
+                builder = builder.fieldBool();
+                break;
             case INT:
                 builder = builder.fieldInt(this.min, this.max);
                 break;
             case TIME:
                 builder = builder.fieldTime(this.timeQuantum);
+                break;
         }
+
+        builder.setKeys(this.keys);
+
         return builder.build();
     }
 
@@ -115,10 +125,16 @@ final class FieldMeta {
         this.max = max;
     }
 
+    @JsonProperty("keys")
+    void setKeys(boolean keys) {
+        this.keys = keys;
+    }
+
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private CacheType cacheType = CacheType.DEFAULT;
     private int cacheSize = 0;
     private FieldType fieldType = FieldType.DEFAULT;
     private long min = 0;
     private long max = 0;
+    private boolean keys = false;
 }

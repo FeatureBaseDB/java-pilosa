@@ -34,11 +34,11 @@
 
 package com.pilosa.client;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;

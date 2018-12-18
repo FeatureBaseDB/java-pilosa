@@ -90,9 +90,21 @@ public final class IndexOptions {
          *
          * @param enable
          * @return IndexOptions builder
+         * @deprecated
          */
 
         public Builder trackExistence(boolean enable) {
+            this.trackExistence = enable;
+            return this;
+        }
+
+        /**
+         * Enables keeping track of existence which is required for Not query
+         *
+         * @param enable
+         * @return IndexOptions builder
+         */
+        public Builder setTrackExistence(boolean enable) {
             this.trackExistence = enable;
             return this;
         }

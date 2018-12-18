@@ -59,7 +59,7 @@ public class FileRecordIteratorIT {
         Schema schema = Schema.defaultSchema();
         this.index = schema.index("index");
         IndexOptions indexOptions = IndexOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         this.keysIndex = schema.index("keys-index", indexOptions);
     }
@@ -123,7 +123,7 @@ public class FileRecordIteratorIT {
     @Test
     public void csvRowKeyColumnIDTest() throws FileNotFoundException {
         FieldOptions fieldOptions = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         Field field = this.index.field("field", fieldOptions);
         readCompareFromCSV(
@@ -135,7 +135,7 @@ public class FileRecordIteratorIT {
     @Test
     public void csvRowKeyColumnIDTimestampTest() throws FileNotFoundException {
         FieldOptions fieldOptions = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         Field field = this.index.field("field", fieldOptions);
         readCompareFromCSVWithTimestamp(
@@ -148,7 +148,7 @@ public class FileRecordIteratorIT {
     @Test
     public void csvRowKeyColumnKeyTest() throws FileNotFoundException {
         FieldOptions fieldOptions = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         Field field = this.keysIndex.field("field", fieldOptions);
         readCompareFromCSV(
@@ -160,7 +160,7 @@ public class FileRecordIteratorIT {
     @Test
     public void csvRowKeyColumnKeyTimestampTest() throws FileNotFoundException {
         FieldOptions fieldOptions = FieldOptions.builder()
-                .keys(true)
+                .setKeys(true)
                 .build();
         Field field = this.keysIndex.field("field", fieldOptions);
         readCompareFromCSVWithTimestamp(

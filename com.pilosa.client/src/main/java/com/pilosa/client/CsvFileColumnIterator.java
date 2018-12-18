@@ -56,7 +56,7 @@ import java.util.TimeZone;
  * </pre>
  * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
  */
-public class CsvFileColumnIterator implements ColumnIterator {
+public class CsvFileColumnIterator implements RecordIterator {
     private CsvFileColumnIterator(SimpleDateFormat timestampFormat) {
         this.timestampFormat = timestampFormat;
         if (this.timestampFormat != null) {

@@ -10,6 +10,9 @@
     * Updated `com.pilosa.roaring` dependency for improved memory usage.
     * Improved import speed.
     * Fixed schema synchronization.
+    * Enabled creating the *uber jar* which contains the Pilosa client and all its dependencies in a single jar.
+        * Run `mvn -f com.pilosa.client/pom.xml -Dmaven.test.skip=true clean package`
+        * `*pilosa-client-*-uber.jar` is created in `com.pilosa.client/target` directory.
     * Deprecated: `indexOptions.keys`, use `indexOptions.setKeys` instead.
     * Deprecated: `indexOptions.trackExistence`, use `indexOptions.setTrackExistence` instead.
     * Deprecated: `fieldOptions.keys`, use `fieldOptions.setKeys` instead.

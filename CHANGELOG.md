@@ -1,7 +1,7 @@
 ## Change Log
 
-* **v1.1.1** (2018-12-19)
-    * Compatible with Pilosa 1.1.
+* **v1.2.0** (2018-12-19)
+    * **Compatible with Pilosa 1.2**
     * Supports imports involving keys.
     * Added support for mutex and bool fields.
     * Added `index.Options`, `field.ClearRow` and `field.Store` functions to support the corresponding PQL calls.

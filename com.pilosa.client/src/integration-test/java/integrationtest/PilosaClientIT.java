@@ -982,13 +982,21 @@ public class PilosaClientIT {
                     .build();
             index.field("index11-f1", fieldOptions);
             client.syncSchema(schema);
+
             Schema schema2 = client.readSchema();
             Index index2 = schema2.index("index11");
             assertEquals(index, index2);
+
             Schema schema3 = Schema.defaultSchema();
             client.syncSchema(schema3);
             Index index3 = schema3.index("index11");
             assertEquals(index, index3);
+
+            Schema schema4 = Schema.defaultSchema();
+            Index index4 = schema4.index("index11", indexOptions);
+            client.syncSchema(schema4);
+            assertEquals(index, index4);
+
 
         } finally {
             try (PilosaClient client = this.getClient()) {
@@ -1565,9 +1573,6 @@ public class PilosaClientIT {
         String bindAddress = getBindAddress();
         Cluster cluster = Cluster.withHost(URI.address(bindAddress));
         ClientOptions.Builder optionsBuilder = ClientOptions.builder();
-        if (isLegacyModeOff()) {
-            optionsBuilder.setLegacyMode(false);
-        }
         long shardWidth = getShardWidth();
         if (shardWidth > 0) {
             optionsBuilder.setShardWidth(shardWidth);

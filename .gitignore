@@ -4,3 +4,6 @@ com.pilosa.client.iml
 dependency-reduced-pom.xml
 target/
 com.pilosa.client/pilosa-client.iml
+.classpath
+.project
+.settings/

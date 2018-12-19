@@ -1,15 +1,24 @@
 ## Change Log
 
-* **master**
-    * Supports RowID/ColumnKey and RowID/ColumnID imports
-    * Added support for mutex and bool fields
-    * Added `index.Options`, `field.ClearRow` and `field.Store` functions to support the corresponding PQL calls. 
+* **v1.1.1** (2018-12-19)
+    * Compatible with Pilosa 1.1.
+    * Supports imports involving keys.
+    * Added support for mutex and bool fields.
+    * Added `index.Options`, `field.ClearRow` and `field.Store` functions to support the corresponding PQL calls.
+    * Added `com.pilosa.client.csv` package.
+    * Added support for roaring importinging `RowIDColumnID` with timestamp data.
+    * Updated `com.pilosa.roaring` dependency for improved memory usage.
+    * Improved import speed.
+    * Fixed schema synchronization.
+    * Deprecated: `indexOptions.keys`, use `indexOptions.setKeys` instead.
+    * Deprecated: `indexOptions.trackExistence`, use `indexOptions.setTrackExistence` instead.
+    * Deprecated: `fieldOptions.keys`, use `fieldOptions.setKeys` instead.
 
 * **v1.0.2** (2018-10-12)
     * Added `trackExistence` index option.
-    * Added `not` index method to support `Not` queries. The corresponding index must be created with `trackExistence=true` option. This feature requires Pilosa on master branch. 
+    * Added `not` index method to support `Not` queries. The corresponding index must be created with `trackExistence=true` option. This feature requires Pilosa on master branch.
     * Added support for roaring imports which can speed up the import process by %30 for non-key column imports. Pass `setRoaring(true)`` to `ImportOptions.builder()` to enable it. This feature requires Pilosa on master branch.
-    * Fixes: `Column.create` method. See: https://github.com/pilosa/java-pilosa/pull/127    
+    * Fixes: `Column.create` method. See: https://github.com/pilosa/java-pilosa/pull/127
 
 * **v1.0.1** (2018-09-12)
     * Compatible with Pilosa 1.0.
@@ -39,7 +48,7 @@
     * Supports multi-threaded imports and import progress tracking.
     * Added `RangeField.min` and `RangeField.max` methods.
     * **Deprecation** `inverseEnabled` frame option, `Frame.inverseBitmap`, `Frame.inverseTopN`, `Frame.inverseRange` methods. Inverse frames will be removed on Pilosa 1.0.
-    
+
 
 * **v0.8.2** (2018-02-28)
     * Compatible with Pilosa master, **not compatible with Pilosa 0.8.x releases**.
@@ -58,18 +67,18 @@
 * **v0.7.0** (2017-10-04):
     * Added support for creating range encoded frames.
     * Added `Xor` call.
-    * Added range field operations.    
+    * Added range field operations.
     * Added support for excluding bits or attributes from bitmap calls. In order to exclude bits, call `setExcludeBits(true)` in your `QueryOptions.Builder`. In order to exclude attributes, call `setExcludeAttributes(true)`.
     * Customizable CSV time stamp format.
     * `HTTPS connections are supported.
     * **Deprecation** Row and column labels are deprecated, and will be removed in a future release of this library. Do not use `IndexOptions.Builder.setColumnLabel` and `FrameOptions.Builder.setRowLabel` methods for new code. See: https://github.com/pilosa/pilosa/issues/752 for more info.
-    
+
 * **v0.5.1** (2017-08-11):
     * Fixes `filters` parameter of the `TopN` parameter.
     * Fixes reading schemas with no indexes.
 
 * **v0.5.0** (2017-08-03):
-    * Failover for connection errors.    
+    * Failover for connection errors.
     * More logging.
     * Uses slf4j instead of log4j for logging.
     * Introduced schemas. No need to re-define already existing indexes and frames.
@@ -77,7 +86,7 @@
     * * *Breaking Change*: Removed `timeQuantum` query option.
     * **Deprecation** `Index.withName` constructor. Use `schema.index` instead.
     * **Deprecation** `client.createIndex`, `client.createFrame`, `client.ensureIndex`, `client.ensureFrame`. Use schemas and `client.syncSchema` instead.
-    
+
 * **v0.4.0** (2017-06-09):
     * Supports Pilosa Server v0.4.0.
     * *Breaking Change*: Renamed `BatchQuery` to `PqlBatchQuery`.

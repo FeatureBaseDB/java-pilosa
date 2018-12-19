@@ -28,7 +28,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </dependency>
 </dependencies>
 ```
@@ -75,7 +75,7 @@ response = client.query(
     myindex.batchQuery(
         myfield.row(5),
         myfield.row(10)
-    )    
+    )
 );
 for (Object r : response.getResults()) {
     // Act on the result

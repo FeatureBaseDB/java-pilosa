@@ -6,7 +6,7 @@
     * Added support for mutex and bool fields.
     * Added `index.Options`, `field.ClearRow` and `field.Store` functions to support the corresponding PQL calls.
     * Added `com.pilosa.client.csv` package.
-    * Added support for roaring importinging `RowIDColumnID` with timestamp data.
+    * Added support for roaring importing `RowIDColumnID` with timestamp data.
     * Updated `com.pilosa.roaring` dependency for improved memory usage.
     * Improved import speed.
     * Fixed schema synchronization.

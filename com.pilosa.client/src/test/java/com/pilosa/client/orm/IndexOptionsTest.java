@@ -52,6 +52,14 @@ public class IndexOptionsTest {
                 .build();
         assertTrue(options.isKeys());
         assertTrue(options.isTrackExistence());
+
+        // deprecated methods
+        options = IndexOptions.builder()
+                .keys(true)
+                .trackExistence(true)
+                .build();
+        assertTrue(options.isKeys());
+        assertTrue(options.isTrackExistence());
     }
 
     @Test

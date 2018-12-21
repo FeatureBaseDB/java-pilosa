@@ -1,6 +1,6 @@
 # Java Client for Pilosa
 
-<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-1.0-blue.svg"></a>
+<a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-1.2-blue.svg"></a>
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592"></a>
 <a href="https://travis-ci.org/pilosa/java-pilosa"><img src="https://api.travis-ci.org/pilosa/java-pilosa.svg?branch=master"></a>
 <a href="https://coveralls.io/github/pilosa/java-pilosa?branch=master"><img src="https://coveralls.io/repos/github/pilosa/java-pilosa/badge.svg?branch=master" /></a>
@@ -28,7 +28,7 @@ Add the following dependency in your `pom.xml`:
     <dependency>
         <groupId>com.pilosa</groupId>
         <artifactId>pilosa-client</artifactId>
-        <version>1.0.2</version>
+        <version>1.2.0</version>
     </dependency>
 </dependencies>
 ```
@@ -75,7 +75,7 @@ response = client.query(
     myindex.batchQuery(
         myfield.row(5),
         myfield.row(10)
-    )    
+    )
 );
 for (Object r : response.getResults()) {
     // Act on the result

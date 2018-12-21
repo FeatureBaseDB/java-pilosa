@@ -350,7 +350,7 @@ public class PilosaClient implements AutoCloseable {
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
-                    // do not read system indexes
+                    // do not read system fields
                     if (systemFields.contains(fieldInfo.getName())) {
                         continue;
                     }
@@ -396,7 +396,7 @@ public class PilosaClient implements AutoCloseable {
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
-                    // do not read system indexes
+                    // do not read system fields
                     if (systemFields.contains(fieldEntry.getKey())) {
                         continue;
                     }
@@ -515,42 +515,38 @@ public class PilosaClient implements AutoCloseable {
         if (this.client == null) {
             connect();
         }
-        try {
-            CloseableHttpResponse response = client.execute(request);
-            Header warningHeader = response.getFirstHeader("warning");
-            if (warningHeader != null) {
-                logger.warn(warningHeader.getValue());
-            }
-            if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode < 200 || statusCode >= 300) {
-                    HttpEntity entity = response.getEntity();
-                    if (entity != null) {
-                        try (InputStream src = entity.getContent()) {
-                            // try to throw the appropriate exception
-                            if (statusCode == 409) {
-                                throw new HttpConflict();
-                            }
-                            String responseError = readStream(src);
-                            // couldn't find the exact exception, just throw a generic one
-                            throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
-                        }
-                    }
-                    throw new PilosaException(String.format("Server error (%d): empty response", statusCode));
-                }
-                // the entity should be consumed, if not returned
-                if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
-                    try {
-                        EntityUtils.consume(response.getEntity());
-                    } finally {
-                        response.close();
-                    }
-                }
-            }
-            return response;
-        } catch (IOException ex) {
-            throw new PilosaException(errorMessage, ex);
+        CloseableHttpResponse response = client.execute(request);
+        Header warningHeader = response.getFirstHeader("warning");
+        if (warningHeader != null) {
+            logger.warn(warningHeader.getValue());
         }
+        if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream src = entity.getContent()) {
+                        // try to throw the appropriate exception
+                        if (statusCode == 409) {
+                            throw new HttpConflict();
+                        }
+                        String responseError = readStream(src);
+                        // couldn't find the exact exception, just throw a generic one
+                        throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+                    }
+                }
+                throw new PilosaException(String.format("Server error (%d): empty response", statusCode));
+            }
+            // the entity should be consumed, if not returned
+            if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } finally {
+                    response.close();
+                }
+            }
+        }
+        return response;
     }
 
     HttpRequestBase makeRequest(final String method,

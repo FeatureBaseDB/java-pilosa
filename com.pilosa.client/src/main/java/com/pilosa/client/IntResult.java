@@ -70,6 +70,16 @@ public class IntResult implements QueryResult {
     }
 
     @Override
+    public List<GroupCount> getGroupCounts() {
+        return GroupCountsResult.defaultItems();
+    }
+
+    @Override
+    public RowIdentifiersResult getRowIdentifiers() {
+        return RowIdentifiersResult.defaultResult();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;

@@ -42,4 +42,7 @@ public class QueryResultType {
     public final static int VAL_COUNT = 3;
     public final static int INT = 4;
     public final static int BOOL = 5;
+    public final static int ROW_IDS = 6;  // this is not used by the client
+    public final static int GROUP_COUNTS = 7;
+    public final static int ROW_IDENTIFIERS = 8;
 }

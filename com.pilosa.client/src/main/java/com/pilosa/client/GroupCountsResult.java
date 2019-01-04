@@ -34,23 +34,68 @@
 
 package com.pilosa.client;
 
+import java.security.acl.Group;
+import java.util.ArrayList;
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public final class GroupCountsResult implements QueryResult {
 
-    RowResult getRow();
+    static GroupCountsResult fromInternal(Internal.QueryResult q) {
+        List<GroupCount> items = new ArrayList<>(q.getGroupCountsCount());
+        for (Internal.GroupCount item : q.getGroupCountsList()) {
+            items.add(GroupCount.fromInternal(item));
+        }
+        return new GroupCountsResult(items);
+    }
 
-    List<CountResultItem> getCountItems();
+    static List<GroupCount> defaultItems() {
+        return defaultItems;
+    }
 
-    long getCount();
+    private GroupCountsResult(List<GroupCount> items) {
+        this.items = items;
+    }
 
-    long getValue();
+    private static List<GroupCount> defaultItems = new ArrayList<>(0);
+    private final List<GroupCount> items;
 
-    boolean isChanged();
+    @Override
+    public int getType() {
+        return QueryResultType.GROUP_COUNTS;
+    }
 
-    List<GroupCount> getGroupCounts();
+    @Override
+    public RowResult getRow() {
+        return RowResult.defaultResult();
+    }
 
-    RowIdentifiersResult getRowIdentifiers();
+    @Override
+    public List<CountResultItem> getCountItems() {
+        return TopNResult.defaultItems();
+    }
 
+    @Override
+    public long getCount() {
+        return 0;
+    }
+
+    @Override
+    public long getValue() {
+        return 0;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return false;
+    }
+
+    @Override
+    public List<GroupCount> getGroupCounts() {
+        return this.items;
+    }
+
+    @Override
+    public RowIdentifiersResult getRowIdentifiers() {
+        return RowIdentifiersResult.defaultResult();
+    }
 }

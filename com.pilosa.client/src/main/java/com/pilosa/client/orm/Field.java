@@ -902,6 +902,16 @@ public class Field {
         return this.index.pqlQuery(qry, hasKeys);
     }
 
+    public PqlRowsQuery rows() {
+        return this.index.pqlRowsQuery(String.format("Rows(field='%s')", this.name));
+    }
+
+    public PqlRowsQuery rows(long rowID, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column=%s)",
+                this.name, rowID, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
     private PqlRowQuery binaryOperation(String op, long n) {
         String qry = String.format("Range(%s %s %d)", this.name, op, n);
         return this.index.pqlRowQuery(qry);

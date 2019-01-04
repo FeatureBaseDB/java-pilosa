@@ -34,23 +34,35 @@
 
 package com.pilosa.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+public final class GroupCount {
+    public static GroupCount create(List<FieldRow> groups, long count) {
+        return new GroupCount(groups, count);
+    }
 
-    RowResult getRow();
+    public final List<FieldRow> getGroups() {
+        return this.groups;
+    }
 
-    List<CountResultItem> getCountItems();
+    public long getCount() {
+        return this.count;
+    }
 
-    long getCount();
+    static GroupCount fromInternal(Internal.GroupCount q) {
+        List<FieldRow> fieldRows = new ArrayList<>(q.getGroupCount());
+        for (Internal.FieldRow fieldRow : q.getGroupList()) {
+            fieldRows.add(FieldRow.fromInternal(fieldRow));
+        }
+        return new GroupCount(fieldRows, q.getCount());
+    }
 
-    long getValue();
+    private GroupCount(List<FieldRow> groups, long count) {
+        this.groups = groups;
+        this.count = count;
+    }
 
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    private final List<FieldRow> groups;
+    private final long count;
 }

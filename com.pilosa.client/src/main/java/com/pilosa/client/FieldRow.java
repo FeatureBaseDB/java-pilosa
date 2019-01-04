@@ -34,23 +34,34 @@
 
 package com.pilosa.client;
 
-import java.util.List;
+public final class FieldRow {
+    public static FieldRow create(String fieldName, long rowID, String rowKey) {
+        return new FieldRow(fieldName, rowID, rowKey);
+    }
 
-public interface QueryResult {
-    int getType();
+    public String getFieldName() {
+        return this.fieldName;
+    }
 
-    RowResult getRow();
+    public long getRowID() {
+        return this.rowID;
+    }
 
-    List<CountResultItem> getCountItems();
+    public String getRowKey() {
+        return this.rowKey;
+    }
 
-    long getCount();
+    static FieldRow fromInternal(Internal.FieldRow q) {
+        return new FieldRow(q.getField(), q.getRowID(), q.getRowKey());
+    }
 
-    long getValue();
+    private FieldRow(String fieldName, long rowID, String rowKey) {
+        this.fieldName = fieldName;
+        this.rowID = rowID;
+        this.rowKey = rowKey;
+    }
 
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    private final String fieldName;
+    private final long rowID;
+    private final String rowKey;
 }

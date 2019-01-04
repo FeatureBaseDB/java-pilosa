@@ -32,25 +32,15 @@
  * DAMAGE.
  */
 
-package com.pilosa.client;
+package com.pilosa.client.orm;
 
-import java.util.List;
+public class PqlRowsQuery extends PqlBaseQuery {
+    PqlRowsQuery(String pql) {
+        super(pql);
+    }
 
-public interface QueryResult {
-    int getType();
-
-    RowResult getRow();
-
-    List<CountResultItem> getCountItems();
-
-    long getCount();
-
-    long getValue();
-
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    PqlRowsQuery(String pql, Index index) {
+        super(pql, index);
+    }
 }
+

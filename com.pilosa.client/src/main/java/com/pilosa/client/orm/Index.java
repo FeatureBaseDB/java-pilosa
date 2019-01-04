@@ -305,6 +305,14 @@ public class Index {
         return pqlQuery(text, false);
     }
 
+    public PqlBaseQuery groupBy(PqlRowsQuery... queries) {
+        if (queries.length < 1) {
+            throw new IllegalArgumentException("there should be at least one rows query");
+        }
+        String text = String.format("GroupBy(%s)", joinQueries(queries));
+        return pqlQuery(text, false);
+    }
+
     public Map<String, Field> getFields() {
         return this.fields;
     }
@@ -347,6 +355,10 @@ public class Index {
         return new PqlRowQuery(query, this);
     }
 
+    PqlRowsQuery pqlRowsQuery(String query) {
+        return new PqlRowsQuery(query, this);
+    }
+
     Index(Index index) {
         this(index.name, index.options);
         for (Map.Entry<String, Field> entry : index.fields.entrySet()) {
@@ -356,19 +368,24 @@ public class Index {
     }
 
     private PqlRowQuery rowOperation(String name, PqlRowQuery... rows) {
-        if (rows.length == 0) {
-            return pqlRowQuery(String.format("%s()", name));
+        String text = String.format("%s(%s)", name, joinQueries(rows));
+        return pqlRowQuery(text);
+    }
+
+    private static String joinQueries(PqlBaseQuery... queries) {
+        if (queries.length == 0) {
+            return "";
         }
-        StringBuilder builder = new StringBuilder(rows.length - 1);
-        SerializedQuery q = rows[0].serialize();
+
+        StringBuilder builder = new StringBuilder(queries.length - 1);
+        SerializedQuery q = queries[0].serialize();
         builder.append(q.getQuery());
-        for (int i = 1; i < rows.length; i++) {
+        for (int i = 1; i < queries.length; i++) {
             builder.append(",");
-            q = rows[i].serialize();
+            q = queries[i].serialize();
             builder.append(q.getQuery());
         }
-        String text = String.format("%s(%s)", name, builder.toString());
-        return pqlRowQuery(text);
+        return builder.toString();
     }
 
     private Index(String name, IndexOptions options) {

@@ -429,24 +429,20 @@ public class PilosaClientIT {
     public void testGroupBy() throws IOException {
         Field field = index.field("groupby-field");
         try (PilosaClient client = getClient()) {
-            client.syncSchema(this.schema);
-            try {
-                client.query(index.batchQuery(
-                        field.set(1, 100),
-                        field.set(1, 200),
-                        field.set(2, 200)
-                ));
-                QueryResponse response = client.query(index.groupBy(field.rows()));
+            client.createField(field);
+            client.query(index.batchQuery(
+                    field.set(1, 100),
+                    field.set(1, 200),
+                    field.set(2, 200)
+            ));
+            QueryResponse response = client.query(index.groupBy(field.rows()));
 
-                List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1, ""));
-                List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2, ""));
-                List<GroupCount> target = Arrays.asList(
-                        GroupCount.create(fieldRows1, 1),
-                        GroupCount.create(fieldRows2, 2));
-                assertEquals(target, response.getResult().getGroupCounts());
-            } finally {
-                client.deleteIndex(index);
-            }
+            List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1, ""));
+            List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2, ""));
+            List<GroupCount> target = Arrays.asList(
+                    GroupCount.create(fieldRows1, 2),
+                    GroupCount.create(fieldRows2, 1));
+            assertEquals(target, response.getResult().getGroupCounts());
         }
     }
 

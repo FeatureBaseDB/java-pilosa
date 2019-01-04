@@ -34,31 +34,10 @@
 
 package com.pilosa.client;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class GroupCountsResult implements QueryResult {
-
-    static GroupCountsResult fromInternal(Internal.QueryResult q) {
-        List<GroupCount> items = new ArrayList<>(q.getGroupCountsCount());
-        for (Internal.GroupCount item : q.getGroupCountsList()) {
-            items.add(GroupCount.fromInternal(item));
-        }
-        return new GroupCountsResult(items);
-    }
-
-    static List<GroupCount> defaultItems() {
-        return defaultItems;
-    }
-
-    private GroupCountsResult(List<GroupCount> items) {
-        this.items = items;
-    }
-
-    private static List<GroupCount> defaultItems = new ArrayList<>(0);
-    private final List<GroupCount> items;
-
     @Override
     public int getType() {
         return QueryResultType.GROUP_COUNTS;
@@ -98,4 +77,40 @@ public final class GroupCountsResult implements QueryResult {
     public RowIdentifiersResult getRowIdentifiers() {
         return RowIdentifiersResult.defaultResult();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof GroupCountsResult)) {
+            return false;
+        }
+        GroupCountsResult rhs = (GroupCountsResult) obj;
+        return this.items.equals(rhs.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.items.hashCode();
+    }
+
+    static GroupCountsResult fromInternal(Internal.QueryResult q) {
+        List<GroupCount> items = new ArrayList<>(q.getGroupCountsCount());
+        for (Internal.GroupCount item : q.getGroupCountsList()) {
+            items.add(GroupCount.fromInternal(item));
+        }
+        return new GroupCountsResult(items);
+    }
+
+    static List<GroupCount> defaultItems() {
+        return defaultItems;
+    }
+
+    private GroupCountsResult(List<GroupCount> items) {
+        this.items = items;
+    }
+
+    private static List<GroupCount> defaultItems = new ArrayList<>(0);
+    private final List<GroupCount> items;
 }

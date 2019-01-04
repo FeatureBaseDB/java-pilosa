@@ -34,6 +34,9 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +80,29 @@ public final class RowIdentifiersResult implements QueryResult {
     @Override
     public RowIdentifiersResult getRowIdentifiers() {
         return this;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof RowIdentifiersResult)) {
+            return false;
+        }
+        RowIdentifiersResult rhs = (RowIdentifiersResult) obj;
+        return new EqualsBuilder()
+                .append(this.rowIDs, rhs.rowIDs)
+                .append(this.rowKeys, rhs.rowKeys)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.rowIDs)
+                .append(this.rowKeys)
+                .toHashCode();
     }
 
     static RowIdentifiersResult defaultResult() {

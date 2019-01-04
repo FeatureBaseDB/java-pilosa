@@ -34,6 +34,9 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,39 @@ public final class GroupCount {
 
     public long getCount() {
         return this.count;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof GroupCount)) {
+            return false;
+        }
+        GroupCount rhs = (GroupCount) obj;
+        return new EqualsBuilder()
+                .append(this.groups, rhs.groups)
+                .append(this.count, rhs.count)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.groups)
+                .append(this.count)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (FieldRow fieldRow : this.groups) {
+            builder.append(fieldRow.toString());
+        }
+        return String.format("GroupCount(groups=[%s], count=%d)",
+                builder.toString(), this.count);
     }
 
     static GroupCount fromInternal(Internal.GroupCount q) {

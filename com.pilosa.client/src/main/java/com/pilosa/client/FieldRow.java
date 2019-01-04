@@ -34,6 +34,9 @@
 
 package com.pilosa.client;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public final class FieldRow {
     public static FieldRow create(String fieldName, long rowID, String rowKey) {
         return new FieldRow(fieldName, rowID, rowKey);
@@ -49,6 +52,37 @@ public final class FieldRow {
 
     public String getRowKey() {
         return this.rowKey;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof FieldRow)) {
+            return false;
+        }
+        FieldRow rhs = (FieldRow) obj;
+        return new EqualsBuilder()
+                .append(this.fieldName, rhs.fieldName)
+                .append(this.rowID, rhs.rowID)
+                .append(this.rowKey, rhs.rowKey)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(31, 47)
+                .append(this.fieldName)
+                .append(this.rowID)
+                .append(this.rowKey)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FieldRow(field=%s, rowID=%d, rowKey=%s)",
+                this.fieldName, this.rowID, this.rowKey);
     }
 
     static FieldRow fromInternal(Internal.FieldRow q) {

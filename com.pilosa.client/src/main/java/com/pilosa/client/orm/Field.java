@@ -120,6 +120,75 @@ public class Field {
     }
 
     /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowID
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(long rowID, Date fromTimestamp, Date toTimestamp) {
+        if (fromTimestamp == null && toTimestamp == null) {
+            return this.row(rowID);
+        }
+        String text = String.format("Row(%s=%d%s)", this.name, rowID,
+                                    fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowID));
+    }
+
+    /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowKey
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(String rowKey, Date fromTimestamp, Date toTimestamp) {
+        if (fromTimestamp == null && toTimestamp == null) {
+            return this.row(rowKey);
+        }
+        String text = String.format("Row(%s='%s'%s)", this.name, rowKey,
+                                    fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowKey));
+    }
+
+    /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowBool true or false
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(boolean rowBool, Date fromTimestamp, Date toTimestamp) {
+        if (fromTimestamp == null && toTimestamp == null) {
+            return this.row(rowBool);
+        }
+        String text = String.format("Row(%s=%b%s)", this.name, rowBool,
+                                    fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowBool));
+    }
+
+    /**
      * Creates a Set query.
      * <p>
      *  Set assigns a value of 1 to a column in the binary matrix,
@@ -547,12 +616,16 @@ public class Field {
      * <p>
      *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
+     * </p>
+     *
+     * <p>Deprecated at Pilosa 1.3</p>
      *
      * @param rowID row ID
      * @param start start timestamp
      * @param end   end timestamp
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
+     * @deprecated
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(long rowID, Date start, Date end) {
@@ -563,7 +636,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query. (Enterprise version)
+     * Creates a Range query.
      * <p>
      *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
@@ -967,6 +1040,23 @@ public class Field {
         this.index = index;
         this.name = name;
         this.options = options;
+    }
+
+    private static String fmtTimestamps(Date fromTimestamp, Date toTimestamp) {
+        if (fromTimestamp == null && toTimestamp == null) {
+            return "";
+        } else if (fromTimestamp == null) {
+            return  String.format(",to=%sT%s",
+                    fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
+
+        } else if (toTimestamp == null) {
+            return  String.format(",from=%sT%s",
+                    fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp));
+
+        }
+        return  String.format(",from=%sT%s,to=%sT%s",
+                fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp),
+                fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

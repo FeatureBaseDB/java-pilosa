@@ -122,6 +122,41 @@ public class OrmTest {
         assertEquals(
                 "Row(collaboration=true)",
                 q.serialize().getQuery());
+
+        Calendar start = Calendar.getInstance();
+        start.set(1970, Calendar.JANUARY, 1, 0, 0);
+        Calendar end = Calendar.getInstance();
+        end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
+
+        q = collabField.row("ten", start.getTime(), end.getTime());
+        assertEquals("Row(collaboration='ten',from=1970-01-01T00:00,to=2000-02-02T03:04)",
+                     q.serialize().getQuery());
+        q = collabField.row("ten", start.getTime(), null);
+        assertEquals("Row(collaboration='ten',from=1970-01-01T00:00)",
+                     q.serialize().getQuery());
+        q = collabField.row("ten", null, end.getTime());
+        assertEquals("Row(collaboration='ten',to=2000-02-02T03:04)",
+                q.serialize().getQuery());
+
+        q = collabField.row(10, start.getTime(), end.getTime());
+        assertEquals("Row(collaboration=10,from=1970-01-01T00:00,to=2000-02-02T03:04)",
+                     q.serialize().getQuery());
+        q = collabField.row(10, start.getTime(), null);
+        assertEquals("Row(collaboration=10,from=1970-01-01T00:00)",
+                     q.serialize().getQuery());
+        q = collabField.row(10, null, end.getTime());
+        assertEquals("Row(collaboration=10,to=2000-02-02T03:04)",
+                q.serialize().getQuery());
+
+        q = collabField.row(true, start.getTime(), end.getTime());
+        assertEquals("Row(collaboration=true,from=1970-01-01T00:00,to=2000-02-02T03:04)",
+                     q.serialize().getQuery());
+        q = collabField.row(true, start.getTime(), null);
+        assertEquals("Row(collaboration=true,from=1970-01-01T00:00)",
+                     q.serialize().getQuery());
+        q = collabField.row(true, null, end.getTime());
+        assertEquals("Row(collaboration=true,to=2000-02-02T03:04)",
+                q.serialize().getQuery());
     }
 
     @Test

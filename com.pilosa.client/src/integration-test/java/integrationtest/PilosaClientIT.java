@@ -692,7 +692,7 @@ public class PilosaClientIT {
             target = Arrays.asList(5L);
             Calendar start = new GregorianCalendar(2016, 1, 1, 0, 0, 0);
             Calendar end = new GregorianCalendar(2019, 1, 1, 0, 0, 0);
-            response = client.query(field.range(10, start.getTime(), end.getTime()));
+            response = client.query(field.row(10, start.getTime(), end.getTime()));
             assertEquals(target, response.getResult().getRow().getColumns());
 
             // test clear import

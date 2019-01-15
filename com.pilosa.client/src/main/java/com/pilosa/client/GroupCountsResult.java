@@ -34,15 +34,13 @@
 
 package com.pilosa.client;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class ValueCountResult implements QueryResult {
+public final class GroupCountsResult implements QueryResult {
     @Override
     public int getType() {
-        return QueryResultType.VAL_COUNT;
+        return QueryResultType.GROUP_COUNTS;
     }
 
     @Override
@@ -57,12 +55,12 @@ public class ValueCountResult implements QueryResult {
 
     @Override
     public long getCount() {
-        return this.count;
+        return 0;
     }
 
     @Override
     public long getValue() {
-        return this.value;
+        return 0;
     }
 
     @Override
@@ -72,7 +70,7 @@ public class ValueCountResult implements QueryResult {
 
     @Override
     public List<GroupCount> getGroupCounts() {
-        return GroupCountsResult.defaultItems();
+        return this.items;
     }
 
     @Override
@@ -85,36 +83,34 @@ public class ValueCountResult implements QueryResult {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ValueCountResult)) {
+        if (!(obj instanceof GroupCountsResult)) {
             return false;
         }
-        ValueCountResult rhs = (ValueCountResult) obj;
-        return new EqualsBuilder()
-                .append(this.value, rhs.value)
-                .append(this.count, rhs.count)
-                .isEquals();
+        GroupCountsResult rhs = (GroupCountsResult) obj;
+        return this.items.equals(rhs.items);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(31, 47)
-                .append(this.value)
-                .append(this.count)
-                .toHashCode();
+        return this.items.hashCode();
     }
 
-    static ValueCountResult create(long sum, long count) {
-        ValueCountResult result = new ValueCountResult();
-        result.value = sum;
-        result.count = count;
-        return result;
+    static GroupCountsResult fromInternal(Internal.QueryResult q) {
+        List<GroupCount> items = new ArrayList<>(q.getGroupCountsCount());
+        for (Internal.GroupCount item : q.getGroupCountsList()) {
+            items.add(GroupCount.fromInternal(item));
+        }
+        return new GroupCountsResult(items);
     }
 
-    static ValueCountResult fromInternal(Internal.QueryResult q) {
-        Internal.ValCount obj = q.getValCount();
-        return create(obj.getVal(), obj.getCount());
+    static List<GroupCount> defaultItems() {
+        return defaultItems;
     }
 
-    private long value;
-    private long count;
+    private GroupCountsResult(List<GroupCount> items) {
+        this.items = items;
+    }
+
+    private static List<GroupCount> defaultItems = new ArrayList<>(0);
+    private final List<GroupCount> items;
 }

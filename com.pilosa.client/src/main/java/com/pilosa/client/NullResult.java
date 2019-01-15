@@ -67,6 +67,16 @@ public class NullResult implements QueryResult {
         return false;
     }
 
+    @Override
+    public List<GroupCount> getGroupCounts() {
+        return GroupCountsResult.defaultItems();
+    }
+
+    @Override
+    public RowIdentifiersResult getRowIdentifiers() {
+        return RowIdentifiersResult.defaultResult();
+    }
+
     static NullResult defaultResult() {
         return defaultResult;
     }

@@ -425,6 +425,27 @@ public class PilosaClientIT {
         }
     }
 
+    @Test
+    public void testGroupBy() throws IOException {
+        Field field = index.field("groupby-field");
+        try (PilosaClient client = getClient()) {
+            client.createField(field);
+            client.query(index.batchQuery(
+                    field.set(1, 100),
+                    field.set(1, 200),
+                    field.set(2, 200)
+            ));
+            QueryResponse response = client.query(index.groupBy(field.rows()));
+
+            List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1, ""));
+            List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2, ""));
+            List<GroupCount> target = Arrays.asList(
+                    GroupCount.create(fieldRows1, 2),
+                    GroupCount.create(fieldRows2, 1));
+            assertEquals(target, response.getResult().getGroupCounts());
+        }
+    }
+
     @Test(expected = PilosaException.class)
     public void queryFailsWithError() throws IOException {
         try (PilosaClient client = getClient()) {
@@ -671,7 +692,7 @@ public class PilosaClientIT {
             target = Arrays.asList(5L);
             Calendar start = new GregorianCalendar(2016, 1, 1, 0, 0, 0);
             Calendar end = new GregorianCalendar(2019, 1, 1, 0, 0, 0);
-            response = client.query(field.range(10, start.getTime(), end.getTime()));
+            response = client.query(field.row(10, start.getTime(), end.getTime()));
             assertEquals(target, response.getResult().getRow().getColumns());
 
             // test clear import

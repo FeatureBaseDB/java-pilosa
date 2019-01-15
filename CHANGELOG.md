@@ -1,5 +1,9 @@
 ## Change Log
 
+* **master**
+    * Added `field.rows` and `index.groupBy` calls.
+    * Deprecated `field.range` (time) call. Use `field.row` instead.
+
 * **v1.2.0** (2018-12-19)
     * **Compatible with Pilosa 1.2**
     * Supports imports involving keys.

@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GroupCountsResult implements QueryResult {
+    public static GroupCountsResult create(final List<GroupCount> items) {
+        return new GroupCountsResult(items);
+    }
+
     @Override
     public int getType() {
         return QueryResultType.GROUP_COUNTS;
@@ -107,7 +111,7 @@ public final class GroupCountsResult implements QueryResult {
         return defaultItems;
     }
 
-    private GroupCountsResult(List<GroupCount> items) {
+    private GroupCountsResult(final List<GroupCount> items) {
         this.items = items;
     }
 

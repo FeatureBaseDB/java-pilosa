@@ -35,10 +35,6 @@
 package com.pilosa.client.orm;
 
 public class PqlRowsQuery extends PqlBaseQuery {
-    PqlRowsQuery(String pql) {
-        super(pql);
-    }
-
     PqlRowsQuery(String pql, Index index) {
         super(pql, index);
     }

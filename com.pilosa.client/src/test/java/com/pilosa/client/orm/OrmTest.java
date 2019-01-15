@@ -137,6 +137,9 @@ public class OrmTest {
         q = collabField.row("ten", null, end.getTime());
         assertEquals("Row(collaboration='ten',to=2000-02-02T03:04)",
                 q.serialize().getQuery());
+        q = collabField.row("ten", null, null);
+        assertEquals("Row(collaboration='ten')",
+                q.serialize().getQuery());
 
         q = collabField.row(10, start.getTime(), end.getTime());
         assertEquals("Row(collaboration=10,from=1970-01-01T00:00,to=2000-02-02T03:04)",
@@ -147,6 +150,9 @@ public class OrmTest {
         q = collabField.row(10, null, end.getTime());
         assertEquals("Row(collaboration=10,to=2000-02-02T03:04)",
                 q.serialize().getQuery());
+        q = collabField.row(10, null, null);
+        assertEquals("Row(collaboration=10)",
+                q.serialize().getQuery());
 
         q = collabField.row(true, start.getTime(), end.getTime());
         assertEquals("Row(collaboration=true,from=1970-01-01T00:00,to=2000-02-02T03:04)",
@@ -156,6 +162,9 @@ public class OrmTest {
                      q.serialize().getQuery());
         q = collabField.row(true, null, end.getTime());
         assertEquals("Row(collaboration=true,to=2000-02-02T03:04)",
+                q.serialize().getQuery());
+        q = collabField.row(true, null, null);
+        assertEquals("Row(collaboration=true)",
                 q.serialize().getQuery());
     }
 
@@ -469,6 +478,19 @@ public class OrmTest {
                 q.serialize().getQuery());
     }
 
+    @Test
+    public void groupByTest() {
+        assertQueryEquals("GroupBy(Rows(field='collaboration'))",
+                projectIndex.groupBy(collabField.rows()));
+        assertQueryEquals("GroupBy(Rows(field='collaboration'),Rows(field='collaboration'))",
+                projectIndex.groupBy(collabField.rows(), collabField.rows()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByWithoutRowsFailsTest() {
+        projectIndex.groupBy();
+    }
+
 
     @Test
     public void setColumnAttrsTest() {
@@ -613,5 +635,38 @@ public class OrmTest {
         assertEquals(
                 "ClearRow(collaboration=true)",
                 q.serialize().getQuery());
+    }
+
+    @Test
+    public void fieldRowsTest() {
+        assertQueryEquals("Rows(field='collaboration')",
+                collabField.rows());
+
+        assertQueryEquals("Rows(field='collaboration',limit=10)",
+                collabField.rows(10));
+
+        assertQueryEquals("Rows(field='collaboration',limit=10,column=42)",
+                collabField.rows(10, 42));
+        assertQueryEquals("Rows(field='collaboration',limit=10,column='forty-two')",
+                collabField.rows(10, "forty-two"));
+
+        assertQueryEquals("Rows(field='collaboration',previous=2,limit=10,column=42)",
+                collabField.rows(2, 10, 42));
+        assertQueryEquals("Rows(field='collaboration',previous=2,limit=10,column='forty-two')",
+                collabField.rows(2, 10, "forty-two"));
+
+        assertQueryEquals("Rows(field='collaboration',previous='two',limit=10,column=42)",
+                collabField.rows("two", 10, 42));
+        assertQueryEquals("Rows(field='collaboration',previous='two',limit=10,column='forty-two')",
+                collabField.rows("two", 10, "forty-two"));
+
+        assertQueryEquals("Rows(field='collaboration',previous=true,limit=10,column=42)",
+                collabField.rows(true, 10, 42));
+        assertQueryEquals("Rows(field='collaboration',previous=true,limit=10,column='forty-two')",
+                collabField.rows(true, 10, "forty-two"));
+    }
+
+    private static void assertQueryEquals(String expected, PqlQuery q) {
+        assertEquals(expected, q.serialize().getQuery());
     }
 }

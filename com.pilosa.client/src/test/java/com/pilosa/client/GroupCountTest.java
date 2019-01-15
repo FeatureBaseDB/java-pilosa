@@ -37,63 +37,41 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class TopNResultTest {
+public class GroupCountTest {
     @Test
-    public void testCreateTopNResult() {
-        TopNResult result = createSampleResult();
-        List<CountResultItem> items = result.getCountItems();
-        assertEquals(1, items.size());
-        assertEquals(QueryResultType.PAIRS, result.getType());
-        List<CountResultItem> targetItems = new ArrayList<>();
-        targetItems.add(CountResultItem.create(5, "", 10));
-        assertEquals(RowResult.defaultResult(), result.getRow());
-        assertEquals(targetItems, result.getCountItems());
-        assertEquals(0L, result.getCount());
-        assertEquals(0L, result.getValue());
-        assertEquals(false, result.isChanged());
-        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
-        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
+    public void testGroupCount() {
+        List<FieldRow> groups = Collections.singletonList(FieldRow.create("f1", 42));
+        GroupCount g = GroupCount.create(groups, 10);
+        assertEquals(Collections.singletonList(FieldRow.create("f1", 42)),
+                g.getGroups());
+        assertEquals(10, g.getCount());
+        assertEquals("GroupCount(groups=[FieldRow(field=f1, rowID=42, rowKey=)], count=10)",
+                g.toString());
     }
 
     @Test
     public void testEquals() {
-        TopNResult result1 = createSampleResult();
-        TopNResult result2 = createSampleResult();
-        boolean e = result1.equals(result2);
-        assertTrue(e);
-    }
+        List<FieldRow> groups = Collections.singletonList(FieldRow.create("f1", 42));
+        GroupCount g = GroupCount.create(groups, 10);
+        assertTrue(g.equals(g));
+        assertFalse(g.equals(new Integer(10)));
 
-    @Test
-    public void testEqualsFailsWithOtherObject() {
-        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new TopNResult()).equals(0);
-        assertFalse(e);
-    }
-
-    @Test
-    public void testEqualsSameObject() {
-        TopNResult result = createSampleResult();
-        assertEquals(result, result);
     }
 
     @Test
     public void testHashCode() {
-        TopNResult result1 = createSampleResult();
-        TopNResult result2 = createSampleResult();
-        assertEquals(result1.hashCode(), result2.hashCode());
-    }
+        List<FieldRow> groups = Collections.singletonList(FieldRow.create("f1", 42));
+        GroupCount g1 = GroupCount.create(groups, 10);
+        GroupCount g2 = GroupCount.create(groups, 10);
+        assertEquals(g1.hashCode(), g2.hashCode());
 
-    private TopNResult createSampleResult() {
-        List<CountResultItem> items = new ArrayList<>();
-        items.add(CountResultItem.create(5, "", 10));
-        return TopNResult.create(items);
     }
 }

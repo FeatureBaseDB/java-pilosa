@@ -41,10 +41,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class RowIdentifiersResult implements QueryResult {
+    public static RowIdentifiersResult withIDs(List<Long> rowIDs) {
+        return new RowIdentifiersResult(rowIDs, null);
+    }
+
+    public static RowIdentifiersResult withKeys(List<String> rowKeys) {
+        return new RowIdentifiersResult(null, rowKeys);
+    }
 
     @Override
     public int getType() {
-        return QueryResultType.GROUP_COUNTS;
+        return QueryResultType.ROW_IDENTIFIERS;
     }
 
     @Override
@@ -115,13 +122,12 @@ public final class RowIdentifiersResult implements QueryResult {
     }
 
     static {
-        RowIdentifiersResult result = new RowIdentifiersResult(new ArrayList<Long>(0), new ArrayList<String>(0));
-        defaultResult = result;
+        defaultResult = new RowIdentifiersResult(null, null);;
     }
 
     private RowIdentifiersResult(List<Long> rowIDs, List<String> rowKeys) {
-        this.rowIDs = rowIDs;
-        this.rowKeys = rowKeys;
+        this.rowIDs = (rowIDs == null)? new ArrayList<Long>(0) : rowIDs;
+        this.rowKeys = (rowKeys == null)? new ArrayList<String>(0) : rowKeys;
     }
 
     private final static RowIdentifiersResult defaultResult;

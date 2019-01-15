@@ -437,8 +437,8 @@ public class PilosaClientIT {
             ));
             QueryResponse response = client.query(index.groupBy(field.rows()));
 
-            List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1, ""));
-            List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2, ""));
+            List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1));
+            List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2));
             List<GroupCount> target = Arrays.asList(
                     GroupCount.create(fieldRows1, 2),
                     GroupCount.create(fieldRows2, 1));

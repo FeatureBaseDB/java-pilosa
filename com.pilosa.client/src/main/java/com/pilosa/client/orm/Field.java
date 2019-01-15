@@ -133,9 +133,6 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(long rowID, Date fromTimestamp, Date toTimestamp) {
-        if (fromTimestamp == null && toTimestamp == null) {
-            return this.row(rowID);
-        }
         String text = String.format("Row(%s=%d%s)", this.name, rowID,
                                     fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
@@ -156,9 +153,6 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(String rowKey, Date fromTimestamp, Date toTimestamp) {
-        if (fromTimestamp == null && toTimestamp == null) {
-            return this.row(rowKey);
-        }
         String text = String.format("Row(%s='%s'%s)", this.name, rowKey,
                                     fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
@@ -179,9 +173,6 @@ public class Field {
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(boolean rowBool, Date fromTimestamp, Date toTimestamp) {
-        if (fromTimestamp == null && toTimestamp == null) {
-            return this.row(rowBool);
-        }
         String text = String.format("Row(%s=%b%s)", this.name, rowBool,
                                     fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
@@ -979,9 +970,56 @@ public class Field {
         return this.index.pqlRowsQuery(String.format("Rows(field='%s')", this.name));
     }
 
-    public PqlRowsQuery rows(long rowID, long limit, long columnID) {
-        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column=%s)",
-                this.name, rowID, limit, columnID);
+    public PqlRowsQuery rows(long limit) {
+        String qry = String.format("Rows(field='%s',limit=%d)", this.name, limit);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',limit=%d,column=%d)",
+                this.name, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',limit=%d,column='%s')",
+                this.name, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long previousRowID, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column=%d)",
+                this.name, previousRowID, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long previousRowID, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column='%s')",
+                this.name, previousRowID, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(String previousRowKey, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous='%s',limit=%d,column=%d)",
+                this.name, previousRowKey, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(String previousRowKey, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous='%s',limit=%d,column='%s')",
+                this.name, previousRowKey, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(boolean previousRowBool, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous=%b,limit=%d,column=%d)",
+                this.name, previousRowBool, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(boolean previousRowBool, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous=%b,limit=%d,column='%s')",
+                this.name, previousRowBool, limit, columnKey);
         return this.index.pqlRowsQuery(qry);
     }
 

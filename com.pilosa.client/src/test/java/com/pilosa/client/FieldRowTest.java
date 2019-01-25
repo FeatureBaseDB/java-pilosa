@@ -37,51 +37,38 @@ package com.pilosa.client;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Category(UnitTest.class)
-public class IntResultTest {
+public class FieldRowTest {
     @Test
-    public void testCreateIntResult() {
-        IntResult result = IntResult.create(55);
-        assertEquals(QueryResultType.INT, result.getType());
-        assertEquals(RowResult.defaultResult(), result.getRow());
-        assertEquals(TopNResult.defaultItems(), result.getCountItems());
-        assertEquals(55L, result.getCount());
-        assertEquals(0L, result.getValue());
-        assertEquals(false, result.isChanged());
-        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
-        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
+    public void testFieldRow() {
+        FieldRow f = FieldRow.create("f1", 42);
+        assertEquals("f1", f.getFieldName());
+        assertEquals(42, f.getRowID());
+        assertEquals("", f.getRowKey());
+        assertEquals("FieldRow(field=f1, rowID=42, rowKey=)", f.toString());
+
+        f = FieldRow.create("f1", "forty-two");
+        assertEquals("f1", f.getFieldName());
+        assertEquals(0, f.getRowID());
+        assertEquals("forty-two", f.getRowKey());
+        assertEquals("FieldRow(field=f1, rowID=0, rowKey=forty-two)", f.toString());
     }
 
     @Test
     public void testEquals() {
-        IntResult result1 = IntResult.create(33);
-        IntResult result2 = IntResult.create(33);
-        boolean e = result1.equals(result2);
-        assertTrue(e);
-    }
-
-    @Test
-    public void testEqualsFailsWithOtherObject() {
-        @SuppressWarnings("EqualsBetweenInconvertibleTypes")
-        boolean e = (new IntResult()).equals(0);
-        assertFalse(e);
-    }
-
-    @Test
-    public void testEqualsSameObject() {
-        IntResult result = IntResult.create(6);
-        assertEquals(result, result);
+        FieldRow f = FieldRow.create("f1", 42);
+        assertTrue(f.equals(f));
+        assertFalse(f.equals(new Integer(42)));
     }
 
     @Test
     public void testHashCode() {
-        IntResult result1 = IntResult.create(22);
-        IntResult result2 = IntResult.create(22);
-        assertEquals(result1.hashCode(), result2.hashCode());
+        FieldRow f1 = FieldRow.create("f1", 42);
+        FieldRow f2 = FieldRow.create("f1", 42);
+        assertEquals(f1.hashCode(), f2.hashCode());
     }
-
 }

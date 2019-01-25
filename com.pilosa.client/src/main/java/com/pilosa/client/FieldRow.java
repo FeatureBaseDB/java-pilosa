@@ -38,8 +38,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public final class FieldRow {
-    public static FieldRow create(String fieldName, long rowID, String rowKey) {
-        return new FieldRow(fieldName, rowID, rowKey);
+    public static FieldRow create(String fieldName, long rowID) {
+        return new FieldRow(fieldName, rowID, "");
+    }
+    public static FieldRow create(String fieldName, String rowKey) {
+        return new FieldRow(fieldName, 0, rowKey);
     }
 
     public String getFieldName() {

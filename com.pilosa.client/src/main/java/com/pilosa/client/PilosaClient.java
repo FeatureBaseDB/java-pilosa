@@ -117,6 +117,20 @@ public class PilosaClient implements AutoCloseable {
         return PilosaClient.withURI(URI.address(address));
     }
 
+    public static PilosaClient withAddress(String address, String coordinatorAddress) {
+        PilosaClient client = PilosaClient.withURI(URI.address(address));
+        URI coordAddr = URI.address(coordinatorAddress);
+        FragmentNodeURI nodeURI = new FragmentNodeURI();
+        nodeURI.setScheme(coordAddr.getScheme());
+        nodeURI.setHost(coordAddr.getHost());
+        nodeURI.setPort(coordAddr.getPort());
+        FragmentNode node = new FragmentNode();
+        node.setURI(nodeURI);
+        client.updateCoordinatorAddress(node);
+
+        return client;
+    }
+
     /**
      * Creates a client with the given address.
      *
@@ -720,9 +734,13 @@ public class PilosaClient implements AutoCloseable {
 
     private synchronized void updateCoordinatorAddress() {
         if (this.coordinatorAddress == null) {
-            this.coordinatorNode = fetchCoordinatorNode();
-            this.coordinatorAddress = this.coordinatorNode.toURI();
+            updateCoordinatorAddress(fetchCoordinatorNode());
         }
+    }
+
+    private synchronized void updateCoordinatorAddress(IFragmentNode fragmentNode) {
+        this.coordinatorNode = fragmentNode;
+        this.coordinatorAddress = this.coordinatorNode.toURI();
     }
 
     private enum ReturnClientResponse {

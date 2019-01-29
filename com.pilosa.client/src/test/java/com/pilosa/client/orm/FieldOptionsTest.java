@@ -40,9 +40,7 @@ import com.pilosa.client.exceptions.PilosaException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -58,6 +56,14 @@ public class FieldOptionsTest {
                 .setKeys(true)
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 1000, 0, 0);
+        target = "{\"options\":{\"keys\":true,\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("keys", true);
+        optionsMap.put("cacheType", "ranked");
+        optionsMap.put("cacheSize", 1000);
+        options = FieldOptions.fromMap(optionsMap);
         target = "{\"options\":{\"keys\":true,\"type\":\"set\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 

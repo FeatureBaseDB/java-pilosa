@@ -108,6 +108,10 @@ public class Index {
         return field;
     }
 
+    public Field field(String name, Map<String, Object> options) {
+        return field(name, FieldOptions.fromMap(options));
+    }
+
     /**
      * Copies other field to this index and returns the new field
      *

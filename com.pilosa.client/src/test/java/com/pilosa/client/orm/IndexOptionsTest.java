@@ -38,6 +38,9 @@ import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -60,6 +63,37 @@ public class IndexOptionsTest {
                 .build();
         assertTrue(options.isKeys());
         assertTrue(options.isTrackExistence());
+    }
+
+    @Test
+    public void testFromMap() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("keys", true);
+        optionsMap.put("trackExistence", false);
+        IndexOptions options = IndexOptions.fromMap(optionsMap);
+        assertTrue(options.isKeys());
+        assertFalse(options.isTrackExistence());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromMapInvalidKey() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("KEYS", true);
+        IndexOptions options = IndexOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void testFromMapInvalidKeysValue() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("keys", 1);
+        IndexOptions options = IndexOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void testFromMapInvalidTrackExistenceValue() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("trackExistence", 1);
+        IndexOptions options = IndexOptions.fromMap(optionsMap);
     }
 
     @Test

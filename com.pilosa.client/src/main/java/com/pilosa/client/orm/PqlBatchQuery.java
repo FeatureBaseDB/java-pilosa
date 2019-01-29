@@ -119,6 +119,10 @@ public class PqlBatchQuery implements PqlQuery {
         this.queries.add(query);
     }
 
+    public int size() {
+        return this.queries.size();
+    }
+
     @Override
     public SerializedQuery serialize() {
         StringBuilder builder = new StringBuilder(this.queries.size());

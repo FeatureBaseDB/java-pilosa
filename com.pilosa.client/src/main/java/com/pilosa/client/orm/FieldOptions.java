@@ -365,6 +365,7 @@ public final class FieldOptions {
             options.put("type", this.fieldType.toString());
         }
         switch (this.fieldType) {
+            case DEFAULT:
             case SET:
             case MUTEX:
                 if (!this.cacheType.equals(CacheType.DEFAULT)) {
@@ -373,6 +374,7 @@ public final class FieldOptions {
                 if (this.cacheSize > 0) {
                     options.put("cacheSize", this.cacheSize);
                 }
+                options.put("keys", this.keys);
                 break;
             case INT:
                 options.put("min", this.min);
@@ -381,8 +383,6 @@ public final class FieldOptions {
             case TIME:
                 options.put("timeQuantum", this.timeQuantum.toString());
         }
-
-        options.put("keys", this.keys);
 
         Map<String, Object> optionsRoot = new HashMap<>(1);
         optionsRoot.put("options", options);

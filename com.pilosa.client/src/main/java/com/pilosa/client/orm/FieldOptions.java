@@ -293,7 +293,7 @@ public final class FieldOptions {
                     if (!fieldType.equals(FieldType.SET) && !fieldType.equals(FieldType.MUTEX)) {
                         throw new IllegalArgumentException("cacheSize option is valid only for set and mutex fields");
                     }
-                    builder.setCacheSize((Integer) value);
+                    builder.setCacheSize(((Number) value).intValue());
                     continue;
                 case "timeQuantum":
                     if (!fieldType.equals(FieldType.TIME)) {
@@ -306,13 +306,13 @@ public final class FieldOptions {
                     if (!fieldType.equals(FieldType.INT)) {
                         throw new IllegalArgumentException("min option is valid only for int fields");
                     }
-                    builder.setMin((Long)value);
+                    builder.setMin(((Number) value).longValue());
                     continue;
                 case "max":
                     if (!fieldType.equals(FieldType.INT)) {
                         throw new IllegalArgumentException("max option is valid only for int fields");
                     }
-                    builder.setMax((Long)value);
+                    builder.setMax(((Number) value).longValue());
                     continue;
                 default:
                     throw new IllegalArgumentException(String.format("Unknown field option: '%s'", entry.getKey()));

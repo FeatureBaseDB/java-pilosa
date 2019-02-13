@@ -216,32 +216,32 @@ public final class FieldOptions {
                     this.keys);
         }
 
-        public Builder setFieldType(FieldType fieldType) {
+        Builder setFieldType(FieldType fieldType) {
             this.fieldType = fieldType;
             return this;
         }
 
-        private Builder setCacheType(CacheType cacheType) {
+        Builder setCacheType(CacheType cacheType) {
             this.cacheType = cacheType;
             return this;
         }
 
-        public Builder setCacheSize(int cacheSize) {
+        Builder setCacheSize(int cacheSize) {
             this.cacheSize = cacheSize;
             return this;
         }
 
-        public Builder setTimeQuantum(TimeQuantum timeQuantum) {
+        Builder setTimeQuantum(TimeQuantum timeQuantum) {
             this.timeQuantum = timeQuantum;
             return this;
         }
 
-        public Builder setMin(long min) {
+        Builder setMin(long min) {
             this.min = min;
             return this;
         }
 
-        public Builder setMax(long max) {
+        Builder setMax(long max) {
             this.max = max;
             return this;
         }

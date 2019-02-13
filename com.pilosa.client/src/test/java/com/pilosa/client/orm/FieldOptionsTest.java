@@ -37,6 +37,7 @@ package com.pilosa.client.orm;
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.UnitTest;
 import com.pilosa.client.exceptions.PilosaException;
+import com.pilosa.client.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -90,6 +91,14 @@ public class FieldOptionsTest {
         compare(options, FieldType.INT, TimeQuantum.NONE, CacheType.DEFAULT, 0, -100, 500);
         String target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "int");
+        optionsMap.put("min", -100);
+        optionsMap.put("max", 500);
+        options = FieldOptions.fromMap(optionsMap);
+        target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
     @Test
@@ -99,6 +108,13 @@ public class FieldOptionsTest {
                 .build();
         compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
         String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "time");
+        optionsMap.put("timeQuantum", "YMDH");
+        options = FieldOptions.fromMap(optionsMap);
+        target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"YMDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -127,6 +143,14 @@ public class FieldOptionsTest {
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
         target = "{\"options\":{\"type\":\"mutex\",\"keys\":false}}";
+        assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
+
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "mutex");
+        optionsMap.put("cacheType", "ranked");
+        optionsMap.put("cacheSize", 1000);
+        options = FieldOptions.fromMap(optionsMap);
+        target = "{\"options\":{\"keys\":false,\"type\":\"mutex\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -197,6 +221,53 @@ public class FieldOptionsTest {
                 .fieldTime(TimeQuantum.YEAR_MONTH)
                 .build();
         assertEquals(options1.hashCode(), options2.hashCode());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCacheTypeRequiresSetField() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "int");
+        optionsMap.put("cacheType", "ranked");
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCacheSizeRequiresSetField() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "int");
+        optionsMap.put("cacheSize", 1000);
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testTimeQuantumRequiresTimeField() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "set");
+        optionsMap.put("timeQuantum", "YMDH");
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMinRequiresIntField() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "set");
+        optionsMap.put("min", 1000);
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMaxRequiresIntField() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "set");
+        optionsMap.put("max", 1000);
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testInvalidType() {
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "foo");
+        FieldOptions options = FieldOptions.fromMap(optionsMap);
     }
 
     private void compare(FieldOptions options,

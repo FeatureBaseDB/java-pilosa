@@ -42,6 +42,8 @@ import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -108,6 +110,22 @@ public class IndexTest {
         Index index1 = this.schema.index("foo");
         Index index2 = Index.create("foo");
         assertEquals(index1.hashCode(), index2.hashCode());
+    }
+
+
+    @Test
+    public void testFromMap() {
+        Index index = this.schema.index("some-index");
+        Map<String, Object> optionsMap = new HashMap<>();
+        optionsMap.put("type", "mutex");
+        optionsMap.put("cacheType", "ranked");
+        optionsMap.put("cacheSize", 1000);
+        Field field1 = index.field("some-field", optionsMap);
+        FieldOptions options = FieldOptions.builder()
+                .fieldMutex(CacheType.RANKED, 1000)
+                .build();
+        Field field2 = index.field("some-field", options);
+        assertEquals(field1, field2);
     }
 
     private boolean checkArguments(String methodName, int count)

@@ -80,11 +80,15 @@ public class OrmTest {
     @Test
     public void batchTest() {
         PqlBatchQuery b = sampleIndex.batchQuery();
+        assertEquals(0, b.size());
         b.add(sampleField.row(44));
         b.add(sampleField.row(10101));
         assertEquals(
                 "Row(sample-field=44)Row(sample-field=10101)",
                 b.serialize().getQuery());
+        assertEquals(2, b.size());
+        b.clear();
+        assertEquals(0, b.size());
     }
 
     @Test

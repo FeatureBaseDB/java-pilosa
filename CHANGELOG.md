@@ -1,8 +1,11 @@
 ## Change Log
 
-* **master**
+* **v1.2.1** (2019-02-14)
     * Added `field.rows` and `index.groupBy` calls.
+    * Added `PqlBatchQuery.size` and `PqlBatchQuery.clear` methods.
     * Deprecated `field.range` (time) call. Use `field.row` instead.
+    * *Experimental*: `PilosaClient.withAddress` supports setting the coordinator address manually.
+    * *Experimental*: Added `Schema.index` and `Index.field`  methods support passing index/field options in a map.
 
 * **v1.2.0** (2018-12-19)
     * **Compatible with Pilosa 1.2**

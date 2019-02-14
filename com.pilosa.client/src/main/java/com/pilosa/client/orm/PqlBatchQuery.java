@@ -119,6 +119,22 @@ public class PqlBatchQuery implements PqlQuery {
         this.queries.add(query);
     }
 
+    /**
+     * Returns the number of queries in the batch.
+     *
+     * @return the number of queries in the batch
+     */
+    public int size() {
+        return this.queries.size();
+    }
+
+    /**
+     * Removes all queries from the batch.
+     */
+    public void clear() {
+        this.queries.clear();
+    }
+
     @Override
     public SerializedQuery serialize() {
         StringBuilder builder = new StringBuilder(this.queries.size());

@@ -216,6 +216,36 @@ public final class FieldOptions {
                     this.keys);
         }
 
+        Builder setFieldType(FieldType fieldType) {
+            this.fieldType = fieldType;
+            return this;
+        }
+
+        Builder setCacheType(CacheType cacheType) {
+            this.cacheType = cacheType;
+            return this;
+        }
+
+        Builder setCacheSize(int cacheSize) {
+            this.cacheSize = cacheSize;
+            return this;
+        }
+
+        Builder setTimeQuantum(TimeQuantum timeQuantum) {
+            this.timeQuantum = timeQuantum;
+            return this;
+        }
+
+        Builder setMin(long min) {
+            this.min = min;
+            return this;
+        }
+
+        Builder setMax(long max) {
+            this.max = max;
+            return this;
+        }
+
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private CacheType cacheType = CacheType.DEFAULT;
         private int cacheSize = 0;
@@ -234,6 +264,61 @@ public final class FieldOptions {
     @SuppressWarnings("WeakerAccess")
     public static FieldOptions withDefaults() {
         return new Builder().build();
+    }
+
+    public static FieldOptions fromMap(final Map<String, Object> map) {
+        String fieldTypeStr = (String)map.get("type");
+        if (fieldTypeStr == null) {
+            fieldTypeStr = FieldType.SET.toString();
+        }
+        FieldType fieldType = FieldType.fromString(fieldTypeStr);
+        Builder builder = builder();
+        builder.setFieldType(fieldType);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            Object value = entry.getValue();
+            switch (entry.getKey()) {
+                case "type":
+                    continue;
+                case "keys":
+                    builder.setKeys((Boolean)entry.getValue());
+                    continue;
+                case "cacheType":
+                    if (!fieldType.equals(FieldType.SET) && !fieldType.equals(FieldType.MUTEX)) {
+                        throw new IllegalArgumentException("cacheType option is valid only for set and mutex fields");
+                    }
+                    CacheType cacheType = CacheType.fromString((String)value);
+                    builder.setCacheType(cacheType);
+                    continue;
+                case "cacheSize":
+                    if (!fieldType.equals(FieldType.SET) && !fieldType.equals(FieldType.MUTEX)) {
+                        throw new IllegalArgumentException("cacheSize option is valid only for set and mutex fields");
+                    }
+                    builder.setCacheSize(((Number) value).intValue());
+                    continue;
+                case "timeQuantum":
+                    if (!fieldType.equals(FieldType.TIME)) {
+                        throw new IllegalArgumentException("timeQuantum option is valid only for time fields");
+                    }
+                    TimeQuantum timeQuantum = TimeQuantum.fromString((String)value);
+                    builder.setTimeQuantum(timeQuantum);
+                    continue;
+                case "min":
+                    if (!fieldType.equals(FieldType.INT)) {
+                        throw new IllegalArgumentException("min option is valid only for int fields");
+                    }
+                    builder.setMin(((Number) value).longValue());
+                    continue;
+                case "max":
+                    if (!fieldType.equals(FieldType.INT)) {
+                        throw new IllegalArgumentException("max option is valid only for int fields");
+                    }
+                    builder.setMax(((Number) value).longValue());
+                    continue;
+                default:
+                    throw new IllegalArgumentException(String.format("Unknown field option: '%s'", entry.getKey()));
+            }
+        }
+        return builder.build();
     }
 
     /**
@@ -280,6 +365,7 @@ public final class FieldOptions {
             options.put("type", this.fieldType.toString());
         }
         switch (this.fieldType) {
+            case DEFAULT:
             case SET:
             case MUTEX:
                 if (!this.cacheType.equals(CacheType.DEFAULT)) {
@@ -288,6 +374,7 @@ public final class FieldOptions {
                 if (this.cacheSize > 0) {
                     options.put("cacheSize", this.cacheSize);
                 }
+                options.put("keys", this.keys);
                 break;
             case INT:
                 options.put("min", this.min);
@@ -296,8 +383,6 @@ public final class FieldOptions {
             case TIME:
                 options.put("timeQuantum", this.timeQuantum.toString());
         }
-
-        options.put("keys", this.keys);
 
         Map<String, Object> optionsRoot = new HashMap<>(1);
         optionsRoot.put("options", options);

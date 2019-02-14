@@ -7,3 +7,4 @@ com.pilosa.client/pilosa-client.iml
 .classpath
 .project
 .settings/
+.attach_pid*

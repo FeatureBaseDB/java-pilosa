@@ -38,6 +38,9 @@ import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -146,6 +149,22 @@ public class SchemaTest {
         Schema schema2 = Schema.defaultSchema();
         schema2.index("foo");
         assertEquals(schema1.hashCode(), schema2.hashCode());
+    }
+
+    @Test
+    public void testIndexFromMap() {
+        Map<String, Object> indexOptionsMap = new HashMap<>();
+        indexOptionsMap.put("keys", true);
+        indexOptionsMap.put("trackExistence", false);
+        Index index1 = Schema.defaultSchema().index("some-index", indexOptionsMap);
+
+        IndexOptions options = IndexOptions.builder()
+                .setKeys(true)
+                .setTrackExistence(false)
+                .build();
+        Index index2 = Schema.defaultSchema().index("some-index", options);
+
+        assertEquals(index1, index2);
     }
 
     private Index makeIndex(Schema schema, String name) {

@@ -1,5 +1,10 @@
 ## Change Log
 
+* **master**
+
+    * Added `manualServerAddress` client option which forces the client use only the manual server address.
+    * Removed experimental `PilosaClient.withAddress` variant that sets the coordinator address manually. Use `manualServerAddress` client option instead.
+
 * **v1.2.1** (2019-02-14)
     * Added `field.rows` and `index.groupBy` calls.
     * Added `PqlBatchQuery.size` and `PqlBatchQuery.clear` methods.

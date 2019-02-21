@@ -37,6 +37,7 @@ package integrationtest;
 import com.pilosa.client.ClientOptions;
 import com.pilosa.client.Cluster;
 import com.pilosa.client.PilosaClient;
+import com.pilosa.client.URI;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -58,6 +59,10 @@ public class InsecurePilosaClientIT extends PilosaClient {
 
     public InsecurePilosaClientIT(Cluster cluster, ClientOptions options) {
         super(cluster, options);
+    }
+
+    public InsecurePilosaClientIT(String address, ClientOptions options) {
+        super(URI.address(address), options);
     }
 
     @Override

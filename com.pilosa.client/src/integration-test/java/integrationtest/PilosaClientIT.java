@@ -538,6 +538,54 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importRowIDColumnIDManualAddressTest() throws IOException {
+        try (PilosaClient client = this.getClientManualAddress()) {
+            LineDeserializer deserializer = new RowIDColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_id.csv", deserializer);
+            Field field = this.index.field("importfield-rowid-colid");
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importRowIDColumnKeyManualAddressTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_key.csv", deserializer);
+            Field field = this.keyIndex.field("importfield-rowid-colkey");
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<String> target = Arrays.asList("ten", "twenty", "forty-one");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getKeys().get(0));
+            }
+        }
+    }
+
+    @Test
     public void importRowIDColumnKeyTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
@@ -1599,6 +1647,17 @@ public class PilosaClientIT {
             optionsBuilder.setShardWidth(shardWidth);
         }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
+    }
+
+    private PilosaClient getClientManualAddress() {
+        String bindAddress = getBindAddress();
+        ClientOptions.Builder optionsBuilder = ClientOptions.builder()
+                .setManualServerAddress(true);
+        long shardWidth = getShardWidth();
+        if (shardWidth > 0) {
+            optionsBuilder.setShardWidth(shardWidth);
+        }
+        return new InsecurePilosaClientIT(bindAddress, optionsBuilder.build());
     }
 
     private String getBindAddress() {

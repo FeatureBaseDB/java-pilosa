@@ -65,7 +65,6 @@ import javax.net.ssl.HostnameVerifier;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
@@ -117,20 +116,6 @@ public class PilosaClient implements AutoCloseable {
         return PilosaClient.withURI(URI.address(address));
     }
 
-    public static PilosaClient withAddress(String address, String coordinatorAddress) {
-        PilosaClient client = PilosaClient.withURI(URI.address(address));
-        URI coordAddr = URI.address(coordinatorAddress);
-        FragmentNodeURI nodeURI = new FragmentNodeURI();
-        nodeURI.setScheme(coordAddr.getScheme());
-        nodeURI.setHost(coordAddr.getHost());
-        nodeURI.setPort(coordAddr.getPort());
-        FragmentNode node = new FragmentNode();
-        node.setURI(nodeURI);
-        client.updateCoordinatorAddress(node);
-
-        return client;
-    }
-
     /**
      * Creates a client with the given address.
      *
@@ -139,7 +124,21 @@ public class PilosaClient implements AutoCloseable {
      * @return a PilosaClient
      */
     public static PilosaClient withURI(URI uri) {
-        return PilosaClient.withCluster(Cluster.withHost(uri));
+        return PilosaClient.withURI(uri, null);
+    }
+
+    /**
+     * Creates a client with the given address.
+     *
+     * @param uri address of the server
+     * @return a PilosaClient
+     * @throws PilosaURIException if the given address is malformed
+     */
+    public static PilosaClient withURI(URI uri, ClientOptions options) {
+        if (options == null) {
+            options = ClientOptions.builder().build();
+        }
+        return new PilosaClient(uri, options);
     }
 
     /**
@@ -453,6 +452,23 @@ public class PilosaClient implements AutoCloseable {
         this.options = options;
     }
 
+    protected PilosaClient(URI uri, ClientOptions options) {
+        this.options = options;
+        if (options.isManualServerAddress()) {
+            this.manualServerAddress = uri.getNormalized();
+            FragmentNodeURI nodeURI = new FragmentNodeURI();
+            nodeURI.setScheme(uri.getScheme());
+            nodeURI.setHost(uri.getHost());
+            nodeURI.setPort(uri.getPort());
+            FragmentNode node = new FragmentNode();
+            node.setURI(nodeURI);
+            updateCoordinatorAddress(node);
+            this.fragmentNode = node;
+        } else {
+            this.cluster = Cluster.withHost(uri);
+        }
+    }
+
     protected Registry<ConnectionSocketFactory> getRegistry() {
         HostnameVerifier verifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
@@ -569,11 +585,15 @@ public class PilosaClient implements AutoCloseable {
                                 final Header[] headers,
                                 boolean useCoordinator) {
         String uri;
-        if (useCoordinator) {
-            updateCoordinatorAddress();
-            uri = this.coordinatorAddress.getNormalized();
+        if (this.options.isManualServerAddress()) {
+            uri = this.manualServerAddress;
         } else {
-            uri = getAddress();
+            if (useCoordinator) {
+                updateCoordinatorAddress();
+                uri = this.coordinatorAddress.getNormalized();
+            } else {
+                uri = getAddress();
+            }
         }
         return makeRequest(method, path, data, headers, uri);
     }
@@ -633,15 +653,19 @@ public class PilosaClient implements AutoCloseable {
         String indexName = records.getIndexName();
         List<IFragmentNode> nodes;
         ImportRequest importRequest = records.toImportRequest();
-        if (records.isIndexKeys() || records.isFieldKeys()) {
-            nodes = new ArrayList<>();
-            IFragmentNode node = fetchCoordinatorNode();
-            nodes.add(node);
+        if (this.options.isManualServerAddress()) {
+            importNode(this.manualServerAddress, importRequest);
         } else {
-            nodes = fetchFragmentNodes(indexName, records.getShard());
-        }
-        for (IFragmentNode node : nodes) {
-            importNode(node.toURI().getNormalized(), importRequest);
+            if (records.isIndexKeys() || records.isFieldKeys()) {
+                nodes = new ArrayList<>();
+                IFragmentNode node = fetchCoordinatorNode();
+                nodes.add(node);
+            } else {
+                nodes = fetchFragmentNodes(indexName, records.getShard());
+            }
+            for (IFragmentNode node : nodes) {
+                importNode(node.toURI().getNormalized(), importRequest);
+            }
         }
     }
 
@@ -738,7 +762,7 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    private synchronized void updateCoordinatorAddress(IFragmentNode fragmentNode) {
+    private void updateCoordinatorAddress(IFragmentNode fragmentNode) {
         this.coordinatorNode = fragmentNode;
         this.coordinatorAddress = this.coordinatorNode.toURI();
     }
@@ -777,6 +801,8 @@ public class PilosaClient implements AutoCloseable {
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
     private URI coordinatorAddress = null;
     private IFragmentNode coordinatorNode = null;
+    private IFragmentNode fragmentNode = null;
+    private String manualServerAddress;
 }
 
 class QueryRequest {

@@ -123,6 +123,16 @@ public class Index {
     }
 
     /**
+     * Checks whether the index has the given field.
+     *
+     * @param fieldName
+     * @return <code>true</code> if the field exists.
+     */
+    public boolean hasField(String fieldName) {
+        return this.fields.containsKey(fieldName);
+    }
+
+    /**
      * Creates a batch query.
      *
      * @return batch query

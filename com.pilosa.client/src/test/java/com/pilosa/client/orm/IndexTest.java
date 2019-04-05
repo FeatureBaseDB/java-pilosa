@@ -45,8 +45,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class IndexTest {
@@ -126,6 +125,14 @@ public class IndexTest {
                 .build();
         Field field2 = index.field("some-field", options);
         assertEquals(field1, field2);
+    }
+
+    @Test
+    public void testHasField() {
+        Index index = this.schema.index("hasfield-index");
+        index.field("some-field");
+        assertTrue(index.hasField("some-field"));
+        assertFalse(index.hasField("nonexistent-field"));
     }
 
     private boolean checkArguments(String methodName, int count)

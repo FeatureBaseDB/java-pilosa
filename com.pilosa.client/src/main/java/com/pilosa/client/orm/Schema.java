@@ -95,6 +95,16 @@ public class Schema {
         return index;
     }
 
+    /**
+     * Checks whether the schema has the given index.
+     *
+     * @param indexName
+     * @return <code>true</code> if the index exists.
+     */
+    public boolean hasIndex(String indexName) {
+        return this.indexes.containsKey(indexName);
+    }
+
     public Schema diff(Schema other) {
         Schema result = Schema.defaultSchema();
         for (Map.Entry<String, Index> indexEntry : this.indexes.entrySet()) {

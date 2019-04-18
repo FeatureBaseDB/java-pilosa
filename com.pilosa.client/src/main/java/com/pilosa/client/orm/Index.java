@@ -335,6 +335,10 @@ public class Index {
         return this.options;
     }
 
+    public long getShardWidth() {
+        return this.shardWidth;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Index)) {
@@ -381,6 +385,11 @@ public class Index {
         }
     }
 
+    Index setShardWidth(long shardWidth) {
+        this.shardWidth = shardWidth;
+        return this;
+    }
+
     private PqlRowQuery rowOperation(String name, PqlRowQuery... rows) {
         String text = String.format("%s(%s)", name, joinQueries(rows));
         return pqlRowQuery(text);
@@ -411,4 +420,5 @@ public class Index {
     private IndexOptions options;
     private static ObjectMapper mapper = new ObjectMapper();
     private Map<String, Field> fields = new HashMap<>();
+    private long shardWidth;
 }

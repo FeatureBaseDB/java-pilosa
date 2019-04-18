@@ -34,6 +34,7 @@
 
 package com.pilosa.client;
 
+import io.opentracing.Tracer;
 import org.apache.http.ssl.SSLContexts;
 
 import javax.net.ssl.SSLContext;
@@ -131,6 +132,11 @@ public final class ClientOptions {
             return this;
         }
 
+        public Builder setTracer(Tracer tracer) {
+            this.tracer = tracer;
+            return this;
+        }
+
         /**
          * Creates the ClientOptions object.
          * @return ClientOptions object
@@ -138,7 +144,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.shardWidth, this.manualServerAddress);
+                    this.sslContext, this.shardWidth, this.manualServerAddress, this.tracer);
         }
 
         private int socketTimeout = 300000;
@@ -149,6 +155,7 @@ public final class ClientOptions {
         private SSLContext sslContext = SSLContexts.createDefault();
         private long shardWidth = DEFAULT_SHARD_WIDTH;
         private boolean manualServerAddress = false;
+        private Tracer tracer = null;
     }
 
     public static final long DEFAULT_SHARD_WIDTH = 1048576L;
@@ -193,10 +200,14 @@ public final class ClientOptions {
         return this.manualServerAddress;
     }
 
+    public Tracer getTracer() {
+        return this.tracer;
+    }
+
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
                           final SSLContext sslContext, final long shardWidth,
-                          final boolean manualServerAddress) {
+                          final boolean manualServerAddress, final Tracer tracer) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
@@ -205,6 +216,7 @@ public final class ClientOptions {
         this.sslContext = sslContext;
         this.shardWidth = shardWidth;
         this.manualServerAddress = manualServerAddress;
+        this.tracer = tracer;
     }
 
     private final int socketTimeout; // milliseconds
@@ -215,4 +227,5 @@ public final class ClientOptions {
     private final SSLContext sslContext;
     private final long shardWidth;
     private final boolean manualServerAddress;
+    private final Tracer tracer;
 }

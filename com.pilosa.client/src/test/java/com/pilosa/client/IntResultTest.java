@@ -52,6 +52,8 @@ public class IntResultTest {
         assertEquals(55L, result.getCount());
         assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
+        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
+        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
     }
 
     @Test

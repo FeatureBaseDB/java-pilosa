@@ -39,6 +39,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.Map;
+
 /**
  * Contains options to customize {@link Field} objects and field queries.
  * <p>
@@ -132,6 +134,23 @@ public final class IndexOptions {
     @SuppressWarnings("WeakerAccess")
     public static IndexOptions withDefaults() {
         return new Builder().build();
+    }
+
+    public static IndexOptions fromMap(final Map<String, Object> map) {
+        Builder builder = builder();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            switch (entry.getKey()) {
+                case "keys":
+                    builder.setKeys((Boolean) (entry.getValue()));
+                    break;
+                case "trackExistence":
+                    builder.setTrackExistence((Boolean) (entry.getValue()));
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("Unknown index option: '%s'", entry.getKey()));
+            }
+        }
+        return builder.build();
     }
 
     /**

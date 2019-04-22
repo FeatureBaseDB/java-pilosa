@@ -38,6 +38,9 @@ import com.pilosa.client.UnitTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
@@ -61,10 +64,8 @@ public class SchemaTest {
         Index index11 = makeIndex(schema1, "index11");
         makeField(index11, "index11-f1");
         makeField(index11, "index11-f2", true);
-
         Index index12 = makeIndex(schema1,  "index12", true);
         makeField(index12, "index12-f1");
-
         Index index13 = makeIndex(schema1, "index13", true);
         makeField(index13, "index13-f1", true);
 
@@ -96,23 +97,18 @@ public class SchemaTest {
                 |
                 |___ index13 [keys]
                         |___ index13-f1 [keys]
-
          */
         Schema target = Schema.defaultSchema();
         Index targetIndex11 = makeIndex(target, "index11");
         makeField(targetIndex11, "index11-f1");
         makeField(targetIndex11, "index11-f2", true);
-
         Index targetIndex12 = makeIndex(target, "index12", true);
         makeField(targetIndex12, "index12-f1");
-
         Index targetIndex13 = makeIndex(target, "index13", true);
         makeField(targetIndex13, "index13-f1", true);
-
         // schema1 - schema2
         Schema diff = schema1.diff(schema2);
         assertEquals(target, diff);
-
     }
 
     @Test
@@ -155,21 +151,34 @@ public class SchemaTest {
         assertEquals(schema1.hashCode(), schema2.hashCode());
     }
 
+    @Test
+    public void testIndexFromMap() {
+        Map<String, Object> indexOptionsMap = new HashMap<>();
+        indexOptionsMap.put("keys", true);
+        indexOptionsMap.put("trackExistence", false);
+        Index index1 = Schema.defaultSchema().index("some-index", indexOptionsMap);
+
+        IndexOptions options = IndexOptions.builder()
+                .setKeys(true)
+                .setTrackExistence(false)
+                .build();
+        Index index2 = Schema.defaultSchema().index("some-index", options);
+
+        assertEquals(index1, index2);
+    }
+
     private Index makeIndex(Schema schema, String name) {
         return schema.index(name);
     }
-
     private Index makeIndex(Schema schema, String name, boolean hasKeys) {
         IndexOptions options = IndexOptions.builder()
                 .setKeys(true)
                 .build();
         return schema.index(name, options);
     }
-
     private Field makeField(Index index, String name) {
         return index.field(name);
     }
-
     private Field makeField(Index index, String name, boolean hasKeys) {
         FieldOptions options = FieldOptions.builder()
                 .setKeys(true)

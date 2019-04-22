@@ -37,47 +37,20 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ValueCountResult implements QueryResult {
-    @Override
-    public int getType() {
-        return QueryResultType.VAL_COUNT;
+public final class GroupCount {
+    public static GroupCount create(List<FieldRow> groups, long count) {
+        return new GroupCount(groups, count);
     }
 
-    @Override
-    public RowResult getRow() {
-        return RowResult.defaultResult();
+    public final List<FieldRow> getGroups() {
+        return this.groups;
     }
 
-    @Override
-    public List<CountResultItem> getCountItems() {
-        return TopNResult.defaultItems();
-    }
-
-    @Override
     public long getCount() {
         return this.count;
-    }
-
-    @Override
-    public long getValue() {
-        return this.value;
-    }
-
-    @Override
-    public boolean isChanged() {
-        return false;
-    }
-
-    @Override
-    public List<GroupCount> getGroupCounts() {
-        return GroupCountsResult.defaultItems();
-    }
-
-    @Override
-    public RowIdentifiersResult getRowIdentifiers() {
-        return RowIdentifiersResult.defaultResult();
     }
 
     @Override
@@ -85,12 +58,12 @@ public class ValueCountResult implements QueryResult {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ValueCountResult)) {
+        if (!(obj instanceof GroupCount)) {
             return false;
         }
-        ValueCountResult rhs = (ValueCountResult) obj;
+        GroupCount rhs = (GroupCount) obj;
         return new EqualsBuilder()
-                .append(this.value, rhs.value)
+                .append(this.groups, rhs.groups)
                 .append(this.count, rhs.count)
                 .isEquals();
     }
@@ -98,23 +71,34 @@ public class ValueCountResult implements QueryResult {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.value)
+                .append(this.groups)
                 .append(this.count)
                 .toHashCode();
     }
 
-    static ValueCountResult create(long sum, long count) {
-        ValueCountResult result = new ValueCountResult();
-        result.value = sum;
-        result.count = count;
-        return result;
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (FieldRow fieldRow : this.groups) {
+            builder.append(fieldRow.toString());
+        }
+        return String.format("GroupCount(groups=[%s], count=%d)",
+                builder.toString(), this.count);
     }
 
-    static ValueCountResult fromInternal(Internal.QueryResult q) {
-        Internal.ValCount obj = q.getValCount();
-        return create(obj.getVal(), obj.getCount());
+    static GroupCount fromInternal(Internal.GroupCount q) {
+        List<FieldRow> fieldRows = new ArrayList<>(q.getGroupCount());
+        for (Internal.FieldRow fieldRow : q.getGroupList()) {
+            fieldRows.add(FieldRow.fromInternal(fieldRow));
+        }
+        return new GroupCount(fieldRows, q.getCount());
     }
 
-    private long value;
-    private long count;
+    private GroupCount(List<FieldRow> groups, long count) {
+        this.groups = groups;
+        this.count = count;
+    }
+
+    private final List<FieldRow> groups;
+    private final long count;
 }

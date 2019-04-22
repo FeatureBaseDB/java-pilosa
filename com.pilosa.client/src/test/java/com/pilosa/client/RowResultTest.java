@@ -42,9 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Category(UnitTest.class)
 public class RowResultTest {
@@ -64,6 +62,8 @@ public class RowResultTest {
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
         assertEquals(false, result.isChanged());
+        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
+        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
     }
 
     @Test

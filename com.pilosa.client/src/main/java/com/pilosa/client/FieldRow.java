@@ -37,47 +37,25 @@ package com.pilosa.client;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.List;
-
-public class ValueCountResult implements QueryResult {
-    @Override
-    public int getType() {
-        return QueryResultType.VAL_COUNT;
+public final class FieldRow {
+    public static FieldRow create(String fieldName, long rowID) {
+        return new FieldRow(fieldName, rowID, "");
     }
 
-    @Override
-    public RowResult getRow() {
-        return RowResult.defaultResult();
+    public static FieldRow create(String fieldName, String rowKey) {
+        return new FieldRow(fieldName, 0, rowKey);
     }
 
-    @Override
-    public List<CountResultItem> getCountItems() {
-        return TopNResult.defaultItems();
+    public String getFieldName() {
+        return this.fieldName;
     }
 
-    @Override
-    public long getCount() {
-        return this.count;
+    public long getRowID() {
+        return this.rowID;
     }
 
-    @Override
-    public long getValue() {
-        return this.value;
-    }
-
-    @Override
-    public boolean isChanged() {
-        return false;
-    }
-
-    @Override
-    public List<GroupCount> getGroupCounts() {
-        return GroupCountsResult.defaultItems();
-    }
-
-    @Override
-    public RowIdentifiersResult getRowIdentifiers() {
-        return RowIdentifiersResult.defaultResult();
+    public String getRowKey() {
+        return this.rowKey;
     }
 
     @Override
@@ -85,36 +63,43 @@ public class ValueCountResult implements QueryResult {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ValueCountResult)) {
+        if (!(obj instanceof FieldRow)) {
             return false;
         }
-        ValueCountResult rhs = (ValueCountResult) obj;
+        FieldRow rhs = (FieldRow) obj;
         return new EqualsBuilder()
-                .append(this.value, rhs.value)
-                .append(this.count, rhs.count)
+                .append(this.fieldName, rhs.fieldName)
+                .append(this.rowID, rhs.rowID)
+                .append(this.rowKey, rhs.rowKey)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(31, 47)
-                .append(this.value)
-                .append(this.count)
+                .append(this.fieldName)
+                .append(this.rowID)
+                .append(this.rowKey)
                 .toHashCode();
     }
 
-    static ValueCountResult create(long sum, long count) {
-        ValueCountResult result = new ValueCountResult();
-        result.value = sum;
-        result.count = count;
-        return result;
+    @Override
+    public String toString() {
+        return String.format("FieldRow(field=%s, rowID=%d, rowKey=%s)",
+                this.fieldName, this.rowID, this.rowKey);
     }
 
-    static ValueCountResult fromInternal(Internal.QueryResult q) {
-        Internal.ValCount obj = q.getValCount();
-        return create(obj.getVal(), obj.getCount());
+    static FieldRow fromInternal(Internal.FieldRow q) {
+        return new FieldRow(q.getField(), q.getRowID(), q.getRowKey());
     }
 
-    private long value;
-    private long count;
+    private FieldRow(String fieldName, long rowID, String rowKey) {
+        this.fieldName = fieldName;
+        this.rowID = rowID;
+        this.rowKey = rowKey;
+    }
+
+    private final String fieldName;
+    private final long rowID;
+    private final String rowKey;
 }

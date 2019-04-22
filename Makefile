@@ -1,5 +1,5 @@
 
-.PHONY: build clean doc generate test test-all release
+.PHONY: build clean cover doc fast generate test test-all release
 
 build:
 	mvn -f com.pilosa.client/pom.xml clean package
@@ -9,6 +9,9 @@ clean:
 
 doc:
 	mvn -f com.pilosa.client/pom.xml javadoc:javadoc
+
+fast:
+	mvn -f com.pilosa.client/pom.xml clean package -Dskip.tests=true
 
 generate:
 	protoc --java_out=com.pilosa.client/src/main/java/ com.pilosa.client/src/internal/public.proto

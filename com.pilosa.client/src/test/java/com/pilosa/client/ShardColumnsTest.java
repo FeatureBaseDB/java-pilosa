@@ -114,7 +114,7 @@ public class ShardColumnsTest {
                 .setRoaring(isRoaring)
                 .build();
         return addColumns(ShardColumns.create(
-                Index.create(INDEX_NAME, IndexOptions.builder().keys(indexKeys).build())
+                Index.create(INDEX_NAME, IndexOptions.builder().setKeys(indexKeys).build())
                         .field(FIELD_NAME, FieldOptions.builder().keys(fieldKeys).build()),
                 1L, ClientOptions.DEFAULT_SHARD_WIDTH, options), columns);
     }

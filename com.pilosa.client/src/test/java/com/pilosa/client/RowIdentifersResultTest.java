@@ -34,23 +34,33 @@
 
 package com.pilosa.client;
 
-import java.util.List;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public interface QueryResult {
-    int getType();
+import java.util.Arrays;
 
-    RowResult getRow();
+import static org.junit.Assert.assertEquals;
 
-    List<CountResultItem> getCountItems();
+@Category(UnitTest.class)
+public class RowIdentifersResultTest {
+    @Test
+    public void createRowIdentifiersResultTest() {
+        RowIdentifiersResult result = RowIdentifiersResult.withIDs(Arrays.asList(1L, 2L, 3L));
+        assertEquals(QueryResultType.ROW_IDENTIFIERS, result.getType());
+        assertEquals(0, result.getCount());
+        assertEquals(RowResult.defaultResult(), result.getRow());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getValue());
+        assertEquals(false, result.isChanged());
+        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
+        assertEquals(RowIdentifiersResult.withIDs(Arrays.asList(1L, 2L, 3L)),
+                result.getRowIdentifiers());
+    }
 
-    long getCount();
-
-    long getValue();
-
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    @Test
+    public void testHashCode() {
+        RowIdentifiersResult result = RowIdentifiersResult.withIDs(Arrays.asList(1L, 2L, 3L));
+        assertEquals(result.hashCode(), result.hashCode());
+    }
 }

@@ -86,12 +86,12 @@ public class PilosaClientIT {
             FieldOptions fieldOptions = FieldOptions.withDefaults();
             this.field = this.colIndex.field("collab", fieldOptions);
             fieldOptions = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             this.keyField = this.index.field("index-key-field", fieldOptions);
 
             IndexOptions indexOptions = IndexOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             this.keyIndex = schema.index("key-index", indexOptions);
 
@@ -361,7 +361,7 @@ public class PilosaClientIT {
     public void testKeys() throws IOException {
         try (PilosaClient client = getClient()) {
             FieldOptions options = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("keys-test", options);
             client.syncSchema(this.schema);
@@ -376,7 +376,7 @@ public class PilosaClientIT {
     @Test
     public void testNot() throws IOException {
         IndexOptions options = IndexOptions.builder()
-                .trackExistence(true)
+                .setTrackExistence(true)
                 .build();
         Index index = this.schema.index("not-test", options);
         Field field = index.field("f1");
@@ -422,6 +422,27 @@ public class PilosaClientIT {
             } finally {
                 client.deleteIndex(index);
             }
+        }
+    }
+
+    @Test
+    public void testGroupBy() throws IOException {
+        Field field = index.field("groupby-field");
+        try (PilosaClient client = getClient()) {
+            client.createField(field);
+            client.query(index.batchQuery(
+                    field.set(1, 100),
+                    field.set(1, 200),
+                    field.set(2, 200)
+            ));
+            QueryResponse response = client.query(index.groupBy(field.rows()));
+
+            List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1));
+            List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2));
+            List<GroupCount> target = Arrays.asList(
+                    GroupCount.create(fieldRows1, 2),
+                    GroupCount.create(fieldRows2, 1));
+            assertEquals(target, response.getResult().getGroupCounts());
         }
     }
 
@@ -517,6 +538,54 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importRowIDColumnIDManualAddressTest() throws IOException {
+        try (PilosaClient client = this.getClientManualAddress()) {
+            LineDeserializer deserializer = new RowIDColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_id.csv", deserializer);
+            Field field = this.index.field("importfield-rowid-colid");
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importRowIDColumnKeyManualAddressTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_id-column_key.csv", deserializer);
+            Field field = this.keyIndex.field("importfield-rowid-colkey");
+            client.ensureField(field);
+            client.importField(field, iterator);
+            PqlBatchQuery bq = this.keyIndex.batchQuery(
+                    field.row(1L),
+                    field.row(5L),
+                    field.row(3L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<String> target = Arrays.asList("ten", "twenty", "forty-one");
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getKeys().get(0));
+            }
+        }
+    }
+
+    @Test
     public void importRowIDColumnKeyTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             LineDeserializer deserializer = new RowIDColumnKeyDeserializer();
@@ -604,7 +673,7 @@ public class PilosaClientIT {
             LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
             RecordIterator iterator = csvRecordIterator("row_key-column_key.csv", deserializer);
             FieldOptions options = FieldOptions.builder()
-                    .keys(true)
+                    .setKeys(true)
                     .build();
             Field field = this.keyIndex.field("importfield-rowkey-columnkey", options);
             client.ensureField(field);
@@ -702,7 +771,7 @@ public class PilosaClientIT {
             target = Arrays.asList(5L);
             Calendar start = new GregorianCalendar(2016, 1, 1, 0, 0, 0);
             Calendar end = new GregorianCalendar(2019, 1, 1, 0, 0, 0);
-            response = client.query(field.range(10, start.getTime(), end.getTime()));
+            response = client.query(field.row(10, start.getTime(), end.getTime()));
             assertEquals(target, response.getResult().getRow().getColumns());
 
             // test clear import
@@ -1017,6 +1086,10 @@ public class PilosaClientIT {
             Index index3 = schema3.index("index11");
             assertEquals(index, index3);
 
+            Schema schema4 = Schema.defaultSchema();
+            Index index4 = schema4.index("index11", indexOptions);
+            client.syncSchema(schema4);
+            assertEquals(index, index4);
         } finally {
             try (PilosaClient client = this.getClient()) {
                 if (index != null) {
@@ -1611,11 +1684,14 @@ public class PilosaClientIT {
         String bindAddress = getBindAddress();
         Cluster cluster = Cluster.withHost(URI.address(bindAddress));
         ClientOptions.Builder optionsBuilder = ClientOptions.builder();
-        long shardWidth = getShardWidth();
-        if (shardWidth > 0) {
-            optionsBuilder.setShardWidth(shardWidth);
-        }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
+    }
+
+    private PilosaClient getClientManualAddress() {
+        String bindAddress = getBindAddress();
+        ClientOptions.Builder optionsBuilder = ClientOptions.builder()
+                .setManualServerAddress(true);
+        return new InsecurePilosaClientIT(bindAddress, optionsBuilder.build());
     }
 
     private String getBindAddress() {
@@ -1673,7 +1749,6 @@ class StaticColumnIterator implements RecordIterator {
                 this.records.add(Column.create("ten", "five"));
                 this.records.add(Column.create("two", "three"));
                 this.records.add(Column.create("seven", "one"));
-
             }
         } else {
             if (intValues) {

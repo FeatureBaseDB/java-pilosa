@@ -106,6 +106,16 @@ public final class RowResult implements QueryResult {
     }
 
     @Override
+    public List<GroupCount> getGroupCounts() {
+        return GroupCountsResult.defaultItems();
+    }
+
+    @Override
+    public RowIdentifiersResult getRowIdentifiers() {
+        return RowIdentifiersResult.defaultResult();
+    }
+
+    @Override
     public String toString() {
         return String.format("RowResult(attrs=%s, columns=%s, keys=%s)",
                 this.attributes, this.columns, this.keys);

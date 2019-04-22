@@ -34,23 +34,48 @@
 
 package com.pilosa.client;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public interface QueryResult {
-    int getType();
+import static org.junit.Assert.*;
 
-    RowResult getRow();
+@Category(UnitTest.class)
+public class GroupCountsResultTest {
+    @Test
+    public void testCreateGroupCountsResult() {
+        GroupCountsResult result = createSampleResult();
+        assertEquals(QueryResultType.GROUP_COUNTS, result.getType());
+        assertEquals(0, result.getCount());
+        assertEquals(RowResult.defaultResult(), result.getRow());
+        assertEquals(TopNResult.defaultItems(), result.getCountItems());
+        assertEquals(0L, result.getCount());
+        assertEquals(0L, result.getValue());
+        assertEquals(false, result.isChanged());
+        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
+    }
 
-    List<CountResultItem> getCountItems();
+    @Test
+    public void testEquals() {
+        GroupCountsResult r1 = createSampleResult();
+        GroupCountsResult r2 = createSampleResult();
+        assertTrue(r1.equals(r1));
+        assertTrue(r1.equals(r2));
+        assertFalse(r1.equals(new Integer(10)));
+    }
 
-    long getCount();
+    @Test
+    public void testHashCode() {
+        assertEquals(createSampleResult().hashCode(), createSampleResult().hashCode());
+    }
 
-    long getValue();
-
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    private GroupCountsResult createSampleResult() {
+        List<FieldRow> groups = Collections.singletonList(FieldRow.create("f1", 42));
+        List<GroupCount> items = new ArrayList<>();
+        items.add(GroupCount.create(groups, 10));
+        return GroupCountsResult.create(items);
+    }
 }

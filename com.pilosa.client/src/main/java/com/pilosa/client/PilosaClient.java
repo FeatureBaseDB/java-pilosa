@@ -65,7 +65,6 @@ import javax.net.ssl.HostnameVerifier;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
@@ -125,7 +124,21 @@ public class PilosaClient implements AutoCloseable {
      * @return a PilosaClient
      */
     public static PilosaClient withURI(URI uri) {
-        return PilosaClient.withCluster(Cluster.withHost(uri));
+        return PilosaClient.withURI(uri, null);
+    }
+
+    /**
+     * Creates a client with the given address.
+     *
+     * @param uri address of the server
+     * @return a PilosaClient
+     * @throws PilosaURIException if the given address is malformed
+     */
+    public static PilosaClient withURI(URI uri, ClientOptions options) {
+        if (options == null) {
+            options = ClientOptions.builder().build();
+        }
+        return new PilosaClient(uri, options);
     }
 
     /**
@@ -350,7 +363,7 @@ public class PilosaClient implements AutoCloseable {
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
-                    // do not read system indexes
+                    // do not read system fields
                     if (systemFields.contains(fieldInfo.getName())) {
                         continue;
                     }
@@ -396,7 +409,7 @@ public class PilosaClient implements AutoCloseable {
             } else {
                 Index localIndex = schema.getIndexes().get(indexName);
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
-                    // do not read system indexes
+                    // do not read system fields
                     if (systemFields.contains(fieldEntry.getKey())) {
                         continue;
                     }
@@ -439,13 +452,20 @@ public class PilosaClient implements AutoCloseable {
         this.options = options;
     }
 
-    protected PilosaClient newClientInstance(Cluster cluster, ClientOptions options) {
-        // find the constructor with the correct arguments
-        try {
-            Constructor constructor = this.getClass().getDeclaredConstructor(Cluster.class, ClientOptions.class);
-            return (PilosaClient) constructor.newInstance(cluster, options);
-        } catch (Exception e) {
-            throw new RuntimeException("This PilosaClient descendant does not have the correct constructor");
+    protected PilosaClient(URI uri, ClientOptions options) {
+        this.options = options;
+        if (options.isManualServerAddress()) {
+            this.manualServerAddress = uri.getNormalized();
+            FragmentNodeURI nodeURI = new FragmentNodeURI();
+            nodeURI.setScheme(uri.getScheme());
+            nodeURI.setHost(uri.getHost());
+            nodeURI.setPort(uri.getPort());
+            FragmentNode node = new FragmentNode();
+            node.setURI(nodeURI);
+            updateCoordinatorAddress(node);
+            this.fragmentNode = node;
+        } else {
+            this.cluster = Cluster.withHost(uri);
         }
     }
 
@@ -525,56 +545,65 @@ public class PilosaClient implements AutoCloseable {
         if (this.client == null) {
             connect();
         }
-        try {
-            CloseableHttpResponse response = client.execute(request);
-            Header warningHeader = response.getFirstHeader("warning");
-            if (warningHeader != null) {
-                logger.warn(warningHeader.getValue());
-            }
-            if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode < 200 || statusCode >= 300) {
-                    HttpEntity entity = response.getEntity();
-                    if (entity != null) {
-                        try (InputStream src = entity.getContent()) {
-                            // try to throw the appropriate exception
-                            if (statusCode == 409) {
-                                throw new HttpConflict();
-                            }
-                            String responseError = readStream(src);
-                            // couldn't find the exact exception, just throw a generic one
-                            throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
-                        }
-                    }
-                    throw new PilosaException(String.format("Server error (%d): empty response", statusCode));
-                }
-                // the entity should be consumed, if not returned
-                if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
-                    try {
-                        EntityUtils.consume(response.getEntity());
-                    } finally {
-                        response.close();
-                    }
-                }
-            }
-            return response;
-        } catch (IOException ex) {
-            throw new PilosaException(errorMessage, ex);
+        CloseableHttpResponse response = client.execute(request);
+        Header warningHeader = response.getFirstHeader("warning");
+        if (warningHeader != null) {
+            logger.warn(warningHeader.getValue());
         }
+        if (returnResponse != ReturnClientResponse.RAW_RESPONSE) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    try (InputStream src = entity.getContent()) {
+                        // try to throw the appropriate exception
+                        if (statusCode == 409) {
+                            throw new HttpConflict();
+                        }
+                        String responseError = readStream(src);
+                        // couldn't find the exact exception, just throw a generic one
+                        throw new PilosaException(String.format("Server error (%d): %s", statusCode, responseError));
+                    }
+                }
+                throw new PilosaException(String.format("Server error (%d): empty response", statusCode));
+            }
+            // the entity should be consumed, if not returned
+            if (returnResponse == ReturnClientResponse.NO_RESPONSE) {
+                try {
+                    EntityUtils.consume(response.getEntity());
+                } finally {
+                    response.close();
+                }
+            }
+        }
+        return response;
     }
 
-    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers, boolean useCoordinator) {
+    HttpRequestBase makeRequest(final String method,
+                                final String path,
+                                final ByteArrayEntity data,
+                                final Header[] headers,
+                                boolean useCoordinator) {
         String uri;
-        if (useCoordinator) {
-            updateCoordinatorAddress();
-            uri = this.coordinatorAddress.getNormalized();
+        if (this.options.isManualServerAddress()) {
+            uri = this.manualServerAddress;
         } else {
-            uri = this.getAddress();
+            if (useCoordinator) {
+                updateCoordinatorAddress();
+                uri = this.coordinatorAddress.getNormalized();
+            } else {
+                uri = getAddress();
+            }
         }
         return makeRequest(method, path, data, headers, uri);
     }
 
-    HttpRequestBase makeRequest(final String method, final String path, final ByteArrayEntity data, final Header[] headers, String hostUri) {
+
+    HttpRequestBase makeRequest(final String method,
+                                final String path,
+                                final ByteArrayEntity data,
+                                final Header[] headers,
+                                String hostUri) {
         HttpRequestBase request;
         String uri = hostUri + path;
         switch (method) {
@@ -631,17 +660,19 @@ public class PilosaClient implements AutoCloseable {
         boolean success = records.attemptTranslateKeys(this, rowKeyToColumnIDMap, null);
         // TODO: log success
         ImportRequest importRequest = records.toImportRequest();
-        if (importRequest.isRoaring() || records.isIndexKeys() || records.isFieldKeys()) {
-            nodes = new ArrayList<>();
-            updateCoordinatorAddress();
-            nodes.add(this.coordinatorNode);
+        if (this.options.isManualServerAddress()) {
+            importNode(this.manualServerAddress, importRequest);
         } else {
-            nodes = fetchFragmentNodes(indexName, records.getShard());
-        }
-        for (IFragmentNode node : nodes) {
-//            Cluster cluster = Cluster.withHost(node.toURI());
-//            PilosaClient client = this.newClientInstance(cluster, this.options);
-            importNode(node.toURI().getNormalized(), importRequest);
+            if (importRequest.isRoaring() || records.isIndexKeys() || records.isFieldKeys()) {
+                nodes = new ArrayList<>();
+                IFragmentNode node = fetchCoordinatorNode();
+                nodes.add(node);
+            } else {
+                nodes = fetchFragmentNodes(indexName, records.getShard());
+            }
+            for (IFragmentNode node : nodes) {
+                importNode(node.toURI().getNormalized(), importRequest);
+            }
         }
     }
 
@@ -764,9 +795,13 @@ public class PilosaClient implements AutoCloseable {
 
     private synchronized void updateCoordinatorAddress() {
         if (this.coordinatorAddress == null) {
-            this.coordinatorNode = fetchCoordinatorNode();
-            this.coordinatorAddress = this.coordinatorNode.toURI();
+            updateCoordinatorAddress(fetchCoordinatorNode());
         }
+    }
+
+    private void updateCoordinatorAddress(IFragmentNode fragmentNode) {
+        this.coordinatorNode = fragmentNode;
+        this.coordinatorAddress = this.coordinatorNode.toURI();
     }
 
     private enum ReturnClientResponse {
@@ -803,6 +838,8 @@ public class PilosaClient implements AutoCloseable {
     private Map<String, List<IFragmentNode>> fragmentNodeCache = null;
     private URI coordinatorAddress = null;
     private IFragmentNode coordinatorNode = null;
+    private IFragmentNode fragmentNode = null;
+    private String manualServerAddress;
 }
 
 class QueryRequest {

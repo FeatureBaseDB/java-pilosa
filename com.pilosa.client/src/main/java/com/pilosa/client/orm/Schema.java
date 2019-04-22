@@ -76,6 +76,10 @@ public class Schema {
         return index;
     }
 
+    public Index index(String name, Map<String, Object> options) {
+        return index(name, IndexOptions.fromMap(options));
+    }
+
     /**
      * Copies other index to this schema and returns the new index
      *

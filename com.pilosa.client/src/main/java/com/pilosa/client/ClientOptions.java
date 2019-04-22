@@ -121,8 +121,8 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setShardWidth(long shardWidth) {
-            this.shardWidth = shardWidth;
+        public Builder setManualServerAddress(boolean manualServerAddress) {
+            this.manualServerAddress = manualServerAddress;
             return this;
         }
 
@@ -133,7 +133,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.importThreadCount, this.shardWidth);
+                    this.sslContext, this.manualServerAddress);
         }
 
         private int socketTimeout = 300000;
@@ -142,8 +142,8 @@ public final class ClientOptions {
         private int connectionPoolSizePerRoute = 10;
         private int connectionPoolTotalSize = 100;
         private SSLContext sslContext = SSLContexts.createDefault();
-        private int importThreadCount = Runtime.getRuntime().availableProcessors();
         private long shardWidth = DEFAULT_SHARD_WIDTH;
+        private boolean manualServerAddress = false;
     }
 
     public static final long DEFAULT_SHARD_WIDTH = 1048576L;
@@ -180,21 +180,21 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public long getShardWidth() {
-        return this.shardWidth;
+    public boolean isManualServerAddress() {
+        return this.manualServerAddress;
     }
 
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final int importThreadCount,
-                          final long shardWidth) {
+                          final SSLContext sslContext,
+                          final boolean manualServerAddress) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
         this.retryCount = retryCount;
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.shardWidth = shardWidth;
+        this.manualServerAddress = manualServerAddress;
     }
 
     private final int socketTimeout; // milliseconds
@@ -203,5 +203,5 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final long shardWidth;
+    private final boolean manualServerAddress;
 }

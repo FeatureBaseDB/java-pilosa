@@ -120,6 +120,66 @@ public class Field {
     }
 
     /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowID
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(long rowID, Date fromTimestamp, Date toTimestamp) {
+        String text = String.format("Row(%s=%d%s)", this.name, rowID,
+                fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowID));
+    }
+
+    /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowKey
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(String rowKey, Date fromTimestamp, Date toTimestamp) {
+        String text = String.format("Row(%s='%s'%s)", this.name, rowKey,
+                fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowKey));
+    }
+
+    /**
+     * Creates a Row query.
+     * <p>
+     * Row retrieves the indices of all columns in a row
+     * based on whether the row label or column label is given in the query.
+     * It also retrieves any attributes set on that row or column.
+     *
+     * @param rowBool       true or false
+     * @param fromTimestamp the start time (inclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
+     * @return a PQL query
+     * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
+     */
+    public PqlRowQuery row(boolean rowBool, Date fromTimestamp, Date toTimestamp) {
+        String text = String.format("Row(%s=%b%s)", this.name, rowBool,
+                fmtTimestamps(fromTimestamp, toTimestamp));
+        return this.index.pqlRowQuery(String.format(text,
+                this.name, rowBool));
+    }
+
+    /**
      * Creates a Set query.
      * <p>
      *  Set assigns a value of 1 to a column in the binary matrix,
@@ -547,12 +607,16 @@ public class Field {
      * <p>
      *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
+     * </p>
+     *
+     * <p>Deprecated at Pilosa 1.3</p>
      *
      * @param rowID row ID
      * @param start start timestamp
      * @param end   end timestamp
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#range">Range Query</a>
+     * @deprecated
      */
     @SuppressWarnings("WeakerAccess")
     public PqlRowQuery range(long rowID, Date start, Date end) {
@@ -563,7 +627,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query. (Enterprise version)
+     * Creates a Range query.
      * <p>
      *     Similar to Row, but only returns bits which were set with timestamps
      *     between the given start and end timestamps.
@@ -902,6 +966,63 @@ public class Field {
         return this.index.pqlQuery(qry, hasKeys);
     }
 
+    public PqlRowsQuery rows() {
+        return this.index.pqlRowsQuery(String.format("Rows(field='%s')", this.name));
+    }
+
+    public PqlRowsQuery rows(long limit) {
+        String qry = String.format("Rows(field='%s',limit=%d)", this.name, limit);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',limit=%d,column=%d)",
+                this.name, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',limit=%d,column='%s')",
+                this.name, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long previousRowID, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column=%d)",
+                this.name, previousRowID, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(long previousRowID, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous=%d,limit=%d,column='%s')",
+                this.name, previousRowID, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(String previousRowKey, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous='%s',limit=%d,column=%d)",
+                this.name, previousRowKey, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(String previousRowKey, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous='%s',limit=%d,column='%s')",
+                this.name, previousRowKey, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(boolean previousRowBool, long limit, long columnID) {
+        String qry = String.format("Rows(field='%s',previous=%b,limit=%d,column=%d)",
+                this.name, previousRowBool, limit, columnID);
+        return this.index.pqlRowsQuery(qry);
+    }
+
+    public PqlRowsQuery rows(boolean previousRowBool, long limit, String columnKey) {
+        String qry = String.format("Rows(field='%s',previous=%b,limit=%d,column='%s')",
+                this.name, previousRowBool, limit, columnKey);
+        return this.index.pqlRowsQuery(qry);
+    }
+
     private PqlRowQuery binaryOperation(String op, long n) {
         String qry = String.format("Range(%s %s %d)", this.name, op, n);
         return this.index.pqlRowQuery(qry);
@@ -962,6 +1083,23 @@ public class Field {
         this.index = index;
         this.name = name;
         this.options = options;
+    }
+
+    private static String fmtTimestamps(Date fromTimestamp, Date toTimestamp) {
+        if (fromTimestamp == null && toTimestamp == null) {
+            return "";
+        } else if (fromTimestamp == null) {
+            return String.format(",to=%sT%s",
+                    fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
+
+        } else if (toTimestamp == null) {
+            return String.format(",from=%sT%s",
+                    fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp));
+
+        }
+        return String.format(",from=%sT%s,to=%sT%s",
+                fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp),
+                fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
     }
 
     private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");

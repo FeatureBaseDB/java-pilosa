@@ -52,6 +52,8 @@ public class ValueCountResultTest {
         assertEquals(10, result.getCount());
         assertEquals(20L, result.getValue());
         assertEquals(false, result.isChanged());
+        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
+        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
     }
 
     @Test

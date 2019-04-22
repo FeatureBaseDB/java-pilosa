@@ -52,6 +52,8 @@ public class BoolResultTest {
         assertEquals(0L, result.getCount());
         assertEquals(0L, result.getValue());
         assertEquals(true, result.isChanged());
+        assertEquals(GroupCountsResult.defaultItems(), result.getGroupCounts());
+        assertEquals(RowIdentifiersResult.defaultResult(), result.getRowIdentifiers());
     }
 
     @Test

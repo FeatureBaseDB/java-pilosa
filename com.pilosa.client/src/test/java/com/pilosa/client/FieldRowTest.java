@@ -34,23 +34,39 @@
 
 package com.pilosa.client;
 
-import java.util.List;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-public interface QueryResult {
-    int getType();
+import static org.junit.Assert.*;
 
-    RowResult getRow();
+@Category(UnitTest.class)
+public class FieldRowTest {
+    @Test
+    public void testFieldRow() {
+        FieldRow f = FieldRow.create("f1", 42);
+        assertEquals("f1", f.getFieldName());
+        assertEquals(42, f.getRowID());
+        assertEquals("", f.getRowKey());
+        assertEquals("FieldRow(field=f1, rowID=42, rowKey=)", f.toString());
 
-    List<CountResultItem> getCountItems();
+        f = FieldRow.create("f1", "forty-two");
+        assertEquals("f1", f.getFieldName());
+        assertEquals(0, f.getRowID());
+        assertEquals("forty-two", f.getRowKey());
+        assertEquals("FieldRow(field=f1, rowID=0, rowKey=forty-two)", f.toString());
+    }
 
-    long getCount();
+    @Test
+    public void testEquals() {
+        FieldRow f = FieldRow.create("f1", 42);
+        assertTrue(f.equals(f));
+        assertFalse(f.equals(new Integer(42)));
+    }
 
-    long getValue();
-
-    boolean isChanged();
-
-    List<GroupCount> getGroupCounts();
-
-    RowIdentifiersResult getRowIdentifiers();
-
+    @Test
+    public void testHashCode() {
+        FieldRow f1 = FieldRow.create("f1", 42);
+        FieldRow f2 = FieldRow.create("f1", 42);
+        assertEquals(f1.hashCode(), f2.hashCode());
+    }
 }

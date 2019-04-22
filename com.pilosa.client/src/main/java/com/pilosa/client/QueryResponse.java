@@ -150,6 +150,12 @@ public final class QueryResponse {
                 case QueryResultType.NIL:
                     results.add(NullResult.defaultResult());
                     break;
+                case QueryResultType.GROUP_COUNTS:
+                    results.add(GroupCountsResult.fromInternal(q));
+                    break;
+                case QueryResultType.ROW_IDENTIFIERS:
+                    results.add(RowIdentifiersResult.fromInternal(q));
+                    break;
                 default:
                     throw new PilosaException(String.format("Unknown type: %d", type));
             }

@@ -122,12 +122,13 @@ public final class RowIdentifiersResult implements QueryResult {
     }
 
     static {
-        defaultResult = new RowIdentifiersResult(null, null);;
+        defaultResult = new RowIdentifiersResult(null, null);
+        ;
     }
 
     private RowIdentifiersResult(List<Long> rowIDs, List<String> rowKeys) {
-        this.rowIDs = (rowIDs == null)? new ArrayList<Long>(0) : rowIDs;
-        this.rowKeys = (rowKeys == null)? new ArrayList<String>(0) : rowKeys;
+        this.rowIDs = (rowIDs == null) ? new ArrayList<Long>(0) : rowIDs;
+        this.rowKeys = (rowKeys == null) ? new ArrayList<String>(0) : rowKeys;
     }
 
     private final static RowIdentifiersResult defaultResult;

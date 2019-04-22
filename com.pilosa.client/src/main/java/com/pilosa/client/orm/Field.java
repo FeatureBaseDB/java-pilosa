@@ -128,13 +128,13 @@ public class Field {
      *
      * @param rowID
      * @param fromTimestamp the start time (inclusive). Pass null for the default.
-     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(long rowID, Date fromTimestamp, Date toTimestamp) {
         String text = String.format("Row(%s=%d%s)", this.name, rowID,
-                                    fmtTimestamps(fromTimestamp, toTimestamp));
+                fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
                 this.name, rowID));
     }
@@ -148,13 +148,13 @@ public class Field {
      *
      * @param rowKey
      * @param fromTimestamp the start time (inclusive). Pass null for the default.
-     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(String rowKey, Date fromTimestamp, Date toTimestamp) {
         String text = String.format("Row(%s='%s'%s)", this.name, rowKey,
-                                    fmtTimestamps(fromTimestamp, toTimestamp));
+                fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
                 this.name, rowKey));
     }
@@ -166,15 +166,15 @@ public class Field {
      * based on whether the row label or column label is given in the query.
      * It also retrieves any attributes set on that row or column.
      *
-     * @param rowBool true or false
+     * @param rowBool       true or false
      * @param fromTimestamp the start time (inclusive). Pass null for the default.
-     * @param toTimestamp the end time (exclusive). Pass null for the default.
+     * @param toTimestamp   the end time (exclusive). Pass null for the default.
      * @return a PQL query
      * @see <a href="https://www.pilosa.com/docs/query-language/#row">Row Query</a>
      */
     public PqlRowQuery row(boolean rowBool, Date fromTimestamp, Date toTimestamp) {
         String text = String.format("Row(%s=%b%s)", this.name, rowBool,
-                                    fmtTimestamps(fromTimestamp, toTimestamp));
+                fmtTimestamps(fromTimestamp, toTimestamp));
         return this.index.pqlRowQuery(String.format(text,
                 this.name, rowBool));
     }
@@ -1060,6 +1060,11 @@ public class Field {
                 .toHashCode();
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s(%s)", this.name, this.getOptions().toString());
+    }
+
     /**
      * Creates a field.
      *
@@ -1084,15 +1089,15 @@ public class Field {
         if (fromTimestamp == null && toTimestamp == null) {
             return "";
         } else if (fromTimestamp == null) {
-            return  String.format(",to=%sT%s",
+            return String.format(",to=%sT%s",
                     fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
 
         } else if (toTimestamp == null) {
-            return  String.format(",from=%sT%s",
+            return String.format(",from=%sT%s",
                     fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp));
 
         }
-        return  String.format(",from=%sT%s,to=%sT%s",
+        return String.format(",from=%sT%s,to=%sT%s",
                 fmtDate.format(fromTimestamp), fmtTime.format(fromTimestamp),
                 fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
     }

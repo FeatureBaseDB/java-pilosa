@@ -106,6 +106,7 @@ public final class IndexOptions {
          * @param enable
          * @return IndexOptions builder
          */
+
         public Builder setTrackExistence(boolean enable) {
             this.trackExistence = enable;
             return this;
@@ -140,10 +141,10 @@ public final class IndexOptions {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             switch (entry.getKey()) {
                 case "keys":
-                    builder.setKeys((Boolean)(entry.getValue()));
+                    builder.setKeys((Boolean) (entry.getValue()));
                     break;
                 case "trackExistence":
-                    builder.setTrackExistence((Boolean)(entry.getValue()));
+                    builder.setTrackExistence((Boolean) (entry.getValue()));
                     break;
                 default:
                     throw new IllegalArgumentException(String.format("Unknown index option: '%s'", entry.getKey()));

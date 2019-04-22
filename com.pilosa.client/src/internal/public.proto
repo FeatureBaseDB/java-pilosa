@@ -25,7 +25,7 @@ message Pair {
 message FieldRow{
 	string Field = 1;
 	uint64 RowID = 2;
-	string RowKey = 3;
+    string RowKey = 3;
 }
 
 message GroupCount{

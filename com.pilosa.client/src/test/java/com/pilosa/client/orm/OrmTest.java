@@ -134,10 +134,10 @@ public class OrmTest {
 
         q = collabField.row("ten", start.getTime(), end.getTime());
         assertEquals("Row(collaboration='ten',from=1970-01-01T00:00,to=2000-02-02T03:04)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row("ten", start.getTime(), null);
         assertEquals("Row(collaboration='ten',from=1970-01-01T00:00)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row("ten", null, end.getTime());
         assertEquals("Row(collaboration='ten',to=2000-02-02T03:04)",
                 q.serialize().getQuery());
@@ -147,10 +147,10 @@ public class OrmTest {
 
         q = collabField.row(10, start.getTime(), end.getTime());
         assertEquals("Row(collaboration=10,from=1970-01-01T00:00,to=2000-02-02T03:04)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row(10, start.getTime(), null);
         assertEquals("Row(collaboration=10,from=1970-01-01T00:00)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row(10, null, end.getTime());
         assertEquals("Row(collaboration=10,to=2000-02-02T03:04)",
                 q.serialize().getQuery());
@@ -160,10 +160,10 @@ public class OrmTest {
 
         q = collabField.row(true, start.getTime(), end.getTime());
         assertEquals("Row(collaboration=true,from=1970-01-01T00:00,to=2000-02-02T03:04)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row(true, start.getTime(), null);
         assertEquals("Row(collaboration=true,from=1970-01-01T00:00)",
-                     q.serialize().getQuery());
+                q.serialize().getQuery());
         q = collabField.row(true, null, end.getTime());
         assertEquals("Row(collaboration=true,to=2000-02-02T03:04)",
                 q.serialize().getQuery());

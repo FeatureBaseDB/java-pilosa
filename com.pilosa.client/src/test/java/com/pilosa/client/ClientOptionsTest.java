@@ -66,7 +66,6 @@ public class ClientOptionsTest {
                 .setSocketTimeout(1000)
                 .setRetryCount(5)
                 .setSslContext(sslContext)
-                .setShardWidth(1024)
                 .build();
         assertEquals(2, options.getConnectionPoolSizePerRoute());
         assertEquals(50, options.getConnectionPoolTotalSize());
@@ -74,6 +73,5 @@ public class ClientOptionsTest {
         assertEquals(1000, options.getSocketTimeout());
         assertEquals(5, options.getRetryCount());
         assertEquals(sslContext, options.getSslContext());
-        assertEquals(1024, options.getShardWidth());
     }
 }

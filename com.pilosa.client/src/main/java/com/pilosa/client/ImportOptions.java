@@ -47,9 +47,12 @@ public class ImportOptions {
         }
 
         public ImportOptions build() {
-            return new ImportOptions(this.threadCount,
-                    this.timeoutMs, this.batchSize, this.strategy,
-                    this.roaring, this.clear);
+            return new ImportOptions(
+                    this.threadCount,
+                    this.batchSize,
+                    this.roaring,
+                    this.clear,
+                    this.translateKeys);
         }
 
         public Builder setThreadCount(int threadCount) {
@@ -57,18 +60,8 @@ public class ImportOptions {
             return this;
         }
 
-        public Builder setTimeoutMs(long timeoutMs) {
-            this.timeoutMs = timeoutMs;
-            return this;
-        }
-
         public Builder setBatchSize(int batchSize) {
             this.batchSize = batchSize;
-            return this;
-        }
-
-        public Builder setStrategy(Strategy strategy) {
-            this.strategy = (strategy == Strategy.DEFAULT) ? Strategy.BATCH : strategy;
             return this;
         }
 
@@ -82,26 +75,28 @@ public class ImportOptions {
             return this;
         }
 
+        public Builder setTranslateKeys(boolean translateKeys) {
+            this.translateKeys = translateKeys;
+            return this;
+        }
+
         private int threadCount = 1;
-        private long timeoutMs = 100;
         private int batchSize = 100000;
-        private Strategy strategy = Strategy.BATCH;
         private boolean roaring = false;
         private boolean clear = false;
+        private boolean translateKeys = false;
     }
 
     private ImportOptions(int threadCount,
-                          long timeoutMs,
                           int batchSize,
-                          Strategy strategy,
                           boolean roaring,
-                          boolean clear) {
+                          boolean clear,
+                          boolean translateKeys) {
         this.threadCount = threadCount;
-        this.timeoutMs = timeoutMs;
         this.batchSize = batchSize;
-        this.strategy = strategy;
         this.roaring = roaring;
         this.clear = clear;
+        this.translateKeys = translateKeys;
     }
 
     public static Builder builder() {
@@ -112,16 +107,8 @@ public class ImportOptions {
         return this.threadCount;
     }
 
-    public long getTimeoutMs() {
-        return this.timeoutMs;
-    }
-
     public int getBatchSize() {
         return this.batchSize;
-    }
-
-    public Strategy getStrategy() {
-        return this.strategy;
     }
 
     public long getShardWidth() {
@@ -136,10 +123,13 @@ public class ImportOptions {
         return this.clear;
     }
 
+    public boolean isTranslateKeys() {
+        return this.translateKeys;
+    }
+
     final private int threadCount;
-    final private long timeoutMs;
     final private int batchSize;
-    final private Strategy strategy;
     final private boolean roaring;
     final private boolean clear;
+    final private boolean translateKeys;
 }

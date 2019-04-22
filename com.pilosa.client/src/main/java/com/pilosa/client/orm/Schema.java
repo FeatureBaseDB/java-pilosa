@@ -147,5 +147,17 @@ public class Schema {
                 .toHashCode();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[ ");
+        for (Map.Entry<String, Index> entry : this.indexes.entrySet()) {
+            builder.append(entry.getValue().toString());
+            builder.append(' ');
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
     private Map<String, Index> indexes = new HashMap<>();
 }

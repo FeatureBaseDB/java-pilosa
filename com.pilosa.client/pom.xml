@@ -286,7 +286,6 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.6.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.pilosa</groupId>
             <artifactId>roaring</artifactId>

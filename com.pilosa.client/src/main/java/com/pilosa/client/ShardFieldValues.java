@@ -40,6 +40,7 @@ import com.pilosa.client.orm.Record;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class ShardFieldValues implements ShardRecords {
     public static ShardFieldValues create(final Field field, final long shard, ImportOptions options) {
@@ -79,8 +80,15 @@ public class ShardFieldValues implements ShardRecords {
     }
 
     @Override
-    public void clear() {
+    public void reset() {
         this.fieldValues.clear();
+    }
+
+    @Override
+    public boolean attemptTranslateKeys(PilosaClient client,
+                                        Map<String, Long> rowKeyToIDMap,
+                                        Map<String, Long> columnKeyToIDMap) {
+        return false;
     }
 
     @Override

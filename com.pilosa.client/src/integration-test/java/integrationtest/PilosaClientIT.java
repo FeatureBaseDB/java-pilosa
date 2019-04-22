@@ -637,6 +637,37 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void fastImportRowKeyColumnIDTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            LineDeserializer deserializer = new RowKeyColumnIDDeserializer();
+            RecordIterator iterator = csvRecordIterator("row_key-column_id.csv", deserializer);
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .setKeys(true)
+                    .build();
+            Field field = this.index.field("importfield-rowkey-colid", fieldOptions);
+            client.ensureField(field);
+            ImportOptions importOptions = ImportOptions.builder()
+                    .setRoaring(true)
+                    .setTranslateKeys(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row("one"),
+                    field.row("five"),
+                    field.row("three")
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
     public void importRowKeyColumnKeyTest() throws IOException {
         try (PilosaClient client = this.getClient()) {
             LineDeserializer deserializer = new RowKeyColumnKeyDeserializer();
@@ -834,7 +865,6 @@ public class PilosaClientIT {
             Field field = this.index.field("importfield");
             client.ensureField(field);
             ImportOptions options = ImportOptions.builder().
-                    setStrategy(ImportOptions.Strategy.BATCH).
                     setBatchSize(3).
                     setThreadCount(1).
                     build();
@@ -917,8 +947,6 @@ public class PilosaClientIT {
             ImportOptions options = ImportOptions.builder()
                     .setBatchSize(100000)
                     .setThreadCount(2)
-                    .setStrategy(ImportOptions.Strategy.TIMEOUT)
-                    .setTimeoutMs(5)
                     .build();
             client.importField(field, iterator, options, statusQueue);
             monitorThread.interrupt();
@@ -942,7 +970,6 @@ public class PilosaClientIT {
                 this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
-                        .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(500)
                         .setThreadCount(1)
                         .build();
@@ -989,7 +1016,6 @@ public class PilosaClientIT {
                 this.client.ensureField(field);
 
                 ImportOptions options = ImportOptions.builder()
-                        .setStrategy(ImportOptions.Strategy.BATCH)
                         .setBatchSize(1_000)
                         .setThreadCount(1)
                         .build();
@@ -1037,7 +1063,6 @@ public class PilosaClientIT {
     @Test
     public void syncSchemaTest() throws IOException {
         Index index = null;
-
         try (PilosaClient client = this.getClient()) {
             Schema schema = client.readSchema();
             IndexOptions indexOptions = IndexOptions.builder()
@@ -1065,8 +1090,6 @@ public class PilosaClientIT {
             Index index4 = schema4.index("index11", indexOptions);
             client.syncSchema(schema4);
             assertEquals(index, index4);
-
-
         } finally {
             try (PilosaClient client = this.getClient()) {
                 if (index != null) {
@@ -1192,6 +1215,25 @@ public class PilosaClientIT {
                     server.stop(0);
                 }
             }
+        }
+    }
+
+    @Test
+    public void translateRowKeysTest() throws IOException {
+        try (PilosaClient client = getClient()) {
+            FieldOptions options = FieldOptions.builder()
+                    .setKeys(true)
+                    .build();
+            Field field = this.index.field("translate-rowkey-field", options);
+            client.syncSchema(this.schema);
+            client.query(this.index.batchQuery(
+                    field.set("key1", 10),
+                    field.set("key2", 1000)
+            ));
+
+            List<Long> rowIDs = client.translateKeys(field, Arrays.asList("key1", "key2"));
+            List<Long> target = Arrays.asList(1L, 2L);
+            assertEquals(target, rowIDs);
         }
     }
 
@@ -1642,10 +1684,6 @@ public class PilosaClientIT {
         String bindAddress = getBindAddress();
         Cluster cluster = Cluster.withHost(URI.address(bindAddress));
         ClientOptions.Builder optionsBuilder = ClientOptions.builder();
-        long shardWidth = getShardWidth();
-        if (shardWidth > 0) {
-            optionsBuilder.setShardWidth(shardWidth);
-        }
         return new InsecurePilosaClientIT(cluster, optionsBuilder.build());
     }
 
@@ -1653,10 +1691,6 @@ public class PilosaClientIT {
         String bindAddress = getBindAddress();
         ClientOptions.Builder optionsBuilder = ClientOptions.builder()
                 .setManualServerAddress(true);
-        long shardWidth = getShardWidth();
-        if (shardWidth > 0) {
-            optionsBuilder.setShardWidth(shardWidth);
-        }
         return new InsecurePilosaClientIT(bindAddress, optionsBuilder.build());
     }
 
@@ -1666,11 +1700,6 @@ public class PilosaClientIT {
             bindAddress = "http://:10101";
         }
         return bindAddress;
-    }
-
-    private boolean isLegacyModeOff() {
-        String legacyModeOffStr = System.getenv("LEGACY_MODE_OFF");
-        return legacyModeOffStr != null && legacyModeOffStr.equals("true");
     }
 
     private long getShardWidth() {

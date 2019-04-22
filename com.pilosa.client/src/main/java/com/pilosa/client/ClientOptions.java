@@ -121,11 +121,6 @@ public final class ClientOptions {
             return this;
         }
 
-        public Builder setShardWidth(long shardWidth) {
-            this.shardWidth = shardWidth;
-            return this;
-        }
-
         public Builder setManualServerAddress(boolean manualServerAddress) {
             this.manualServerAddress = manualServerAddress;
             return this;
@@ -138,7 +133,7 @@ public final class ClientOptions {
         public ClientOptions build() {
             return new ClientOptions(this.socketTimeout, this.connectTimeout,
                     this.retryCount, this.connectionPoolSizePerRoute, this.connectionPoolTotalSize,
-                    this.sslContext, this.shardWidth, this.manualServerAddress);
+                    this.sslContext, this.manualServerAddress);
         }
 
         private int socketTimeout = 300000;
@@ -185,17 +180,13 @@ public final class ClientOptions {
         return this.sslContext;
     }
 
-    public long getShardWidth() {
-        return this.shardWidth;
-    }
-
     public boolean isManualServerAddress() {
         return this.manualServerAddress;
     }
 
     private ClientOptions(final int socketTimeout, final int connectTimeout, final int retryCount,
                           final int connectionPoolSizePerRoute, final int connectionPoolTotalSize,
-                          final SSLContext sslContext, final long shardWidth,
+                          final SSLContext sslContext,
                           final boolean manualServerAddress) {
         this.socketTimeout = socketTimeout;
         this.connectTimeout = connectTimeout;
@@ -203,7 +194,6 @@ public final class ClientOptions {
         this.connectionPoolSizePerRoute = connectionPoolSizePerRoute;
         this.connectionPoolTotalSize = connectionPoolTotalSize;
         this.sslContext = sslContext;
-        this.shardWidth = shardWidth;
         this.manualServerAddress = manualServerAddress;
     }
 
@@ -213,6 +203,5 @@ public final class ClientOptions {
     private final int connectionPoolSizePerRoute;
     private final int connectionPoolTotalSize;
     private final SSLContext sslContext;
-    private final long shardWidth;
     private final boolean manualServerAddress;
 }

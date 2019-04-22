@@ -89,7 +89,7 @@ public class FieldOptionsTest {
                 .fieldInt(-100, 500)
                 .build();
         compare(options, FieldType.INT, TimeQuantum.NONE, CacheType.DEFAULT, 0, -100, 500);
-        String target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
+        String target = "{\"options\":{\"keys\":false,\"type\":\"int\",\"min\":-100,\"max\":500}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         Map<String, Object> optionsMap = new HashMap<>();
@@ -97,7 +97,7 @@ public class FieldOptionsTest {
         optionsMap.put("min", -100);
         optionsMap.put("max", 500);
         options = FieldOptions.fromMap(optionsMap);
-        target = "{\"options\":{\"type\":\"int\",\"min\":-100,\"max\":500}}";
+        target = "{\"options\":{\"min\":-100,\"max\":500,\"keys\":false,\"type\":\"int\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -107,14 +107,14 @@ public class FieldOptionsTest {
                 .fieldTime(TimeQuantum.MONTH_DAY_HOUR)
                 .build();
         compare(options, FieldType.TIME, TimeQuantum.MONTH_DAY_HOUR, CacheType.DEFAULT, 0, 0, 0);
-        String target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
+        String target = "{\"keys\":false,\"options\":{\"type\":\"time\",\"timeQuantum\":\"MDH\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         Map<String, Object> optionsMap = new HashMap<>();
         optionsMap.put("type", "time");
         optionsMap.put("timeQuantum", "YMDH");
         options = FieldOptions.fromMap(optionsMap);
-        target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"YMDH\"}}";
+        target = "{\"options\":{\"type\":\"time\",\"timeQuantum\":\"YMDH\",\"keys\":false}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -160,7 +160,7 @@ public class FieldOptionsTest {
                 .fieldBool()
                 .build();
         compare(options, FieldType.BOOL, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        String target = "{\"options\":{\"type\":\"bool\"}}";
+        String target = "{\"keys\":false,\"options\":{\"type\":\"bool\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 

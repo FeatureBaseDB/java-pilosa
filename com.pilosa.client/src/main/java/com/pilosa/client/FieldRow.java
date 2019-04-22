@@ -41,6 +41,7 @@ public final class FieldRow {
     public static FieldRow create(String fieldName, long rowID) {
         return new FieldRow(fieldName, rowID, "");
     }
+
     public static FieldRow create(String fieldName, String rowKey) {
         return new FieldRow(fieldName, 0, rowKey);
     }

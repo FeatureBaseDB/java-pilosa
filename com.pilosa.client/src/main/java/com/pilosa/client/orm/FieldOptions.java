@@ -252,7 +252,7 @@ public final class FieldOptions {
         private FieldType fieldType = FieldType.DEFAULT;
         private long min = 0;
         private long max = 0;
-        private boolean keys = false;
+        private Boolean keys = null;
 
     }
 
@@ -355,7 +355,7 @@ public final class FieldOptions {
     }
 
     public boolean isKeys() {
-        return this.keys;
+        return (this.keys == null) ? false : this.keys;
     }
 
     @Override
@@ -364,6 +364,10 @@ public final class FieldOptions {
         if (this.fieldType != FieldType.DEFAULT) {
             options.put("type", this.fieldType.toString());
         }
+        if (this.keys != null) {
+            options.put("keys", this.keys);
+        }
+
         switch (this.fieldType) {
             case DEFAULT:
             case SET:
@@ -374,7 +378,6 @@ public final class FieldOptions {
                 if (this.cacheSize > 0) {
                     options.put("cacheSize", this.cacheSize);
                 }
-                options.put("keys", this.keys);
                 break;
             case INT:
                 options.put("min", this.min);
@@ -434,7 +437,7 @@ public final class FieldOptions {
                          final FieldType fieldType,
                          final long min,
                          final long max,
-                         final boolean keys) {
+                         final Boolean keys) {
         this.timeQuantum = timeQuantum;
         this.cacheType = cacheType;
         this.cacheSize = cacheSize;
@@ -462,6 +465,6 @@ public final class FieldOptions {
     private final FieldType fieldType;
     private final long min;
     private final long max;
-    private final boolean keys;
+    private final Boolean keys;
     private Object extra;
 }

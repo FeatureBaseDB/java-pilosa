@@ -72,14 +72,14 @@ public class FieldOptionsTest {
                 .fieldSet(CacheType.RANKED)
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
-        target = "{\"options\":{\"keys\":false,\"type\":\"set\",\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"type\":\"set\",\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
                 .fieldSet()
                 .build();
         compare(options, FieldType.SET, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        target = "{\"options\":{\"keys\":false,\"type\":\"set\"}}";
+        target = "{\"options\":{\"type\":\"set\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 
@@ -135,14 +135,14 @@ public class FieldOptionsTest {
                 .fieldMutex(CacheType.RANKED)
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.RANKED, 0, 0, 0);
-        target = "{\"options\":{\"keys\":false,\"type\":\"mutex\",\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"type\":\"mutex\",\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         options = FieldOptions.builder()
                 .fieldMutex()
                 .build();
         compare(options, FieldType.MUTEX, TimeQuantum.NONE, CacheType.DEFAULT, 0, 0, 0);
-        target = "{\"options\":{\"type\":\"mutex\",\"keys\":false}}";
+        target = "{\"options\":{\"type\":\"mutex\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
 
         Map<String, Object> optionsMap = new HashMap<>();
@@ -150,7 +150,7 @@ public class FieldOptionsTest {
         optionsMap.put("cacheType", "ranked");
         optionsMap.put("cacheSize", 1000);
         options = FieldOptions.fromMap(optionsMap);
-        target = "{\"options\":{\"keys\":false,\"type\":\"mutex\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
+        target = "{\"options\":{\"type\":\"mutex\",\"cacheSize\":1000,\"cacheType\":\"ranked\"}}";
         assertArrayEquals(stringToSortedChars(target), stringToSortedChars(options.toString()));
     }
 

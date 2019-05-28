@@ -67,7 +67,13 @@ public class IndexInfo {
         return this.indexOptions;
     }
 
+    @JsonProperty("shardWidth")
+    public long getShardWidth() {
+        return this.shardWidth;
+    }
+
     private String name;
     private List<FieldInfo> fields = new ArrayList<>();
     private IndexOptions indexOptions;
+    private long shardWidth;
 }

@@ -43,6 +43,9 @@ import com.pilosa.client.exceptions.PilosaURIException;
 import com.pilosa.client.exceptions.ValidationException;
 import com.pilosa.client.orm.*;
 import com.pilosa.client.status.*;
+import io.opentracing.*;
+import io.opentracing.propagation.Format;
+import io.opentracing.tag.Tag;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -191,12 +194,17 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-query">Pilosa API Reference: Query</a>
      */
     public QueryResponse query(PqlQuery query, QueryOptions options) {
-        QueryRequest request = QueryRequest.withQuery(query);
-        request.setRetrieveColumnAttributes(options.isColumns());
-        request.setExcludeRowAttributes(options.isExcludeAttributes());
-        request.setExcludeColumns(options.isExcludeColumns());
-        request.setShards(options.getShards());
-        return queryPath(request);
+        Span span = this.tracer.buildSpan("Client.Query").start();
+        try {
+            QueryRequest request = QueryRequest.withQuery(query);
+            request.setRetrieveColumnAttributes(options.isColumns());
+            request.setExcludeRowAttributes(options.isExcludeAttributes());
+            request.setExcludeColumns(options.isExcludeColumns());
+            request.setShards(options.getShards());
+            return queryPath(request);
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -208,10 +216,15 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
     public void createIndex(Index index) {
-        String path = String.format("/index/%s", index.getName());
-        String body = index.getOptions().toString();
-        ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, null, "Error while creating index");
+        Span span = this.tracer.buildSpan("Client.CreateIndex").start();
+        try {
+            String path = String.format("/index/%s", index.getName());
+            String body = index.getOptions().toString();
+            ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
+            clientExecute("POST", path, data, null, "Error while creating index");
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -235,10 +248,15 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
     public void createField(Field field) {
-        String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
-        String body = field.getOptions().toString();
-        ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
-        clientExecute("POST", path, data, null, "Error while creating field");
+        Span span = this.tracer.buildSpan("Client.CreateField").start();
+        try {
+            String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
+            String body = field.getOptions().toString();
+            ByteArrayEntity data = new ByteArrayEntity(body.getBytes(StandardCharsets.UTF_8));
+            clientExecute("POST", path, data, null, "Error while creating field");
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -262,8 +280,13 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
      */
     public void deleteIndex(Index index) {
-        String path = String.format("/index/%s", index.getName());
-        clientExecute("DELETE", path, null, null, "Error while deleting index");
+        Span span = this.tracer.buildSpan("Client.DeleteIndex").start();
+        try {
+            String path = String.format("/index/%s", index.getName());
+            clientExecute("DELETE", path, null, null, "Error while deleting index");
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -274,8 +297,13 @@ public class PilosaClient implements AutoCloseable {
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
      */
     public void deleteField(Field field) {
-        String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
-        clientExecute("DELETE", path, null, null, "Error while deleting field");
+        Span span = this.tracer.buildSpan("Client.DeleteField").start();
+        try {
+            String path = String.format("/index/%s/field/%s", field.getIndex().getName(), field.getName());
+            clientExecute("DELETE", path, null, null, "Error while deleting field");
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -303,8 +331,13 @@ public class PilosaClient implements AutoCloseable {
      */
     @SuppressWarnings("WeakerAccess")
     public void importField(Field field, RecordIterator iterator, ImportOptions options) {
-        BitImportManager manager = new BitImportManager(options);
-        manager.run(this, field, iterator, null);
+        Span span = this.tracer.buildSpan("Client.ImportField").start();
+        try {
+            BitImportManager manager = new BitImportManager(options);
+            manager.run(this, field, iterator, null);
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -322,8 +355,13 @@ public class PilosaClient implements AutoCloseable {
      */
     @SuppressWarnings("WeakerAccess")
     public void importField(Field field, RecordIterator iterator, ImportOptions options, final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        BitImportManager manager = new BitImportManager(options);
-        manager.run(this, field, iterator, statusQueue);
+        Span span = this.tracer.buildSpan("Client.ImportField").start();
+        try {
+            BitImportManager manager = new BitImportManager(options);
+            manager.run(this, field, iterator, statusQueue);
+        } finally {
+            span.finish();
+        }
     }
 
     /**
@@ -334,6 +372,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public SchemaInfo readServerSchema() {
         String path = "/schema";
+        Span span = this.tracer.buildSpan("Client.Schema").start();
         try {
             try (CloseableHttpResponse response = clientExecute("GET", path, null, null, "Error while reading schema",
                     ReturnClientResponse.ERROR_CHECKED_RESPONSE, false)) {
@@ -347,6 +386,8 @@ public class PilosaClient implements AutoCloseable {
             }
         } catch (IOException ex) {
             throw new PilosaException("Error while reading response", ex);
+        } finally {
+            span.finish();
         }
     }
 
@@ -359,7 +400,8 @@ public class PilosaClient implements AutoCloseable {
         Schema result = Schema.defaultSchema();
         SchemaInfo schema = readServerSchema();
         for (IndexInfo indexInfo : schema.getIndexes()) {
-            Index index = result.index(indexInfo.getName(), indexInfo.getIndexOptions());
+            Index index =
+                    result.index(indexInfo.getName(), indexInfo.getIndexOptions(), indexInfo.getShardWidth());
             List<FieldInfo> fields = indexInfo.getFields();
             if (fields != null) {
                 for (IFieldInfo fieldInfo : indexInfo.getFields()) {
@@ -384,38 +426,43 @@ public class PilosaClient implements AutoCloseable {
      * @param schema local schema to be synced
      */
     public void syncSchema(Schema schema) {
-        Schema serverSchema = readSchema();
+        Span span = this.tracer.buildSpan("Client.SyncSchema").start();
+        try {
+            Schema serverSchema = readSchema();
 
-        // find out local - remote schema
-        Schema diffSchema = schema.diff(serverSchema);
-        // create the indexes and fields which doesn't exist on the server side
-        for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
-            Index index = indexEntry.getValue();
-            if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
-                ensureIndex(index);
-            }
-            for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
-                this.ensureField(fieldEntry.getValue());
-            }
-        }
-
-        // find out remote - local schema
-        diffSchema = serverSchema.diff(schema);
-        for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
-            String indexName = indexEntry.getKey();
-            Index index = indexEntry.getValue();
-            if (!schema.getIndexes().containsKey(indexName)) {
-                schema.index(index);
-            } else {
-                Index localIndex = schema.getIndexes().get(indexName);
+            // find out local - remote schema
+            Schema diffSchema = schema.diff(serverSchema);
+            // create the indexes and fields which doesn't exist on the server side
+            for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
+                Index index = indexEntry.getValue();
+                if (!serverSchema.getIndexes().containsKey(indexEntry.getKey())) {
+                    ensureIndex(index);
+                }
                 for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
-                    // do not read system fields
-                    if (systemFields.contains(fieldEntry.getKey())) {
-                        continue;
-                    }
-                    localIndex.field(fieldEntry.getValue());
+                    this.ensureField(fieldEntry.getValue());
                 }
             }
+
+            // find out remote - local schema
+            diffSchema = serverSchema.diff(schema);
+            for (Map.Entry<String, Index> indexEntry : diffSchema.getIndexes().entrySet()) {
+                String indexName = indexEntry.getKey();
+                Index index = indexEntry.getValue();
+                if (!schema.getIndexes().containsKey(indexName)) {
+                    schema.index(index);
+                } else {
+                    Index localIndex = schema.getIndexes().get(indexName);
+                    for (Map.Entry<String, Field> fieldEntry : index.getFields().entrySet()) {
+                        // do not read system fields
+                        if (systemFields.contains(fieldEntry.getKey())) {
+                            continue;
+                        }
+                        localIndex.field(fieldEntry.getValue());
+                    }
+                }
+            }
+        } finally {
+            span.finish();
         }
     }
 
@@ -444,12 +491,19 @@ public class PilosaClient implements AutoCloseable {
      */
     public CloseableHttpResponse httpRequest(final String method, final String path, final ByteArrayEntity data,
                                              Header[] headers) {
-        return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE, false);
+        Span span = this.tracer.buildSpan("Client.SyncSchema").start();
+        try {
+            return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE, false);
+        } finally {
+            span.finish();
+        }
     }
 
     protected PilosaClient(Cluster cluster, ClientOptions options) {
         this.cluster = cluster;
         this.options = options;
+        Tracer tracer = options.getTracer();
+        this.tracer = (tracer != null) ? tracer : new NoopTracer();
     }
 
     protected PilosaClient(URI uri, ClientOptions options) {
@@ -467,6 +521,8 @@ public class PilosaClient implements AutoCloseable {
         } else {
             this.cluster = Cluster.withHost(uri);
         }
+        Tracer tracer = options.getTracer();
+        this.tracer = (tracer != null) ? tracer : new NoopTracer();
     }
 
     protected Registry<ConnectionSocketFactory> getRegistry() {
@@ -803,6 +859,7 @@ public class PilosaClient implements AutoCloseable {
     private IFragmentNode coordinatorNode = null;
     private IFragmentNode fragmentNode = null;
     private String manualServerAddress;
+    private Tracer tracer = null;
 }
 
 class QueryRequest {
@@ -1068,4 +1125,177 @@ class BitImportWorker implements Runnable {
     private final BlockingQueue<ImportStatusUpdate> statusQueue;
     private final ImportOptions options;
     private Map<Long, ShardRecords> shardGroup = new HashMap<>();
+}
+
+class NoopSpan implements Span {
+
+    @Override
+    public SpanContext context() {
+        return null;
+    }
+
+    @Override
+    public Span setTag(String s, String s1) {
+        return this;
+    }
+
+    @Override
+    public Span setTag(String s, boolean b) {
+        return this;
+    }
+
+    @Override
+    public Span setTag(String s, Number number) {
+        return this;
+    }
+
+    @Override
+    public <T> Span setTag(Tag<T> tag, T t) {
+        return this;
+    }
+
+    @Override
+    public Span log(Map<String, ?> map) {
+        return this;
+    }
+
+    @Override
+    public Span log(long l, Map<String, ?> map) {
+        return this;
+    }
+
+    @Override
+    public Span log(String s) {
+        return this;
+    }
+
+    @Override
+    public Span log(long l, String s) {
+        return this;
+    }
+
+    @Override
+    public Span setBaggageItem(String s, String s1) {
+        return this;
+    }
+
+    @Override
+    public String getBaggageItem(String s) {
+        return "";
+    }
+
+    @Override
+    public Span setOperationName(String s) {
+        return this;
+    }
+
+    @Override
+    public void finish() {
+
+    }
+
+    @Override
+    public void finish(long l) {
+
+    }
+}
+
+class NoopSpanBulder implements Tracer.SpanBuilder {
+
+    @Override
+    public Tracer.SpanBuilder asChildOf(SpanContext spanContext) {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder asChildOf(Span span) {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder addReference(String s, SpanContext spanContext) {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder ignoreActiveSpan() {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder withTag(String s, String s1) {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder withTag(String s, boolean b) {
+        return this;
+    }
+
+    @Override
+    public Tracer.SpanBuilder withTag(String s, Number number) {
+        return this;
+    }
+
+    @Override
+    public <T> Tracer.SpanBuilder withTag(Tag<T> tag, T t) {
+        return null;
+    }
+
+    @Override
+    public Tracer.SpanBuilder withStartTimestamp(long l) {
+        return this;
+    }
+
+    @Override
+    public Span startManual() {
+        return null;
+    }
+
+    @Override
+    public Span start() {
+        return new NoopSpan();
+    }
+
+    @Override
+    public Scope startActive(boolean b) {
+        return null;
+    }
+}
+
+class NoopTracer implements Tracer {
+    @Override
+    public ScopeManager scopeManager() {
+        return null;
+    }
+
+    @Override
+    public Span activeSpan() {
+        return null;
+    }
+
+    @Override
+    public Scope activateSpan(Span span) {
+        return null;
+    }
+
+    @Override
+    public SpanBuilder buildSpan(String s) {
+        return new NoopSpanBulder();
+    }
+
+    @Override
+    public <C> void inject(SpanContext spanContext, Format<C> format, C c) {
+
+    }
+
+    @Override
+    public <C> SpanContext extract(Format<C> format, C c) {
+        return null;
+    }
+
+    @Override
+    public void close() {
+
+    }
 }

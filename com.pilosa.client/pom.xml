@@ -292,6 +292,12 @@
             <artifactId>roaring</artifactId>
             <version>0.2.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.opentracing</groupId>
+            <artifactId>opentracing-noop</artifactId>
+            <version>0.32.0</version>
+        </dependency>
     </dependencies>
 
     <properties>

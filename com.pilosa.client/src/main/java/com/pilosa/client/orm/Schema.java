@@ -76,6 +76,24 @@ public class Schema {
         return index;
     }
 
+    /**
+     * Returns an index with a name.
+     *
+     * @param name       index name
+     * @param options    index options
+     * @param shardWidth
+     * @return a Index object
+     * @throws ValidationException if the passed index name is not valid
+     */
+    public Index index(String name, IndexOptions options, long shardWidth) {
+        if (this.indexes.containsKey(name)) {
+            return this.indexes.get(name);
+        }
+        Index index = Index.create(name, options);
+        this.indexes.put(name, index);
+        return index.setShardWidth(shardWidth);
+    }
+
     public Index index(String name, Map<String, Object> options) {
         return index(name, IndexOptions.fromMap(options));
     }
@@ -93,6 +111,16 @@ public class Schema {
             index.field(field.getName(), field.getOptions());
         }
         return index;
+    }
+
+    /**
+     * Checks whether the schema has the given index.
+     *
+     * @param indexName
+     * @return <code>true</code> if the index exists.
+     */
+    public boolean hasIndex(String indexName) {
+        return this.indexes.containsKey(indexName);
     }
 
     public Schema diff(Schema other) {

@@ -160,7 +160,14 @@ public class PilosaClientIT {
             Field field = this.index.field("schema-test-field", fieldOptions);
             client.ensureField(field);
             schema = client.readSchema();
-            Field f = schema.getIndexes().get(this.index.getName()).getFields().get("schema-test-field");
+
+            Index index = schema.getIndexes().get(this.index.getName());
+            IndexOptions indexOptions = index.getOptions();
+            assertTrue(indexOptions.isTrackExistence());
+            assertFalse(indexOptions.isKeys());
+            assertNotEquals(0, index.getShardWidth());
+
+            Field f = index.getFields().get("schema-test-field");
             FieldOptions fo = f.getOptions();
             assertEquals(FieldType.SET, fo.getFieldType());
             assertEquals(9999, fo.getCacheSize());

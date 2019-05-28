@@ -167,6 +167,14 @@ public class SchemaTest {
         assertEquals(index1, index2);
     }
 
+    @Test
+    public void testHasIndex() {
+        Schema schema = Schema.defaultSchema();
+        schema.index("some-index");
+        assertTrue(schema.hasIndex("some-index"));
+        assertFalse(schema.hasIndex("nonexistent-index"));
+    }
+
     private Index makeIndex(Schema schema, String name) {
         return schema.index(name);
     }

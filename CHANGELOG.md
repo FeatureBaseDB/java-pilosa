@@ -1,5 +1,11 @@
 ## Change Log
 
+* **v1.3.1** (2019-05-28)
+    * **Compatible with 1.3**
+    * Added support for [Open Tracing](https://opentracing.io).
+    * Added support for automatically loading shard width per index.
+    * Added `Schema.hasIndex` and `Index.hasField` methods.
+
 * **v1.3.0** (2019-04-19)
     * **Compatible with Pilosa 1.2 and 1.3**
     * Added `manualServerAddress` client option which forces the client use only the manual server address.

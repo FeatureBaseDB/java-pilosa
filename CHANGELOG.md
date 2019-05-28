@@ -1,7 +1,7 @@
 ## Change Log
 
-* **master**
-
+* **v1.3.0** (2019-04-19)
+    * **Compatible with Pilosa 1.2 and 1.3**
     * Added `manualServerAddress` client option which forces the client use only the manual server address.
     * Removed experimental `PilosaClient.withAddress` variant that sets the coordinator address manually. Use `manualServerAddress` client option instead.
 

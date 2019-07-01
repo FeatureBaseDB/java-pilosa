@@ -39,7 +39,8 @@ import com.pilosa.client.exceptions.ValidationException;
 public enum CacheType {
     DEFAULT(""),
     LRU("lru"),
-    RANKED("ranked");
+    RANKED("ranked"),
+    NONE("none");
 
     CacheType(String value) {
         this.value = value;
@@ -64,6 +65,8 @@ public enum CacheType {
                 return CacheType.LRU;
             case "ranked":
                 return CacheType.RANKED;
+	    case "none":
+		return CacheType.NONE;
         }
         throw new ValidationException(String.format("Invalid cache type string: %s", s));
     }

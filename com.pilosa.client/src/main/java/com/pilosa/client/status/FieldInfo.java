@@ -85,7 +85,10 @@ final class FieldMeta {
                 break;
         }
 
-        builder.setKeys(this.keys);
+        if (this.keys != null) {
+            builder.setKeys(this.keys);
+        }
+
 
         return builder.build();
     }
@@ -136,5 +139,5 @@ final class FieldMeta {
     private FieldType fieldType = FieldType.DEFAULT;
     private long min = 0;
     private long max = 0;
-    private boolean keys = false;
+    private Boolean keys;
 }

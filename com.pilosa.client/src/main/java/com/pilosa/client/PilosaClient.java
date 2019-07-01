@@ -491,7 +491,7 @@ public class PilosaClient implements AutoCloseable {
      */
     public CloseableHttpResponse httpRequest(final String method, final String path, final ByteArrayEntity data,
                                              Header[] headers) {
-        Span span = this.tracer.buildSpan("Client.SyncSchema").start();
+        Span span = this.tracer.buildSpan("Client.HttpRequest").start();
         try {
             return clientExecute(method, path, data, headers, "HTTP request error", ReturnClientResponse.RAW_RESPONSE, false);
         } finally {

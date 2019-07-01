@@ -378,6 +378,17 @@ public class PilosaClientIT {
             List<String> target = new ArrayList<>();
             target.add("stringCol");
             assertEquals(target, response.getResult().getRow().getKeys());
+
+            // tests: https://github.com/pilosa/java-pilosa/issues/157
+            options = FieldOptions.builder()
+                    .fieldBool()
+                    .build();
+            this.keyIndex.field("keys-bool-test", options);
+            client.syncSchema(this.schema);
+
+            Schema schema1 = client.readSchema();
+            Field field1 = schema1.getIndexes().get("key-index").getFields().get("keys-bool-test");
+            client.ensureField(field1);
         }
     }
 

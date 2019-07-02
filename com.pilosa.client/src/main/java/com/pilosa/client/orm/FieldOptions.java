@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pilosa.client.TimeQuantum;
 import com.pilosa.client.exceptions.PilosaException;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public final class FieldOptions {
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldSet() {
-            return fieldSet(CacheType.DEFAULT, 0);
+            return fieldSet(CacheType.DEFAULT, null);
         }
 
         /**
@@ -84,7 +85,7 @@ public final class FieldOptions {
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldSet(CacheType cacheType) {
-            return fieldSet(cacheType, 0);
+            return fieldSet(cacheType, null);
         }
 
         /**
@@ -95,7 +96,7 @@ public final class FieldOptions {
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder fieldSet(CacheType cacheType, int cacheSize) {
+        public Builder fieldSet(CacheType cacheType, Integer cacheSize) {
             this.fieldType = FieldType.SET;
             this.cacheType = cacheType;
             this.cacheSize = cacheSize;
@@ -109,7 +110,7 @@ public final class FieldOptions {
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldMutex() {
-            return fieldMutex(CacheType.DEFAULT, 0);
+            return fieldMutex(CacheType.DEFAULT, null);
         }
 
         /**
@@ -120,7 +121,7 @@ public final class FieldOptions {
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
         public Builder fieldMutex(CacheType cacheType) {
-            return fieldMutex(cacheType, 0);
+            return fieldMutex(cacheType, null);
         }
 
         /**
@@ -131,7 +132,7 @@ public final class FieldOptions {
          * @return FieldOptions builder
          * @see <a href="https://www.pilosa.com/docs/data-model/#field">Pilosa Data Model: Field</a>
          */
-        public Builder fieldMutex(CacheType cacheType, int cacheSize) {
+        public Builder fieldMutex(CacheType cacheType, Integer cacheSize) {
             this.fieldType = FieldType.MUTEX;
             this.cacheType = cacheType;
             this.cacheSize = cacheSize;
@@ -248,7 +249,7 @@ public final class FieldOptions {
 
         private TimeQuantum timeQuantum = TimeQuantum.NONE;
         private CacheType cacheType = CacheType.DEFAULT;
-        private int cacheSize = 0;
+        private Integer cacheSize;
         private FieldType fieldType = FieldType.DEFAULT;
         private long min = 0;
         private long max = 0;
@@ -339,7 +340,10 @@ public final class FieldOptions {
     }
 
     public int getCacheSize() {
-        return this.cacheSize;
+        if (this.cacheSize != null) {
+            return this.cacheSize;
+        }
+        return 0;
     }
 
     public FieldType getFieldType() {
@@ -375,7 +379,7 @@ public final class FieldOptions {
                 if (!this.cacheType.equals(CacheType.DEFAULT)) {
                     options.put("cacheType", this.cacheType.toString());
                 }
-                if (this.cacheSize > 0) {
+                if (this.cacheSize != null) {
                     options.put("cacheSize", this.cacheSize);
                 }
                 break;
@@ -409,13 +413,15 @@ public final class FieldOptions {
             return true;
         }
         FieldOptions rhs = (FieldOptions) obj;
-        return rhs.timeQuantum.equals(this.timeQuantum) &&
-                rhs.cacheType.equals(this.cacheType) &&
-                rhs.cacheSize == this.cacheSize &&
-                rhs.fieldType == this.fieldType &&
-                rhs.min == this.min &&
-                rhs.max == this.max &&
-                rhs.keys == this.keys;
+        return new EqualsBuilder()
+                .append(rhs.timeQuantum, this.timeQuantum)
+                .append(rhs.cacheType, this.cacheType)
+                .append(rhs.cacheSize, this.cacheSize)
+                .append(rhs.fieldType, this.fieldType)
+                .append(rhs.min, this.min)
+                .append(rhs.max, this.max)
+                .append(rhs.keys, this.keys)
+                .isEquals();
     }
 
     @Override
@@ -433,7 +439,7 @@ public final class FieldOptions {
 
     private FieldOptions(final TimeQuantum timeQuantum,
                          final CacheType cacheType,
-                         final int cacheSize,
+                         final Integer cacheSize,
                          final FieldType fieldType,
                          final long min,
                          final long max,
@@ -461,7 +467,7 @@ public final class FieldOptions {
     private static final ObjectMapper mapper;
     private final TimeQuantum timeQuantum;
     private final CacheType cacheType;
-    private final int cacheSize;
+    private final Integer cacheSize;
     private final FieldType fieldType;
     private final long min;
     private final long max;

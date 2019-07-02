@@ -180,7 +180,7 @@ public class SchemaTest {
     }
     private Index makeIndex(Schema schema, String name, boolean hasKeys) {
         IndexOptions options = IndexOptions.builder()
-                .setKeys(true)
+                .setKeys(hasKeys)
                 .build();
         return schema.index(name, options);
     }
@@ -189,7 +189,7 @@ public class SchemaTest {
     }
     private Field makeField(Index index, String name, boolean hasKeys) {
         FieldOptions options = FieldOptions.builder()
-                .setKeys(true)
+                .setKeys(hasKeys)
                 .build();
         return index.field(name, options);
     }

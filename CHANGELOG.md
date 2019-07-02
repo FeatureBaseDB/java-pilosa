@@ -1,7 +1,11 @@
 ## Change Log
 
+* **v1.3.2** (2019-05-28)
+    * **Compatible with Pilosa 1.3**
+    * Fixed issues [#154](https://github.com/pilosa/java-pilosa/issues/154), [#155](https://github.com/pilosa/java-pilosa/issues/155) and [#156](https://github.com/pilosa/java-pilosa/issues/156)
+
 * **v1.3.1** (2019-05-28)
-    * **Compatible with 1.3**
+    * **Compatible with Pilosa 1.3**
     * Added support for [Open Tracing](https://opentracing.io).
     * Added support for automatically loading shard width per index.
     * Added `Schema.hasIndex` and `Index.hasField` methods.

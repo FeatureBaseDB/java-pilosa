@@ -135,7 +135,7 @@ final class FieldMeta {
 
     private TimeQuantum timeQuantum = TimeQuantum.NONE;
     private CacheType cacheType = CacheType.DEFAULT;
-    private int cacheSize = 0;
+    private Integer cacheSize;
     private FieldType fieldType = FieldType.DEFAULT;
     private long min = 0;
     private long max = 0;

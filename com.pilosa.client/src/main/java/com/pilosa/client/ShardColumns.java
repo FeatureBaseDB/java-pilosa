@@ -213,7 +213,7 @@ class ShardColumns implements ShardRecords {
         if (fmt == null) {
             return "";
         }
-        return fmt.format(new Date(timestamp*1000));
+        return fmt.format(new Date(timestamp / 1000000));
     }
 
     private Map<Character, SimpleDateFormat> timeFormats = new HashMap<>(4);

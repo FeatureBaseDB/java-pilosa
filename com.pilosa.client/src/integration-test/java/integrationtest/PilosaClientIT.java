@@ -557,6 +557,59 @@ public class PilosaClientIT {
     }
 
     @Test
+    public void importRowIDColumnIDTimestampTest() throws IOException {
+        try (PilosaClient client = this.getClient()) {
+            RecordIterator iterator = StaticColumnIteratorWithTimestamp.columnsWithIDs();
+            FieldOptions fieldOptions = FieldOptions.builder()
+                    .fieldTime(TimeQuantum.YEAR_MONTH_DAY_HOUR)
+                    .build();
+            Field field = this.index.field("importfield-time", fieldOptions);
+            client.ensureField(field);
+            ImportOptions importOptions = ImportOptions.builder().build();
+            client.importField(field, iterator, importOptions);
+            PqlBatchQuery bq = index.batchQuery(
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(3L, 1L, 5L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+
+            target = Arrays.asList(5L);
+            Calendar start = new GregorianCalendar(2016, 1, 1, 0, 0, 0);
+            Calendar end = new GregorianCalendar(2019, 1, 1, 0, 0, 0);
+            response = client.query(field.row(10, start.getTime(), end.getTime()));
+            assertEquals(target, response.getResult().getRow().getColumns());
+
+            // test clear import
+            iterator = StaticColumnIterator.columnsWithIDs();
+            importOptions = ImportOptions.builder()
+                    .setClear(true)
+                    .build();
+            client.importField(field, iterator, importOptions);
+            bq = index.batchQuery(
+                    field.row(2),
+                    field.row(7),
+                    field.row(10)
+            );
+            response = client.query(bq);
+            target = new ArrayList<>(0);
+            results = response.getResults();
+            for (QueryResult result : results) {
+                RowResult br = result.getRow();
+                assertEquals(target, br.getColumns());
+            }
+        }
+    }
+
+
+    @Test
     public void importRowIDColumnIDManualAddressTest() throws IOException {
         try (PilosaClient client = this.getClientManualAddress()) {
             LineDeserializer deserializer = new RowIDColumnIDDeserializer();
@@ -783,7 +836,6 @@ public class PilosaClientIT {
             }
         }
     }
-
 
     @Test
     public void importFieldValuesTest() throws IOException {
@@ -1805,9 +1857,9 @@ class StaticColumnIteratorWithTimestamp implements RecordIterator {
                 this.records.add(FieldValue.create(10, 7));
                 this.records.add(FieldValue.create(7, 1));
             } else {
-                this.records.add(Column.create(10, 5, 1542199376));
-                this.records.add(Column.create(2, 3, 1520268300));
-                this.records.add(Column.create(7, 1, 1330965900));
+                this.records.add(Column.create(10, 5, 1542199376000000000L));
+                this.records.add(Column.create(2, 3, 1520268300000000000L));
+                this.records.add(Column.create(7, 1, 1330965900000000000L));
             }
         }
     }

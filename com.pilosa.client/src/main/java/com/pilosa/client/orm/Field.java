@@ -45,6 +45,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Fields are used to segment and define different functional characteristics within your entire index.
@@ -1097,8 +1098,14 @@ public class Field {
                 fmtDate.format(toTimestamp), fmtTime.format(toTimestamp));
     }
 
-    private final static DateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
-    private final static DateFormat fmtTime = new SimpleDateFormat("HH:mm");
+    private static DateFormat utcDateFormat(String format) {
+        DateFormat fmt = new SimpleDateFormat(format);
+        fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return fmt;
+    }
+
+    private final static DateFormat fmtDate = utcDateFormat("yyyy-MM-dd");
+    private final static DateFormat fmtTime =  utcDateFormat("HH:mm");
     private String name;
     private Index index;
     private FieldOptions options;

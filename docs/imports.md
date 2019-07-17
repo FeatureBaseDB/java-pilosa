@@ -71,10 +71,12 @@ FileIterator iterator = FileRecordIterator.fromStream(stream, field);
 
 The default timestamp format is `"yyyy-MM-dd'T'hh:mm:ss"`. In order to use a different format, you can set the third parameter of `FileRecordIterator.fromStream` or `FileRecordIterator.fromPath`. Setting the format parameter to `null` sets the time format to timestamp, shown in the sample below:
 
+_**Note that timestamps should be in nanoseconds, shorter numbers will not be set on the Pilosa server.**_
+
 ```java
-String data = "1,10,683793200\n" +
-              "5,20,683793300\n" +
-              "3,41,683793385\n";
+String data = "1,10,6837932000000000000\n" +
+              "5,20,6837933000000000000\n" +
+              "3,41,6837933850000000000\n";
 InputStream stream = new ByteArrayInputStream(data.getBytes("UTF-8"));
 FileIterator iterator = FileRecordIterator.fromStream(stream, field, null);
 ```
@@ -95,6 +97,9 @@ catch (PilosaException ex) {
 ```
 
 `RecordIterator` extends `Iterator` interface, so you can create new iterators by implementing it. Below is a sample iterator which returns prepopulated columns:
+
+_**Note that timestamps should be in nanoseconds, shorter numbers will not be set on the Pilosa server.**_
+
 ```java
 class StaticColumnIterator implements RecordIterator {
     private List<Column> columns;
@@ -102,9 +107,9 @@ class StaticColumnIterator implements RecordIterator {
 
     StaticColumnIterator() {
         this.columns = new ArrayList<>(3);
-        this.columns.add(Column.create(1, 10, 683793200));
-        this.columns.add(Column.create(5, 20, 683793300));
-        this.columns.add(Column.create(3, 41, 683793385));
+        this.columns.add(Column.create(1, 10, 6837932000000000000));
+        this.columns.add(Column.create(5, 20, 6837933000000000000));
+        this.columns.add(Column.create(3, 41, 6837933850000000000));
     }
 
     @Override

@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.3.4 (2019-07-24)
+
+* **Compatible with Pilosa 1.3**
+* **Security Notice: There was a vulnerability found in Jackson Databind 2.9.9 which was used in older versions of this library. We strongly suggest you to update to this version.**
+* **Breaking Change: Roaring imports require nanosecond timestamps, instead of seconds** 
+
+
 ### v1.3.3 (2019-07-05)
 
 * **Compatible with Pilosa 1.3**

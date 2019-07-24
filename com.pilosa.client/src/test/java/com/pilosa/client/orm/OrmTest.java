@@ -41,6 +41,7 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import static org.junit.Assert.assertEquals;
@@ -127,9 +128,9 @@ public class OrmTest {
                 "Row(collaboration=true)",
                 q.serialize().getQuery());
 
-        Calendar start = Calendar.getInstance();
+        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         start.set(1970, Calendar.JANUARY, 1, 0, 0);
-        Calendar end = Calendar.getInstance();
+        Calendar end = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
 
         q = collabField.row("ten", start.getTime(), end.getTime());
@@ -207,7 +208,7 @@ public class OrmTest {
 
     @Test
     public void setWithTimestampTest() {
-        Calendar timestamp = Calendar.getInstance();
+        Calendar timestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         timestamp.set(2017, Calendar.APRIL, 24, 12, 14);
         PqlQuery q = collabField.set(10, 20, timestamp.getTime());
         assertEquals(
@@ -414,9 +415,9 @@ public class OrmTest {
 
     @Test
     public void rangeTest() {
-        Calendar start = Calendar.getInstance();
+        Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         start.set(1970, Calendar.JANUARY, 1, 0, 0);
-        Calendar end = Calendar.getInstance();
+        Calendar end = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         end.set(2000, Calendar.FEBRUARY, 2, 3, 4);
         PqlBaseQuery q = collabField.range(10, start.getTime(), end.getTime());
         assertEquals(

@@ -74,8 +74,8 @@ import java.util.concurrent.*;
 
 /**
  * Pilosa HTTP client.
- *<p>
- *     This client uses Pilosa's http+protobuf API.
+ * <p>
+ * This client uses Pilosa's http+protobuf API.
  * <p>
  * Usage:
  * <pre>
@@ -92,6 +92,7 @@ import java.util.concurrent.*;
  *     System.out.println(response.getResult());
  * </code>
  * </pre>
+ *
  * @see <a href="https://www.pilosa.com/docs/api-reference/">Pilosa API Reference</a>
  * @see <a href="https://www.pilosa.com/docs/query-language/">Query Language</a>
  */
@@ -123,8 +124,8 @@ public class PilosaClient implements AutoCloseable {
      * Creates a client with the given address.
      *
      * @param uri address of the server
-     * @throws PilosaURIException if the given address is malformed
      * @return a PilosaClient
+     * @throws PilosaURIException if the given address is malformed
      */
     public static PilosaClient withURI(URI uri) {
         return PilosaClient.withURI(uri, null);
@@ -243,6 +244,7 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Creates a field on the server using the given Field object.
+     *
      * @param field field object
      * @throws HttpConflict if there already is a field with the given name
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name-frame-frame-name">Pilosa API Reference: Field</a>
@@ -275,6 +277,7 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Deletes the given index on the server.
+     *
      * @param index the index to delete
      * @throws PilosaException if the index does not exist
      * @see <a href="https://www.pilosa.com/docs/api-reference/#index-index-name">Pilosa API Reference: Index</a>
@@ -310,7 +313,7 @@ public class PilosaClient implements AutoCloseable {
      * Imports bits to the given index and field with the default batch size.
      *
      * @param field    specify the field
-     * @param iterator     specify the bit iterator
+     * @param iterator specify the bit iterator
      * @throws PilosaException if the import cannot be completed
      */
     public void importField(Field field, RecordIterator iterator) {
@@ -319,13 +322,13 @@ public class PilosaClient implements AutoCloseable {
 
     /**
      * Imports bits to the given index and field.
-     *<p>
-     *     This method sorts and sends the bits in batches.
-     *     Pilosa queries may return inconsistent results while importing data.
+     * <p>
+     * This method sorts and sends the bits in batches.
+     * Pilosa queries may return inconsistent results while importing data.
      *
      * @param field    specify the field
-     * @param iterator     specify the bit iterator
-     * @param options specify the import options
+     * @param iterator specify the bit iterator
+     * @param options  specify the import options
      * @throws PilosaException if the import cannot be completed
      * @see <a href="https://www.pilosa.com/docs/administration/#importing-and-exporting-data/">Importing and Exporting Data</a>
      */
@@ -465,6 +468,65 @@ public class PilosaClient implements AutoCloseable {
             span.finish();
         }
     }
+
+    /**
+     * Convert Batch of String Row Keys to row IDs
+     *
+     * @param field containing the rows
+     * @param keys  String row keys to be converted to rowIDs
+     * @return the ids associated with the provided row keys
+     */
+    public long[] translateRowKeys(Field field, String[] keys) throws IOException {
+        Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder()
+                .setIndex(field.getIndex().getName())
+                .setField(field.getName());
+        int i = 0;
+        for (String key : keys) {
+            requestBuilder.addKeys(key);
+        }
+        return this.translateKeys(requestBuilder.build());
+    }
+
+    /**
+     * Convert Batch of String Column Keys to column IDs
+     *
+     * @param index index containing the column id space
+     * @param keys  keys to be mapped
+     * @return ids associated with the provided column keys
+     */
+    public long[] translateColumnKeys(Index index, String[] keys) throws IOException {
+
+        Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder()
+                .setIndex(index.getName());
+
+        for (String key : keys) {
+            requestBuilder.addKeys(key);
+        }
+        return this.translateKeys(requestBuilder.build());
+    }
+
+    protected long[] translateKeys(Internal.TranslateKeysRequest request) throws IOException {
+        String path = "/internal/translate/keys";
+        ByteArrayEntity body = new ByteArrayEntity(request.toByteArray());
+        CloseableHttpResponse response = clientExecute("POST", path, body, protobufHeaders, "Error while posting translateKey",
+                ReturnClientResponse.RAW_RESPONSE, true);
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            InputStream src = entity.getContent();
+            Internal.TranslateKeysResponse translateKeysResponse = Internal.TranslateKeysResponse.parseFrom(src);
+            List<Long> values = translateKeysResponse.getIDsList();
+            long[] result = new long[values.size()];
+            int i = 0;
+            for (Long v : values) {
+                result[i++] = v.longValue();
+            }
+
+            return result;
+
+        }
+        return new long[0];
+    }
+
 
     /**
      * Sends an HTTP request to the Pilosa server.

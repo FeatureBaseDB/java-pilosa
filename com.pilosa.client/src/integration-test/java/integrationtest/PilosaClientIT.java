@@ -47,6 +47,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.Arrays;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -1493,6 +1495,89 @@ public class PilosaClientIT {
         }
     }
 
+    @Test(expected = PilosaException.class)
+    public void failKeyEmptyResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/internal/translate/keys", 204);
+
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder();
+                client.translateKeys(requestBuilder.build());
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testTranslateRowKeys() throws IOException {
+        IndexOptions options = IndexOptions.builder()
+                .setTrackExistence(true)
+                .setKeys(true)
+                .build();
+        Index index = this.schema.index("translate-test", options);
+        FieldOptions fieldOptions = FieldOptions.builder()
+                .setKeys(true)
+                .build();
+        Field field = index.field("f1", fieldOptions);
+        try (PilosaClient client = getClient()) {
+            client.syncSchema(this.schema);
+            try {
+                String[] smallBatch = {"one", "two", "three", "four", "five", "six", "seven", "eight", "#@`1"};
+                long[] result = client.translateRowKeys(field, smallBatch);
+                long[] result2 = client.translateRowKeys(field, smallBatch);
+                assertArrayEquals(result2, result);
+            } finally {
+                client.deleteIndex(index);
+            }
+        }
+    }
+
+    @Test
+    public void testTranslateColumnKeys() throws IOException {
+        IndexOptions options = IndexOptions.builder()
+                .setTrackExistence(true)
+                .setKeys(true)
+                .build();
+        Index index = this.schema.index("translate-test", options);
+        try (PilosaClient client = getClient()) {
+            client.syncSchema(this.schema);
+            try {
+                String[] smallBatch = {"one", "two", "three", "four", "five", "six", "seven", "eight", "#@`1"};
+                long[] result = client.translateColumnKeys(index, smallBatch);
+                long[] result2 = client.translateColumnKeys(index, smallBatch);
+                assertArrayEquals(result2, result);
+                String[] diffBatch = {"two", "three", "four", "five", "six", "seven", "eight", "#@`1", "nine"};
+                long[] result3 = client.translateColumnKeys(index, diffBatch);
+                assertEquals(result2[1], result3[0]);
+                assertNotEquals(result2[0], result3[0]);
+            } finally {
+                client.deleteIndex(index);
+            }
+        }
+    }
+
+    @Test
+    public void testTranslateColumnKeysEmptyRequest() throws IOException {
+        IndexOptions options = IndexOptions.builder()
+                .setTrackExistence(true)
+                .setKeys(true)
+                .build();
+        Index index = this.schema.index("translate-test", options);
+        try (PilosaClient client = getClient()) {
+            client.syncSchema(this.schema);
+            String[] empty = {};
+            try {
+                long[] results = client.translateColumnKeys(index, empty);
+                assertEquals(0, results.length);
+            } finally {
+                client.deleteIndex(index);
+            }
+
+        }
+    }
 
     private static int counter = 0;
 

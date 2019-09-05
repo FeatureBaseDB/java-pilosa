@@ -468,14 +468,12 @@ public class PilosaClient implements AutoCloseable {
             span.finish();
         }
     }
-
-    /**
-     * Convert Batch of String Row Keys to row IDs
-     *
-     * @param field containing the rows
-     * @param keys  String row keys to be converted to rowIDs
-     * @return the ids associated with the provided row keys
-     */
+     /**
+     * Convert batch of row keys from string to ID.
+     * @param field field containing the rows
+     * @param keys  row keys to be converted from string to id
+     * @return ids associated with the provided row keys
+      */
     public long[] translateRowKeys(Field field, String[] keys) throws IOException {
         Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder()
                 .setIndex(field.getIndex().getName())
@@ -488,10 +486,10 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     * Convert Batch of String Column Keys to column IDs
+     *  Convert batch of column keys from string to ID
      *
      * @param index index containing the column id space
-     * @param keys  keys to be mapped
+     * @param keys  column keys to be converted from string to id
      * @return ids associated with the provided column keys
      */
     public long[] translateColumnKeys(Index index, String[] keys) throws IOException {
@@ -524,7 +522,9 @@ public class PilosaClient implements AutoCloseable {
             return result;
 
         }
-        return new long[0];
+        throw new PilosaException("Server returned empty response");
+
+        //return new long[0];
     }
 
 

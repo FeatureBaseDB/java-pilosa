@@ -1495,6 +1495,22 @@ public class PilosaClientIT {
         }
     }
 
+    @Test(expected = PilosaException.class)
+    public void failKeyEmptyResponseTest() throws IOException {
+        HttpServer server = runContent0HttpServer("/internal/translate/keys", 204);
+
+        try (PilosaClient client = PilosaClient.withAddress(":15999")) {
+            try {
+                Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder();
+                client.translateKeys(requestBuilder.build());
+            } finally {
+                if (server != null) {
+                    server.stop(0);
+                }
+            }
+        }
+    }
+
     @Test
     public void testTranslateRowKeys() throws IOException {
         IndexOptions options = IndexOptions.builder()

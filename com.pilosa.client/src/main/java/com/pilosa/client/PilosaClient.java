@@ -468,12 +468,14 @@ public class PilosaClient implements AutoCloseable {
             span.finish();
         }
     }
-     /**
+
+    /**
      * Convert batch of row keys from string to ID.
+     *
      * @param field field containing the rows
      * @param keys  row keys to be converted from string to id
      * @return ids associated with the provided row keys
-      */
+     */
     public long[] translateRowKeys(Field field, String[] keys) throws IOException {
         Internal.TranslateKeysRequest.Builder requestBuilder = Internal.TranslateKeysRequest.newBuilder()
                 .setIndex(field.getIndex().getName())
@@ -486,7 +488,7 @@ public class PilosaClient implements AutoCloseable {
     }
 
     /**
-     *  Convert batch of column keys from string to ID
+     * Convert batch of column keys from string to ID
      *
      * @param index index containing the column id space
      * @param keys  column keys to be converted from string to id
@@ -503,11 +505,12 @@ public class PilosaClient implements AutoCloseable {
         return this.translateKeys(requestBuilder.build());
     }
 
-    protected long[] translateKeys(Internal.TranslateKeysRequest request) throws IOException {
+    //protected long[] translateKeys(Internal.TranslateKeysRequest request) throws IOException {
+    public long[] translateKeys(Internal.TranslateKeysRequest request) throws IOException {
         String path = "/internal/translate/keys";
         ByteArrayEntity body = new ByteArrayEntity(request.toByteArray());
         CloseableHttpResponse response = clientExecute("POST", path, body, protobufHeaders, "Error while posting translateKey",
-                ReturnClientResponse.RAW_RESPONSE, true);
+                ReturnClientResponse.RAW_RESPONSE, false);
         HttpEntity entity = response.getEntity();
         if (entity != null) {
             InputStream src = entity.getContent();
@@ -523,8 +526,6 @@ public class PilosaClient implements AutoCloseable {
 
         }
         throw new PilosaException("Server returned empty response");
-
-        //return new long[0];
     }
 
 

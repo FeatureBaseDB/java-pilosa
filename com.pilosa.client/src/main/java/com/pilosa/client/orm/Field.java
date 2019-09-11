@@ -775,7 +775,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query with less than (<) condition.
+     * Creates a Range query with less than (&lt;) condition.
      *
      * @param n The value to compare
      * @return a PQL query
@@ -785,7 +785,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query with less than or equal (<=) condition.
+     * Creates a Range query with less than or equal (&lt;&#61;) condition.
      *
      * @param n The value to compare
      * @return a PQL query
@@ -795,7 +795,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query with greater than (>) condition.
+     * Creates a Range query with greater than (&gt;) condition.
      *
      * @param n The value to compare
      * @return a PQL query
@@ -805,7 +805,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query with greater than or equal (>=) condition.
+     * Creates a Range query with greater than or equal (&gt;&#61;) condition.
      *
      * @param n The value to compare
      * @return a PQL query

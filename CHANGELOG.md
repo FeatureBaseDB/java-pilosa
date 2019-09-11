@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.3.5 (2019-09-11)
+
+* **Compatible with Pilosa 1.3**
+* Added support for batch key translation. 
+
 ### v1.3.4 (2019-07-24)
 
 * **Compatible with Pilosa 1.3**

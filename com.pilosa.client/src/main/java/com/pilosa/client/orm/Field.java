@@ -127,7 +127,7 @@ public class Field {
      * based on whether the row label or column label is given in the query.
      * It also retrieves any attributes set on that row or column.
      *
-     * @param rowID
+     * @param rowID  the numeric row identifier
      * @param fromTimestamp the start time (inclusive). Pass null for the default.
      * @param toTimestamp the end time (exclusive). Pass null for the default.
      * @return a PQL query
@@ -147,7 +147,7 @@ public class Field {
      * based on whether the row label or column label is given in the query.
      * It also retrieves any attributes set on that row or column.
      *
-     * @param rowKey
+     * @param rowKey the string row identifier
      * @param fromTimestamp the start time (inclusive). Pass null for the default.
      * @param toTimestamp the end time (exclusive). Pass null for the default.
      * @return a PQL query
@@ -845,7 +845,7 @@ public class Field {
     }
 
     /**
-     * Creates a Range query with between (><) condition.
+     * Creates a Range query with between (&gt;&lt;) condition.
      *
      * @param a Closed range start
      * @param b Closed range end

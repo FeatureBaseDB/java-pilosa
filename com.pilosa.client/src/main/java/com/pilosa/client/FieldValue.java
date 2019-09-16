@@ -48,6 +48,18 @@ public class FieldValue implements Record {
         return create(0, columnKey, value);
     }
 
+    public long getColumnID() {
+        return this.columnID;
+    }
+
+    public String getColumnKey() {
+        return this.columnKey;
+    }
+
+    public long getValue() {
+        return this.value;
+    }
+
     @Override
     public long shard(long shardWidth) {
         return this.columnID / shardWidth;

@@ -98,7 +98,7 @@ public class ShardFieldValues implements ShardRecords {
                 .setField(this.field.getName())
                 .setShard(shard);
 
-        if (this.field.getOptions().isKeys()) {
+        if (isIndexKeys()) {
             List<String> columnKeys = new ArrayList<>(fieldValueCount);
             for (FieldValue fieldValue : this.fieldValues) {
                 columnKeys.add(fieldValue.columnKey);

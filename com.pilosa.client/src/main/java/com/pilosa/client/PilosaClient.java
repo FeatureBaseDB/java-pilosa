@@ -367,6 +367,17 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
+    public ImportService importFields(List<FieldRecordIterator> fieldRecordIterators) {
+        ImportOptions options = ImportOptions.builder().build();
+        return importFields(fieldRecordIterators, options, null);
+    }
+
+    public ImportService importFields(List<FieldRecordIterator> fieldRecordIterators,
+                                      ImportOptions options,
+                                      final BlockingQueue<ImportStatusUpdate> statusQueue) {
+        return new MultiFieldBitImportManager(options).run(this, fieldRecordIterators, statusQueue);
+    }
+
     /**
      * Returns the schema info.
      *
@@ -1080,6 +1091,37 @@ class BitImportManager {
     }
 
     BitImportManager(ImportOptions importOptions) {
+        this.options = importOptions;
+    }
+
+    private final ImportOptions options;
+}
+
+class MultiFieldBitImportManager {
+    public ImportService run(final PilosaClient client, final List<FieldRecordIterator> fieldRecordIterators, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+        // TODO: thread count should be a reasonable number even if number of fields is very high
+        final int threadCount = fieldRecordIterators.size();
+        List<BlockingQueue<Record>> queues = new ArrayList<>(threadCount);
+        List<Future> workers = new ArrayList<>(threadCount);
+
+        ExecutorService service = Executors.newFixedThreadPool(threadCount);
+        for (FieldRecordIterator fieldRecordIterator : fieldRecordIterators) {
+            BlockingQueue<Record> q = fieldRecordIterator.getQueue();
+            queues.add(q);
+            Runnable worker = new BitImportWorker(
+                    client,
+                    fieldRecordIterator.getField(),
+                    q,
+                    statusQueue,
+                    this.options
+            );
+            workers.add(service.submit(worker));
+        }
+
+        return new ImportService(queues, workers, service);
+    }
+
+    MultiFieldBitImportManager(ImportOptions importOptions) {
         this.options = importOptions;
     }
 

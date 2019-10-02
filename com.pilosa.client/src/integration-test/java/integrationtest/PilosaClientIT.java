@@ -47,8 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.Arrays;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -550,6 +548,49 @@ public class PilosaClientIT {
             QueryResponse response = client.query(bq);
 
             List<Long> target = Arrays.asList(10L, 20L, 41L);
+            List<QueryResult> results = response.getResults();
+            for (int i = 0; i < results.size(); i++) {
+                RowResult br = results.get(i).getRow();
+                assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importMultiFieldRowIDColumnIDTest() throws IOException, InterruptedException {
+        try (PilosaClient client = this.getClient()) {
+            Field field1 = this.index.field("multi-importfield-rowid-colid-1");
+            Field field2 = this.index.field("multi-importfield-rowid-colid-2");
+            client.ensureField(field1);
+            client.ensureField(field2);
+            List<FieldRecordIterator> fieldRecordIterators = new ArrayList<>(2);
+            BlockingQueue<Record> fieldQueue1 = new LinkedBlockingDeque<>(10);
+            BlockingQueue<Record> fieldQueue2 = new LinkedBlockingDeque<>(10);
+            fieldRecordIterators.add(FieldRecordIterator.create(field1, fieldQueue1));
+            fieldRecordIterators.add(FieldRecordIterator.create(field2, fieldQueue2));
+            ImportService importService = client.importFields(fieldRecordIterators);
+
+            fieldQueue1.put(Column.create(1, 10));
+            fieldQueue2.put(Column.create(10, 1));
+
+            fieldQueue1.put(Column.create(5, 20));
+            fieldQueue2.put(Column.create(20, 5));
+
+            fieldQueue1.put(Column.create(3, 41));
+            fieldQueue2.put(Column.create(41, 3));
+
+            importService.stop();
+            PqlBatchQuery bq = index.batchQuery(
+                    field1.row(1L),
+                    field1.row(5L),
+                    field1.row(3L),
+                    field2.row(10L),
+                    field2.row(20L),
+                    field2.row(41L)
+            );
+            QueryResponse response = client.query(bq);
+
+            List<Long> target = Arrays.asList(10L, 20L, 41L, 1L, 5L, 3L);
             List<QueryResult> results = response.getResults();
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();

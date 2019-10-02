@@ -39,12 +39,12 @@ import com.pilosa.client.orm.Record;
 
 import java.util.concurrent.BlockingQueue;
 
-public final class FieldRecordIterator {
-    public static FieldRecordIterator create(Field field, BlockingQueue<Record> queue) {
-        FieldRecordIterator fieldRecordIterator = new FieldRecordIterator();
-        fieldRecordIterator.field = field;
-        fieldRecordIterator.queue = queue;
-        return fieldRecordIterator;
+public final class FieldRecordQueue {
+    public static FieldRecordQueue create(Field field, BlockingQueue<Record> queue) {
+        FieldRecordQueue fieldRecordQueue = new FieldRecordQueue();
+        fieldRecordQueue.field = field;
+        fieldRecordQueue.queue = queue;
+        return fieldRecordQueue;
     }
 
     public Field getField() {
@@ -55,7 +55,7 @@ public final class FieldRecordIterator {
         return this.queue;
     }
 
-    private FieldRecordIterator() {
+    private FieldRecordQueue() {
     }
 
     private Field field;

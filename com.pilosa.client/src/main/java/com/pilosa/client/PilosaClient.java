@@ -367,15 +367,15 @@ public class PilosaClient implements AutoCloseable {
         }
     }
 
-    public ImportService importFields(List<FieldRecordIterator> fieldRecordIterators) {
+    public ImportService importFields(List<FieldRecordQueue> fieldRecordQueues) {
         ImportOptions options = ImportOptions.builder().build();
-        return importFields(fieldRecordIterators, options, null);
+        return importFields(fieldRecordQueues, options, null);
     }
 
-    public ImportService importFields(List<FieldRecordIterator> fieldRecordIterators,
+    public ImportService importFields(List<FieldRecordQueue> fieldRecordQueues,
                                       ImportOptions options,
                                       final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        return new MultiFieldBitImportManager(options).run(this, fieldRecordIterators, statusQueue);
+        return new MultiFieldBitImportManager(options).run(this, fieldRecordQueues, statusQueue);
     }
 
     /**
@@ -1098,19 +1098,19 @@ class BitImportManager {
 }
 
 class MultiFieldBitImportManager {
-    public ImportService run(final PilosaClient client, final List<FieldRecordIterator> fieldRecordIterators, final BlockingQueue<ImportStatusUpdate> statusQueue) {
+    public ImportService run(final PilosaClient client, final List<FieldRecordQueue> fieldRecordQueues, final BlockingQueue<ImportStatusUpdate> statusQueue) {
         // TODO: thread count should be a reasonable number even if number of fields is very high
-        final int threadCount = fieldRecordIterators.size();
+        final int threadCount = fieldRecordQueues.size();
         List<BlockingQueue<Record>> queues = new ArrayList<>(threadCount);
         List<Future> workers = new ArrayList<>(threadCount);
 
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
-        for (FieldRecordIterator fieldRecordIterator : fieldRecordIterators) {
-            BlockingQueue<Record> q = fieldRecordIterator.getQueue();
+        for (FieldRecordQueue fieldRecordQueue : fieldRecordQueues) {
+            BlockingQueue<Record> q = fieldRecordQueue.getQueue();
             queues.add(q);
             Runnable worker = new BitImportWorker(
                     client,
-                    fieldRecordIterator.getField(),
+                    fieldRecordQueue.getField(),
                     q,
                     statusQueue,
                     this.options

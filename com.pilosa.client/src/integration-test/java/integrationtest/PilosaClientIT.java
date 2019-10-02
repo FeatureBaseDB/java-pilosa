@@ -563,12 +563,12 @@ public class PilosaClientIT {
             Field field2 = this.index.field("multi-importfield-rowid-colid-2");
             client.ensureField(field1);
             client.ensureField(field2);
-            List<FieldRecordIterator> fieldRecordIterators = new ArrayList<>(2);
+            List<FieldRecordQueue> fieldRecordQueues = new ArrayList<>(2);
             BlockingQueue<Record> fieldQueue1 = new LinkedBlockingDeque<>(10);
             BlockingQueue<Record> fieldQueue2 = new LinkedBlockingDeque<>(10);
-            fieldRecordIterators.add(FieldRecordIterator.create(field1, fieldQueue1));
-            fieldRecordIterators.add(FieldRecordIterator.create(field2, fieldQueue2));
-            ImportService importService = client.importFields(fieldRecordIterators);
+            fieldRecordQueues.add(FieldRecordQueue.create(field1, fieldQueue1));
+            fieldRecordQueues.add(FieldRecordQueue.create(field2, fieldQueue2));
+            ImportService importService = client.importFields(fieldRecordQueues);
 
             fieldQueue1.put(Column.create(1, 10));
             fieldQueue2.put(Column.create(10, 1));

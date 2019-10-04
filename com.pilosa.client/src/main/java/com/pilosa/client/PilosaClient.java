@@ -644,13 +644,15 @@ public class PilosaClient implements AutoCloseable {
                 response = clientExecute(request, errorMessage, returnResponse);
                 break;
             } catch (IOException ex) {
-                if (useCoordinator) {
-                    logger.warn("Removed coordinator {} due to {}", this.coordinatorAddress, ex);
-                    this.coordinatorAddress = null;
-                } else {
-                    this.cluster.removeHost(this.currentAddress);
-                    logger.warn("Removed {} from the cluster due to {}", this.currentAddress, ex);
-                    this.currentAddress = null;
+                if (!this.options.isManualServerAddress()) {
+                    if (useCoordinator) {
+                        logger.warn("Removed coordinator {} due to {}", this.coordinatorAddress, ex);
+                        this.coordinatorAddress = null;
+                    } else {
+                        this.cluster.removeHost(this.currentAddress);
+                        logger.warn("Removed {} from the cluster due to {}", this.currentAddress, ex);
+                        this.currentAddress = null;
+                    }
                 }
             }
         }

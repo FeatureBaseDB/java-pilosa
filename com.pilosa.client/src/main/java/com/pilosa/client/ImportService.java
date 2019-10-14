@@ -43,34 +43,43 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public final class ImportService {
+public final class ImportService implements AutoCloseable {
     ImportService(List<BlockingQueue<Record>> queues, List<Future> workers, ExecutorService service) {
         this.queues = queues;
         this.workers = workers;
         this.service = service;
     }
 
-    public void stop() {
+
+    @Override
+    public void close() {
         try {
-            // Signal the threads to stop
-            for (BlockingQueue<Record> q : this.queues) {
-                q.put(Column.DEFAULT);
+            if (this.queues != null) {
+                // Signal the threads to stop
+                for (BlockingQueue<Record> q : this.queues) {
+                    q.put(Column.DEFAULT);
+                }
             }
 
-            // Prepare to terminate the executor
-            this.service.shutdown();
+            if (this.service != null) {
+                // Prepare to terminate the executor
+                this.service.shutdown();
+            }
 
-            for (Future worker : this.workers) {
-                worker.get();
+            if (this.workers != null) {
+                for (Future worker : this.workers) {
+                    worker.get();
+                }
             }
         } catch (InterruptedException e) {
-            for (Future worker : this.workers) {
-                worker.cancel(true);
+            if (this.workers != null) {
+                for (Future worker : this.workers) {
+                    worker.cancel(true);
+                }
             }
         } catch (ExecutionException e) {
             throw new PilosaException("Error in import worker", e);
         }
-
     }
 
     private List<BlockingQueue<Record>> queues;

@@ -568,18 +568,18 @@ public class PilosaClientIT {
             BlockingQueue<Record> fieldQueue2 = new LinkedBlockingDeque<>(10);
             fieldRecordQueues.add(FieldRecordQueue.create(field1, fieldQueue1));
             fieldRecordQueues.add(FieldRecordQueue.create(field2, fieldQueue2));
-            ImportService importService = client.importFields(fieldRecordQueues);
 
-            fieldQueue1.put(Column.create(1, 10));
-            fieldQueue2.put(Column.create(10, 1));
+            try (ImportService importService = client.importFields(fieldRecordQueues)) {
+                fieldQueue1.put(Column.create(1, 10));
+                fieldQueue2.put(Column.create(10, 1));
 
-            fieldQueue1.put(Column.create(5, 20));
-            fieldQueue2.put(Column.create(20, 5));
+                fieldQueue1.put(Column.create(5, 20));
+                fieldQueue2.put(Column.create(20, 5));
 
-            fieldQueue1.put(Column.create(3, 41));
-            fieldQueue2.put(Column.create(41, 3));
+                fieldQueue1.put(Column.create(3, 41));
+                fieldQueue2.put(Column.create(41, 3));
+            }
 
-            importService.stop();
             PqlBatchQuery bq = index.batchQuery(
                     field1.row(1L),
                     field1.row(5L),
@@ -595,6 +595,17 @@ public class PilosaClientIT {
             for (int i = 0; i < results.size(); i++) {
                 RowResult br = results.get(i).getRow();
                 assertEquals(target.get(i), br.getColumns().get(0));
+            }
+        }
+    }
+
+    @Test
+    public void importMultiFieldRowIDColumnIDNoFieldsTest() throws IOException, InterruptedException {
+        try (PilosaClient client = this.getClient()) {
+            try (ImportService importService = client.importFields(null)) {
+            }
+            List<FieldRecordQueue> fieldRecordQueues = new ArrayList<>(0);
+            try (ImportService importService = client.importFields(fieldRecordQueues)) {
             }
         }
     }

@@ -1100,27 +1100,32 @@ class BitImportManager {
 }
 
 class MultiFieldBitImportManager {
-    public ImportService run(final PilosaClient client, final List<FieldRecordQueue> fieldRecordQueues, final BlockingQueue<ImportStatusUpdate> statusQueue) {
-        // TODO: thread count should be a reasonable number even if number of fields is very high
-        final int threadCount = fieldRecordQueues.size();
-        List<BlockingQueue<Record>> queues = new ArrayList<>(threadCount);
-        List<Future> workers = new ArrayList<>(threadCount);
+    public ImportService run(final PilosaClient client,
+                             final List<FieldRecordQueue> fieldRecordQueues,
+                             final BlockingQueue<ImportStatusUpdate> statusQueue) {
+        if (fieldRecordQueues != null && fieldRecordQueues.size() > 0) {
+            // TODO: thread count should be a reasonable number even if number of fields is very high
+            final int threadCount = fieldRecordQueues.size();
+            List<BlockingQueue<Record>> queues = new ArrayList<>(threadCount);
+            List<Future> workers = new ArrayList<>(threadCount);
 
-        ExecutorService service = Executors.newFixedThreadPool(threadCount);
-        for (FieldRecordQueue fieldRecordQueue : fieldRecordQueues) {
-            BlockingQueue<Record> q = fieldRecordQueue.getQueue();
-            queues.add(q);
-            Runnable worker = new BitImportWorker(
-                    client,
-                    fieldRecordQueue.getField(),
-                    q,
-                    statusQueue,
-                    this.options
-            );
-            workers.add(service.submit(worker));
+            ExecutorService service = Executors.newFixedThreadPool(threadCount);
+            for (FieldRecordQueue fieldRecordQueue : fieldRecordQueues) {
+                BlockingQueue<Record> q = fieldRecordQueue.getQueue();
+                queues.add(q);
+                Runnable worker = new BitImportWorker(
+                        client,
+                        fieldRecordQueue.getField(),
+                        q,
+                        statusQueue,
+                        this.options
+                );
+                workers.add(service.submit(worker));
+            }
+
+            return new ImportService(queues, workers, service);
         }
-
-        return new ImportService(queues, workers, service);
+        return new ImportService(null, null, null);
     }
 
     MultiFieldBitImportManager(ImportOptions importOptions) {

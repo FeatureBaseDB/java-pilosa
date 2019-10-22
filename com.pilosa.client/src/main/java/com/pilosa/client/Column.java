@@ -38,6 +38,9 @@ import com.pilosa.client.orm.Record;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Column implements Record {
+    /**
+     * @deprecated
+     */
     public static final Column DEFAULT = Column.defaultColumn();
 
     public static Column create(long rowID, long columnID) {
@@ -158,6 +161,11 @@ public class Column implements Record {
     @Override
     public long shard(long shardWidth) {
         return this.columnID / shardWidth;
+    }
+
+    @Override
+    public WatermarkType watermark() {
+        return WatermarkType.NONE;
     }
 
     @Override

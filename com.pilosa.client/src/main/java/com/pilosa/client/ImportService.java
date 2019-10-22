@@ -57,7 +57,7 @@ public final class ImportService implements AutoCloseable {
             if (this.queues != null) {
                 // Signal the threads to stop
                 for (BlockingQueue<Record> q : this.queues) {
-                    q.put(Column.DEFAULT);
+                    q.put(WatermarkRecord.stopWatermark());
                 }
             }
 

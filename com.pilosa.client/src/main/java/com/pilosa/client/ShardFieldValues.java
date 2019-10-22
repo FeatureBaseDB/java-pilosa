@@ -67,6 +67,11 @@ public class ShardFieldValues implements ShardRecords {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.fieldValues.isEmpty();
+    }
+
+    @Override
     public int size() {
         return this.fieldValues.size();
     }

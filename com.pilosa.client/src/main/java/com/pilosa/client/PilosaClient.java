@@ -1073,7 +1073,7 @@ class BitImportManager {
 
             // Signal the threads to stop
             for (BlockingQueue<Record> q : queues) {
-                q.put(Column.DEFAULT);
+                q.put(WatermarkRecord.stopWatermark());
             }
 
             // Prepare to terminate the executor
@@ -1151,58 +1151,69 @@ class BitImportWorker implements Runnable {
     @Override
     public void run() {
         final long shardWidth = this.options.getShardWidth();
-        final ImportOptions.Strategy strategy = this.options.getStrategy();
-        final long timeout = this.options.getTimeoutMs();
         int batchCountDown = this.options.getBatchSize();
-        long tic = System.currentTimeMillis();
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 Record record = this.queue.take();
-                if (record.isDefault()) {
-                    break;
-                }
-                long shard = record.shard(shardWidth);
-                ShardRecords shardRecords = shardGroup.get(shard);
-                if (shardRecords == null) {
-                    if (this.field.getOptions().getFieldType() == FieldType.INT) {
-                        shardRecords = ShardFieldValues.create(this.field, shard, this.options);
-                    } else {
-                        shardRecords = ShardColumns.create(this.field, shard, shardWidth, this.options);
-                    }
-                    shardGroup.put(shard, shardRecords);
-                }
-                shardRecords.add(record);
-                batchCountDown -= 1;
-                if (strategy.equals(ImportOptions.Strategy.BATCH) && batchCountDown == 0) {
-                    for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
-                        shardRecords = entry.getValue();
-                        if (shardRecords.size() > 0) {
-                            importRecords(entry.getValue());
+                switch (record.watermark()) {
+                    case NONE:
+                        long shard = record.shard(shardWidth);
+                        ShardRecords shardRecords = shardGroup.get(shard);
+                        if (shardRecords == null) {
+                            if (this.field.getOptions().getFieldType() == FieldType.INT) {
+                                shardRecords = ShardFieldValues.create(this.field, shard, this.options);
+                            } else {
+                                shardRecords = ShardColumns.create(this.field, shard, shardWidth, this.options);
+                            }
+                            shardGroup.put(shard, shardRecords);
                         }
-                    }
-                    batchCountDown = this.options.getBatchSize();
-                    tic = System.currentTimeMillis();
-                } else if (strategy.equals(ImportOptions.Strategy.TIMEOUT) && (System.currentTimeMillis() - tic) > timeout) {
-                    importRecords(shardGroup.get(largestShard()));
-                    batchCountDown = this.options.getBatchSize();
-                    tic = System.currentTimeMillis();
+                        shardRecords.add(record);
+                        batchCountDown -= 1;
+                        if (batchCountDown == 0) {
+                            importAllShardRecords();
+                            batchCountDown = this.options.getBatchSize();
+                        }
+                        break;
+
+                    case STOP:
+                        // The thread is shutting down, import remaining columns in the batch
+                        importAllShardRecords();
+                        Thread.currentThread().interrupt();
+                        break;
+
+                    case IMPORT_ALL:
+                        importAllShardRecords();
+                        batchCountDown = this.options.getBatchSize();
+                        break;
+
+                    case IMPORT_SOME:
+                        importSomeShardRecords();
+                        batchCountDown = this.options.getBatchSize();
+                        break;
                 }
             } catch (InterruptedException e) {
                 break;
             }
         }
-        // The thread is shutting down, import remaining columns in the batch
+    }
+
+    private void importAllShardRecords() throws InterruptedException {
+        ShardRecords shardRecords;
         for (Map.Entry<Long, ShardRecords> entry : this.shardGroup.entrySet()) {
-            ShardRecords records = entry.getValue();
-            if (records.size() > 0) {
-                try {
-                    importRecords(entry.getValue());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+            shardRecords = entry.getValue();
+            if (!shardRecords.isEmpty()) {
+                importRecords(entry.getValue());
             }
         }
+    }
+
+    private void importSomeShardRecords() throws InterruptedException {
+        long shard = largestShard();
+        if (shard < 0) {
+            return;
+        }
+        importRecords(this.shardGroup.get(shard));
     }
 
     private long largestShard() {

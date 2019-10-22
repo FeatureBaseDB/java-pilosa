@@ -38,6 +38,9 @@ import com.pilosa.client.orm.Record;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class FieldValue implements Record {
+    /**
+     * @deprecated
+     */
     public static final FieldValue DEFAULT = FieldValue.defaultFieldValue();
 
     public static FieldValue create(long columnID, long value) {
@@ -68,6 +71,11 @@ public class FieldValue implements Record {
     @Override
     public boolean isDefault() {
         return this.defaultFieldValue;
+    }
+
+    @Override
+    public WatermarkType watermark() {
+        return WatermarkType.NONE;
     }
 
     @Override

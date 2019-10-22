@@ -32,18 +32,11 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client;
 
-import com.pilosa.client.WatermarkType;
-
-public interface Record extends Comparable<Record> {
-    long shard(final long shardWidth);
-
-    WatermarkType watermark();
-
-    /**
-     * @return
-     * @deprecated
-     */
-    boolean isDefault();
+public enum WatermarkType {
+    NONE,
+    STOP,
+    IMPORT_ALL,
+    IMPORT_SOME
 }

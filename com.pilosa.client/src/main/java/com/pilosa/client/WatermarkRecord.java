@@ -32,18 +32,51 @@
  * DAMAGE.
  */
 
-package com.pilosa.client.orm;
+package com.pilosa.client;
 
-import com.pilosa.client.WatermarkType;
+import com.pilosa.client.orm.Record;
 
-public interface Record extends Comparable<Record> {
-    long shard(final long shardWidth);
+public class WatermarkRecord implements Record {
+    public static WatermarkRecord stopWatermark() {
+        WatermarkRecord wr = new WatermarkRecord();
+        wr.type = WatermarkType.STOP;
+        return wr;
+    }
 
-    WatermarkType watermark();
+    public static WatermarkRecord importAllWatermark() {
+        WatermarkRecord wr = new WatermarkRecord();
+        wr.type = WatermarkType.IMPORT_ALL;
+        return wr;
+    }
 
-    /**
-     * @return
-     * @deprecated
-     */
-    boolean isDefault();
+    public static WatermarkRecord importSomeWatermark() {
+        WatermarkRecord wr = new WatermarkRecord();
+        wr.type = WatermarkType.IMPORT_SOME;
+        return wr;
+    }
+
+    @Override
+    public long shard(long shardWidth) {
+        return 0;
+    }
+
+    @Override
+    public WatermarkType watermark() {
+        return this.type;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return false;
+    }
+
+    @Override
+    public int compareTo(Record record) {
+        return 0;
+    }
+
+    WatermarkRecord() {
+    }
+
+    private WatermarkType type;
 }

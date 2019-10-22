@@ -69,6 +69,11 @@ class ShardColumns implements ShardRecords {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.columns.isEmpty();
+    }
+
+    @Override
     public void add(Record record) {
         Column column = (Column) record;
         // TODO: check column

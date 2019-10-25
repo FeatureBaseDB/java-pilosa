@@ -47,8 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.util.Arrays;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -449,20 +447,43 @@ public class PilosaClientIT {
     @Test
     public void testGroupBy() throws IOException {
         Field field = index.field("groupby-field");
+        Field readyField = index.field("ready");
         try (PilosaClient client = getClient()) {
             client.createField(field);
+            client.createField(readyField);
             client.query(index.batchQuery(
                     field.set(1, 100),
                     field.set(1, 200),
-                    field.set(2, 200)
+                    field.set(1, 300),
+                    field.set(2, 200),
+                    field.set(2, 300),
+                    readyField.set(1, 100),
+                    readyField.set(1, 200)
             ));
             QueryResponse response = client.query(index.groupBy(field.rows()));
 
             List<FieldRow> fieldRows1 = Collections.singletonList(FieldRow.create("groupby-field", 1));
             List<FieldRow> fieldRows2 = Collections.singletonList(FieldRow.create("groupby-field", 2));
             List<GroupCount> target = Arrays.asList(
+                    GroupCount.create(fieldRows1, 3),
+                    GroupCount.create(fieldRows2, 2));
+            assertEquals(target, response.getResult().getGroupCounts());
+
+            response = client.query(index.groupBy(1, field.rows()));
+            target = Collections.singletonList(GroupCount.create(fieldRows1, 3));
+            assertEquals(target, response.getResult().getGroupCounts());
+
+            response = client.query(index.groupBy(readyField.row(1), field.rows()));
+            target = Arrays.asList(
                     GroupCount.create(fieldRows1, 2),
-                    GroupCount.create(fieldRows2, 1));
+                    GroupCount.create(fieldRows2, 1)
+            );
+            assertEquals(target, response.getResult().getGroupCounts());
+
+            response = client.query(index.groupBy(1, readyField.row(1), field.rows()));
+            target = Collections.singletonList(
+                    GroupCount.create(fieldRows1, 2)
+            );
             assertEquals(target, response.getResult().getGroupCounts());
         }
     }

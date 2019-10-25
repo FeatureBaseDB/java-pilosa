@@ -320,11 +320,33 @@ public class Index {
     }
 
     public PqlBaseQuery groupBy(PqlRowsQuery... queries) {
+        return groupBy(0, null, queries);
+    }
+
+    public PqlBaseQuery groupBy(Integer limit, PqlRowsQuery... queries) {
+        return groupBy(limit, null, queries);
+    }
+
+    public PqlBaseQuery groupBy(PqlRowQuery filterQuery, PqlRowsQuery... queries) {
+        return groupBy(0, filterQuery, queries);
+    }
+
+    public PqlBaseQuery groupBy(Integer limit, PqlRowQuery filterQuery, PqlRowsQuery... queries) {
         if (queries.length < 1) {
             throw new IllegalArgumentException("there should be at least one rows query");
         }
-        String text = String.format("GroupBy(%s)", joinQueries(queries));
-        return pqlQuery(text, false);
+        StringBuilder builder = new StringBuilder("GroupBy(");
+        builder.append(joinQueries(queries));
+        if (limit > 0) {
+            builder.append(",limit=");
+            builder.append(limit);
+        }
+        if (filterQuery != null) {
+            builder.append(",filter=");
+            builder.append(filterQuery.serialize().getQuery());
+        }
+        builder.append(")");
+        return pqlQuery(builder.toString(), false);
     }
 
     public Map<String, Field> getFields() {

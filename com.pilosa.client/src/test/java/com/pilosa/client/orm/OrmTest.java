@@ -485,10 +485,18 @@ public class OrmTest {
 
     @Test
     public void groupByTest() {
+        Field ready = projectIndex.field("ready");
         assertQueryEquals("GroupBy(Rows(field='collaboration'))",
                 projectIndex.groupBy(collabField.rows()));
         assertQueryEquals("GroupBy(Rows(field='collaboration'),Rows(field='collaboration'))",
                 projectIndex.groupBy(collabField.rows(), collabField.rows()));
+        assertQueryEquals("GroupBy(Rows(field='collaboration'),Rows(field='collaboration'),limit=7)",
+                projectIndex.groupBy(7, collabField.rows(), collabField.rows()));
+        assertQueryEquals("GroupBy(Rows(field='collaboration'),Rows(field='collaboration'),filter=Row(ready=10))",
+                projectIndex.groupBy(ready.row(10), collabField.rows(), collabField.rows()));
+        assertQueryEquals("GroupBy(Rows(field='collaboration'),Rows(field='collaboration'),limit=7,filter=Row(ready=10))",
+                projectIndex.groupBy(7, ready.row(10), collabField.rows(), collabField.rows()));
+
     }
 
     @Test(expected = IllegalArgumentException.class)

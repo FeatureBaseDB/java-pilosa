@@ -217,13 +217,13 @@ class ShardColumns implements ShardRecords {
     }
 
     private Map<Character, SimpleDateFormat> timeFormats = new HashMap<>(4);
-
-    {
+   {
         timeFormats.put('Y', new SimpleDateFormat("yyyy"));
-        timeFormats.put('M', new SimpleDateFormat("MM"));
-        timeFormats.put('D', new SimpleDateFormat("dd"));
-        timeFormats.put('H', new SimpleDateFormat("mm"));
+        timeFormats.put('M', new SimpleDateFormat("yyyyMM"));
+        timeFormats.put('D', new SimpleDateFormat("yyyyMMdd"));
+        timeFormats.put('H', new SimpleDateFormat("yyyyMMddHH"));
     }
+
 
     private final Field field;
     private final long shard;

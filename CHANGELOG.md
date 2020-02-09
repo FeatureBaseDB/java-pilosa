@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.4.0 (2020-02-10)
+
+* **Compatible with Pilosa 1.4**
+* Added additional GroupBy support.
+* Fixed a bug in time view handling.
+
 ### v1.3.5 (2019-09-11)
 
 * **Compatible with Pilosa 1.3**

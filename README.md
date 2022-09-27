@@ -1,5 +1,8 @@
 # Java Client for Pilosa
 
+This repo archived Sept 2022 as part of the transition from Pilosa to FeatureBase.
+Please contact community[at]featurebase[dot]com with any questions.
+
 <a href="https://github.com/pilosa"><img src="https://img.shields.io/badge/pilosa-1.4-blue.svg"></a>
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22pilosa-client%22"><img src="https://img.shields.io/maven-central/v/com.pilosa/pilosa-client.svg?maxAge=2592"></a>
 <a href="https://travis-ci.org/pilosa/java-pilosa"><img src="https://api.travis-ci.org/pilosa/java-pilosa.svg?branch=master"></a>
